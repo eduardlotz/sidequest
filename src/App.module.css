@@ -204,7 +204,17 @@
 .previewCardProjection {
   width: 100%;
   aspect-ratio: 0.64;
+  rotate: var(--card-rotation);
   transform-style: preserve-3d;
+}
+
+.previewCardProjection[data-position="left"],
+.previewCardProjection[data-position="right"] {
+  translate: 0 8px;
+}
+
+.previewCardProjection[data-position="center"] {
+  translate: 0 -12px;
 }
 
 .activeCardProjection {
@@ -1315,13 +1325,17 @@
   }
 
   .activeExperience {
-    grid-template-columns: 1fr;
-    grid-template-rows: 48svh 52svh;
+    display: block;
+    min-height: 100svh;
     overflow: hidden;
   }
 
   .activeCardStage {
-    width: min(55cqw, 245px);
+    position: absolute;
+    top: 63svh;
+    left: 50%;
+    width: min(calc(100vw - 32px), 390px);
+    transform: translateX(-50%);
   }
 
   .activeQuestCard {
@@ -1352,9 +1366,12 @@
   }
 
   .timerRig {
-    height: 52svh;
+    position: absolute;
+    inset: 0 0 auto;
+    width: 100%;
+    height: 60svh;
     overflow: hidden;
-    border-top: 1px solid rgb(8 8 10 / 0.05);
+    border-top: 0;
   }
 
   .timerPosition {
@@ -1373,12 +1390,12 @@
   }
 
   .timerHint {
-    bottom: 6%;
+    bottom: 5%;
     font-size: 0.76rem;
   }
 
   .pausePanel {
-    top: 55%;
+    top: 56%;
     bottom: auto;
   }
 
@@ -1456,22 +1473,34 @@
 .navAction {
   min-height: 35px;
   padding: 0 13px;
+  border: 0;
   border-radius: 999px;
-  background: #e9e9f1;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.72);
+  background: transparent;
+  box-shadow: none;
   color: #08080a;
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+  opacity: 0.5;
   cursor: pointer;
   transition:
     background 150ms ease,
-    transform 150ms ease;
+    opacity 150ms ease;
 }
 
-.navAction:hover {
+.navAction:hover,
+.navAction:active {
+  background: #e9e9f1;
+  opacity: 1;
+}
+
+.navAction[data-active] {
+  background: #e9e9f1;
+  opacity: 1;
+}
+
+.navAction[data-active]:hover {
   background: #dedee7;
-  transform: translateY(-1px);
 }
 
 .brandMark {
@@ -1513,26 +1542,6 @@
   width: 100%;
   padding: 0;
   text-align: center;
-}
-
-.deckIntro .completionText {
-  display: inline-flex;
-  min-height: 46px;
-  align-items: center;
-  gap: 0.24em;
-  padding: 0 16px;
-  margin: 0;
-  border-radius: 17px;
-  background: #e8e8f0;
-  color: #85858c;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: -0.025em;
-}
-
-.completionText strong {
-  color: #0a0a0c;
-  font-weight: 700;
 }
 
 .deckIntro h2 {
@@ -1657,15 +1666,6 @@
   font-size: clamp(2rem, 13.2cqw, 4rem);
 }
 
-.supportNote {
-  position: fixed;
-  bottom: 30px;
-  left: 32px;
-  color: #bfc0c7;
-  font-weight: 600;
-  pointer-events: none;
-}
-
 .drawerOverlay {
   z-index: 90;
   background: rgb(9 9 11 / 0.04);
@@ -1675,26 +1675,37 @@
 .floatingDrawer {
   position: fixed;
   z-index: 100;
-  overflow: hidden;
+  overflow: visible;
   border: 0;
-  border-radius: 20px;
-  background: #fff;
-  box-shadow: 0 18px 45px rgb(21 21 28 / 0.11);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   outline: none;
 }
 
 .floatingDrawer[data-direction="right"] {
   top: 74px;
-  right: 32px;
+  right: 0;
   bottom: clamp(18px, 10vh, 86px);
-  width: min(342px, calc(100vw - 64px));
+  width: calc(min(342px, calc(100vw - 64px)) + 32px);
+  padding-right: 32px;
 }
 
 .floatingDrawer[data-direction="left"] {
   top: 74px;
   bottom: clamp(18px, 10vh, 86px);
-  left: 32px;
-  width: min(342px, calc(100vw - 64px));
+  left: 0;
+  width: calc(min(342px, calc(100vw - 64px)) + 32px);
+  padding-left: 32px;
+}
+
+.floatingDrawer > .aboutContent,
+.floatingDrawer > .historyScreen {
+  height: 100%;
+  overflow: auto;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 18px 45px rgb(21 21 28 / 0.11);
 }
 
 .historyScreen {
@@ -1863,63 +1874,100 @@
 }
 
 .aboutContent {
+  display: flex;
   height: 100%;
   overflow: auto;
-  padding: 34px 28px;
+  padding: 34px 28px 26px;
+  flex-direction: column;
+  overscroll-behavior: contain;
 }
 
-.aboutContent h2 {
+.aboutIntro {
+  padding-bottom: 28px;
+  border-bottom: 1px solid #e8e8eb;
+}
+
+.aboutIntro h2 {
   margin: 0;
-  font-size: 2.1rem;
-  letter-spacing: -0.055em;
+  font-size: 1.75rem;
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 1.12;
 }
 
-.aboutContent > p {
-  margin: 12px 0 32px;
-  color: #77777f;
-  line-height: 1.45;
+.aboutIntro p {
+  margin: 8px 0 0;
+  color: #88888e;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.12;
+}
+
+.aboutBody {
+  display: flex;
+  padding-top: 28px;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.aboutSection h3 {
+  margin: 0 0 10px;
+  color: #111113;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.aboutSection p {
+  margin: 0;
+  color: #85858b;
+  font-size: 1rem;
+  font-weight: 550;
+  letter-spacing: -0.02em;
+  line-height: 1.42;
+}
+
+.aboutSection p + p {
+  margin-top: 24px;
 }
 
 .aboutSteps {
-  display: flex;
-  padding: 0;
+  padding: 0 0 0 1.45em;
   margin: 0;
-  flex-direction: column;
-  gap: 12px;
-  list-style: none;
 }
 
 .aboutSteps li {
-  display: flex;
-  gap: 13px;
-  padding: 16px;
-  border-radius: 16px;
-  background: #f1f1f3;
+  padding-left: 0.15em;
+  color: #85858b;
+  font-size: 1rem;
+  font-weight: 550;
+  letter-spacing: -0.02em;
+  line-height: 1.42;
 }
 
-.aboutSteps li > span {
-  display: grid;
-  width: 28px;
-  height: 28px;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 50%;
-  background: #09090b;
-  color: white;
-  font-size: 0.8rem;
-  font-weight: 700;
+.aboutSteps li + li {
+  margin-top: 5px;
 }
 
-.aboutSteps strong {
-  display: block;
-  margin-top: 4px;
-}
-
-.aboutSteps p {
-  margin: 5px 0 0;
-  color: #75757c;
+.aboutCredit {
+  padding-top: 20px;
+  margin-top: auto;
+  color: #a0a0a7;
   font-size: 0.86rem;
-  line-height: 1.4;
+  font-weight: 600;
+}
+
+.aboutCredit a {
+  color: #111113;
+  text-decoration: underline;
+  text-decoration-color: #c4c4c9;
+  text-underline-offset: 3px;
+}
+
+.aboutCredit a:hover {
+  text-decoration-color: #111113;
 }
 
 @media (max-width: 820px) {
@@ -1943,40 +1991,80 @@
   }
 
   .previewState {
+    display: flex;
     min-height: 100svh;
-    padding: 92px 0 0;
-  }
-
-  .deckIntro .completionText {
-    min-height: 40px;
-    padding: 0 13px;
-    font-size: 0.82rem;
+    align-items: center;
+    padding: 92px 0 32px;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .deckIntro h2 {
-    margin: 24px 16px 44px;
+    margin: 24px 16px 34px;
     font-size: clamp(1.85rem, 8.2cqw, 2.6rem);
     white-space: normal;
   }
 
   .deck {
-    width: 118%;
-    margin-left: -9%;
+    position: relative;
+    width: 100%;
+    height: min(142vw, 620px);
+    min-height: min(142vw, 620px);
+    align-items: flex-start;
+    margin: 0;
+    touch-action: pan-y;
   }
 
   .previewCardSlot {
-    width: min(42cqw, 215px);
-    min-width: 145px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(calc(100vw - 36px), 410px);
+    min-width: 0;
+    margin: 0;
+    transform-origin: 50% 18%;
+    transition:
+      translate 260ms cubic-bezier(0.22, 0.8, 0.24, 1),
+      scale 260ms cubic-bezier(0.22, 0.8, 0.24, 1),
+      rotate 260ms cubic-bezier(0.22, 0.8, 0.24, 1);
   }
 
   .previewCardSlot + .previewCardSlot {
-    margin-left: -6cqw;
+    margin-left: 0;
+  }
+
+  .previewCardSlot[data-stack-position="front"] {
+    z-index: 3;
+    translate: -50% 0;
+    scale: 1;
+    rotate: 0deg;
+  }
+
+  .previewCardSlot[data-stack-position="middle"] {
+    z-index: 2;
+    translate: -50% 13px;
+    scale: 0.965;
+    rotate: 1.8deg;
+    pointer-events: none;
+  }
+
+  .previewCardSlot[data-stack-position="back"] {
+    z-index: 1;
+    translate: -50% 26px;
+    scale: 0.93;
+    rotate: -1.8deg;
+    pointer-events: none;
+  }
+
+  .previewCardProjection {
+    rotate: 0deg;
+    translate: 0;
   }
 
   .previewCard {
     min-width: 0;
-    padding: 18px 17px;
-    border-radius: 22px;
+    padding: clamp(23px, 7cqw, 30px);
+    border-radius: clamp(25px, 7cqw, 32px);
   }
 
   .cardDifficulty {
@@ -1989,25 +2077,31 @@
 
   .previewTitle,
   .activeTitle {
-    margin-top: 18px;
-    font-size: clamp(1rem, 13.2cqw, 2.5rem);
+    margin-top: 24px;
+    font-size: clamp(2rem, 13.2cqw, 3.35rem);
   }
 
   .activeTitle {
     margin-top: 24px;
+    font-size: clamp(1.85rem, 10.5cqw, 3rem);
   }
 
-  .supportNote {
-    bottom: 18px;
-    left: 18px;
-    font-size: 0.78rem;
+  .aboutContent {
+    padding: 34px 24px 26px;
   }
 
   .floatingDrawer[data-direction="bottom"] {
     right: 12px;
-    bottom: 12px;
+    bottom: 0;
     left: 12px;
-    height: min(78svh, 720px);
+    height: calc(min(78svh, 720px) + 12px);
+    padding-right: 0;
+    padding-bottom: 12px;
+    padding-left: 0;
+  }
+
+  .floatingDrawer[data-direction="bottom"] > .aboutContent,
+  .floatingDrawer[data-direction="bottom"] > .historyScreen {
     border-radius: 24px;
   }
 
@@ -2019,10 +2113,6 @@
 @media (max-height: 700px) and (min-width: 821px) {
   .previewState {
     padding-top: 84px;
-  }
-
-  .deckIntro .completionText {
-    min-height: 38px;
   }
 
   .deckIntro h2 {

@@ -29,7 +29,6 @@ export function App() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [introComplete, setIntroComplete] = useState(reduceMotion);
   const desktop = useDesktopSheet();
-  const completedQuestCount = completedTasks.length;
 
   useEffect(() => {
     if (!toast) return;
@@ -58,20 +57,26 @@ export function App() {
 
   return (
     <div className={styles.app}>
-      <a className={styles.skipLink} href="#main-content">Skip to content</a>
+      <a className={styles.skipLink} href="#main-content">
+        Skip to content
+      </a>
 
       <header className={styles.topNavigation} aria-label="Main navigation">
         <motion.div
           className={styles.navActionSlot}
           initial={reduceMotion ? false : { opacity: 0, y: -14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={reduceMotion ? { duration: 0 } : {
-            type: "spring",
-            stiffness: 280,
-            damping: 24,
-            mass: 0.75,
-            delay: 0.04,
-          }}
+          transition={
+            reduceMotion
+              ? { duration: 0 }
+              : {
+                  type: "spring",
+                  stiffness: 280,
+                  damping: 24,
+                  mass: 0.75,
+                  delay: 0.04,
+                }
+          }
         >
           <Drawer.Root
             direction={desktop ? "left" : "bottom"}
@@ -80,8 +85,12 @@ export function App() {
             shouldScaleBackground={false}
           >
             <Drawer.Trigger asChild>
-              <button className={styles.navAction} type="button">
-                How does it work?
+              <button
+                className={styles.navAction}
+                data-active={aboutOpen || undefined}
+                type="button"
+              >
+                About
               </button>
             </Drawer.Trigger>
             <Drawer.Portal>
@@ -90,7 +99,9 @@ export function App() {
                 className={`${styles.floatingDrawer} ${styles.aboutDrawer}`}
                 data-direction={desktop ? "left" : "bottom"}
               >
-                {!desktop && <div className={styles.drawerHandle} aria-hidden="true" />}
+                {!desktop && (
+                  <div className={styles.drawerHandle} aria-hidden="true" />
+                )}
                 <AboutSidequest />
               </Drawer.Content>
             </Drawer.Portal>
@@ -105,13 +116,17 @@ export function App() {
           className={styles.navActionSlot}
           initial={reduceMotion ? false : { opacity: 0, y: -14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={reduceMotion ? { duration: 0 } : {
-            type: "spring",
-            stiffness: 280,
-            damping: 24,
-            mass: 0.75,
-            delay: 0.1,
-          }}
+          transition={
+            reduceMotion
+              ? { duration: 0 }
+              : {
+                  type: "spring",
+                  stiffness: 280,
+                  damping: 24,
+                  mass: 0.75,
+                  delay: 0.1,
+                }
+          }
         >
           <Drawer.Root
             direction={desktop ? "right" : "bottom"}
@@ -120,7 +135,11 @@ export function App() {
             shouldScaleBackground={false}
           >
             <Drawer.Trigger asChild>
-              <button className={styles.navAction} type="button">
+              <button
+                className={styles.navAction}
+                data-active={historyOpen || undefined}
+                type="button"
+              >
                 History
               </button>
             </Drawer.Trigger>
@@ -130,11 +149,15 @@ export function App() {
                 className={`${styles.floatingDrawer} ${styles.historyDrawer}`}
                 data-direction={desktop ? "right" : "bottom"}
               >
-                <Drawer.Title className={styles.srOnly}>Quest history</Drawer.Title>
+                <Drawer.Title className={styles.srOnly}>
+                  Quest history
+                </Drawer.Title>
                 <Drawer.Description className={styles.srOnly}>
                   Completed sidequests with games and completion times.
                 </Drawer.Description>
-                {!desktop && <div className={styles.drawerHandle} aria-hidden="true" />}
+                {!desktop && (
+                  <div className={styles.drawerHandle} aria-hidden="true" />
+                )}
                 <HistoryScreen
                   completedTasks={completedTasks}
                   reduceMotion={reduceMotion}
@@ -150,8 +173,6 @@ export function App() {
         <TaskScreen
           activeTask={activeTask}
           offeredTasks={offeredTasks}
-          completedQuestCount={completedQuestCount}
-          totalQuestCount={TASKS.length}
           animateEntrance={!introComplete}
           reduceMotion={reduceMotion}
           onSelect={selectTask}
@@ -173,7 +194,9 @@ export function App() {
               role="status"
               aria-label={`Completed ${toast.title} for ${toast.points} points`}
             >
-              <span aria-hidden="true"><CheckIcon /></span>
+              <span aria-hidden="true">
+                <CheckIcon />
+              </span>
               <strong>Complete · +{toast.points} points</strong>
             </motion.div>
           )}
@@ -186,32 +209,62 @@ export function App() {
 function AboutSidequest() {
   return (
     <section className={styles.aboutContent} aria-labelledby="about-title">
-      <Drawer.Title asChild>
-        <h2 id="about-title">How it works</h2>
-      </Drawer.Title>
-      <Drawer.Description>
-        Choose a sidequest and turn any gaming session into a small adventure.
-      </Drawer.Description>
-      <ol className={styles.aboutSteps}>
-        <li>
-          <span>1</span>
-          <div><strong>Choose a quest</strong><p>Pick an easy, medium, or hard sidequest.</p></div>
-        </li>
-        <li>
-          <span>2</span>
-          <div><strong>Start the timer</strong><p>Play until you complete the objective.</p></div>
-        </li>
-        <li>
-          <span>3</span>
-          <div><strong>Save your result</strong><p>Add the game you played. Every repeat stays grouped under the same quest.</p></div>
-        </li>
-      </ol>
+      <header className={styles.aboutIntro}>
+        <Drawer.Title asChild>
+          <h2 id="about-title">
+            Too many games installed and no idea what to play?
+          </h2>
+        </Drawer.Title>
+        {/* <Drawer.Description>
+          Then you&apos;re in the right place.
+        </Drawer.Description> */}
+      </header>
+
+      <div className={styles.aboutBody}>
+        <section className={styles.aboutSection}>
+          <h3>Start a quest, choose a game</h3>
+          <ol className={styles.aboutSteps}>
+            <li>Choose a difficulty for your next sidequest.</li>
+            <li>Complete the objective in any game you like.</li>
+            <li>
+              Stop the timer, enter the title of the game you completed the
+              quest in
+            </li>
+            <li>Pick a new sidequest</li>
+          </ol>
+        </section>
+
+        <section className={styles.aboutSection}>
+          <h3>Already completed the quest?</h3>
+          <p>
+            Choose a different game for the sidequest or try to beat your own
+            record.
+          </p>
+          <p>
+            How difficult a quest becomes also depends on the game you choose.
+          </p>
+        </section>
+
+        <section className={styles.aboutSection}>
+          <h3>Don&apos;t like the quest?</h3>
+          <p>Cut the red rope to cancel the quest and pick a new one.</p>
+        </section>
+      </div>
+
+      <footer className={styles.aboutCredit}>
+        Made by{" "}
+        <a href="https://eduardlotz.de" rel="noreferrer" target="_blank">
+          Eduard Lotz
+        </a>
+      </footer>
     </section>
   );
 }
 
 function useDesktopSheet() {
-  const [desktop, setDesktop] = useState(() => window.matchMedia("(min-width: 821px)").matches);
+  const [desktop, setDesktop] = useState(
+    () => window.matchMedia("(min-width: 821px)").matches,
+  );
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 821px)");

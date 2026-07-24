@@ -1,5 +1,5 @@
 import { arc, motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { TaskDefinition } from "../data/tasks";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import { DifficultyDots } from "./DifficultyDots";
@@ -7,8 +7,6 @@ import styles from "../App.module.css";
 
 type Props = {
   tasks: TaskDefinition[];
-  completedQuestCount: number;
-  totalQuestCount: number;
   animateEntrance: boolean;
   reduceMotion: boolean;
   onSelect: (taskId: string) => void;
@@ -17,10 +15,14 @@ type Props = {
 type CardProps = {
   task: TaskDefinition;
   index: number;
+  isMobile: boolean;
+  isTopCard: boolean;
+  stackPosition: "front" | "middle" | "back";
   reduceMotion: boolean;
   selected: boolean;
   selectionStarted: boolean;
   animateEntrance: boolean;
+  onCycle: (direction: -1 | 1, focusNext?: boolean) => void;
   onSelect: (taskId: string) => void;
 };
 
@@ -33,18 +35,15 @@ const selectionArc = arc({
 
 export function TaskPreviewDeck({
   tasks,
-  completedQuestCount,
-  totalQuestCount,
   animateEntrance,
   reduceMotion,
   onSelect,
 }: Props) {
   const [shouldAnimateEntrance] = useState(animateEntrance);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
-  const completedPercentage =
-    totalQuestCount > 0
-      ? Math.round((completedQuestCount / totalQuestCount) * 100)
-      : 0;
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const deckRef = useRef<HTMLDivElement>(null);
+  const isMobile = useMobileLayout();
 
   function selectCard(taskId: string) {
     if (selectedTaskId) return;
@@ -52,45 +51,25 @@ export function TaskPreviewDeck({
     window.requestAnimationFrame(() => onSelect(taskId));
   }
 
+  function cycleCard(direction: -1 | 1, focusNext = false) {
+    if (selectedTaskId || tasks.length < 2) return;
+    setActiveCardIndex(
+      (current) => (current + direction + tasks.length) % tasks.length,
+    );
+    if (focusNext) {
+      window.requestAnimationFrame(() => {
+        deckRef.current
+          ?.querySelector<HTMLButtonElement>(
+            '[data-stack-position="front"] button',
+          )
+          ?.focus();
+      });
+    }
+  }
+
   return (
     <div className={styles.previewState}>
       <header className={styles.deckIntro}>
-        <motion.p
-          className={styles.completionText}
-          initial={
-            reduceMotion || !shouldAnimateEntrance
-              ? false
-              : { opacity: 0, y: -10 }
-          }
-          animate={{ opacity: 1, y: 0 }}
-          exit={
-            reduceMotion
-              ? { opacity: 0 }
-              : {
-                  opacity: 0,
-                  y: -8,
-                  transition: { duration: 0.13, ease: [0.4, 0, 1, 1] },
-                }
-          }
-          transition={
-            reduceMotion
-              ? { duration: 0 }
-              : {
-                  type: "spring",
-                  stiffness: 270,
-                  damping: 24,
-                  mass: 0.72,
-                  delay: shouldAnimateEntrance ? 0.12 : 0,
-                }
-          }
-        >
-          <span>You&apos;ve completed</span>
-          <strong>{completedPercentage}%</strong>
-          <span>of all</span>
-          <span>
-            <strong>sidequests</strong>.
-          </span>
-        </motion.p>
         <motion.h2
           initial={
             reduceMotion || !shouldAnimateEntrance
@@ -126,38 +105,48 @@ export function TaskPreviewDeck({
           Choose your next sidequest
         </motion.h2>
       </header>
-      <div className={styles.deck} aria-label="Quest choices">
-        {tasks.map((task, index) => (
-          <div
-            className={styles.previewCardSlot}
-            data-position={
-              index === 0 ? "left" : index === 2 ? "right" : "center"
-            }
-            key={task.id}
-          >
-            <PreviewTaskCard
-              task={task}
-              index={index}
-              reduceMotion={reduceMotion}
-              selected={selectedTaskId === task.id}
-              selectionStarted={selectedTaskId !== null}
-              animateEntrance={shouldAnimateEntrance}
-              onSelect={selectCard}
-            />
-          </div>
-        ))}
+      <div className={styles.deck} aria-label="Quest choices" ref={deckRef}>
+        {tasks.map((task, index) => {
+          const stackOffset =
+            (index - activeCardIndex + tasks.length) % tasks.length;
+          const stackPosition =
+            stackOffset === 0
+              ? "front"
+              : stackOffset === 1
+                ? "middle"
+                : "back";
+
+          return (
+            <div
+              className={styles.previewCardSlot}
+              data-position={
+                index === 0 ? "left" : index === 2 ? "right" : "center"
+              }
+              data-stack-position={stackPosition}
+              key={task.id}
+            >
+              <PreviewTaskCard
+                task={task}
+                index={index}
+                isMobile={isMobile}
+                isTopCard={stackOffset === 0}
+                stackPosition={stackPosition}
+                reduceMotion={reduceMotion}
+                selected={selectedTaskId === task.id}
+                selectionStarted={selectedTaskId !== null}
+                animateEntrance={shouldAnimateEntrance}
+                onCycle={cycleCard}
+                onSelect={selectCard}
+              />
+            </div>
+          );
+        })}
+        <span className={styles.srOnly} aria-live="polite">
+          {isMobile && tasks[activeCardIndex]
+            ? `Card ${activeCardIndex + 1} of ${tasks.length}: ${tasks[activeCardIndex].title}`
+            : ""}
+        </span>
       </div>
-      <motion.span
-        className={styles.supportNote}
-        initial={
-          reduceMotion || !shouldAnimateEntrance ? false : { opacity: 0 }
-        }
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: reduceMotion ? 0 : 0.14 }}
-      >
-        Support the project
-      </motion.span>
     </div>
   );
 }
@@ -165,15 +154,20 @@ export function TaskPreviewDeck({
 function PreviewTaskCard({
   task,
   index,
+  isMobile,
+  isTopCard,
+  stackPosition,
   reduceMotion,
   selected,
   selectionStarted,
   animateEntrance,
+  onCycle,
   onSelect,
 }: CardProps) {
   const [entranceComplete, setEntranceComplete] = useState(
     reduceMotion || !animateEntrance,
   );
+  const suppressClickRef = useRef(false);
   const {
     handlePointerEnter,
     handlePointerLeave,
@@ -182,17 +176,45 @@ function PreviewTaskCard({
     rotateY,
   } = useTiltEffect({
     maxTilt: 18,
-    reduceMotion: reduceMotion || selectionStarted,
+    reduceMotion: reduceMotion || selectionStarted || isMobile,
   });
 
   return (
     <motion.div
       className={styles.previewCardProjection}
       data-position={index === 0 ? "left" : index === 2 ? "right" : "center"}
+      data-stack-position={stackPosition}
       key={task.id}
       layoutId={`task-card-${task.id}`}
       layoutCrossfade={false}
-      style={{ rotate: cardRotations[index] ?? 0 }}
+      drag={isMobile && isTopCard && !selectionStarted ? "x" : false}
+      dragConstraints={{ left: 0, right: 0 }}
+      dragDirectionLock
+      dragElastic={0.34}
+      dragMomentum={false}
+      onPointerDown={() => {
+        suppressClickRef.current = false;
+      }}
+      onDrag={(_, info) => {
+        if (Math.abs(info.offset.x) > 8) suppressClickRef.current = true;
+      }}
+      onDragEnd={(_, info) => {
+        const direction =
+          info.offset.x < -64 || info.velocity.x < -500
+            ? 1
+            : info.offset.x > 64 || info.velocity.x > 500
+              ? -1
+              : 0;
+        if (direction) onCycle(direction);
+        window.setTimeout(() => {
+          suppressClickRef.current = false;
+        }, 0);
+      }}
+      style={
+        {
+          "--card-rotation": `${cardRotations[index] ?? 0}deg`,
+        } as CSSProperties
+      }
       initial={
         reduceMotion || !animateEntrance
           ? false
@@ -205,7 +227,7 @@ function PreviewTaskCard({
       animate={{
         opacity: selectionStarted && !selected ? 0.35 : 1,
         x: 0,
-        y: index === 1 ? -12 : 8,
+        y: 0,
         scale: selected ? 1.035 : 1,
       }}
       exit={
@@ -246,7 +268,18 @@ function PreviewTaskCard({
         className={styles.previewCardHitArea}
         data-selected={selected || undefined}
         type="button"
-        onClick={() => onSelect(task.id)}
+        tabIndex={isMobile && !isTopCard ? -1 : undefined}
+        onClick={() => {
+          if (suppressClickRef.current || (isMobile && !isTopCard)) return;
+          onSelect(task.id);
+        }}
+        onKeyDown={(event) => {
+          if (!isMobile || !isTopCard) return;
+          if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+            event.preventDefault();
+            onCycle(event.key === "ArrowRight" ? 1 : -1, true);
+          }
+        }}
         onPointerEnter={handlePointerEnter}
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
@@ -287,4 +320,22 @@ function difficultyLabel(value: string) {
   if (value === "easy") return "Easy";
   if (value === "medium") return "Medium";
   return "Hard";
+}
+
+function useMobileLayout() {
+  const [isMobile, setIsMobile] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 820px)").matches,
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 820px)");
+    const update = () => setIsMobile(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, []);
+
+  return isMobile;
 }

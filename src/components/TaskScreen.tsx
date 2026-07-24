@@ -9,8 +9,6 @@ import styles from "../App.module.css";
 type Props = {
   activeTask: HydratedActiveTask | null;
   offeredTasks: TaskDefinition[];
-  completedQuestCount: number;
-  totalQuestCount: number;
   animateEntrance: boolean;
   reduceMotion: boolean;
   onSelect: (taskId: string) => void;
@@ -21,8 +19,6 @@ type Props = {
 export function TaskScreen({
   activeTask,
   offeredTasks,
-  completedQuestCount,
-  totalQuestCount,
   animateEntrance,
   reduceMotion,
   onSelect,
@@ -94,8 +90,6 @@ export function TaskScreen({
             >
               <TaskPreviewDeck
                 tasks={offeredTasks}
-                completedQuestCount={completedQuestCount}
-                totalQuestCount={totalQuestCount}
                 animateEntrance={animateEntrance}
                 reduceMotion={reduceMotion}
                 onSelect={onSelect}
