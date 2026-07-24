@@ -12,9 +12,12 @@ type Props = {
   offeredTasks: TaskDefinition[];
   animateEntrance: boolean;
   reduceMotion: boolean;
+  shuffling: boolean;
   onSelect: (taskId: string) => void;
-  onShuffle: () => void;
+  onShuffleAnimationComplete: () => void;
   onReplace: () => void;
+  onPause: (pausedAt: number) => void;
+  onResume: (resumedAt: number) => void;
   onComplete: (durationMs: number, gameTitle: string) => void;
 };
 
@@ -23,9 +26,12 @@ export function TaskScreen({
   offeredTasks,
   animateEntrance,
   reduceMotion,
+  shuffling,
   onSelect,
-  onShuffle,
+  onShuffleAnimationComplete,
   onReplace,
+  onPause,
+  onResume,
   onComplete,
 }: Props) {
   const isActive = Boolean(activeTask);
@@ -79,6 +85,8 @@ export function TaskScreen({
                 item={activeTask}
                 reduceMotion={reduceMotion}
                 onReplace={onReplace}
+                onPause={onPause}
+                onResume={onResume}
                 onComplete={onComplete}
               />
             </motion.div>
@@ -103,8 +111,9 @@ export function TaskScreen({
                 tasks={offeredTasks}
                 animateEntrance={animateEntrance}
                 reduceMotion={reduceMotion}
+                shuffling={shuffling}
                 onSelect={onSelect}
-                onShuffle={onShuffle}
+                onShuffleAnimationComplete={onShuffleAnimationComplete}
               />
             </motion.div>
           )}

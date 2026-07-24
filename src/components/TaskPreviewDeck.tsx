@@ -3,15 +3,15 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { TaskDefinition } from "../data/tasks";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import { DifficultyDots } from "./DifficultyDots";
-import { ShuffleIcon } from "./Icons";
 import styles from "../App.module.css";
 
 type Props = {
   tasks: TaskDefinition[];
   animateEntrance: boolean;
   reduceMotion: boolean;
+  shuffling: boolean;
   onSelect: (taskId: string) => void;
-  onShuffle: () => void;
+  onShuffleAnimationComplete: () => void;
 };
 
 type CardProps = {
@@ -39,21 +39,20 @@ export function TaskPreviewDeck({
   tasks,
   animateEntrance,
   reduceMotion,
+  shuffling,
   onSelect,
-  onShuffle,
+  onShuffleAnimationComplete,
 }: Props) {
   const taskSetKey = tasks.map((task) => task.id).join("-");
   const [shouldAnimateEntrance] = useState(animateEntrance);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
-  const [shuffling, setShuffling] = useState(false);
   const deckRef = useRef<HTMLDivElement>(null);
   const isMobile = useMobileLayout();
 
   useEffect(() => {
     setSelectedTaskId(null);
     setActiveCardIndex(0);
-    setShuffling(false);
   }, [taskSetKey]);
 
   function selectCard(taskId: string) {
@@ -76,15 +75,6 @@ export function TaskPreviewDeck({
           ?.focus();
       });
     }
-  }
-
-  function shuffleCards() {
-    if (selectedTaskId || shuffling) return;
-    if (reduceMotion) {
-      onShuffle();
-      return;
-    }
-    setShuffling(true);
   }
 
   return (
@@ -136,7 +126,7 @@ export function TaskPreviewDeck({
         }
         transition={{ duration: 0.18, ease: "easeIn" }}
         onAnimationComplete={() => {
-          if (shuffling) onShuffle();
+          if (shuffling) onShuffleAnimationComplete();
         }}
       >
         {tasks.map((task, index) => {
@@ -180,23 +170,6 @@ export function TaskPreviewDeck({
             : ""}
         </span>
       </motion.div>
-      <motion.button
-        className={styles.shuffleButton}
-        type="button"
-        aria-label="Shuffle quest choices"
-        title="Shuffle quest choices"
-        disabled={Boolean(selectedTaskId) || shuffling}
-        onClick={shuffleCards}
-        whileHover={reduceMotion ? undefined : { scale: 1.06 }}
-        whileTap={reduceMotion ? undefined : { scale: 0.94 }}
-      >
-        <motion.span
-          animate={shuffling ? { rotate: 180 } : { rotate: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.18, ease: "easeInOut" }}
-        >
-          <ShuffleIcon />
-        </motion.span>
-      </motion.button>
     </div>
   );
 }

@@ -22,6 +22,8 @@ export function App() {
     selectTask,
     shuffleTasks,
     replaceTask,
+    pauseTask,
+    resumeTask,
     completeTask,
   } = useTaskRun();
   const reduceMotion = Boolean(useReducedMotion());
@@ -29,6 +31,8 @@ export function App() {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [introComplete, setIntroComplete] = useState(reduceMotion);
+  const [shuffling, setShuffling] = useState(false);
+  const [brandRotation, setBrandRotation] = useState(0);
   const desktop = useDesktopSheet();
 
   useEffect(() => {
@@ -54,6 +58,22 @@ export function App() {
       points: activeTask.task.points,
     });
     completeTask(durationMs, gameTitle);
+  }
+
+  function handleShuffle() {
+    if (activeTask || shuffling) return;
+    setBrandRotation((rotation) => rotation + 360);
+    if (reduceMotion) {
+      shuffleTasks();
+      return;
+    }
+    setShuffling(true);
+  }
+
+  function handleShuffleAnimationComplete() {
+    if (!shuffling) return;
+    shuffleTasks();
+    setShuffling(false);
   }
 
   return (
@@ -109,9 +129,30 @@ export function App() {
           </Drawer.Root>
         </motion.div>
 
-        <span className={styles.brandMark} aria-hidden="true">
-          <img src={`${import.meta.env.BASE_URL}sidequest-mark.svg`} alt="" />
-        </span>
+        <button
+          className={styles.brandMark}
+          type="button"
+          aria-label="Shuffle quest choices"
+          title="Shuffle quest choices"
+          disabled={Boolean(activeTask) || shuffling}
+          onClick={handleShuffle}
+        >
+          <motion.img
+            src={`${import.meta.env.BASE_URL}sidequest-mark.svg`}
+            alt=""
+            animate={{ rotate: brandRotation }}
+            transition={
+              reduceMotion
+                ? { duration: 0 }
+                : {
+                    type: "spring",
+                    stiffness: 190,
+                    damping: 18,
+                    mass: 0.72,
+                  }
+            }
+          />
+        </button>
 
         <motion.div
           className={styles.navActionSlot}
@@ -176,9 +217,12 @@ export function App() {
           offeredTasks={offeredTasks}
           animateEntrance={!introComplete}
           reduceMotion={reduceMotion}
+          shuffling={shuffling}
           onSelect={selectTask}
-          onShuffle={shuffleTasks}
+          onShuffleAnimationComplete={handleShuffleAnimationComplete}
           onReplace={replaceTask}
+          onPause={pauseTask}
+          onResume={resumeTask}
           onComplete={handleComplete}
         />
       </main>

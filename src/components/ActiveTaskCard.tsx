@@ -39,6 +39,8 @@ type Props = {
   item: HydratedActiveTask;
   reduceMotion: boolean;
   onReplace: () => void;
+  onPause: (pausedAt: number) => void;
+  onResume: (resumedAt: number) => void;
   onComplete: (durationMs: number, gameTitle: string) => void;
 };
 
@@ -50,6 +52,10 @@ const GAME_TITLE_MAX_LENGTH = 36;
 const COMPLETION_FLIP_DURATION_MS = 740;
 const COMPLETION_FACE_REVEAL_MS = 340;
 const COMPLETION_HOLD_DURATION_MS = 1500;
+const CUT_TRAIL_CLEAR_DELAY_MS = 210;
+const CUT_TRAIL_FADE_DURATION_MS = 60;
+const CUT_TRAIL_MAX_WIDTH_PX = 10;
+const CUT_TRAIL_WIDTH_PEAK = 0.75;
 
 const pausePanelVariants: Variants = {
   hidden: { opacity: 0 },
@@ -95,23 +101,32 @@ export function ActiveTaskCard({
   item,
   reduceMotion,
   onReplace,
+  onPause,
+  onResume,
   onComplete,
 }: Props) {
   const { task, assignment } = item;
-  const [phase, setPhase] = useState<Phase>("running");
-  const [ropeMode, setRopeMode] = useState<RopeMode>("running");
+  const initiallyPaused = assignment.pausedAt !== null;
+  const [phase, setPhase] = useState<Phase>(
+    initiallyPaused ? "paused" : "running",
+  );
+  const [ropeMode, setRopeMode] = useState<RopeMode>(
+    initiallyPaused ? "paused" : "running",
+  );
   const [timerSettling, setTimerSettling] = useState(false);
   const [cut, setCut] = useState<RopeCut | null>(null);
   const [gameTitle, setGameTitle] = useState("");
   const [savedGameTitle, setSavedGameTitle] = useState("");
   const [showFinishedFace, setShowFinishedFace] = useState(false);
   const [completionOffset, setCompletionOffset] = useState<Point>({ x: 0, y: 0 });
-  const [elapsedMs, setElapsedMs] = useState(
-    () => Date.now() - assignment.startedAt,
+  const [elapsedMs, setElapsedMs] = useState(() =>
+    elapsedForAssignment(assignment, Date.now()),
   );
   const [cutTrail, setCutTrail] = useState<Point[] | null>(null);
   const dropOnStartRef = useRef(
-    !reduceMotion && Date.now() - assignment.startedAt < 2500,
+    !initiallyPaused &&
+      !reduceMotion &&
+      Date.now() - assignment.startedAt < 2500,
   );
   const initialTimerOffsetRef = useRef<RopePoint>(
     initialTimerDropOffset(dropOnStartRef.current),
@@ -134,8 +149,8 @@ export function ActiveTaskCard({
   const timerAnimationRef = useRef<Array<{ stop: () => void }>>([]);
   const timerAnimationSequenceRef = useRef(0);
   const resumePendingRef = useRef(false);
-  const pausedAtRef = useRef<number | null>(null);
-  const pausedTotalRef = useRef(0);
+  const pausedAtRef = useRef<number | null>(assignment.pausedAt);
+  const pausedTotalRef = useRef(assignment.pausedTotalMs);
   const cutGestureRef = useRef(false);
   const exitStartedRef = useRef(false);
   const lastCutPointRef = useRef<Point | null>(null);
@@ -164,7 +179,8 @@ export function ActiveTaskCard({
 
   const readElapsed = useCallback(() => {
     const now = Date.now();
-    const openPause = pausedAtRef.current ? now - pausedAtRef.current : 0;
+    const openPause =
+      pausedAtRef.current === null ? 0 : now - pausedAtRef.current;
     return Math.max(
       0,
       now - assignment.startedAt - pausedTotalRef.current - openPause,
@@ -290,7 +306,9 @@ export function ActiveTaskCard({
 
   function pause() {
     if (pausedAtRef.current !== null || phase !== "running") return;
-    pausedAtRef.current = Date.now();
+    const pausedAt = Date.now();
+    pausedAtRef.current = pausedAt;
+    onPause(pausedAt);
     setElapsedMs(readElapsed());
     setRopeMode("paused");
     setPhase("paused");
@@ -300,8 +318,10 @@ export function ActiveTaskCard({
     if (!resumePendingRef.current) return;
     resumePendingRef.current = false;
     if (pausedAtRef.current !== null) {
-      pausedTotalRef.current += Date.now() - pausedAtRef.current;
+      const resumedAt = Date.now();
+      pausedTotalRef.current += resumedAt - pausedAtRef.current;
       pausedAtRef.current = null;
+      onResume(resumedAt);
     }
     const offset = { x: pose.x, y: pose.y };
     x.set(offset.x);
@@ -442,6 +462,10 @@ export function ActiveTaskCard({
       target.closest("[data-timer-drag]")
     )
       return;
+    if (trailClearTimeoutRef.current !== null) {
+      window.clearTimeout(trailClearTimeoutRef.current);
+      trailClearTimeoutRef.current = null;
+    }
     cutGestureRef.current = true;
     const point = pointerInRig(event);
     lastCutPointRef.current = point;
@@ -455,18 +479,18 @@ export function ActiveTaskCard({
     const previous = lastCutPointRef.current;
     lastCutPointRef.current = point;
     setCutTrail((trail) => appendTrailPoint(trail ?? [previous], point));
-    const ropeCut = segmentCutsRope(previous, point, ropePointsRef.current);
+    const ropeCut = exitStartedRef.current
+      ? null
+      : segmentCutsRope(previous, point, ropePointsRef.current);
     if (ropeCut) {
-      cutGestureRef.current = false;
       beginExit("cutting", ropeCut);
-      clearCutTrailAfter(240);
     }
   }
 
   function endCut() {
     cutGestureRef.current = false;
     lastCutPointRef.current = null;
-    clearCutTrailAfter(130);
+    clearCutTrailAfter(CUT_TRAIL_CLEAR_DELAY_MS);
   }
 
   function clearCutTrailAfter(delay: number) {
@@ -716,11 +740,13 @@ export function ActiveTaskCard({
             {cutTrail && cutTrail.length > 1 && (
               <motion.path
                 className={styles.cutTrail}
-                d={cutTrailPath(cutTrail)}
+                d={cutTrailShape(cutTrail)}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: reduceMotion ? 0 : 0.13 }}
+                transition={{
+                  duration: reduceMotion ? 0 : CUT_TRAIL_FADE_DURATION_MS / 1000,
+                }}
               />
             )}
           </AnimatePresence>
@@ -895,21 +921,56 @@ function appendTrailPoint(trail: Point[], point: Point) {
   return [...trail.slice(-31), point];
 }
 
-function cutTrailPath(points: Point[]) {
+function cutTrailShape(points: Point[]) {
   if (points.length < 2) return "";
-  if (points.length === 2) {
-    return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
-  }
 
-  let path = `M ${points[0].x} ${points[0].y}`;
-  for (let index = 1; index < points.length - 1; index += 1) {
+  const distances = [0];
+  for (let index = 1; index < points.length; index += 1) {
+    const previous = points[index - 1];
     const point = points[index];
-    const next = points[index + 1];
-    const midpoint = { x: (point.x + next.x) / 2, y: (point.y + next.y) / 2 };
-    path += ` Q ${point.x} ${point.y} ${midpoint.x} ${midpoint.y}`;
+    distances.push(
+      distances[index - 1] +
+        Math.hypot(point.x - previous.x, point.y - previous.y),
+    );
   }
-  const last = points[points.length - 1];
-  return `${path} L ${last.x} ${last.y}`;
+  const totalDistance = distances[distances.length - 1];
+
+  const edges = points.map((point, index) => {
+    const previous = points[Math.max(0, index - 1)];
+    const next = points[Math.min(points.length - 1, index + 1)];
+    const tangentX = next.x - previous.x;
+    const tangentY = next.y - previous.y;
+    const tangentLength = Math.hypot(tangentX, tangentY) || 1;
+    const progress = totalDistance === 0 ? 1 : distances[index] / totalDistance;
+    const widthProgress =
+      progress <= CUT_TRAIL_WIDTH_PEAK
+        ? progress / CUT_TRAIL_WIDTH_PEAK
+        : (1 - progress) / (1 - CUT_TRAIL_WIDTH_PEAK);
+    const halfWidth = (CUT_TRAIL_MAX_WIDTH_PX / 2) * widthProgress;
+    const normalX = -tangentY / tangentLength;
+    const normalY = tangentX / tangentLength;
+
+    return {
+      left: {
+        x: point.x + normalX * halfWidth,
+        y: point.y + normalY * halfWidth,
+      },
+      right: {
+        x: point.x - normalX * halfWidth,
+        y: point.y - normalY * halfWidth,
+      },
+    };
+  });
+
+  const leftEdge = edges
+    .map(({ left }) => `${left.x.toFixed(2)} ${left.y.toFixed(2)}`)
+    .join(" L ");
+  const rightEdge = [...edges]
+    .reverse()
+    .map(({ right }) => `${right.x.toFixed(2)} ${right.y.toFixed(2)}`)
+    .join(" L ");
+
+  return `M ${leftEdge} L ${rightEdge} Z`;
 }
 
 function segmentCutsRope(
@@ -972,6 +1033,18 @@ function cross(a: Point, b: Point) {
 
 function capitalize(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function elapsedForAssignment(
+  assignment: HydratedActiveTask["assignment"],
+  now: number,
+) {
+  const openPause =
+    assignment.pausedAt === null ? 0 : now - assignment.pausedAt;
+  return Math.max(
+    0,
+    now - assignment.startedAt - assignment.pausedTotalMs - openPause,
+  );
 }
 
 function initialTimerDropOffset(shouldDrop: boolean): RopePoint {

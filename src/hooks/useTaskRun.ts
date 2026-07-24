@@ -15,6 +15,8 @@ export type ActiveTask = {
   assignmentId: string;
   taskId: string;
   startedAt: number;
+  pausedAt: number | null;
+  pausedTotalMs: number;
 };
 
 export type CompletionEntry = {
@@ -61,6 +63,10 @@ function assignmentFrom(value: unknown): ActiveTask | null {
   if (!TASKS_BY_ID.has(value.taskId)) return null;
   const startedAt = finiteNumber(value.startedAt);
   if (startedAt === null) return null;
+  const storedPausedAt = finiteNumber(value.pausedAt);
+  const pausedAt =
+    storedPausedAt === null ? null : Math.max(startedAt, storedPausedAt);
+  const pausedTotalMs = Math.max(0, finiteNumber(value.pausedTotalMs) ?? 0);
 
   return {
     assignmentId:
@@ -69,6 +75,8 @@ function assignmentFrom(value: unknown): ActiveTask | null {
         : crypto.randomUUID(),
     taskId: value.taskId,
     startedAt,
+    pausedAt,
+    pausedTotalMs,
   };
 }
 
@@ -256,6 +264,8 @@ export function useTaskRun() {
         assignmentId: crypto.randomUUID(),
         taskId,
         startedAt: Date.now(),
+        pausedAt: null,
+        pausedTotalMs: 0,
       };
       return {
         ...current,
@@ -276,6 +286,47 @@ export function useTaskRun() {
       if (current.runState.active.length === 0) return current;
       const runState = { ...current.runState, active: [] };
       return { runState, offerIds: createOffers(runState) };
+    });
+  }
+
+  function pauseTask(pausedAt: number) {
+    setModel((current) => {
+      const assignment = current.runState.active[0];
+      if (!assignment || assignment.pausedAt !== null) return current;
+      return {
+        ...current,
+        runState: {
+          ...current.runState,
+          active: [
+            {
+              ...assignment,
+              pausedAt: Math.max(assignment.startedAt, pausedAt),
+            },
+          ],
+        },
+      };
+    });
+  }
+
+  function resumeTask(resumedAt: number) {
+    setModel((current) => {
+      const assignment = current.runState.active[0];
+      if (!assignment || assignment.pausedAt === null) return current;
+      return {
+        ...current,
+        runState: {
+          ...current.runState,
+          active: [
+            {
+              ...assignment,
+              pausedAt: null,
+              pausedTotalMs:
+                assignment.pausedTotalMs +
+                Math.max(0, resumedAt - assignment.pausedAt),
+            },
+          ],
+        },
+      };
     });
   }
 
@@ -344,6 +395,8 @@ export function useTaskRun() {
     selectTask,
     shuffleTasks,
     replaceTask,
+    pauseTask,
+    resumeTask,
     completeTask,
   };
 }
