@@ -1564,6 +1564,47 @@
   perspective: 1400px;
 }
 
+.shuffleButton {
+  position: fixed;
+  bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  z-index: 40;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgb(8 8 10 / 0.07);
+  border-radius: 999px;
+  background: rgb(233 233 241 / 0.94);
+  box-shadow: 0 12px 32px rgb(8 8 10 / 0.12);
+  color: #08080a;
+  cursor: pointer;
+  translate: -50% 0;
+  backdrop-filter: blur(14px);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.shuffleButton span {
+  display: grid;
+  place-items: center;
+}
+
+.shuffleButton svg {
+  width: 21px;
+  height: 21px;
+}
+
+.shuffleButton:focus-visible {
+  outline: 3px solid rgb(8 8 10 / 0.24);
+  outline-offset: 3px;
+}
+
+.shuffleButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .previewCardSlot {
   position: relative;
   width: clamp(260px, 24.2cqw, 310px);

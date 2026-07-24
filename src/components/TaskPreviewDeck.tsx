@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { TaskDefinition } from "../data/tasks";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import { DifficultyDots } from "./DifficultyDots";
+import { ShuffleIcon } from "./Icons";
 import styles from "../App.module.css";
 
 type Props = {
@@ -10,6 +11,7 @@ type Props = {
   animateEntrance: boolean;
   reduceMotion: boolean;
   onSelect: (taskId: string) => void;
+  onShuffle: () => void;
 };
 
 type CardProps = {
@@ -38,12 +40,21 @@ export function TaskPreviewDeck({
   animateEntrance,
   reduceMotion,
   onSelect,
+  onShuffle,
 }: Props) {
+  const taskSetKey = tasks.map((task) => task.id).join("-");
   const [shouldAnimateEntrance] = useState(animateEntrance);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const [shuffling, setShuffling] = useState(false);
   const deckRef = useRef<HTMLDivElement>(null);
   const isMobile = useMobileLayout();
+
+  useEffect(() => {
+    setSelectedTaskId(null);
+    setActiveCardIndex(0);
+    setShuffling(false);
+  }, [taskSetKey]);
 
   function selectCard(taskId: string) {
     if (selectedTaskId) return;
@@ -65,6 +76,15 @@ export function TaskPreviewDeck({
           ?.focus();
       });
     }
+  }
+
+  function shuffleCards() {
+    if (selectedTaskId || shuffling) return;
+    if (reduceMotion) {
+      onShuffle();
+      return;
+    }
+    setShuffling(true);
   }
 
   return (
@@ -105,7 +125,20 @@ export function TaskPreviewDeck({
           Choose your next sidequest
         </motion.h2>
       </header>
-      <div className={styles.deck} aria-label="Quest choices" ref={deckRef}>
+      <motion.div
+        className={styles.deck}
+        aria-label="Quest choices"
+        ref={deckRef}
+        animate={
+          shuffling
+            ? { opacity: 0, y: 20, scale: 0.97 }
+            : { opacity: 1, y: 0, scale: 1 }
+        }
+        transition={{ duration: 0.18, ease: "easeIn" }}
+        onAnimationComplete={() => {
+          if (shuffling) onShuffle();
+        }}
+      >
         {tasks.map((task, index) => {
           const stackOffset =
             (index - activeCardIndex + tasks.length) % tasks.length;
@@ -146,7 +179,24 @@ export function TaskPreviewDeck({
             ? `Card ${activeCardIndex + 1} of ${tasks.length}: ${tasks[activeCardIndex].title}`
             : ""}
         </span>
-      </div>
+      </motion.div>
+      <motion.button
+        className={styles.shuffleButton}
+        type="button"
+        aria-label="Shuffle quest choices"
+        title="Shuffle quest choices"
+        disabled={Boolean(selectedTaskId) || shuffling}
+        onClick={shuffleCards}
+        whileHover={reduceMotion ? undefined : { scale: 1.06 }}
+        whileTap={reduceMotion ? undefined : { scale: 0.94 }}
+      >
+        <motion.span
+          animate={shuffling ? { rotate: 180 } : { rotate: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.18, ease: "easeInOut" }}
+        >
+          <ShuffleIcon />
+        </motion.span>
+      </motion.button>
     </div>
   );
 }

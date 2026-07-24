@@ -20,6 +20,7 @@ export function App() {
     completedTasks,
     offeredTasks,
     selectTask,
+    shuffleTasks,
     replaceTask,
     completeTask,
   } = useTaskRun();
@@ -176,6 +177,7 @@ export function App() {
           animateEntrance={!introComplete}
           reduceMotion={reduceMotion}
           onSelect={selectTask}
+          onShuffle={shuffleTasks}
           onReplace={replaceTask}
           onComplete={handleComplete}
         />

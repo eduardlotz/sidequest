@@ -1,4 +1,5 @@
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
+import { useRef } from "react";
 import { TextMorph } from "torph/react";
 import type { HydratedActiveTask } from "../hooks/useTaskRun";
 import type { TaskDefinition } from "../data/tasks";
@@ -12,6 +13,7 @@ type Props = {
   animateEntrance: boolean;
   reduceMotion: boolean;
   onSelect: (taskId: string) => void;
+  onShuffle: () => void;
   onReplace: () => void;
   onComplete: (durationMs: number, gameTitle: string) => void;
 };
@@ -22,10 +24,19 @@ export function TaskScreen({
   animateEntrance,
   reduceMotion,
   onSelect,
+  onShuffle,
   onReplace,
   onComplete,
 }: Props) {
-  const deckKey = `deck-${offeredTasks.map((task) => task.id).join("-")}`;
+  const isActive = Boolean(activeTask);
+  const wasActiveRef = useRef(isActive);
+  const deckSessionRef = useRef(0);
+  if (wasActiveRef.current && !isActive) {
+    deckSessionRef.current += 1;
+  }
+  wasActiveRef.current = isActive;
+
+  const deckKey = `deck-session-${deckSessionRef.current}`;
   const activeKey = activeTask
     ? `active-${activeTask.assignment.assignmentId}`
     : "active";
@@ -93,6 +104,7 @@ export function TaskScreen({
                 animateEntrance={animateEntrance}
                 reduceMotion={reduceMotion}
                 onSelect={onSelect}
+                onShuffle={onShuffle}
               />
             </motion.div>
           )}

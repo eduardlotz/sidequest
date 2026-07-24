@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
+  DIFFICULTIES,
   TASKS,
   TASKS_BY_ID,
   type TaskDefinition,
@@ -195,9 +196,12 @@ function chooseTask(
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-function createOffers(state: TaskRunState) {
-  const offered = new Set<string>();
-  return (["easy", "medium", "hard"] as const).flatMap((difficulty) => {
+function createOffers(
+  state: TaskRunState,
+  excludedIds: ReadonlySet<string> = new Set(),
+) {
+  const offered = new Set(excludedIds);
+  return DIFFICULTIES.flatMap((difficulty) => {
     const task = chooseTask(state, difficulty, offered);
     if (!task) return [];
     offered.add(task.id);
@@ -275,6 +279,24 @@ export function useTaskRun() {
     });
   }
 
+  function shuffleTasks() {
+    setModel((current) => {
+      if (current.runState.active.length > 0) return current;
+      const excludedIds = new Set(current.offerIds);
+      const runState = {
+        ...current.runState,
+        recentTaskIds: [
+          ...current.runState.recentTaskIds,
+          ...current.offerIds,
+        ].slice(-STORED_RECENT_LIMIT),
+      };
+      return {
+        runState,
+        offerIds: createOffers(runState, excludedIds),
+      };
+    });
+  }
+
   function completeTask(durationOverrideMs: number, gameTitle: string) {
     setModel((current) => {
       const assignment = current.runState.active[0];
@@ -320,6 +342,7 @@ export function useTaskRun() {
     completedTasks,
     offeredTasks,
     selectTask,
+    shuffleTasks,
     replaceTask,
     completeTask,
   };
