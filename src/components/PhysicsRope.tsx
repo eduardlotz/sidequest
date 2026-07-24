@@ -26,11 +26,16 @@ export type RopeCut = {
   swipeX: number;
 };
 
-export type RopeMode = "running" | "paused";
-export type TimerPose = RopePoint & { mode: RopeMode; rotation: number };
+export type RopeMode = "running" | "paused" | "resumePullback";
+export type TimerPose = RopePoint & {
+  mode: RopeMode;
+  rotation: number;
+  velocity: RopePoint;
+};
 export type RopeRelease = {
   mode: RopeMode;
   offset: RopePoint;
+  preserveOffset?: boolean;
   sequence: number;
   velocity: RopePoint;
 };
@@ -58,7 +63,8 @@ type RopeJointRef = ReturnType<typeof useRopeJoint>;
 const ROPE_LINKS = 8;
 const CURVE_POINTS = 36;
 export const RUNNING_TIMER_TOP_RATIO = 0.35;
-export const PAUSED_TIMER_TOP_RATIO = 0.22;
+export const PAUSED_TIMER_TOP_RATIO = 0.17;
+export const RESUME_PULLBACK_TIMER_TOP_RATIO = 0.11;
 
 export function PhysicsRope({
   cut,
@@ -75,10 +81,10 @@ export function PhysicsRope({
   const lowerPathRef = useRef<SVGPathElement>(null);
   const initialRunningOffsetRef = useRef(targetRef.current);
   const hasPausedRef = useRef(false);
-  if (mode === "paused") hasPausedRef.current = true;
+  if (mode !== "running") hasPausedRef.current = true;
   const initialOffset = mode === "running" && !hasPausedRef.current
     ? initialRunningOffsetRef.current
-    : { x: 0, y: 0 };
+    : targetRef.current;
 
   return (
     <div className={styles.ropeCanvas} aria-hidden="true">
@@ -144,10 +150,13 @@ function RopeSimulation({
   const elasticPoints = useRef<THREE.Vector3[]>([]);
   const cutHandled = useRef(false);
   const handledReleaseSequence = useRef(0);
+  const previousEndpointRef = useRef<RopePoint | null>(null);
   const anchorY = viewport.height / 2 + 0.08;
   const timerTopRatio = mode === "paused"
     ? PAUSED_TIMER_TOP_RATIO
-    : RUNNING_TIMER_TOP_RATIO;
+    : mode === "resumePullback"
+      ? RESUME_PULLBACK_TIMER_TOP_RATIO
+      : RUNNING_TIMER_TOP_RATIO;
   const targetY = viewport.height / 2 - viewport.height * timerTopRatio;
   const segmentLength = (anchorY - targetY) * 1.025 / ROPE_LINKS;
   const initialTargetRef = useRef(
@@ -197,10 +206,12 @@ function RopeSimulation({
       const direction = requestedTarget.clone().sub(anchor);
       if (direction.lengthSq() < 0.0001) direction.set(0, -1, 0);
       direction.normalize();
-      const releasedTarget = anchor.clone().addScaledVector(
-        direction,
-        segmentLength * ROPE_LINKS * 0.985,
-      );
+      const releasedTarget = release.preserveOffset
+        ? requestedTarget
+        : anchor.clone().addScaledVector(
+            direction,
+            segmentLength * ROPE_LINKS * 0.985,
+          );
       const tangentialVelocity = new THREE.Vector3(
         release.velocity.x / Math.max(1, size.width) * viewport.width,
         -release.velocity.y / Math.max(1, size.height) * viewport.height,
@@ -331,6 +342,14 @@ function RopeSimulation({
     }
 
     const endpointScreen = worldToScreen(bodyPoint(endpoint), size, viewport);
+    const previousEndpoint = previousEndpointRef.current;
+    const endpointVelocity = previousEndpoint
+      ? {
+          x: (endpointScreen.x - previousEndpoint.x) / Math.max(delta, 1 / 240),
+          y: (endpointScreen.y - previousEndpoint.y) / Math.max(delta, 1 / 240),
+        }
+      : { x: 0, y: 0 };
+    previousEndpointRef.current = endpointScreen;
     onTimerMove({
       x: endpointScreen.x - size.width / 2,
       y: endpointScreen.y - size.height * RUNNING_TIMER_TOP_RATIO,
@@ -339,6 +358,10 @@ function RopeSimulation({
         timerRopePoints,
         dragging ? dragVelocityRef.current.x : 0,
       ),
+      velocity: {
+        x: THREE.MathUtils.clamp(endpointVelocity.x, -1200, 1200),
+        y: THREE.MathUtils.clamp(endpointVelocity.y, -1200, 1200),
+      },
     });
   });
 

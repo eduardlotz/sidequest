@@ -4,6 +4,8 @@ import {
   animate,
   motion,
   type PanInfo,
+  type Variants,
+  useAnimationControls,
   useMotionValue,
   useMotionValueEvent,
   useSpring,
@@ -16,13 +18,14 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import type { HydratedActiveTask } from "../hooks/useTaskRun";
+import { useTiltEffect } from "../hooks/useTiltEffect";
 import { formatRunningDuration } from "../lib/format";
 import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
-import { CheckIcon } from "./Icons";
 import { DifficultyDots } from "./DifficultyDots";
 import {
   PAUSED_TIMER_TOP_RATIO,
   PhysicsRope,
+  RESUME_PULLBACK_TIMER_TOP_RATIO,
   RUNNING_TIMER_TOP_RATIO,
   type RopeCut,
   type RopeMode,
@@ -43,6 +46,44 @@ type Phase = "running" | "paused" | "cutting" | "completed";
 type Point = { x: number; y: number };
 
 const PAUSE_PULL_DISTANCE = 44;
+const GAME_TITLE_MAX_LENGTH = 36;
+const COMPLETION_FLIP_DURATION_MS = 740;
+const COMPLETION_FACE_REVEAL_MS = 340;
+const COMPLETION_HOLD_DURATION_MS = 1500;
+
+const pausePanelVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      delayChildren: 0.035,
+      duration: 0.16,
+      staggerChildren: 0.075,
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      duration: 0.14,
+      staggerChildren: 0.045,
+      staggerDirection: -1,
+    },
+  },
+};
+
+const pausePanelItemVariants: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.18, ease: "easeOut" },
+    y: 0,
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.14, ease: "easeOut" },
+    y: 6,
+  },
+};
 
 const activeCardArc = arc({
   strength: 0.2,
@@ -62,8 +103,9 @@ export function ActiveTaskCard({
   const [timerSettling, setTimerSettling] = useState(false);
   const [cut, setCut] = useState<RopeCut | null>(null);
   const [gameTitle, setGameTitle] = useState("");
-  const [gameTitleFocused, setGameTitleFocused] = useState(false);
   const [savedGameTitle, setSavedGameTitle] = useState("");
+  const [showFinishedFace, setShowFinishedFace] = useState(false);
+  const [completionOffset, setCompletionOffset] = useState<Point>({ x: 0, y: 0 });
   const [elapsedMs, setElapsedMs] = useState(
     () => Date.now() - assignment.startedAt,
   );
@@ -75,6 +117,7 @@ export function ActiveTaskCard({
     initialTimerDropOffset(dropOnStartRef.current),
   );
   const rigRef = useRef<HTMLDivElement>(null);
+  const cardProjectionRef = useRef<HTMLDivElement>(null);
   const ropePointsRef = useRef<RopePoint[]>([]);
   const ropeTargetRef = useRef<RopePoint>(initialTimerOffsetRef.current);
   const timerDraggingRef = useRef(false);
@@ -90,6 +133,7 @@ export function ActiveTaskCard({
   const timerReturnVelocityRef = useRef<RopePoint>({ x: 0, y: 0 });
   const timerAnimationRef = useRef<Array<{ stop: () => void }>>([]);
   const timerAnimationSequenceRef = useRef(0);
+  const resumePendingRef = useRef(false);
   const pausedAtRef = useRef<number | null>(null);
   const pausedTotalRef = useRef(0);
   const cutGestureRef = useRef(false);
@@ -97,6 +141,7 @@ export function ActiveTaskCard({
   const lastCutPointRef = useRef<Point | null>(null);
   const trailClearTimeoutRef = useRef<number | null>(null);
   const exitTimeoutRef = useRef<number | null>(null);
+  const completionRevealTimeoutRef = useRef<number | null>(null);
   const x = useMotionValue(initialTimerOffsetRef.current.x);
   const y = useMotionValue(initialTimerOffsetRef.current.y);
   const timerRotationTarget = useMotionValue(0);
@@ -105,17 +150,16 @@ export function ActiveTaskCard({
     damping: 18,
     mass: 0.72,
   });
-  const tiltXTarget = useMotionValue(0);
-  const tiltYTarget = useMotionValue(0);
-  const tiltX = useSpring(tiltXTarget, {
-    stiffness: 105,
-    damping: 19,
-    mass: 0.86,
-  });
-  const tiltY = useSpring(tiltYTarget, {
-    stiffness: 105,
-    damping: 19,
-    mass: 0.86,
+  const titleInputControls = useAnimationControls();
+  const {
+    handlePointerEnter: handleCardPointerEnter,
+    handlePointerLeave: handleCardPointerLeave,
+    handlePointerMove: handleCardPointerMove,
+    rotateX: cardRotateX,
+    rotateY: cardRotateY,
+  } = useTiltEffect({
+    maxTilt: 16,
+    reduceMotion,
   });
 
   const readElapsed = useCallback(() => {
@@ -153,6 +197,9 @@ export function ActiveTaskCard({
       if (exitTimeoutRef.current !== null) {
         window.clearTimeout(exitTimeoutRef.current);
       }
+      if (completionRevealTimeoutRef.current !== null) {
+        window.clearTimeout(completionRevealTimeoutRef.current);
+      }
       timerAnimationSequenceRef.current += 1;
       timerAnimationRef.current.forEach((control) => control.stop());
     },
@@ -169,11 +216,13 @@ export function ActiveTaskCard({
     mode: RopeMode,
     offset: RopePoint,
     velocity: RopePoint,
+    preserveOffset = false,
   ) {
     ropeReleaseSequenceRef.current += 1;
     ropeReleaseRef.current = {
       mode,
       offset,
+      preserveOffset,
       sequence: ropeReleaseSequenceRef.current,
       velocity,
     };
@@ -247,18 +296,37 @@ export function ActiveTaskCard({
     setPhase("paused");
   }
 
-  function continueTimer() {
-    timerReturningRef.current = false;
-    timerDraggingRef.current = true;
-    ropeReleaseRef.current = null;
-    timerDragVelocityRef.current = { x: 0, y: 0 };
+  function finishResume(pose: TimerPose) {
+    if (!resumePendingRef.current) return;
+    resumePendingRef.current = false;
     if (pausedAtRef.current !== null) {
       pausedTotalRef.current += Date.now() - pausedAtRef.current;
       pausedAtRef.current = null;
     }
+    const offset = { x: pose.x, y: pose.y };
+    x.set(offset.x);
+    y.set(offset.y);
+    ropeTargetRef.current = offset;
+    timerDraggingRef.current = false;
+    timerReturningRef.current = false;
+    setTimerSettling(false);
+    queueRopeRelease("running", offset, pose.velocity, true);
     setRopeMode("running");
     setPhase("running");
-    settleTimerTo({ x: 0, y: 0 }, { x: 0, y: 0 });
+  }
+
+  function shakeTitleInput() {
+    void titleInputControls.start(
+      reduceMotion
+        ? {
+            opacity: [1, 0.58, 1],
+            transition: { duration: 0.18 },
+          }
+        : {
+            x: [0, -6, 5, -4, 3, 0],
+            transition: { duration: 0.28, ease: "easeOut" },
+          },
+    );
   }
 
   function beginExit(next: "cutting" | "completed", ropeCut?: RopeCut) {
@@ -278,14 +346,36 @@ export function ActiveTaskCard({
       setCut(ropeCut ?? null);
     }
     setElapsedMs(duration);
-    if (next === "completed") setSavedGameTitle(resolvedGameTitle);
+    if (next === "completed") {
+      const cardRect = cardProjectionRef.current?.getBoundingClientRect();
+      if (cardRect) {
+        setCompletionOffset({
+          x: window.innerWidth / 2 - (cardRect.left + cardRect.width / 2),
+          y: window.innerHeight / 2 - (cardRect.top + cardRect.height / 2),
+        });
+      }
+      setSavedGameTitle(resolvedGameTitle);
+      setShowFinishedFace(reduceMotion);
+      if (!reduceMotion) {
+        completionRevealTimeoutRef.current = window.setTimeout(() => {
+          setShowFinishedFace(true);
+          completionRevealTimeoutRef.current = null;
+        }, COMPLETION_FACE_REVEAL_MS);
+      }
+    }
     setPhase(next);
     exitTimeoutRef.current = window.setTimeout(
       () => {
         if (next === "completed") onComplete(duration, resolvedGameTitle);
         else onReplace();
       },
-      reduceMotion ? 80 : next === "completed" ? 1700 : 1200,
+      next === "completed"
+        ? (reduceMotion
+            ? COMPLETION_HOLD_DURATION_MS
+            : COMPLETION_FLIP_DURATION_MS + COMPLETION_HOLD_DURATION_MS)
+        : reduceMotion
+          ? 80
+          : 1200,
     );
   }
 
@@ -320,29 +410,23 @@ export function ActiveTaskCard({
     );
     const shouldPause =
       phase === "running" && pullDistance >= PAUSE_PULL_DISTANCE;
-    const destinationMode: RopeMode = shouldPause ? "paused" : ropeMode;
+    const shouldResume =
+      phase === "paused" && pullDistance >= PAUSE_PULL_DISTANCE;
+    const destinationMode: RopeMode = shouldResume
+      ? "resumePullback"
+      : shouldPause
+        ? "paused"
+        : ropeMode;
     const retracted = projectTimerToRope(requested, destinationMode, rigHeight);
 
     if (shouldPause) pause();
+    if (shouldResume) {
+      resumePendingRef.current = true;
+      setRopeMode("resumePullback");
+    }
 
     timerDragVelocityRef.current = info.velocity;
     beginPhysicalReturn(destinationMode, retracted, info.velocity);
-  }
-
-  function tiltActiveCard(event: ReactPointerEvent<HTMLElement>) {
-    const card = event.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const px = (event.clientX - rect.left) / rect.width;
-    const py = (event.clientY - rect.top) / rect.height;
-    tiltXTarget.set((0.5 - py) * 12);
-    tiltYTarget.set((px - 0.5) * 15);
-    card.style.setProperty("--shine-x", `${px * 100}%`);
-    card.style.setProperty("--shine-y", `${py * 100}%`);
-  }
-
-  function resetActiveCardTilt() {
-    tiltXTarget.set(0);
-    tiltYTarget.set(0);
   }
 
   function pointerInRig(event: ReactPointerEvent<HTMLDivElement>): Point {
@@ -411,6 +495,7 @@ export function ActiveTaskCard({
           timerReturningRef.current = false;
           timerDraggingRef.current = false;
           setTimerSettling(false);
+          finishResume(pose);
           return;
         }
 
@@ -443,6 +528,7 @@ export function ActiveTaskCard({
           timerReturningRef.current = false;
           timerDraggingRef.current = false;
           setTimerSettling(false);
+          finishResume(pose);
         }
         return;
       }
@@ -459,12 +545,15 @@ export function ActiveTaskCard({
   const completed = phase === "completed";
 
   return (
-    <div className={styles.activeExperience} data-phase={phase}>
+    <div
+      className={styles.activeExperience}
+      data-phase={phase}
+      data-rope-mode={ropeMode}
+    >
       <div className={styles.activeCardStage} data-difficulty={task.difficulty}>
-        <motion.article
-          className={styles.activeQuestCard}
-          data-difficulty={task.difficulty}
-          data-completed={completed || undefined}
+        <motion.div
+          ref={cardProjectionRef}
+          className={styles.activeCardProjection}
           layoutId={`task-card-${task.id}`}
           layoutCrossfade={false}
           transition={
@@ -482,68 +571,130 @@ export function ActiveTaskCard({
                     mass: 1.08,
                     path: activeCardArc,
                   },
+                  scale: {
+                    duration: COMPLETION_FLIP_DURATION_MS / 1000,
+                    ease: [0.42, 0, 0.18, 1],
+                  },
+                  x: {
+                    duration: 0.62,
+                    ease: [0.22, 0.8, 0.24, 1],
+                  },
+                  y: {
+                    duration: 0.62,
+                    ease: [0.22, 0.8, 0.24, 1],
+                  },
                 }
           }
           initial={false}
-          animate={{ scale: completed ? 1.025 : 1 }}
-          style={{
-            rotate: completed ? -2 : -3.5,
-            rotateX: tiltX,
-            rotateY: tiltY,
-            transformPerspective: 1200,
+          animate={{
+            scale: completed ? 1.025 : 1,
+            x: completed ? completionOffset.x : 0,
+            y: completed ? completionOffset.y : 0,
           }}
-          onPointerMove={reduceMotion ? undefined : tiltActiveCard}
-          onPointerLeave={reduceMotion ? undefined : resetActiveCardTilt}
-          aria-label={`Active ${task.difficulty} quest: ${task.title}`}
+          style={{ rotate: completed ? -2 : -3.5 }}
         >
-          <span className={styles.cardShimmer} aria-hidden="true" />
-          <span className={styles.cardDifficulty}>
-            <DifficultyDots difficulty={task.difficulty} />
-            {capitalize(task.difficulty)}
-          </span>
-          <span className={styles.activeTitle} role="heading" aria-level={2}>
-            {task.title}
-          </span>
-
-          <AnimatePresence mode="wait">
-            {completed ? (
+          <div
+            className={styles.completionFlip}
+            data-flipping={completed && !reduceMotion ? "true" : undefined}
+          >
+            <article
+              className={styles.activeCardHitArea}
+              onPointerEnter={handleCardPointerEnter}
+              onPointerMove={handleCardPointerMove}
+              onPointerLeave={handleCardPointerLeave}
+              onPointerOut={handleCardPointerLeave}
+              aria-label={`Active ${task.difficulty} quest: ${task.title}`}
+            >
               <motion.div
-                className={styles.completionMark}
-                key="complete"
-                initial={
-                  reduceMotion ? false : { opacity: 0, scale: 0.5, rotate: -18 }
-                }
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                transition={{ type: "spring", stiffness: 330, damping: 19 }}
+                className={styles.activeQuestCard}
+                data-difficulty={task.difficulty}
+                data-completed={showFinishedFace || undefined}
+                style={{
+                  rotateX: completed ? 0 : cardRotateX,
+                  rotateY: completed ? 0 : cardRotateY,
+                  transformPerspective: 1000,
+                }}
               >
-                <span className={styles.completionBadge}>
-                  <CheckIcon />
-                  <BayerDither reduceMotion={reduceMotion} />
+                <span className={styles.cardShimmer} aria-hidden="true" />
+                <span className={styles.cardDifficulty}>
+                  <DifficultyDots difficulty={task.difficulty} />
+                  {capitalize(task.difficulty)}
                 </span>
-                <strong>{formatRunningDuration(elapsedMs)}</strong>
-                <small>{savedGameTitle || "Quest complete"}</small>
+                <span className={styles.activeTitle} role="heading" aria-level={2}>
+                  {task.title}
+                </span>
+
+                <AnimatePresence mode="wait">
+                  {showFinishedFace ? (
+                    <motion.div
+                      className={styles.completionMark}
+                      key="complete"
+                      initial={
+                        reduceMotion
+                          ? false
+                          : { opacity: 0, scale: 0.5, rotate: -18 }
+                      }
+                      animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                      transition={{ type: "spring", stiffness: 330, damping: 19 }}
+                    >
+                      {/*
+                        <span
+                          className={styles.completionBadge}
+                          aria-hidden="true"
+                          style={
+                            {
+                              "--completion-icon": `url("${import.meta.env.BASE_URL}completion-check.svg")`,
+                            } as CSSProperties
+                          }
+                        />
+                      */}
+                      <strong>{formatRunningDuration(elapsedMs)}</strong>
+                      <small>{savedGameTitle || "Quest complete"}</small>
+                    </motion.div>
+                  ) : (
+                    <motion.span
+                      className={styles.cardBrand}
+                      key="brand"
+                      aria-hidden="true"
+                    >
+                      <img
+                        src={`${import.meta.env.BASE_URL}sidequest-wordmark.svg`}
+                        alt=""
+                        width="837"
+                        height="550"
+                      />
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </motion.div>
-            ) : (
-              <motion.span
-                className={styles.cardBrand}
-                key="brand"
-                aria-hidden="true"
-              >
-                <img
-                  src={`${import.meta.env.BASE_URL}sidequest-wordmark.svg`}
-                  alt=""
-                  width="837"
-                  height="550"
-                />
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </motion.article>
+            </article>
+            <div
+              className={`${styles.activeQuestCard} ${styles.completionCardBack}`}
+              data-difficulty={task.difficulty}
+              aria-hidden="true"
+            >
+              <span className={styles.completionCardBackPattern}>
+                {Array.from({ length: 35 }, (_, index) => (
+                  <img
+                    src={`${import.meta.env.BASE_URL}sidequest-mark.svg`}
+                    alt=""
+                    width="58"
+                    height="58"
+                    key={index}
+                  />
+                ))}
+              </span>
+            </div>
+          </div>
+        </motion.div>
       </div>
 
-      <div
+      <motion.div
         className={styles.timerRig}
         ref={rigRef}
+        animate={{ opacity: completed ? 0 : 1 }}
+        transition={{ duration: reduceMotion ? 0 : 0.16, ease: "easeOut" }}
+        style={{ pointerEvents: completed ? "none" : "auto" }}
         onPointerDown={startCut}
         onPointerMove={moveCut}
         onPointerUp={endCut}
@@ -578,7 +729,11 @@ export function ActiveTaskCard({
         <motion.div
           className={styles.timerPosition}
           data-timer-drag
-          drag={(phase === "running" || phase === "paused") && !exiting}
+          drag={
+            (phase === "running" || phase === "paused") &&
+            ropeMode !== "resumePullback" &&
+            !exiting
+          }
           dragConstraints={{ left: -190, right: 190, top: -130, bottom: 130 }}
           dragElastic={0.06}
           dragMomentum={false}
@@ -613,6 +768,19 @@ export function ActiveTaskCard({
               reduceMotion={reduceMotion}
             />
           </motion.div>
+          <AnimatePresence>
+            {phase === "paused" && !timerSettling && (
+              <motion.span
+                className={styles.timerStatus}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: reduceMotion ? 0 : 0.12 }}
+              >
+                Paused
+              </motion.span>
+            )}
+          </AnimatePresence>
         </motion.div>
 
         <AnimatePresence>
@@ -623,165 +791,100 @@ export function ActiveTaskCard({
                 event.preventDefault();
                 beginExit("completed");
               }}
-              initial={
-                reduceMotion
-                  ? { opacity: 0 }
-                  : { opacity: 0, y: 14, scale: 0.96 }
-              }
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 8 }}
+              initial={reduceMotion ? false : "hidden"}
+              animate="visible"
+              exit={reduceMotion ? { opacity: 0 } : "exit"}
+              variants={pausePanelVariants}
             >
-              <span>Timer paused</span>
-              <label className={styles.gameTitleField}>
-                <span>Which game did you play?</span>
-                <span className={styles.gameTitleInputWrap}>
-                  <AnimatePresence initial={false}>
-                    {gameTitleFocused && (
-                      <motion.span
-                        aria-hidden="true"
-                        className={styles.gameTitleFocusBackground}
-                        initial={
-                          reduceMotion
-                            ? { opacity: 0 }
-                            : { opacity: 0, scale: 0.94 }
-                        }
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.94 }}
-                        layout
-                        transition={
-                          reduceMotion
-                            ? { duration: 0 }
-                            : {
-                                layout: {
-                                  type: "spring",
-                                  stiffness: 520,
-                                  damping: 34,
-                                  mass: 0.45,
-                                },
-                                opacity: { duration: 0.12 },
-                                scale: {
-                                  duration: 0.14,
-                                  ease: [0.2, 0.8, 0.2, 1],
-                                },
-                              }
-                        }
-                      />
-                    )}
-                  </AnimatePresence>
+              <motion.label
+                className={styles.gameTitleField}
+                variants={pausePanelItemVariants}
+              >
+                <motion.span
+                  animate={titleInputControls}
+                  className={styles.gameTitleInputWrap}
+                >
                   <input
-                    aria-describedby="game-title-count"
+                    aria-label="Game title"
                     autoComplete="off"
-                    maxLength={36}
+                    maxLength={GAME_TITLE_MAX_LENGTH}
                     placeholder="Game title"
                     required
                     size={Math.max(gameTitle.length, "Game title".length, 1)}
                     type="text"
                     value={gameTitle}
-                    onBlur={() => setGameTitleFocused(false)}
                     onChange={(event) => setGameTitle(event.target.value)}
-                    onFocus={() => setGameTitleFocused(true)}
+                    onKeyDown={(event) => {
+                      const selectionLength = Math.max(
+                        0,
+                        (event.currentTarget.selectionEnd ?? 0) -
+                          (event.currentTarget.selectionStart ?? 0),
+                      );
+                      if (
+                        gameTitle.length < GAME_TITLE_MAX_LENGTH ||
+                        selectionLength > 0 ||
+                        event.key.length !== 1 ||
+                        event.nativeEvent.isComposing ||
+                        event.altKey ||
+                        event.ctrlKey ||
+                        event.metaKey
+                      ) {
+                        return;
+                      }
+                      event.preventDefault();
+                      shakeTitleInput();
+                    }}
+                    onPaste={(event) => {
+                      const selectionLength = Math.max(
+                        0,
+                        (event.currentTarget.selectionEnd ?? 0) -
+                          (event.currentTarget.selectionStart ?? 0),
+                      );
+                      const remaining =
+                        GAME_TITLE_MAX_LENGTH -
+                        gameTitle.length +
+                        selectionLength;
+                      if (
+                        event.clipboardData.getData("text").length > remaining
+                      ) {
+                        shakeTitleInput();
+                      }
+                    }}
                   />
-                </span>
-                <small className={styles.gameTitleCount} id="game-title-count">
-                  {gameTitle.length} / 36
-                </small>
-              </label>
-              <div className={styles.pauseActions}>
-                <button
-                  className={styles.saveAction}
-                  type="submit"
-                  disabled={!gameTitle.trim()}
-                >
-                  Save quest
-                </button>
-                <button
-                  className={styles.continueAction}
-                  type="button"
-                  onClick={continueTimer}
-                >
-                  Continue
-                </button>
-              </div>
+                </motion.span>
+              </motion.label>
+              <motion.button
+                className={styles.saveAction}
+                type="submit"
+                disabled={!gameTitle.trim()}
+                variants={pausePanelItemVariants}
+              >
+                Complete quest
+              </motion.button>
             </motion.form>
           )}
         </AnimatePresence>
 
-        {phase === "running" && !timerSettling && (
-          <p className={styles.timerHint}>
-            <strong>Pull the timer to pause.</strong>
-            <span>Swipe through the red rope to cancel.</span>
-          </p>
-        )}
-      </div>
+        <AnimatePresence mode="wait">
+          {!exiting && !timerSettling && (
+            <motion.p
+              className={styles.timerHint}
+              key={phase}
+              initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
+              transition={{ duration: reduceMotion ? 0 : 0.16, ease: "easeOut" }}
+            >
+              <span>
+                Pull the timer to {phase === "paused" ? "resume" : "pause"}.
+              </span>
+              <span>Cut the rope to stop.</span>
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
-}
-
-function BayerDither({ reduceMotion }: { reduceMotion: boolean }) {
-  return (
-    <motion.svg
-      aria-hidden="true"
-      className={styles.bayerDither}
-      viewBox="0 0 64 64"
-      preserveAspectRatio="none"
-      animate={
-        reduceMotion
-          ? { opacity: 0.28 }
-          : {
-              opacity: [0.22, 0.36],
-              x: [0, 0.8],
-              y: [0, -0.8],
-            }
-      }
-      transition={
-        reduceMotion
-          ? { duration: 0 }
-          : {
-              duration: 2.8,
-              ease: "easeInOut",
-              repeat: Infinity,
-              repeatType: "mirror",
-            }
-      }
-    >
-      <defs>
-        <pattern
-          id="bayer-16-pattern"
-          width="16"
-          height="16"
-          patternUnits="userSpaceOnUse"
-        >
-          {Array.from({ length: 256 }, (_, index) => {
-            const column = index % 16;
-            const row = Math.floor(index / 16);
-            const threshold = bayerThreshold(column, row);
-            return (
-              <rect
-                fill="currentColor"
-                key={index}
-                opacity={0.08 + (threshold / 255) * 0.62}
-                x={column}
-                y={row}
-                width="1"
-                height="1"
-              />
-            );
-          })}
-        </pattern>
-      </defs>
-      <rect width="64" height="64" fill="url(#bayer-16-pattern)" />
-    </motion.svg>
-  );
-}
-
-function bayerThreshold(x: number, y: number) {
-  let value = 0;
-  for (let bit = 0; bit < 4; bit += 1) {
-    const xBit = (x >> bit) & 1;
-    const yBit = (y >> bit) & 1;
-    value = (value << 2) | ((xBit ^ yBit) << 1) | yBit;
-  }
-  return value;
 }
 
 function appendTrailPoint(trail: Point[], point: Point) {
@@ -928,7 +1031,11 @@ function projectTimerToRope(
   const runningTop = rigHeight * RUNNING_TIMER_TOP_RATIO;
   const modeTop =
     rigHeight *
-    (mode === "paused" ? PAUSED_TIMER_TOP_RATIO : RUNNING_TIMER_TOP_RATIO);
+    (mode === "paused"
+      ? PAUSED_TIMER_TOP_RATIO
+      : mode === "resumePullback"
+        ? RESUME_PULLBACK_TIMER_TOP_RATIO
+        : RUNNING_TIMER_TOP_RATIO);
   const fromAnchor = {
     x: target.x,
     y: runningTop + target.y + 8,

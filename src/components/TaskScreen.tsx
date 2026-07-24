@@ -29,6 +29,11 @@ export function TaskScreen({
   onReplace,
   onComplete,
 }: Props) {
+  const deckKey = `deck-${offeredTasks.map((task) => task.id).join("-")}`;
+  const activeKey = activeTask
+    ? `active-${activeTask.assignment.assignmentId}`
+    : "active";
+
   return (
     <section
       className={styles.screen}
@@ -51,7 +56,7 @@ export function TaskScreen({
           {activeTask ? (
             <motion.div
               className={styles.activeWrap}
-              key="active"
+              key={activeKey}
               initial={reduceMotion ? false : { opacity: 1 }}
               animate={{ opacity: 1 }}
               exit={{
@@ -73,14 +78,14 @@ export function TaskScreen({
           ) : (
             <motion.div
               className={styles.deckWrap}
-              key="deck"
+              key={deckKey}
               initial={
                 reduceMotion
                   ? false
                   : { opacity: 0, scale: 0.985 }
               }
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 1, scale: 1, pointerEvents: "none" }}
               transition={
                 reduceMotion
                   ? { duration: 0 }

@@ -1,6 +1,7 @@
-import { arc, motion, useMotionValue, useSpring } from "motion/react";
-import { useState, type PointerEvent } from "react";
+import { arc, motion } from "motion/react";
+import { useState } from "react";
 import type { TaskDefinition } from "../data/tasks";
+import { useTiltEffect } from "../hooks/useTiltEffect";
 import { DifficultyDots } from "./DifficultyDots";
 import styles from "../App.module.css";
 
@@ -19,7 +20,6 @@ type CardProps = {
   reduceMotion: boolean;
   selected: boolean;
   selectionStarted: boolean;
-  hoverOffset: number;
   animateEntrance: boolean;
   onSelect: (taskId: string) => void;
 };
@@ -41,7 +41,6 @@ export function TaskPreviewDeck({
 }: Props) {
   const [shouldAnimateEntrance] = useState(animateEntrance);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const completedPercentage =
     totalQuestCount > 0
       ? Math.round((completedQuestCount / totalQuestCount) * 100)
@@ -135,10 +134,6 @@ export function TaskPreviewDeck({
               index === 0 ? "left" : index === 2 ? "right" : "center"
             }
             key={task.id}
-            onPointerEnter={() => !selectedTaskId && setHoveredIndex(index)}
-            onPointerLeave={() =>
-              setHoveredIndex((current) => (current === index ? null : current))
-            }
           >
             <PreviewTaskCard
               task={task}
@@ -146,7 +141,6 @@ export function TaskPreviewDeck({
               reduceMotion={reduceMotion}
               selected={selectedTaskId === task.id}
               selectionStarted={selectedTaskId !== null}
-              hoverOffset={cardHoverOffset(index, hoveredIndex)}
               animateEntrance={shouldAnimateEntrance}
               onSelect={selectCard}
             />
@@ -174,63 +168,31 @@ function PreviewTaskCard({
   reduceMotion,
   selected,
   selectionStarted,
-  hoverOffset,
   animateEntrance,
   onSelect,
 }: CardProps) {
   const [entranceComplete, setEntranceComplete] = useState(
     reduceMotion || !animateEntrance,
   );
-  const tiltXTarget = useMotionValue(0);
-  const tiltYTarget = useMotionValue(0);
-  const tiltX = useSpring(tiltXTarget, {
-    stiffness: 92,
-    damping: 17,
-    mass: 0.92,
+  const {
+    handlePointerEnter,
+    handlePointerLeave,
+    handlePointerMove,
+    rotateX,
+    rotateY,
+  } = useTiltEffect({
+    maxTilt: 18,
+    reduceMotion: reduceMotion || selectionStarted,
   });
-  const tiltY = useSpring(tiltYTarget, {
-    stiffness: 92,
-    damping: 17,
-    mass: 0.92,
-  });
-
-  function handleTilt(event: PointerEvent<HTMLButtonElement>) {
-    const card = event.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const px = (event.clientX - rect.left) / rect.width;
-    const py = (event.clientY - rect.top) / rect.height;
-    tiltXTarget.set((0.5 - py) * 15);
-    tiltYTarget.set((px - 0.5) * 19);
-    card.style.setProperty("--shine-x", `${px * 100}%`);
-    card.style.setProperty("--shine-y", `${py * 100}%`);
-  }
-
-  function resetTilt() {
-    tiltXTarget.set(0);
-    tiltYTarget.set(0);
-  }
 
   return (
-    <motion.button
-      className={styles.previewCard}
-      data-difficulty={task.difficulty}
+    <motion.div
+      className={styles.previewCardProjection}
       data-position={index === 0 ? "left" : index === 2 ? "right" : "center"}
-      data-selected={selected || undefined}
       key={task.id}
       layoutId={`task-card-${task.id}`}
       layoutCrossfade={false}
-      type="button"
-      style={{
-        rotate: cardRotations[index] ?? 0,
-        rotateX: tiltX,
-        rotateY: tiltY,
-        transformPerspective: 1100,
-      }}
-      onClick={() => onSelect(task.id)}
-      onPointerMove={reduceMotion || selectionStarted ? undefined : handleTilt}
-      onPointerLeave={reduceMotion ? undefined : resetTilt}
-      aria-label={`${difficultyLabel(task.difficulty)}, ${task.title}`}
-      aria-pressed={selected}
+      style={{ rotate: cardRotations[index] ?? 0 }}
       initial={
         reduceMotion || !animateEntrance
           ? false
@@ -242,7 +204,7 @@ function PreviewTaskCard({
       }
       animate={{
         opacity: selectionStarted && !selected ? 0.35 : 1,
-        x: reduceMotion ? 0 : hoverOffset,
+        x: 0,
         y: index === 1 ? -12 : 8,
         scale: selected ? 1.035 : 1,
       }}
@@ -280,28 +242,45 @@ function PreviewTaskCard({
       }
       onAnimationComplete={() => setEntranceComplete(true)}
     >
-      <span className={styles.cardShimmer} aria-hidden="true" />
-      <span className={styles.cardDifficulty}>
-        <DifficultyDots difficulty={task.difficulty} />
-        {difficultyLabel(task.difficulty)}
-      </span>
-      <span className={styles.previewTitle}>{task.title}</span>
-      <span className={styles.cardBrand} aria-hidden="true">
-        <img
-          src={`${import.meta.env.BASE_URL}sidequest-wordmark.svg`}
-          alt=""
-          width="837"
-          height="550"
-        />
-      </span>
-    </motion.button>
+      <button
+        className={styles.previewCardHitArea}
+        data-selected={selected || undefined}
+        type="button"
+        onClick={() => onSelect(task.id)}
+        onPointerEnter={handlePointerEnter}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
+        onPointerOut={handlePointerLeave}
+        aria-label={`${difficultyLabel(task.difficulty)}, ${task.title}`}
+        aria-pressed={selected}
+      >
+        <motion.span
+          className={styles.previewCard}
+          data-difficulty={task.difficulty}
+          style={{
+            rotateX,
+            rotateY,
+            transformPerspective: 1000,
+          }}
+        >
+          <span className={styles.cardShimmer} aria-hidden="true" />
+          <span className={styles.cardDifficulty}>
+            <DifficultyDots difficulty={task.difficulty} />
+            {difficultyLabel(task.difficulty)}
+          </span>
+          <span className={styles.previewTitle}>{task.title}</span>
+          <span className={styles.cardBrand} aria-hidden="true">
+            <img
+              src={`${import.meta.env.BASE_URL}sidequest-wordmark.svg`}
+              alt=""
+              width="837"
+              height="550"
+            />
+          </span>
+        </motion.span>
+      </button>
+    </motion.div>
   );
-}
-
-function cardHoverOffset(index: number, hoveredIndex: number | null) {
-  if (hoveredIndex === null || index === hoveredIndex) return 0;
-  const distance = Math.abs(index - hoveredIndex);
-  return (index < hoveredIndex ? -1 : 1) * (distance === 1 ? 42 : 66);
 }
 
 function difficultyLabel(value: string) {
