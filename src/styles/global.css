@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Open Runde";
-  src: url("/fonts/OpenRunde/OpenRunde-Regular.woff2") format("woff2");
+  src: url("/fonts/OpenRunde/OpenRunde-Regular.otf") format("opentype");
   font-display: swap;
   font-style: normal;
   font-weight: 400;
@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: "Open Runde";
-  src: url("/fonts/OpenRunde/OpenRunde-Medium.woff2") format("woff2");
+  src: url("/fonts/OpenRunde/OpenRunde-Medium.otf") format("opentype");
   font-display: swap;
   font-style: normal;
   font-weight: 500;
@@ -16,7 +16,7 @@
 
 @font-face {
   font-family: "Open Runde";
-  src: url("/fonts/OpenRunde/OpenRunde-Semibold.woff2") format("woff2");
+  src: url("/fonts/OpenRunde/OpenRunde-Semibold.otf") format("opentype");
   font-display: swap;
   font-style: normal;
   font-weight: 600;
@@ -24,7 +24,7 @@
 
 @font-face {
   font-family: "Open Runde";
-  src: url("/fonts/OpenRunde/OpenRunde-Bold.woff2") format("woff2");
+  src: url("/fonts/OpenRunde/OpenRunde-Bold.otf") format("opentype");
   font-display: swap;
   font-style: normal;
   font-weight: 700;
