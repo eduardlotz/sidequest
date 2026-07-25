@@ -58,14 +58,14 @@ export function TaskPreviewDeck({
 
   function selectCard(questId: string) {
     if (selectedQuestId) return;
-    playSound("loading");
+    playSound("cardSelect");
     setSelectedQuestId(questId);
     window.requestAnimationFrame(() => onSelect(questId));
   }
 
   function cycleCard(direction: -1 | 1, focusNext = false) {
     if (selectedQuestId || tasks.length < 2) return;
-    playSound("page");
+    playSound("slide");
 
     setActiveCardIndex(
       (current) => (current + direction + tasks.length) % tasks.length,
@@ -289,6 +289,7 @@ function PreviewTaskCard({
     >
       <button
         className={styles.previewCardHitArea}
+        data-sound-card
         data-selected={selected || undefined}
         type="button"
         tabIndex={isMobile && !isTopCard ? -1 : undefined}

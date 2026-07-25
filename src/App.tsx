@@ -7,6 +7,7 @@ import { CheckIcon } from "./components/Icons";
 import { HistoryScreen } from "./components/HistoryScreen";
 import { TaskScreen } from "./components/TaskScreen";
 import { QUESTS } from "./data/quests";
+import { playSound } from "./lib/sound";
 import { useQuestStore } from "./stores/useQuestStore";
 
 type Toast = {
@@ -90,6 +91,7 @@ export function App() {
 
   function handleShuffle() {
     if (activeRun || shuffling) return;
+    playSound("shuffle");
     setBrandRotation((rotation) => rotation + 360);
     if (reduceMotion) {
       shuffleQuests();
@@ -102,6 +104,18 @@ export function App() {
     if (!shuffling) return;
     shuffleQuests();
     setShuffling(false);
+  }
+
+  function handleAboutOpenChange(open: boolean) {
+    if (open === aboutOpen) return;
+    playSound(open ? "drawerOpen" : "drawerClose");
+    setAboutOpen(open);
+  }
+
+  function handleHistoryOpenChange(open: boolean) {
+    if (open === historyOpen) return;
+    playSound(open ? "drawerOpen" : "drawerClose");
+    setHistoryOpen(open);
   }
 
   return (
@@ -130,13 +144,14 @@ export function App() {
           <Drawer.Root
             direction={desktop ? "left" : "bottom"}
             open={aboutOpen}
-            onOpenChange={setAboutOpen}
+            onOpenChange={handleAboutOpenChange}
             shouldScaleBackground={false}
           >
             <Drawer.Trigger asChild>
               <button
                 className={styles.navAction}
                 data-active={aboutOpen || undefined}
+                data-sound-click-skip
                 type="button"
               >
                 About
@@ -159,6 +174,7 @@ export function App() {
 
         <button
           className={styles.brandMark}
+          data-sound-click-skip
           type="button"
           aria-label="Shuffle quest choices"
           title="Shuffle quest choices"
@@ -201,13 +217,14 @@ export function App() {
           <Drawer.Root
             direction={desktop ? "right" : "bottom"}
             open={historyOpen}
-            onOpenChange={setHistoryOpen}
+            onOpenChange={handleHistoryOpenChange}
             shouldScaleBackground={false}
           >
             <Drawer.Trigger asChild>
               <button
                 className={styles.navAction}
                 data-active={historyOpen || undefined}
+                data-sound-click-skip
                 type="button"
               >
                 History

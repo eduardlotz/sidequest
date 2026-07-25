@@ -331,7 +331,7 @@ export function ActiveTaskCard({
 
   function pause() {
     if (pausedAtRef.current !== null || phase !== "running") return;
-    playSound("droplet");
+    playSound("toggleOff");
     const pausedAt = Date.now();
     pausedAtRef.current = pausedAt;
     onPause(pausedAt);
@@ -343,7 +343,7 @@ export function ActiveTaskCard({
   function finishResume(pose: TimerPose) {
     if (!resumePendingRef.current) return;
     resumePendingRef.current = false;
-    playSound("ready");
+    playSound("toggleOn");
     if (pausedAtRef.current !== null) {
       const resumedAt = Date.now();
       pausedTotalRef.current += resumedAt - pausedAtRef.current;
@@ -382,7 +382,7 @@ export function ActiveTaskCard({
     const resolvedGameTitle = cleanGameTitle(gameTitle);
     if (next === "completed" && !resolvedGameTitle) return;
     if (next === "cutting" && !ropeCut) return;
-    playSound(next === "completed" ? "success" : "droplet");
+    playSound(next === "completed" ? "formSubmit" : "cut");
     stopTimerAnimation();
     timerReturningRef.current = false;
     timerDraggingRef.current = false;
@@ -411,9 +411,12 @@ export function ActiveTaskCard({
       }
       setSavedGameTitle(resolvedGameTitle);
       setShowFinishedFace(reduceMotion);
-      if (!reduceMotion) {
+      if (reduceMotion) {
+        playSound("completion");
+      } else {
         completionRevealTimeoutRef.current = window.setTimeout(() => {
           setShowFinishedFace(true);
+          playSound("completion");
           completionRevealTimeoutRef.current = null;
         }, COMPLETION_FACE_REVEAL_MS);
       }
@@ -666,6 +669,7 @@ export function ActiveTaskCard({
           >
             <article
               className={styles.activeCardHitArea}
+              data-sound-card
               onPointerEnter={handleCardPointerEnter}
               onPointerMove={handleCardPointerMove}
               onPointerLeave={handleCardPointerLeave}
@@ -815,7 +819,7 @@ export function ActiveTaskCard({
           dragMomentum={false}
           style={{ x, y }}
           onDragStart={() => {
-            playSound("press");
+            playSound("timerGrab");
             stopTimerAnimation();
             timerReturningRef.current = false;
             setTimerSettling(true);
@@ -884,7 +888,6 @@ export function ActiveTaskCard({
                   <input
                     aria-label="Game title"
                     autoComplete="off"
-                    data-cuelume-press
                     maxLength={GAME_TITLE_MAX_LENGTH}
                     placeholder="Game title"
                     required
@@ -893,17 +896,6 @@ export function ActiveTaskCard({
                     value={gameTitle}
                     onChange={(event) => setGameTitle(event.target.value)}
                     onKeyDown={(event) => {
-                      if (
-                        !event.nativeEvent.isComposing &&
-                        !event.altKey &&
-                        !event.ctrlKey &&
-                        !event.metaKey &&
-                        (event.key.length === 1 ||
-                          event.key === "Backspace" ||
-                          event.key === "Delete")
-                      ) {
-                        playSound("tick");
-                      }
                       const selectionLength = Math.max(
                         0,
                         (event.currentTarget.selectionEnd ?? 0) -
@@ -944,6 +936,7 @@ export function ActiveTaskCard({
               </motion.label>
               <motion.button
                 className={styles.saveAction}
+                data-sound-click-skip
                 type="submit"
                 disabled={!gameTitle.trim()}
                 variants={pausePanelItemVariants}
@@ -962,7 +955,14 @@ export function ActiveTaskCard({
                 expanded={previousHistoryOpen}
                 reduceMotion={reduceMotion}
                 onListHeightChange={setPreviousHistoryHeight}
-                onToggle={() => setPreviousHistoryOpen((open) => !open)}
+                onToggle={() => {
+                  playSound(
+                    previousHistoryOpen
+                      ? "accordionClose"
+                      : "accordionOpen",
+                  );
+                  setPreviousHistoryOpen((open) => !open);
+                }}
               />
             ) : (
               <motion.p
@@ -1044,6 +1044,7 @@ function PreviousCompletionHistory({
         </p>
         <button
           className={styles.previousCompletionToggle}
+          data-sound-click-skip
           type="button"
           aria-controls={mobileListId}
           aria-expanded={expanded}

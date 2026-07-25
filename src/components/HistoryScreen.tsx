@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { formatRunningDuration } from "../lib/format";
+import { playSound } from "../lib/sound";
 import type { Quest } from "../stores/useQuestStore";
 import { CheckIcon } from "./Icons";
 import styles from "../App.module.css";
@@ -106,11 +107,14 @@ function HistoryAccordion({
     >
       <button
         className={styles.historyAccordionButton}
-        data-cuelume-toggle
+        data-sound-click-skip
         type="button"
         aria-expanded={expanded}
         aria-controls={panelId}
-        onClick={onToggle}
+        onClick={() => {
+          playSound(expanded ? "accordionClose" : "accordionOpen");
+          onToggle();
+        }}
       >
         <span className={styles.rowContent}>
           <strong>{quest.title}</strong>
