@@ -13,12 +13,23 @@ import {
 import {
   useCallback,
   useEffect,
+  useId,
+  useLayoutEffect,
   useRef,
   useState,
+  type CSSProperties,
   type PointerEvent as ReactPointerEvent,
+  type UIEvent as ReactUIEvent,
 } from "react";
-import type { HydratedActiveTask } from "../hooks/useTaskRun";
 import { useTiltEffect } from "../hooks/useTiltEffect";
+import {
+  cleanGameTitle,
+  getCompletionOutcome,
+  type ActiveRun,
+  type CompletedGame,
+  type CompletionOutcome,
+  type Quest,
+} from "../stores/useQuestStore";
 import { formatRunningDuration } from "../lib/format";
 import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
 import { DifficultyDots } from "./DifficultyDots";
@@ -36,7 +47,9 @@ import {
 import styles from "../App.module.css";
 
 type Props = {
-  item: HydratedActiveTask;
+  quest: Quest;
+  run: ActiveRun;
+  previousCompletions: CompletedGame[];
   reduceMotion: boolean;
   onReplace: () => void;
   onPause: (pausedAt: number) => void;
@@ -98,14 +111,17 @@ const activeCardArc = arc({
 });
 
 export function ActiveTaskCard({
-  item,
+  quest,
+  run,
+  previousCompletions,
   reduceMotion,
   onReplace,
   onPause,
   onResume,
   onComplete,
 }: Props) {
-  const { task, assignment } = item;
+  const task = quest;
+  const assignment = run;
   const initiallyPaused = assignment.pausedAt !== null;
   const [phase, setPhase] = useState<Phase>(
     initiallyPaused ? "paused" : "running",
@@ -117,7 +133,11 @@ export function ActiveTaskCard({
   const [cut, setCut] = useState<RopeCut | null>(null);
   const [gameTitle, setGameTitle] = useState("");
   const [savedGameTitle, setSavedGameTitle] = useState("");
+  const [completionOutcome, setCompletionOutcome] =
+    useState<CompletionOutcome>("new-title");
   const [showFinishedFace, setShowFinishedFace] = useState(false);
+  const [previousHistoryOpen, setPreviousHistoryOpen] = useState(false);
+  const [previousHistoryHeight, setPreviousHistoryHeight] = useState(0);
   const [completionOffset, setCompletionOffset] = useState<Point>({ x: 0, y: 0 });
   const [elapsedMs, setElapsedMs] = useState(() =>
     elapsedForAssignment(assignment, Date.now()),
@@ -193,6 +213,10 @@ export function ActiveTaskCard({
     const interval = window.setInterval(update, 250);
     return () => window.clearInterval(interval);
   }, [readElapsed]);
+
+  useEffect(() => {
+    if (phase !== "running") setPreviousHistoryOpen(false);
+  }, [phase]);
 
   const updateRope = useCallback(() => {
     ropeTargetRef.current = { x: x.get(), y: y.get() };
@@ -352,7 +376,7 @@ export function ActiveTaskCard({
   function beginExit(next: "cutting" | "completed", ropeCut?: RopeCut) {
     if (exitStartedRef.current || phase === "cutting" || phase === "completed")
       return;
-    const resolvedGameTitle = gameTitle.trim();
+    const resolvedGameTitle = cleanGameTitle(gameTitle);
     if (next === "completed" && !resolvedGameTitle) return;
     if (next === "cutting" && !ropeCut) return;
     stopTimerAnimation();
@@ -367,6 +391,13 @@ export function ActiveTaskCard({
     }
     setElapsedMs(duration);
     if (next === "completed") {
+      setCompletionOutcome(
+        getCompletionOutcome(
+          previousCompletions,
+          resolvedGameTitle,
+          duration,
+        ),
+      );
       const cardRect = cardProjectionRef.current?.getBoundingClientRect();
       if (cardRect) {
         setCompletionOffset({
@@ -572,7 +603,15 @@ export function ActiveTaskCard({
     <div
       className={styles.activeExperience}
       data-phase={phase}
+      data-previous-history-open={
+        phase === "running" && previousHistoryOpen ? "true" : undefined
+      }
       data-rope-mode={ropeMode}
+      style={
+        {
+          "--previous-history-height": `${previousHistoryHeight}px`,
+        } as CSSProperties
+      }
     >
       <div className={styles.activeCardStage} data-difficulty={task.difficulty}>
         <motion.div
@@ -672,7 +711,14 @@ export function ActiveTaskCard({
                           }
                         />
                       */}
-                      <strong>{formatRunningDuration(elapsedMs)}</strong>
+                      <span className={styles.completionTime}>
+                        <strong>{formatRunningDuration(elapsedMs)}</strong>
+                        {completionOutcome === "new-highscore" && (
+                          <span className={styles.completionHighscoreTag}>
+                            New highscore
+                          </span>
+                        )}
+                      </span>
                       <small>{savedGameTitle || "Quest complete"}</small>
                     </motion.div>
                   ) : (
@@ -893,23 +939,242 @@ export function ActiveTaskCard({
 
         <AnimatePresence mode="wait">
           {!exiting && !timerSettling && (
-            <motion.p
-              className={styles.timerHint}
-              key={phase}
-              initial={reduceMotion ? false : { opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
-              transition={{ duration: reduceMotion ? 0 : 0.16, ease: "easeOut" }}
-            >
-              <span>
-                Pull the timer to {phase === "paused" ? "resume" : "pause"}.
-              </span>
-              <span>Cut the rope to stop.</span>
-            </motion.p>
+            phase === "running" && previousCompletions.length > 0 ? (
+              <PreviousCompletionHistory
+                entries={previousCompletions}
+                expanded={previousHistoryOpen}
+                reduceMotion={reduceMotion}
+                onListHeightChange={setPreviousHistoryHeight}
+                onToggle={() => setPreviousHistoryOpen((open) => !open)}
+              />
+            ) : (
+              <motion.p
+                className={styles.timerHint}
+                key={phase}
+                initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.16,
+                  ease: "easeOut",
+                }}
+              >
+                <span>
+                  Pull the timer to {phase === "paused" ? "resume" : "pause"}.
+                </span>
+                <span>Cut the rope to stop.</span>
+              </motion.p>
+            )
           )}
         </AnimatePresence>
       </motion.div>
     </div>
+  );
+}
+
+function PreviousCompletionHistory({
+  entries,
+  expanded,
+  onListHeightChange,
+  onToggle,
+  reduceMotion,
+}: {
+  entries: CompletedGame[];
+  expanded: boolean;
+  onListHeightChange: (height: number) => void;
+  onToggle: () => void;
+  reduceMotion: boolean;
+}) {
+  const mobileListId = useId();
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (!expanded) {
+      onListHeightChange(0);
+      return;
+    }
+
+    const panel = mobilePanelRef.current;
+    if (!panel) return;
+    const reportHeight = () => onListHeightChange(panel.scrollHeight);
+    reportHeight();
+    const resizeObserver = new ResizeObserver(reportHeight);
+    resizeObserver.observe(panel);
+    return () => resizeObserver.disconnect();
+  }, [entries, expanded, onListHeightChange]);
+
+  return (
+    <motion.section
+      className={styles.previousCompletionHistory}
+      key="previous-completions"
+      aria-label="Previous completions for this quest"
+      initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
+      transition={{ duration: reduceMotion ? 0 : 0.16, ease: "easeOut" }}
+      onPointerDown={(event) => event.stopPropagation()}
+    >
+      <p className={styles.previousCompletionDesktopLabel}>
+        You&apos;ve completed this quest before.
+      </p>
+      <div className={styles.previousCompletionDesktopList}>
+        <PreviousCompletionList entries={entries} />
+      </div>
+
+      <div className={styles.previousCompletionMobileHeader}>
+        <p className={styles.previousCompletionMobileLabel}>
+          You&apos;ve completed this quest before.
+        </p>
+        <button
+          className={styles.previousCompletionToggle}
+          type="button"
+          aria-controls={mobileListId}
+          aria-expanded={expanded}
+          onClick={onToggle}
+        >
+          <span>{expanded ? "Hide" : "Show"}</span>
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <path d="m4 6 4 4 4-4" />
+          </svg>
+        </button>
+      </div>
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            ref={mobilePanelRef}
+            className={styles.previousCompletionMobilePanel}
+            id={mobileListId}
+            key="mobile-completions"
+            initial={reduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={reduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
+            transition={
+              reduceMotion
+                ? { duration: 0 }
+                : { type: "spring", stiffness: 310, damping: 31, mass: 0.8 }
+            }
+          >
+            <PreviousCompletionList
+              animateEntries
+              entries={entries}
+              reduceMotion={reduceMotion}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.section>
+  );
+}
+
+function PreviousCompletionList({
+  animateEntries = false,
+  entries,
+  reduceMotion = false,
+}: {
+  animateEntries?: boolean;
+  entries: CompletedGame[];
+  reduceMotion?: boolean;
+}) {
+  const listRef = useRef<HTMLUListElement>(null);
+  const [scrollEdges, setScrollEdges] = useState({
+    atBottom: true,
+    atTop: true,
+  });
+
+  const updateScrollEdges = useCallback((element: HTMLUListElement) => {
+    setScrollEdges({
+      atBottom:
+        element.scrollHeight - element.clientHeight - element.scrollTop <= 1,
+      atTop: element.scrollTop <= 1,
+    });
+  }, []);
+
+  useEffect(() => {
+    const element = listRef.current;
+    if (!element) return;
+
+    updateScrollEdges(element);
+    const resizeObserver = new ResizeObserver(() => updateScrollEdges(element));
+    resizeObserver.observe(element);
+    return () => resizeObserver.disconnect();
+  }, [entries, updateScrollEdges]);
+
+  function handleScroll(event: ReactUIEvent<HTMLUListElement>) {
+    updateScrollEdges(event.currentTarget);
+  }
+
+  return (
+    <div
+      className={styles.previousCompletionViewport}
+      data-fade-bottom={!scrollEdges.atBottom || undefined}
+      data-fade-top={!scrollEdges.atTop || undefined}
+    >
+      <ul
+        ref={listRef}
+        className={styles.previousCompletionList}
+        onScroll={handleScroll}
+      >
+        <AnimatePresence initial={animateEntries} propagate>
+          {entries.map((entry, index) => (
+            <PreviousCompletionEntry
+              animate={animateEntries}
+              entry={entry}
+              index={index}
+              key={entry.id}
+              reduceMotion={reduceMotion}
+            />
+          ))}
+        </AnimatePresence>
+      </ul>
+    </div>
+  );
+}
+
+function PreviousCompletionEntry({
+  animate,
+  entry,
+  index,
+  reduceMotion,
+}: {
+  animate: boolean;
+  entry: CompletedGame;
+  index: number;
+  reduceMotion: boolean;
+}) {
+  const animateEntry = animate && !reduceMotion;
+
+  return (
+    <motion.li
+      className={styles.previousCompletionEntry}
+      initial={
+        animateEntry ? { filter: "blur(5px)", opacity: 0, y: 3 } : false
+      }
+      animate={{
+        filter: "blur(0px)",
+        opacity: 1,
+        y: 0,
+        transition: {
+          delay: animateEntry ? index * 0.025 : 0,
+          duration: animateEntry ? 0.18 : 0,
+          ease: "easeOut",
+        },
+      }}
+      exit={{
+        filter: animateEntry ? "blur(4px)" : "blur(0px)",
+        opacity: 0,
+        y: animateEntry ? -2 : 0,
+        transition: {
+          delay: 0,
+          duration: animateEntry ? 0.1 : 0,
+          ease: "easeIn",
+        },
+      }}
+    >
+      <strong title={entry.title}>{entry.title}</strong>
+      <time dateTime={`PT${Math.round(entry.highscoreMs / 1000)}S`}>
+        {formatRunningDuration(entry.highscoreMs)}
+      </time>
+    </motion.li>
   );
 }
 
@@ -1036,7 +1301,7 @@ function capitalize(value: string) {
 }
 
 function elapsedForAssignment(
-  assignment: HydratedActiveTask["assignment"],
+  assignment: ActiveRun,
   now: number,
 ) {
   const openPause =

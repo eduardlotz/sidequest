@@ -1,21 +1,21 @@
 import { arc, motion } from "motion/react";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import type { TaskDefinition } from "../data/tasks";
+import type { QuestDefinition } from "../data/quests";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import { DifficultyDots } from "./DifficultyDots";
 import styles from "../App.module.css";
 
 type Props = {
-  tasks: TaskDefinition[];
+  tasks: QuestDefinition[];
   animateEntrance: boolean;
   reduceMotion: boolean;
   shuffling: boolean;
-  onSelect: (taskId: string) => void;
+  onSelect: (questId: string) => void;
   onShuffleAnimationComplete: () => void;
 };
 
 type CardProps = {
-  task: TaskDefinition;
+  task: QuestDefinition;
   index: number;
   isMobile: boolean;
   isTopCard: boolean;
@@ -25,7 +25,7 @@ type CardProps = {
   selectionStarted: boolean;
   animateEntrance: boolean;
   onCycle: (direction: -1 | 1, focusNext?: boolean) => void;
-  onSelect: (taskId: string) => void;
+  onSelect: (questId: string) => void;
 };
 
 const cardRotations = [-9, 0, 9];
@@ -45,24 +45,24 @@ export function TaskPreviewDeck({
 }: Props) {
   const taskSetKey = tasks.map((task) => task.id).join("-");
   const [shouldAnimateEntrance] = useState(animateEntrance);
-  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [selectedQuestId, setSelectedQuestId] = useState<string | null>(null);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const deckRef = useRef<HTMLDivElement>(null);
   const isMobile = useMobileLayout();
 
   useEffect(() => {
-    setSelectedTaskId(null);
+    setSelectedQuestId(null);
     setActiveCardIndex(0);
   }, [taskSetKey]);
 
-  function selectCard(taskId: string) {
-    if (selectedTaskId) return;
-    setSelectedTaskId(taskId);
-    window.requestAnimationFrame(() => onSelect(taskId));
+  function selectCard(questId: string) {
+    if (selectedQuestId) return;
+    setSelectedQuestId(questId);
+    window.requestAnimationFrame(() => onSelect(questId));
   }
 
   function cycleCard(direction: -1 | 1, focusNext = false) {
-    if (selectedTaskId || tasks.length < 2) return;
+    if (selectedQuestId || tasks.length < 2) return;
     setActiveCardIndex(
       (current) => (current + direction + tasks.length) % tasks.length,
     );
@@ -155,8 +155,8 @@ export function TaskPreviewDeck({
                 isTopCard={stackOffset === 0}
                 stackPosition={stackPosition}
                 reduceMotion={reduceMotion}
-                selected={selectedTaskId === task.id}
-                selectionStarted={selectedTaskId !== null}
+                selected={selectedQuestId === task.id}
+                selectionStarted={selectedQuestId !== null}
                 animateEntrance={shouldAnimateEntrance}
                 onCycle={cycleCard}
                 onSelect={selectCard}

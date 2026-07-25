@@ -1,37 +1,41 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
-import type { HydratedCompletedTask } from "../hooks/useTaskRun";
 import { formatRunningDuration } from "../lib/format";
+import type { Quest } from "../stores/useQuestStore";
 import { CheckIcon } from "./Icons";
 import styles from "../App.module.css";
 
 type Props = {
-  completedTasks: HydratedCompletedTask[];
+  completedQuests: Quest[];
   reduceMotion: boolean;
-  totalTaskCount: number;
+  totalQuestCount: number;
 };
 
-export function HistoryScreen({ completedTasks, reduceMotion, totalTaskCount }: Props) {
-  const [expandedTaskIds, setExpandedTaskIds] = useState(
-    () => new Set(completedTasks.map((item) => item.task.id)),
+export function HistoryScreen({
+  completedQuests,
+  reduceMotion,
+  totalQuestCount,
+}: Props) {
+  const [expandedQuestIds, setExpandedQuestIds] = useState(
+    () => new Set(completedQuests.map((quest) => quest.id)),
   );
-  const completedPercentage = totalTaskCount > 0
-    ? Math.round(completedTasks.length / totalTaskCount * 100)
+  const completedPercentage = totalQuestCount > 0
+    ? Math.round(completedQuests.length / totalQuestCount * 100)
     : 0;
 
   useEffect(() => {
-    setExpandedTaskIds((current) => {
+    setExpandedQuestIds((current) => {
       const next = new Set(current);
-      completedTasks.forEach((item) => next.add(item.task.id));
+      completedQuests.forEach((quest) => next.add(quest.id));
       return next;
     });
-  }, [completedTasks]);
+  }, [completedQuests]);
 
-  function toggleTask(taskId: string) {
-    setExpandedTaskIds((current) => {
+  function toggleQuest(questId: string) {
+    setExpandedQuestIds((current) => {
       const next = new Set(current);
-      if (next.has(taskId)) next.delete(taskId);
-      else next.add(taskId);
+      if (next.has(questId)) next.delete(questId);
+      else next.add(questId);
       return next;
     });
   }
@@ -41,14 +45,15 @@ export function HistoryScreen({ completedTasks, reduceMotion, totalTaskCount }: 
       <header className={styles.historySummary}>
         <h2 className={styles.srOnly} id="history-title">Quest history</h2>
         <p>
-          <span>{completedTasks.length}</span> of <strong>{totalTaskCount}</strong>{" "}
+          <span>{completedQuests.length}</span> of{" "}
+          <strong>{totalQuestCount}</strong>{" "}
           sidequests completed
         </p>
         <CompletionBadge percentage={completedPercentage} />
       </header>
 
       <div className={styles.historyContent}>
-        {completedTasks.length === 0 ? (
+        {completedQuests.length === 0 ? (
           <div className={styles.historyEmpty}>
             <span className={styles.emptyCheck} aria-hidden="true"><CheckIcon /></span>
             <h2>No completed sidequests yet</h2>
@@ -57,15 +62,15 @@ export function HistoryScreen({ completedTasks, reduceMotion, totalTaskCount }: 
         ) : (
           <motion.ol className={styles.historyList} layout>
             <AnimatePresence initial={false}>
-              {completedTasks.map((item) => {
-                const expanded = expandedTaskIds.has(item.task.id);
+              {completedQuests.map((quest) => {
+                const expanded = expandedQuestIds.has(quest.id);
                 return (
                   <HistoryAccordion
                     expanded={expanded}
-                    item={item}
-                    key={item.task.id}
+                    quest={quest}
+                    key={quest.id}
                     reduceMotion={reduceMotion}
-                    onToggle={() => toggleTask(item.task.id)}
+                    onToggle={() => toggleQuest(quest.id)}
                   />
                 );
               })}
@@ -79,17 +84,16 @@ export function HistoryScreen({ completedTasks, reduceMotion, totalTaskCount }: 
 
 function HistoryAccordion({
   expanded,
-  item,
+  quest,
   onToggle,
   reduceMotion,
 }: {
   expanded: boolean;
-  item: HydratedCompletedTask;
+  quest: Quest;
   onToggle: () => void;
   reduceMotion: boolean;
 }) {
-  const { completion, task } = item;
-  const panelId = `history-entries-${task.id}`;
+  const panelId = `history-entries-${quest.id}`;
 
   return (
     <motion.li
@@ -108,7 +112,7 @@ function HistoryAccordion({
         onClick={onToggle}
       >
         <span className={styles.rowContent}>
-          <strong>{task.title}</strong>
+          <strong>{quest.title}</strong>
         </span>
         <span className={styles.accordionChevron} aria-hidden="true">⌃</span>
       </button>
@@ -124,11 +128,11 @@ function HistoryAccordion({
             transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 310, damping: 31, mass: 0.8 }}
           >
             <ul className={styles.historyEntries}>
-              {completion.entries.map((entry) => (
-                <li className={styles.historyEntry} key={entry.entryId}>
-                  <strong>{entry.gameTitle}</strong>
-                  <time dateTime={`PT${Math.round(entry.durationMs / 1000)}S`}>
-                    {formatRunningDuration(entry.durationMs)}
+              {quest.completedGames.map((game) => (
+                <li className={styles.historyEntry} key={game.id}>
+                  <strong>{game.title}</strong>
+                  <time dateTime={`PT${Math.round(game.highscoreMs / 1000)}S`}>
+                    {formatRunningDuration(game.highscoreMs)}
                   </time>
                 </li>
               ))}
