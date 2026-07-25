@@ -1676,6 +1676,12 @@
   display: flex;
 }
 
+.navActionGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
 .navAction {
   min-height: 35px;
   padding: 0 13px;
@@ -1707,6 +1713,41 @@
 
 .navAction[data-active]:hover {
   background: #dedee7;
+}
+
+.soundAction {
+  display: grid;
+  width: 35px;
+  height: 35px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #08080a;
+  opacity: 0.5;
+  cursor: pointer;
+  transition:
+    background 150ms ease,
+    opacity 150ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.soundAction:hover,
+.soundAction:active,
+.soundAction[aria-pressed="true"] {
+  background: #e9e9f1;
+  opacity: 1;
+}
+
+.soundAction:focus-visible {
+  outline: 3px solid rgb(8 8 10 / 0.24);
+  outline-offset: 2px;
+}
+
+.soundAction svg {
+  width: 19px;
+  height: 19px;
 }
 
 .brandMark {
@@ -2209,6 +2250,15 @@
     min-height: 36px;
     padding: 0 12px;
     font-size: 0.82rem;
+  }
+
+  .navActionGroup {
+    gap: 0;
+  }
+
+  .soundAction {
+    width: 36px;
+    height: 36px;
   }
 
   .brandMark {

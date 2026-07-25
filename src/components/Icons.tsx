@@ -47,3 +47,21 @@ export function CheckIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function SoundOnIcon(props: IconProps) {
+  return (
+    <svg {...defaults} {...props}>
+      <path d="M11 5 7 9H4v6h3l4 4V5Z" />
+      <path d="M15 9.5a4 4 0 0 1 0 5M17.8 6.8a7.5 7.5 0 0 1 0 10.4" />
+    </svg>
+  );
+}
+
+export function SoundOffIcon(props: IconProps) {
+  return (
+    <svg {...defaults} {...props}>
+      <path d="M11 5 7 9H4v6h3l4 4V5Z" />
+      <path d="m15.5 10 4 4M19.5 10l-4 4" />
+    </svg>
+  );
+}

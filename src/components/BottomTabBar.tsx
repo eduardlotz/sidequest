@@ -1,4 +1,5 @@
 import { HistoryIcon, TimerIcon } from "./Icons";
+import { playSound } from "../lib/sound";
 import styles from "../App.module.css";
 
 export type AppTab = "task" | "history";
@@ -40,16 +41,22 @@ type TabButtonProps = {
 };
 
 function TabButton({ active, icon, label, onClick, tab }: TabButtonProps) {
+  function handleClick() {
+    if (!active) playSound("tabSwitch");
+    onClick();
+  }
+
   return (
     <button
       className={styles.tabButton}
       data-active={active || undefined}
+      data-sound-click-skip
       type="button"
       role="tab"
       aria-selected={active}
       aria-controls={`${tab}-panel`}
       id={`${tab}-tab`}
-      onClick={onClick}
+      onClick={handleClick}
     >
       {icon}
       <span>{label}</span>

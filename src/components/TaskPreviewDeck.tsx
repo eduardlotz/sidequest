@@ -2,6 +2,7 @@ import { arc, motion } from "motion/react";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { QuestDefinition } from "../data/quests";
 import { useTiltEffect } from "../hooks/useTiltEffect";
+import { playSound } from "../lib/sound";
 import { DifficultyDots } from "./DifficultyDots";
 import styles from "../App.module.css";
 
@@ -57,12 +58,15 @@ export function TaskPreviewDeck({
 
   function selectCard(questId: string) {
     if (selectedQuestId) return;
+    playSound("cardSelect");
     setSelectedQuestId(questId);
     window.requestAnimationFrame(() => onSelect(questId));
   }
 
   function cycleCard(direction: -1 | 1, focusNext = false) {
     if (selectedQuestId || tasks.length < 2) return;
+    playSound("slide");
+
     setActiveCardIndex(
       (current) => (current + direction + tasks.length) % tasks.length,
     );
@@ -133,11 +137,7 @@ export function TaskPreviewDeck({
           const stackOffset =
             (index - activeCardIndex + tasks.length) % tasks.length;
           const stackPosition =
-            stackOffset === 0
-              ? "front"
-              : stackOffset === 1
-                ? "middle"
-                : "back";
+            stackOffset === 0 ? "front" : stackOffset === 1 ? "middle" : "back";
 
           return (
             <div
@@ -289,6 +289,7 @@ function PreviewTaskCard({
     >
       <button
         className={styles.previewCardHitArea}
+        data-sound-card
         data-selected={selected || undefined}
         type="button"
         tabIndex={isMobile && !isTopCard ? -1 : undefined}
