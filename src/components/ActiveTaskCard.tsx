@@ -21,11 +21,15 @@ import {
   type PointerEvent as ReactPointerEvent,
   type UIEvent as ReactUIEvent,
 } from "react";
-import type {
-  CompletionEntry,
-  HydratedActiveTask,
-} from "../hooks/useTaskRun";
 import { useTiltEffect } from "../hooks/useTiltEffect";
+import {
+  cleanGameTitle,
+  getCompletionOutcome,
+  type ActiveRun,
+  type CompletedGame,
+  type CompletionOutcome,
+  type Quest,
+} from "../stores/useQuestStore";
 import { formatRunningDuration } from "../lib/format";
 import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
 import { DifficultyDots } from "./DifficultyDots";
@@ -43,8 +47,9 @@ import {
 import styles from "../App.module.css";
 
 type Props = {
-  item: HydratedActiveTask;
-  previousCompletions: CompletionEntry[];
+  quest: Quest;
+  run: ActiveRun;
+  previousCompletions: CompletedGame[];
   reduceMotion: boolean;
   onReplace: () => void;
   onPause: (pausedAt: number) => void;
@@ -106,7 +111,8 @@ const activeCardArc = arc({
 });
 
 export function ActiveTaskCard({
-  item,
+  quest,
+  run,
   previousCompletions,
   reduceMotion,
   onReplace,
@@ -114,7 +120,8 @@ export function ActiveTaskCard({
   onResume,
   onComplete,
 }: Props) {
-  const { task, assignment } = item;
+  const task = quest;
+  const assignment = run;
   const initiallyPaused = assignment.pausedAt !== null;
   const [phase, setPhase] = useState<Phase>(
     initiallyPaused ? "paused" : "running",
@@ -126,6 +133,8 @@ export function ActiveTaskCard({
   const [cut, setCut] = useState<RopeCut | null>(null);
   const [gameTitle, setGameTitle] = useState("");
   const [savedGameTitle, setSavedGameTitle] = useState("");
+  const [completionOutcome, setCompletionOutcome] =
+    useState<CompletionOutcome>("new-title");
   const [showFinishedFace, setShowFinishedFace] = useState(false);
   const [previousHistoryOpen, setPreviousHistoryOpen] = useState(false);
   const [previousHistoryHeight, setPreviousHistoryHeight] = useState(0);
@@ -367,7 +376,7 @@ export function ActiveTaskCard({
   function beginExit(next: "cutting" | "completed", ropeCut?: RopeCut) {
     if (exitStartedRef.current || phase === "cutting" || phase === "completed")
       return;
-    const resolvedGameTitle = gameTitle.trim();
+    const resolvedGameTitle = cleanGameTitle(gameTitle);
     if (next === "completed" && !resolvedGameTitle) return;
     if (next === "cutting" && !ropeCut) return;
     stopTimerAnimation();
@@ -382,6 +391,13 @@ export function ActiveTaskCard({
     }
     setElapsedMs(duration);
     if (next === "completed") {
+      setCompletionOutcome(
+        getCompletionOutcome(
+          previousCompletions,
+          resolvedGameTitle,
+          duration,
+        ),
+      );
       const cardRect = cardProjectionRef.current?.getBoundingClientRect();
       if (cardRect) {
         setCompletionOffset({
@@ -695,7 +711,14 @@ export function ActiveTaskCard({
                           }
                         />
                       */}
-                      <strong>{formatRunningDuration(elapsedMs)}</strong>
+                      <span className={styles.completionTime}>
+                        <strong>{formatRunningDuration(elapsedMs)}</strong>
+                        {completionOutcome === "new-highscore" && (
+                          <span className={styles.completionHighscoreTag}>
+                            New highscore
+                          </span>
+                        )}
+                      </span>
                       <small>{savedGameTitle || "Quest complete"}</small>
                     </motion.div>
                   ) : (
@@ -956,7 +979,7 @@ function PreviousCompletionHistory({
   onToggle,
   reduceMotion,
 }: {
-  entries: CompletionEntry[];
+  entries: CompletedGame[];
   expanded: boolean;
   onListHeightChange: (height: number) => void;
   onToggle: () => void;
@@ -1049,7 +1072,7 @@ function PreviousCompletionList({
   reduceMotion = false,
 }: {
   animateEntries?: boolean;
-  entries: CompletionEntry[];
+  entries: CompletedGame[];
   reduceMotion?: boolean;
 }) {
   const listRef = useRef<HTMLUListElement>(null);
@@ -1097,7 +1120,7 @@ function PreviousCompletionList({
               animate={animateEntries}
               entry={entry}
               index={index}
-              key={entry.entryId}
+              key={entry.id}
               reduceMotion={reduceMotion}
             />
           ))}
@@ -1114,7 +1137,7 @@ function PreviousCompletionEntry({
   reduceMotion,
 }: {
   animate: boolean;
-  entry: CompletionEntry;
+  entry: CompletedGame;
   index: number;
   reduceMotion: boolean;
 }) {
@@ -1147,9 +1170,9 @@ function PreviousCompletionEntry({
         },
       }}
     >
-      <strong title={entry.gameTitle}>{entry.gameTitle}</strong>
-      <time dateTime={`PT${Math.round(entry.durationMs / 1000)}S`}>
-        {formatRunningDuration(entry.durationMs)}
+      <strong title={entry.title}>{entry.title}</strong>
+      <time dateTime={`PT${Math.round(entry.highscoreMs / 1000)}S`}>
+        {formatRunningDuration(entry.highscoreMs)}
       </time>
     </motion.li>
   );
@@ -1278,7 +1301,7 @@ function capitalize(value: string) {
 }
 
 function elapsedForAssignment(
-  assignment: HydratedActiveTask["assignment"],
+  assignment: ActiveRun,
   now: number,
 ) {
   const openPause =

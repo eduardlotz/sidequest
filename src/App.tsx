@@ -1,12 +1,13 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Drawer } from "vaul";
+import { useShallow } from "zustand/react/shallow";
 import styles from "./App.module.css";
 import { CheckIcon } from "./components/Icons";
 import { HistoryScreen } from "./components/HistoryScreen";
 import { TaskScreen } from "./components/TaskScreen";
-import { TASKS } from "./data/tasks";
-import { useTaskRun } from "./hooks/useTaskRun";
+import { QUESTS } from "./data/quests";
+import { useQuestStore } from "./stores/useQuestStore";
 
 type Toast = {
   id: string;
@@ -16,16 +17,28 @@ type Toast = {
 
 export function App() {
   const {
-    activeTask,
-    completedTasks,
-    offeredTasks,
-    selectTask,
-    shuffleTasks,
-    replaceTask,
-    pauseTask,
-    resumeTask,
-    completeTask,
-  } = useTaskRun();
+    activeRun,
+    completeQuest,
+    offeredQuestIds,
+    pauseQuest,
+    quests,
+    replaceQuest,
+    resumeQuest,
+    selectQuest,
+    shuffleQuests,
+  } = useQuestStore(
+    useShallow((state) => ({
+      activeRun: state.activeRun,
+      completeQuest: state.completeQuest,
+      offeredQuestIds: state.offeredQuestIds,
+      pauseQuest: state.pauseQuest,
+      quests: state.quests,
+      replaceQuest: state.replaceQuest,
+      resumeQuest: state.resumeQuest,
+      selectQuest: state.selectQuest,
+      shuffleQuests: state.shuffleQuests,
+    })),
+  );
   const reduceMotion = Boolean(useReducedMotion());
   const [toast, setToast] = useState<Toast | null>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -34,10 +47,21 @@ export function App() {
   const [shuffling, setShuffling] = useState(false);
   const [brandRotation, setBrandRotation] = useState(0);
   const desktop = useDesktopSheet();
-  const activeTaskCompletions = activeTask
-    ? completedTasks.find((item) => item.task.id === activeTask.task.id)
-        ?.completion.entries ?? []
-    : [];
+  const activeQuest = activeRun ? (quests[activeRun.questId] ?? null) : null;
+  const offeredQuests = useMemo(
+    () => offeredQuestIds.flatMap((id) => (quests[id] ? [quests[id]] : [])),
+    [offeredQuestIds, quests],
+  );
+  const completedQuests = useMemo(
+    () =>
+      Object.values(quests)
+        .filter((quest) => quest.completedGames.length > 0)
+        .sort(
+          (a, b) =>
+            b.completedGames[0].achievedAt - a.completedGames[0].achievedAt,
+        ),
+    [quests],
+  );
 
   useEffect(() => {
     if (!toast) return;
@@ -55,20 +79,20 @@ export function App() {
   }, [reduceMotion]);
 
   function handleComplete(durationMs: number, gameTitle: string) {
-    if (!activeTask) return;
+    if (!activeQuest || !activeRun) return;
     setToast({
-      id: activeTask.assignment.assignmentId,
-      title: activeTask.task.title,
-      points: activeTask.task.points,
+      id: activeRun.assignmentId,
+      title: activeQuest.title,
+      points: activeQuest.points,
     });
-    completeTask(durationMs, gameTitle);
+    completeQuest(durationMs, gameTitle);
   }
 
   function handleShuffle() {
-    if (activeTask || shuffling) return;
+    if (activeRun || shuffling) return;
     setBrandRotation((rotation) => rotation + 360);
     if (reduceMotion) {
-      shuffleTasks();
+      shuffleQuests();
       return;
     }
     setShuffling(true);
@@ -76,7 +100,7 @@ export function App() {
 
   function handleShuffleAnimationComplete() {
     if (!shuffling) return;
-    shuffleTasks();
+    shuffleQuests();
     setShuffling(false);
   }
 
@@ -138,7 +162,7 @@ export function App() {
           type="button"
           aria-label="Shuffle quest choices"
           title="Shuffle quest choices"
-          disabled={Boolean(activeTask) || shuffling}
+          disabled={Boolean(activeRun) || shuffling}
           onClick={handleShuffle}
         >
           <motion.img
@@ -205,9 +229,9 @@ export function App() {
                   <div className={styles.drawerHandle} aria-hidden="true" />
                 )}
                 <HistoryScreen
-                  completedTasks={completedTasks}
+                  completedQuests={completedQuests}
                   reduceMotion={reduceMotion}
-                  totalTaskCount={TASKS.length}
+                  totalQuestCount={QUESTS.length}
                 />
               </Drawer.Content>
             </Drawer.Portal>
@@ -217,17 +241,17 @@ export function App() {
 
       <main className={styles.main} id="main-content">
         <TaskScreen
-          activeTask={activeTask}
-          activeTaskCompletions={activeTaskCompletions}
-          offeredTasks={offeredTasks}
+          activeQuest={activeQuest}
+          activeRun={activeRun}
+          offeredQuests={offeredQuests}
           animateEntrance={!introComplete}
           reduceMotion={reduceMotion}
           shuffling={shuffling}
-          onSelect={selectTask}
+          onSelect={selectQuest}
           onShuffleAnimationComplete={handleShuffleAnimationComplete}
-          onReplace={replaceTask}
-          onPause={pauseTask}
-          onResume={resumeTask}
+          onReplace={replaceQuest}
+          onPause={pauseQuest}
+          onResume={resumeQuest}
           onComplete={handleComplete}
         />
       </main>
@@ -262,42 +286,35 @@ function AboutSidequest() {
     <section className={styles.aboutContent} aria-labelledby="about-title">
       <header className={styles.aboutIntro}>
         <Drawer.Title asChild>
-          <h2 id="about-title">
-            Too many games installed and no idea what to play?
-          </h2>
+          <h2 id="about-title">Welcome to sidequest</h2>
         </Drawer.Title>
-        {/* <Drawer.Description>
-          Then you&apos;re in the right place.
-        </Drawer.Description> */}
+        <Drawer.Description>
+          A small companion app for your video games.
+        </Drawer.Description>
       </header>
 
       <div className={styles.aboutBody}>
         <section className={styles.aboutSection}>
-          <h3>Start a quest, choose a game</h3>
+          {/* <h3>Start a quest, choose a game</h3> */}
           <ol className={styles.aboutSteps}>
-            <li>Choose a difficulty for your next sidequest.</li>
-            <li>Complete the objective in any game you like.</li>
-            <li>
-              Stop the timer, enter the title of the game you completed the
-              quest in
-            </li>
-            <li>Pick a new sidequest</li>
+            <li>Choose a sidequest</li>
+            <li>Complete the objective in any game you like</li>
+            <li>Stop the timer and enter the title of the video game</li>
           </ol>
         </section>
 
         <section className={styles.aboutSection}>
           <h3>Already completed the quest?</h3>
           <p>
-            Choose a different game for the sidequest or try to beat your own
-            record.
+            Pick another game for the same task or try to beat your own record.
           </p>
           <p>
-            How difficult a quest becomes also depends on the game you choose.
+            How difficult a task really is also depends on the game you choose.
           </p>
         </section>
 
         <section className={styles.aboutSection}>
-          <h3>Don&apos;t like the quest?</h3>
+          <h3>Don't like the quest?</h3>
           <p>Cut the red rope to cancel the quest and pick a new one.</p>
         </section>
       </div>

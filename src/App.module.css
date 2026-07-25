@@ -519,6 +519,28 @@
   line-height: 1;
 }
 
+.completionTime {
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: clamp(8px, 2.5cqw, 12px);
+  justify-content: center;
+}
+
+.completionHighscoreTag {
+  flex: 0 0 auto;
+  padding: 6px 9px 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #09090b;
+  font-size: clamp(0.68rem, 2.6cqw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 .completionMark small {
   margin-top: 8px;
   color: white;
@@ -2088,45 +2110,46 @@
 }
 
 .aboutIntro h2 {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 650;
-  letter-spacing: -0.045em;
-  line-height: 1.12;
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.45;
 }
 
 .aboutIntro p {
-  margin: 8px 0 0;
-  color: #88888e;
-  font-size: 1.75rem;
+  margin: 0;
+  font-size: 1rem;
   font-weight: 600;
-  letter-spacing: -0.04em;
-  line-height: 1.12;
+  letter-spacing: -0.02em;
+  line-height: 1.45;
+  opacity: 0.5;
+  text-wrap: pretty;
 }
 
 .aboutBody {
   display: flex;
   padding-top: 28px;
   flex-direction: column;
-  gap: 32px;
+  gap: 2rem;
 }
 
 .aboutSection h3 {
   margin: 0 0 10px;
-  color: #111113;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.25;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.45;
 }
 
 .aboutSection p {
   margin: 0;
-  color: #85858b;
   font-size: 1rem;
-  font-weight: 550;
+  font-weight: 600;
   letter-spacing: -0.02em;
-  line-height: 1.42;
+  line-height: 1.45;
+  opacity: 0.5;
+  text-wrap: pretty;
 }
 
 .aboutSection p + p {
@@ -2139,12 +2162,13 @@
 }
 
 .aboutSteps li {
-  padding-left: 0.15em;
-  color: #85858b;
+  padding-left: 0.5em;
   font-size: 1rem;
-  font-weight: 550;
+  font-weight: 600;
   letter-spacing: -0.02em;
-  line-height: 1.42;
+  line-height: 1.45;
+  opacity: 0.5;
+  text-wrap: pretty;
 }
 
 .aboutSteps li + li {
@@ -2154,9 +2178,12 @@
 .aboutCredit {
   padding-top: 20px;
   margin-top: auto;
-  color: #a0a0a7;
-  font-size: 0.86rem;
+  font-size: 1rem;
   font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.45;
+  opacity: 0.5;
+  text-wrap: pretty;
 }
 
 .aboutCredit a {

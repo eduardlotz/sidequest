@@ -2,22 +2,21 @@ import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { useRef } from "react";
 import { TextMorph } from "torph/react";
 import type {
-  CompletionEntry,
-  HydratedActiveTask,
-} from "../hooks/useTaskRun";
-import type { TaskDefinition } from "../data/tasks";
+  ActiveRun,
+  Quest,
+} from "../stores/useQuestStore";
 import { ActiveTaskCard } from "./ActiveTaskCard";
 import { TaskPreviewDeck } from "./TaskPreviewDeck";
 import styles from "../App.module.css";
 
 type Props = {
-  activeTask: HydratedActiveTask | null;
-  activeTaskCompletions: CompletionEntry[];
-  offeredTasks: TaskDefinition[];
+  activeQuest: Quest | null;
+  activeRun: ActiveRun | null;
+  offeredQuests: Quest[];
   animateEntrance: boolean;
   reduceMotion: boolean;
   shuffling: boolean;
-  onSelect: (taskId: string) => void;
+  onSelect: (questId: string) => void;
   onShuffleAnimationComplete: () => void;
   onReplace: () => void;
   onPause: (pausedAt: number) => void;
@@ -26,9 +25,9 @@ type Props = {
 };
 
 export function TaskScreen({
-  activeTask,
-  activeTaskCompletions,
-  offeredTasks,
+  activeQuest,
+  activeRun,
+  offeredQuests,
   animateEntrance,
   reduceMotion,
   shuffling,
@@ -39,7 +38,7 @@ export function TaskScreen({
   onResume,
   onComplete,
 }: Props) {
-  const isActive = Boolean(activeTask);
+  const isActive = Boolean(activeQuest && activeRun);
   const wasActiveRef = useRef(isActive);
   const deckSessionRef = useRef(0);
   if (wasActiveRef.current && !isActive) {
@@ -48,14 +47,14 @@ export function TaskScreen({
   wasActiveRef.current = isActive;
 
   const deckKey = `deck-session-${deckSessionRef.current}`;
-  const activeKey = activeTask
-    ? `active-${activeTask.assignment.assignmentId}`
+  const activeKey = activeRun
+    ? `active-${activeRun.assignmentId}`
     : "active";
 
   return (
     <section
       className={styles.screen}
-      data-active={activeTask ? "true" : undefined}
+      data-active={isActive ? "true" : undefined}
       aria-labelledby="task-screen-title"
     >
       <h1 className={styles.srOnly} id="task-screen-title">
@@ -65,13 +64,13 @@ export function TaskScreen({
             respectReducedMotion
             duration={300}
           >
-            {activeTask ? "Current task" : "Choose a task"}
+            {isActive ? "Current task" : "Choose a task"}
           </TextMorph>
       </h1>
 
       <LayoutGroup id="task-selection">
         <AnimatePresence initial={animateEntrance} mode="sync">
-          {activeTask ? (
+          {activeQuest && activeRun ? (
             <motion.div
               className={styles.activeWrap}
               key={activeKey}
@@ -87,8 +86,9 @@ export function TaskScreen({
               }
             >
               <ActiveTaskCard
-                item={activeTask}
-                previousCompletions={activeTaskCompletions}
+                quest={activeQuest}
+                run={activeRun}
+                previousCompletions={activeQuest.completedGames}
                 reduceMotion={reduceMotion}
                 onReplace={onReplace}
                 onPause={onPause}
@@ -114,7 +114,7 @@ export function TaskScreen({
               }
             >
               <TaskPreviewDeck
-                tasks={offeredTasks}
+                tasks={offeredQuests}
                 animateEntrance={animateEntrance}
                 reduceMotion={reduceMotion}
                 shuffling={shuffling}
