@@ -822,7 +822,7 @@
 
 .previousCompletionHistory {
   position: absolute;
-  top: 60%;
+  top: calc(60% + 24px);
   right: 5%;
   left: 5%;
   z-index: 8;
@@ -831,13 +831,21 @@
   color: var(--ink);
 }
 
-.previousCompletionHistory > p {
+.previousCompletionDesktopLabel,
+.previousCompletionMobileLabel {
   margin: 0 0 16px;
   color: rgb(8 8 10 / 0.5);
   font-size: 0.82rem;
   font-weight: 650;
   line-height: 1.35;
   text-align: center;
+}
+
+.previousCompletionMobileLabel,
+.previousCompletionMobileHeader,
+.previousCompletionToggle,
+.previousCompletionMobilePanel {
+  display: none;
 }
 
 .previousCompletionViewport {
@@ -875,7 +883,7 @@
 .previousCompletionList {
   display: grid;
   max-height: 135px;
-  padding: 0;
+  padding: 0 0 20px;
   margin: 0;
   gap: 6px;
   list-style: none;
@@ -886,7 +894,7 @@
   touch-action: pan-y;
 }
 
-.previousCompletionList li {
+.previousCompletionEntry {
   display: grid;
   min-width: 0;
   align-items: baseline;
@@ -897,7 +905,7 @@
   line-height: 1.35;
 }
 
-.previousCompletionList strong {
+.previousCompletionEntry strong {
   min-width: 0;
   overflow: hidden;
   color: rgb(8 8 10 / 1);
@@ -906,7 +914,7 @@
   white-space: nowrap;
 }
 
-.previousCompletionList time {
+.previousCompletionEntry time {
   color: rgb(8 8 10 / 0.5);
   font: inherit;
   font-variant-numeric: tabular-nums;
@@ -1427,6 +1435,15 @@
     left: 50%;
     width: min(calc(100vw - 32px), 390px);
     transform: translateX(-50%);
+    transition: top 360ms cubic-bezier(0.22, 0.8, 0.24, 1);
+  }
+
+  .activeExperience[data-previous-history-open] .activeCardStage {
+    top: calc(63svh + var(--previous-history-height, 0px));
+  }
+
+  .activeExperience[data-previous-history-open] .timerRig {
+    overflow: visible;
   }
 
   .activeQuestCard {
@@ -1485,6 +1502,78 @@
     font-size: 0.76rem;
   }
 
+  .previousCompletionHistory {
+    top: 70%;
+    right: 18px;
+    left: 18px;
+    width: min(calc(100% - 36px), 340px);
+  }
+
+  .previousCompletionDesktopLabel,
+  .previousCompletionDesktopList {
+    display: none;
+  }
+
+  .previousCompletionMobileHeader {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .previousCompletionMobileLabel {
+    display: block;
+    margin: 0;
+    text-align: left;
+  }
+
+  .previousCompletionToggle {
+    display: flex;
+    width: fit-content;
+    min-height: 30px;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 11px;
+    border: 0;
+    border-radius: 999px;
+    margin: 0;
+    background: rgb(8 8 10 / 0.055);
+    color: rgb(8 8 10 / 0.5);
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 700;
+    touch-action: manipulation;
+    transition: background 140ms ease;
+  }
+
+  .previousCompletionToggle:hover {
+    background: rgb(8 8 10 / 0.09);
+  }
+
+  .previousCompletionToggle svg {
+    width: 13px;
+    height: 13px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+    transition: transform 180ms ease;
+  }
+
+  .previousCompletionToggle[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+
+  .previousCompletionMobilePanel {
+    display: block;
+    padding-top: 10px;
+    overflow: hidden;
+  }
+
   .pausePanel {
     top: 56%;
     bottom: auto;
@@ -1531,6 +1620,10 @@
 
   .activeQuestCard {
     animation: none;
+  }
+
+  .activeCardStage {
+    transition: none;
   }
 
   .previewCardHitArea:hover .previewCard,
