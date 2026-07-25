@@ -16,8 +16,12 @@ import {
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
+  type UIEvent as ReactUIEvent,
 } from "react";
-import type { HydratedActiveTask } from "../hooks/useTaskRun";
+import type {
+  CompletionEntry,
+  HydratedActiveTask,
+} from "../hooks/useTaskRun";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import { formatRunningDuration } from "../lib/format";
 import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
@@ -37,6 +41,7 @@ import styles from "../App.module.css";
 
 type Props = {
   item: HydratedActiveTask;
+  previousCompletions: CompletionEntry[];
   reduceMotion: boolean;
   onReplace: () => void;
   onPause: (pausedAt: number) => void;
@@ -99,6 +104,7 @@ const activeCardArc = arc({
 
 export function ActiveTaskCard({
   item,
+  previousCompletions,
   reduceMotion,
   onReplace,
   onPause,
@@ -893,23 +899,104 @@ export function ActiveTaskCard({
 
         <AnimatePresence mode="wait">
           {!exiting && !timerSettling && (
-            <motion.p
-              className={styles.timerHint}
-              key={phase}
-              initial={reduceMotion ? false : { opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
-              transition={{ duration: reduceMotion ? 0 : 0.16, ease: "easeOut" }}
-            >
-              <span>
-                Pull the timer to {phase === "paused" ? "resume" : "pause"}.
-              </span>
-              <span>Cut the rope to stop.</span>
-            </motion.p>
+            phase === "running" && previousCompletions.length > 0 ? (
+              <PreviousCompletionHistory
+                entries={previousCompletions}
+                reduceMotion={reduceMotion}
+              />
+            ) : (
+              <motion.p
+                className={styles.timerHint}
+                key={phase}
+                initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.16,
+                  ease: "easeOut",
+                }}
+              >
+                <span>
+                  Pull the timer to {phase === "paused" ? "resume" : "pause"}.
+                </span>
+                <span>Cut the rope to stop.</span>
+              </motion.p>
+            )
           )}
         </AnimatePresence>
       </motion.div>
     </div>
+  );
+}
+
+function PreviousCompletionHistory({
+  entries,
+  reduceMotion,
+}: {
+  entries: CompletionEntry[];
+  reduceMotion: boolean;
+}) {
+  const listRef = useRef<HTMLUListElement>(null);
+  const [scrollEdges, setScrollEdges] = useState({
+    atBottom: true,
+    atTop: true,
+  });
+
+  const updateScrollEdges = useCallback((element: HTMLUListElement) => {
+    setScrollEdges({
+      atBottom:
+        element.scrollHeight - element.clientHeight - element.scrollTop <= 1,
+      atTop: element.scrollTop <= 1,
+    });
+  }, []);
+
+  useEffect(() => {
+    const element = listRef.current;
+    if (!element) return;
+
+    updateScrollEdges(element);
+    const resizeObserver = new ResizeObserver(() => updateScrollEdges(element));
+    resizeObserver.observe(element);
+    return () => resizeObserver.disconnect();
+  }, [entries, updateScrollEdges]);
+
+  function handleScroll(event: ReactUIEvent<HTMLUListElement>) {
+    updateScrollEdges(event.currentTarget);
+  }
+
+  return (
+    <motion.section
+      className={styles.previousCompletionHistory}
+      key="previous-completions"
+      aria-label="Previous completions for this quest"
+      initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
+      transition={{ duration: reduceMotion ? 0 : 0.16, ease: "easeOut" }}
+      onPointerDown={(event) => event.stopPropagation()}
+    >
+      <p>You&apos;ve completed this quest before.</p>
+      <div
+        className={styles.previousCompletionViewport}
+        data-fade-bottom={!scrollEdges.atBottom || undefined}
+        data-fade-top={!scrollEdges.atTop || undefined}
+      >
+        <ul
+          ref={listRef}
+          className={styles.previousCompletionList}
+          onScroll={handleScroll}
+        >
+          {entries.map((entry) => (
+            <li key={entry.entryId}>
+              <strong title={entry.gameTitle}>{entry.gameTitle}</strong>
+              <time dateTime={`PT${Math.round(entry.durationMs / 1000)}S`}>
+                {formatRunningDuration(entry.durationMs)}
+              </time>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </motion.section>
   );
 }
 

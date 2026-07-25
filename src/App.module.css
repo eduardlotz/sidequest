@@ -820,6 +820,102 @@
   pointer-events: none;
 }
 
+.previousCompletionHistory {
+  position: absolute;
+  top: 60%;
+  right: 5%;
+  left: 5%;
+  z-index: 8;
+  width: min(100%, 340px);
+  margin-inline: auto;
+  color: var(--ink);
+}
+
+.previousCompletionHistory > p {
+  margin: 0 0 16px;
+  color: rgb(8 8 10 / 0.5);
+  font-size: 0.82rem;
+  font-weight: 650;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.previousCompletionViewport {
+  position: relative;
+}
+
+.previousCompletionViewport::before,
+.previousCompletionViewport::after {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: 24px;
+  opacity: 0;
+  pointer-events: none;
+  content: "";
+  transition: opacity 140ms ease;
+}
+
+.previousCompletionViewport::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--canvas), transparent);
+}
+
+.previousCompletionViewport::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--canvas), transparent);
+}
+
+.previousCompletionViewport[data-fade-top]::before,
+.previousCompletionViewport[data-fade-bottom]::after {
+  opacity: 1;
+}
+
+.previousCompletionList {
+  display: grid;
+  max-height: 135px;
+  padding: 0;
+  margin: 0;
+  gap: 6px;
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-color: rgb(8 8 10 / 0.18) transparent;
+  scrollbar-width: thin;
+  touch-action: pan-y;
+}
+
+.previousCompletionList li {
+  display: grid;
+  min-width: 0;
+  align-items: baseline;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  font-size: 0.875rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.previousCompletionList strong {
+  min-width: 0;
+  overflow: hidden;
+  color: rgb(8 8 10 / 1);
+  font: inherit;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.previousCompletionList time {
+  color: rgb(8 8 10 / 0.5);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings:
+    "tnum" 1,
+    "lnum" 1;
+  text-align: right;
+}
+
 .activeCardProjection {
   position: relative;
   transform-style: preserve-3d;

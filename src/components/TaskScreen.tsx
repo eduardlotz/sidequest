@@ -1,7 +1,10 @@
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { useRef } from "react";
 import { TextMorph } from "torph/react";
-import type { HydratedActiveTask } from "../hooks/useTaskRun";
+import type {
+  CompletionEntry,
+  HydratedActiveTask,
+} from "../hooks/useTaskRun";
 import type { TaskDefinition } from "../data/tasks";
 import { ActiveTaskCard } from "./ActiveTaskCard";
 import { TaskPreviewDeck } from "./TaskPreviewDeck";
@@ -9,6 +12,7 @@ import styles from "../App.module.css";
 
 type Props = {
   activeTask: HydratedActiveTask | null;
+  activeTaskCompletions: CompletionEntry[];
   offeredTasks: TaskDefinition[];
   animateEntrance: boolean;
   reduceMotion: boolean;
@@ -23,6 +27,7 @@ type Props = {
 
 export function TaskScreen({
   activeTask,
+  activeTaskCompletions,
   offeredTasks,
   animateEntrance,
   reduceMotion,
@@ -83,6 +88,7 @@ export function TaskScreen({
             >
               <ActiveTaskCard
                 item={activeTask}
+                previousCompletions={activeTaskCompletions}
                 reduceMotion={reduceMotion}
                 onReplace={onReplace}
                 onPause={onPause}

@@ -34,6 +34,10 @@ export function App() {
   const [shuffling, setShuffling] = useState(false);
   const [brandRotation, setBrandRotation] = useState(0);
   const desktop = useDesktopSheet();
+  const activeTaskCompletions = activeTask
+    ? completedTasks.find((item) => item.task.id === activeTask.task.id)
+        ?.completion.entries ?? []
+    : [];
 
   useEffect(() => {
     if (!toast) return;
@@ -214,6 +218,7 @@ export function App() {
       <main className={styles.main} id="main-content">
         <TaskScreen
           activeTask={activeTask}
+          activeTaskCompletions={activeTaskCompletions}
           offeredTasks={offeredTasks}
           animateEntrance={!introComplete}
           reduceMotion={reduceMotion}
