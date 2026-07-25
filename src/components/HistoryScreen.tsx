@@ -102,6 +102,7 @@ function HistoryAccordion({
     >
       <button
         className={styles.historyAccordionButton}
+        data-cuelume-toggle
         type="button"
         aria-expanded={expanded}
         aria-controls={panelId}

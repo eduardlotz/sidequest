@@ -2,11 +2,21 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Drawer } from "vaul";
 import styles from "./App.module.css";
-import { CheckIcon } from "./components/Icons";
+import {
+  CheckIcon,
+  SoundOffIcon,
+  SoundOnIcon,
+} from "./components/Icons";
 import { HistoryScreen } from "./components/HistoryScreen";
 import { TaskScreen } from "./components/TaskScreen";
 import { TASKS } from "./data/tasks";
 import { useTaskRun } from "./hooks/useTaskRun";
+import {
+  applySoundEnabled,
+  bindSounds,
+  playSound,
+  readSoundEnabled,
+} from "./lib/sound";
 
 type Toast = {
   id: string;
@@ -33,7 +43,16 @@ export function App() {
   const [introComplete, setIntroComplete] = useState(reduceMotion);
   const [shuffling, setShuffling] = useState(false);
   const [brandRotation, setBrandRotation] = useState(0);
+  const [soundEnabled, setSoundEnabled] = useState(readSoundEnabled);
   const desktop = useDesktopSheet();
+
+  useEffect(() => {
+    bindSounds();
+  }, []);
+
+  useEffect(() => {
+    applySoundEnabled(soundEnabled);
+  }, [soundEnabled]);
 
   useEffect(() => {
     if (!toast) return;
@@ -62,6 +81,7 @@ export function App() {
 
   function handleShuffle() {
     if (activeTask || shuffling) return;
+    playSound("sparkle");
     setBrandRotation((rotation) => rotation + 360);
     if (reduceMotion) {
       shuffleTasks();
@@ -74,6 +94,19 @@ export function App() {
     if (!shuffling) return;
     shuffleTasks();
     setShuffling(false);
+  }
+
+  function handleSoundToggle() {
+    if (soundEnabled) {
+      playSound("droplet");
+      applySoundEnabled(false);
+      setSoundEnabled(false);
+      return;
+    }
+
+    applySoundEnabled(true);
+    setSoundEnabled(true);
+    playSound("ready");
   }
 
   return (
@@ -108,6 +141,7 @@ export function App() {
             <Drawer.Trigger asChild>
               <button
                 className={styles.navAction}
+                data-cuelume-toggle
                 data-active={aboutOpen || undefined}
                 type="button"
               >
@@ -170,44 +204,57 @@ export function App() {
                 }
           }
         >
-          <Drawer.Root
-            direction={desktop ? "right" : "bottom"}
-            open={historyOpen}
-            onOpenChange={setHistoryOpen}
-            shouldScaleBackground={false}
-          >
-            <Drawer.Trigger asChild>
-              <button
-                className={styles.navAction}
-                data-active={historyOpen || undefined}
-                type="button"
-              >
-                History
-              </button>
-            </Drawer.Trigger>
-            <Drawer.Portal>
-              <Drawer.Overlay className={styles.drawerOverlay} />
-              <Drawer.Content
-                className={`${styles.floatingDrawer} ${styles.historyDrawer}`}
-                data-direction={desktop ? "right" : "bottom"}
-              >
-                <Drawer.Title className={styles.srOnly}>
-                  Quest history
-                </Drawer.Title>
-                <Drawer.Description className={styles.srOnly}>
-                  Completed sidequests with games and completion times.
-                </Drawer.Description>
-                {!desktop && (
-                  <div className={styles.drawerHandle} aria-hidden="true" />
-                )}
-                <HistoryScreen
-                  completedTasks={completedTasks}
-                  reduceMotion={reduceMotion}
-                  totalTaskCount={TASKS.length}
-                />
-              </Drawer.Content>
-            </Drawer.Portal>
-          </Drawer.Root>
+          <div className={styles.navActionGroup}>
+            <Drawer.Root
+              direction={desktop ? "right" : "bottom"}
+              open={historyOpen}
+              onOpenChange={setHistoryOpen}
+              shouldScaleBackground={false}
+            >
+              <Drawer.Trigger asChild>
+                <button
+                  className={styles.navAction}
+                  data-cuelume-toggle
+                  data-active={historyOpen || undefined}
+                  type="button"
+                >
+                  History
+                </button>
+              </Drawer.Trigger>
+              <Drawer.Portal>
+                <Drawer.Overlay className={styles.drawerOverlay} />
+                <Drawer.Content
+                  className={`${styles.floatingDrawer} ${styles.historyDrawer}`}
+                  data-direction={desktop ? "right" : "bottom"}
+                >
+                  <Drawer.Title className={styles.srOnly}>
+                    Quest history
+                  </Drawer.Title>
+                  <Drawer.Description className={styles.srOnly}>
+                    Completed sidequests with games and completion times.
+                  </Drawer.Description>
+                  {!desktop && (
+                    <div className={styles.drawerHandle} aria-hidden="true" />
+                  )}
+                  <HistoryScreen
+                    completedTasks={completedTasks}
+                    reduceMotion={reduceMotion}
+                    totalTaskCount={TASKS.length}
+                  />
+                </Drawer.Content>
+              </Drawer.Portal>
+            </Drawer.Root>
+            <button
+              className={styles.soundAction}
+              type="button"
+              aria-label={soundEnabled ? "Mute sounds" : "Unmute sounds"}
+              aria-pressed={!soundEnabled}
+              title={soundEnabled ? "Mute sounds" : "Unmute sounds"}
+              onClick={handleSoundToggle}
+            >
+              {soundEnabled ? <SoundOnIcon /> : <SoundOffIcon />}
+            </button>
+          </div>
         </motion.div>
       </header>
 

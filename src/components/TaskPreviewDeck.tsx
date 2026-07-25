@@ -2,6 +2,7 @@ import { arc, motion } from "motion/react";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { TaskDefinition } from "../data/tasks";
 import { useTiltEffect } from "../hooks/useTiltEffect";
+import { playSound } from "../lib/sound";
 import { DifficultyDots } from "./DifficultyDots";
 import styles from "../App.module.css";
 
@@ -57,12 +58,14 @@ export function TaskPreviewDeck({
 
   function selectCard(taskId: string) {
     if (selectedTaskId) return;
+    playSound("loading");
     setSelectedTaskId(taskId);
     window.requestAnimationFrame(() => onSelect(taskId));
   }
 
   function cycleCard(direction: -1 | 1, focusNext = false) {
     if (selectedTaskId || tasks.length < 2) return;
+    playSound("page");
     setActiveCardIndex(
       (current) => (current + direction + tasks.length) % tasks.length,
     );

@@ -43,6 +43,7 @@ function TabButton({ active, icon, label, onClick, tab }: TabButtonProps) {
   return (
     <button
       className={styles.tabButton}
+      data-cuelume-toggle
       data-active={active || undefined}
       type="button"
       role="tab"

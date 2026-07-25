@@ -20,6 +20,7 @@ import {
 import type { HydratedActiveTask } from "../hooks/useTaskRun";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import { formatRunningDuration } from "../lib/format";
+import { playSound } from "../lib/sound";
 import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
 import { DifficultyDots } from "./DifficultyDots";
 import {
@@ -306,6 +307,7 @@ export function ActiveTaskCard({
 
   function pause() {
     if (pausedAtRef.current !== null || phase !== "running") return;
+    playSound("droplet");
     const pausedAt = Date.now();
     pausedAtRef.current = pausedAt;
     onPause(pausedAt);
@@ -317,6 +319,7 @@ export function ActiveTaskCard({
   function finishResume(pose: TimerPose) {
     if (!resumePendingRef.current) return;
     resumePendingRef.current = false;
+    playSound("ready");
     if (pausedAtRef.current !== null) {
       const resumedAt = Date.now();
       pausedTotalRef.current += resumedAt - pausedAtRef.current;
@@ -355,6 +358,7 @@ export function ActiveTaskCard({
     const resolvedGameTitle = gameTitle.trim();
     if (next === "completed" && !resolvedGameTitle) return;
     if (next === "cutting" && !ropeCut) return;
+    playSound(next === "completed" ? "success" : "droplet");
     stopTimerAnimation();
     timerReturningRef.current = false;
     timerDraggingRef.current = false;
@@ -765,6 +769,7 @@ export function ActiveTaskCard({
           dragMomentum={false}
           style={{ x, y }}
           onDragStart={() => {
+            playSound("press");
             stopTimerAnimation();
             timerReturningRef.current = false;
             setTimerSettling(true);
@@ -833,6 +838,7 @@ export function ActiveTaskCard({
                   <input
                     aria-label="Game title"
                     autoComplete="off"
+                    data-cuelume-press
                     maxLength={GAME_TITLE_MAX_LENGTH}
                     placeholder="Game title"
                     required
@@ -841,6 +847,17 @@ export function ActiveTaskCard({
                     value={gameTitle}
                     onChange={(event) => setGameTitle(event.target.value)}
                     onKeyDown={(event) => {
+                      if (
+                        !event.nativeEvent.isComposing &&
+                        !event.altKey &&
+                        !event.ctrlKey &&
+                        !event.metaKey &&
+                        (event.key.length === 1 ||
+                          event.key === "Backspace" ||
+                          event.key === "Delete")
+                      ) {
+                        playSound("tick");
+                      }
                       const selectionLength = Math.max(
                         0,
                         (event.currentTarget.selectionEnd ?? 0) -
