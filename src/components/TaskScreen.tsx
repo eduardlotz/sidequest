@@ -1,10 +1,6 @@
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { useRef } from "react";
-import { TextMorph } from "torph/react";
-import type {
-  Quest,
-  QuestSession,
-} from "../stores/useQuestStore";
+import type { Quest, QuestSession } from "../stores/useQuestStore";
 import { ActiveTaskCard } from "./ActiveTaskCard";
 import { TaskPreviewDeck } from "./TaskPreviewDeck";
 import styles from "../App.module.css";
@@ -50,15 +46,9 @@ export function TaskScreen({
       data-active={isActive ? "true" : undefined}
       aria-labelledby="task-screen-title"
     >
+      {/* TODO: fix this mess */}
       <h1 className={styles.srOnly} id="task-screen-title">
-        <TextMorph
-          as="span"
-          disabled={reduceMotion}
-          respectReducedMotion
-          duration={300}
-        >
-          {isActive ? "Current quest" : "Choose a quest"}
-        </TextMorph>
+        {isActive ? "Current quest" : "Choose a quest"}
       </h1>
 
       <LayoutGroup id="task-selection">

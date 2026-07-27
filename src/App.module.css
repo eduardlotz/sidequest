@@ -618,9 +618,7 @@
 }
 
 .activeExperience[data-phase="paused"]:not([data-rope-mode="resumePullback"])
-  .elapsedTime,
-.activeExperience[data-phase="paused"]:not([data-rope-mode="resumePullback"])
-  .timerColon {
+  .elapsedTime {
   color: #85858d;
 }
 
@@ -656,7 +654,7 @@
 
 .timerDigits {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
   font-variant-numeric: tabular-nums;
   font-feature-settings:
@@ -664,38 +662,6 @@
     "lnum" 1;
   letter-spacing: 0;
   line-height: 1.08;
-}
-
-.timerDigitCell {
-  position: relative;
-  display: block;
-  width: 0.68em;
-  height: 1.16em;
-  flex: 0 0 0.68em;
-  overflow: clip;
-}
-
-.timerDigit {
-  position: absolute;
-  inset: -0.03em 0 -0.04em;
-  display: grid;
-  place-items: center;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings:
-    "tnum" 1,
-    "lnum" 1;
-  letter-spacing: 0;
-}
-
-.timerColon {
-  display: grid;
-  width: 0.3em;
-  height: 1.16em;
-  flex: 0 0 0.3em;
-  place-items: center;
-  color: #7c7c84;
-  text-align: center;
-  transition: color 180ms ease;
 }
 
 .pausePanel {
@@ -2509,9 +2475,7 @@
 }
 
 .activeExperience[data-phase="ready"]:not([data-rope-mode="resumePullback"])
-  .elapsedTime,
-.activeExperience[data-phase="ready"]:not([data-rope-mode="resumePullback"])
-  .timerColon {
+  .elapsedTime {
   color: #85858d;
 }
 

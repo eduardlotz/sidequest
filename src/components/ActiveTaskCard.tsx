@@ -9,6 +9,10 @@ import {
   useMotionValueEvent,
   useSpring,
 } from "motion/react";
+import NumberFlow, {
+  NumberFlowGroup,
+  type Format,
+} from "@number-flow/react";
 import {
   useCallback,
   useEffect,
@@ -34,7 +38,6 @@ import { QUEST_GENRE_LABELS } from "../data/questTaxonomy";
 import { CARD_LAYOUT_TRANSITION } from "../lib/cardMotion";
 import { formatRunningDuration } from "../lib/format";
 import { playSound } from "../lib/sound";
-import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
 import { CompletionCheckIcon } from "./CompletionCheckIcon";
 import { QuestCardBack } from "./QuestCardBack";
 import {
@@ -78,6 +81,12 @@ const CUT_TRAIL_WIDTH_PEAK = 0.75;
 const CARD_FOCUS_DISMISS_DISTANCE = 96;
 const CARD_FOCUS_DISMISS_VELOCITY = 700;
 const MOBILE_VIEWPORT_QUERY = "(max-width: 820px)";
+const TIMER_TWO_DIGIT_FORMAT: Format = {
+  minimumIntegerDigits: 2,
+};
+const TIMER_BASE_SIXTY_DIGITS = {
+  1: { max: 5 },
+};
 
 const pausePanelVariants: Variants = {
   hidden: { opacity: 0 },
@@ -164,6 +173,10 @@ export function ActiveTaskCard({
   const [elapsedMs, setElapsedMs] = useState(() =>
     elapsedForAssignment(assignment, Date.now()),
   );
+  const elapsedSeconds = Math.max(0, Math.floor(elapsedMs / 1_000));
+  const timerHours = Math.floor(elapsedSeconds / 3_600);
+  const timerMinutes = Math.floor((elapsedSeconds % 3_600) / 60);
+  const timerSeconds = elapsedSeconds % 60;
   const [animateReveal] = useState(
     () => !reduceMotion && Date.now() - assignment.revealedAt < 1_500,
   );
@@ -1081,10 +1094,41 @@ export function ActiveTaskCard({
               <i />
               <i />
             </span>
-            <AnimatedElapsedTime
-              elapsedMs={elapsedMs}
-              reduceMotion={reduceMotion}
-            />
+            <div
+              className={styles.elapsedTime}
+              role="timer"
+              aria-live="off"
+              aria-label={`Elapsed time ${formatRunningDuration(elapsedMs)}`}
+            >
+              <NumberFlowGroup>
+                <div className={styles.timerDigits} aria-hidden="true">
+                  {timerHours > 0 && (
+                    <NumberFlow
+                      animated={!reduceMotion}
+                      format={TIMER_TWO_DIGIT_FORMAT}
+                      trend={1}
+                      value={timerHours}
+                    />
+                  )}
+                  <NumberFlow
+                    animated={!reduceMotion}
+                    digits={TIMER_BASE_SIXTY_DIGITS}
+                    format={TIMER_TWO_DIGIT_FORMAT}
+                    prefix={timerHours > 0 ? ":" : undefined}
+                    trend={1}
+                    value={timerMinutes}
+                  />
+                  <NumberFlow
+                    animated={!reduceMotion}
+                    digits={TIMER_BASE_SIXTY_DIGITS}
+                    format={TIMER_TWO_DIGIT_FORMAT}
+                    prefix=":"
+                    trend={1}
+                    value={timerSeconds}
+                  />
+                </div>
+              </NumberFlowGroup>
+            </div>
           </motion.div>
           <AnimatePresence>
             {(phase === "ready" || phase === "paused") && !timerSettling && (
