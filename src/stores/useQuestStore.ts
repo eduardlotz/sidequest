@@ -3,61 +3,87 @@ import {
   createJSONStorage,
   persist,
   type PersistStorage,
-  type StateStorage,
 } from "zustand/middleware";
 import { createStore, type StateCreator } from "zustand/vanilla";
+import { QUESTS, QUESTS_BY_ID, type QuestDefinition } from "../data/quests";
 import {
-  DIFFICULTIES,
-  QUESTS,
-  QUESTS_BY_ID,
-  QUEST_ID_BY_LEGACY_ID,
-  type QuestDefinition,
-  type QuestDifficulty,
-} from "../data/quests";
+  QUEST_GENRES,
+  type QuestArchetype,
+  type QuestGenre,
+} from "../data/questTaxonomy";
 
-const STORE_KEY = "sidequest.quests";
-const LEGACY_STORE_KEY = "sidequest.run.v1";
-const STORE_VERSION = 1;
-const RECENT_DRAW_WINDOW = 36;
-const STORED_RECENT_LIMIT = 60;
+export const STORE_KEY = "sidequest.quests";
+export const STORE_VERSION = 2;
+export const RECENT_DRAW_WINDOW = 12;
+export const STORED_RECENT_LIMIT = 30;
+
+export const AVATAR_THEMES = [
+  "default",
+  "wizard",
+  "party-hat",
+  "cook",
+  "baseball-cap",
+  "plumbob",
+  "tuxedo",
+  "graduation-hat",
+  "crown",
+  "pirate-hat",
+  "cowboy-hat",
+] as const;
+
+export type AvatarTheme = (typeof AVATAR_THEMES)[number];
+
+export type OnlinePreference = "include" | "exclude";
+
+export type UserProfile = {
+  onboardingComplete: boolean;
+  selectedGenres: QuestGenre[];
+  onlinePreference: OnlinePreference | null;
+  avatarTheme: AvatarTheme;
+};
+
+export type ProfileInput = {
+  selectedGenres: readonly QuestGenre[];
+  onlinePreference: OnlinePreference;
+  avatarTheme?: AvatarTheme;
+};
 
 export type CompletedGame = {
   id: string;
-  title: string;
+  title: string | null;
   highscoreMs: number;
   achievedAt: number;
 };
 
-export type Quest = QuestDefinition & {
+export type QuestProgress = {
   completedGames: CompletedGame[];
 };
 
-export type ActiveRun = {
-  assignmentId: string;
+export type QuestSession = {
+  sessionId: string;
   questId: string;
-  startedAt: number;
+  revealedAt: number;
+  startedAt: number | null;
   pausedAt: number | null;
   pausedTotalMs: number;
 };
 
-export type CompletionOutcome =
-  | "new-title"
-  | "new-highscore"
-  | "not-improved";
-
-type QuestState = {
-  quests: Record<string, Quest>;
-  activeRun: ActiveRun | null;
+export type QuestState = {
+  profile: UserProfile;
+  progressByQuestId: Record<string, QuestProgress>;
+  currentSession: QuestSession | null;
   offeredQuestIds: string[];
   recentQuestIds: string[];
 };
 
 type QuestActions = {
-  selectQuest: (questId: string) => void;
-  replaceQuest: () => void;
+  completeOnboarding: (profileInput: ProfileInput) => boolean;
+  updateProfile: (profileInput: ProfileInput) => boolean;
+  revealQuest: (questId: string) => void;
+  startQuest: (startedAt: number) => void;
   pauseQuest: (pausedAt: number) => void;
   resumeQuest: (resumedAt: number) => void;
-  shuffleQuests: () => void;
+  discardCurrentSession: () => void;
   completeQuest: (
     durationMs: number,
     gameTitle: string,
@@ -66,95 +92,203 @@ type QuestActions = {
 
 export type QuestStore = QuestState & QuestActions;
 
-type PersistedQuestState = Pick<
+export type PersistedQuestState = Pick<
   QuestState,
-  "quests" | "activeRun" | "recentQuestIds"
+  | "profile"
+  | "progressByQuestId"
+  | "currentSession"
+  | "offeredQuestIds"
+  | "recentQuestIds"
 >;
 
-const createQuestState: StateCreator<QuestStore> = (set, get) => {
-  const quests = createQuestDocuments();
-  const initialState: QuestState = {
-    quests,
-    activeRun: null,
-    offeredQuestIds: createOffers(quests, null, []),
+export type Quest = QuestDefinition & {
+  completedGames: CompletedGame[];
+};
+
+export type CompletionOutcome =
+  | "completed"
+  | "new-title"
+  | "new-highscore"
+  | "not-improved";
+
+type StoreOptions = {
+  random?: () => number;
+  now?: () => number;
+  createSessionId?: () => string;
+};
+
+export const DEFAULT_PROFILE: UserProfile = {
+  onboardingComplete: false,
+  selectedGenres: [],
+  onlinePreference: null,
+  avatarTheme: "default",
+};
+
+function createDefaultState(): QuestState {
+  return {
+    profile: { ...DEFAULT_PROFILE },
+    progressByQuestId: {},
+    currentSession: null,
+    offeredQuestIds: [],
     recentQuestIds: [],
   };
+}
 
-  return {
-    ...initialState,
-    selectQuest: (questId) => {
+function createQuestState(options: Required<StoreOptions>): StateCreator<QuestStore> {
+  return (set, get) => ({
+    ...createDefaultState(),
+    completeOnboarding: (profileInput) => {
+      const profile = validatedProfile(profileInput, "default");
+      if (!profile) return false;
+      set({
+        profile,
+        offeredQuestIds: generateQuestOffers(profile, [], options.random),
+        currentSession: null,
+        recentQuestIds: [],
+      });
+      return true;
+    },
+    updateProfile: (profileInput) => {
+      const state = get();
+      const profile = validatedProfile(
+        profileInput,
+        state.profile.avatarTheme,
+      );
+      if (!profile) return false;
+      set({
+        profile,
+        offeredQuestIds: state.currentSession
+          ? state.offeredQuestIds
+          : generateQuestOffers(
+              profile,
+              state.recentQuestIds,
+              options.random,
+            ),
+      });
+      return true;
+    },
+    revealQuest: (questId) => {
       set((state) => {
-        if (state.activeRun) return state;
-        if (!state.offeredQuestIds.includes(questId) || !state.quests[questId]) {
+        if (
+          state.currentSession ||
+          !state.offeredQuestIds.includes(questId) ||
+          !QUESTS_BY_ID[questId]
+        ) {
           return state;
         }
 
         return {
-          activeRun: {
-            assignmentId: crypto.randomUUID(),
+          currentSession: {
+            sessionId: options.createSessionId(),
             questId,
-            startedAt: Date.now(),
+            revealedAt: options.now(),
+            startedAt: null,
             pausedAt: null,
             pausedTotalMs: 0,
           },
-          recentQuestIds: [...state.recentQuestIds, questId].slice(
-            -STORED_RECENT_LIMIT,
-          ),
+          recentQuestIds: appendRecent(state.recentQuestIds, questId),
         };
       });
     },
-    replaceQuest: () => {
+    startQuest: (startedAt) => {
       set((state) => {
-        if (!state.activeRun) return state;
+        const session = state.currentSession;
+        if (!session || session.startedAt !== null) return state;
         return {
-          activeRun: null,
-          offeredQuestIds: createOffers(
-            state.quests,
-            null,
-            state.recentQuestIds,
-          ),
+          currentSession: {
+            ...session,
+            startedAt: Math.max(session.revealedAt, startedAt),
+          },
         };
       });
     },
     pauseQuest: (pausedAt) => {
       set((state) => {
-        const run = state.activeRun;
-        if (!run || run.pausedAt !== null) return state;
+        const session = state.currentSession;
+        if (
+          !session ||
+          session.startedAt === null ||
+          session.pausedAt !== null
+        ) {
+          return state;
+        }
         return {
-          activeRun: {
-            ...run,
-            pausedAt: Math.max(run.startedAt, pausedAt),
+          currentSession: {
+            ...session,
+            pausedAt: Math.max(session.startedAt, pausedAt),
           },
         };
       });
     },
     resumeQuest: (resumedAt) => {
       set((state) => {
-        const run = state.activeRun;
-        if (!run || run.pausedAt === null) return state;
+        const session = state.currentSession;
+        if (
+          !session ||
+          session.startedAt === null ||
+          session.pausedAt === null
+        ) {
+          return state;
+        }
         return {
-          activeRun: {
-            ...run,
+          currentSession: {
+            ...session,
             pausedAt: null,
             pausedTotalMs:
-              run.pausedTotalMs + Math.max(0, resumedAt - run.pausedAt),
+              session.pausedTotalMs +
+              Math.max(0, resumedAt - session.pausedAt),
           },
         };
       });
     },
-    shuffleQuests: () => {
+    discardCurrentSession: () => {
       set((state) => {
-        if (state.activeRun) return state;
-        const recentQuestIds = [
-          ...state.recentQuestIds,
-          ...state.offeredQuestIds,
-        ].slice(-STORED_RECENT_LIMIT);
-        return {
-          offeredQuestIds: createOffers(
-            state.quests,
-            null,
+        const session = state.currentSession;
+        if (!session) return state;
+        const recentQuestIds = appendRecent(
+          state.recentQuestIds,
+          session.questId,
+        );
+
+        if (session.startedAt === null) {
+          const slot = state.offeredQuestIds.indexOf(session.questId);
+          if (slot === -1) {
+            return {
+              currentSession: null,
+              offeredQuestIds: generateQuestOffers(
+                state.profile,
+                recentQuestIds,
+                options.random,
+              ),
+              recentQuestIds,
+            };
+          }
+
+          const retainedIds = state.offeredQuestIds.filter(
+            (_, index) => index !== slot,
+          );
+          const replacement = chooseReplacementQuest(
+            state.profile,
             recentQuestIds,
-            new Set(state.offeredQuestIds),
+            retainedIds,
+            options.random,
+          );
+          const offeredQuestIds = [...state.offeredQuestIds];
+          if (replacement) offeredQuestIds[slot] = replacement.id;
+
+          return {
+            currentSession: null,
+            offeredQuestIds,
+            recentQuestIds,
+          };
+        }
+
+        return {
+          currentSession: null,
+          offeredQuestIds: generateQuestOffers(
+            state.profile,
+            recentQuestIds,
+            options.random,
           ),
           recentQuestIds,
         };
@@ -162,81 +296,109 @@ const createQuestState: StateCreator<QuestStore> = (set, get) => {
     },
     completeQuest: (durationMs, gameTitle) => {
       const state = get();
-      const run = state.activeRun;
-      if (!run) return null;
-      const quest = state.quests[run.questId];
+      const session = state.currentSession;
+      if (!session || session.startedAt === null) return null;
       const title = cleanGameTitle(gameTitle);
-      if (!quest || !title) return null;
+      const quest = QUESTS_BY_ID[session.questId];
+      if (!quest) return null;
 
-      const update = upsertGameHighscore(quest.completedGames, {
-        id: gameIdFromTitle(title),
-        title,
-        highscoreMs: Math.max(0, durationMs),
-        achievedAt: Date.now(),
-      });
-      const quests =
-        update.outcome === "not-improved"
-          ? state.quests
-          : {
-              ...state.quests,
-              [quest.id]: {
-                ...quest,
-                completedGames: update.completedGames,
+      const existingProgress = state.progressByQuestId[quest.id] ?? {
+        completedGames: [],
+      };
+      const update = title
+        ? upsertGameHighscore(existingProgress.completedGames, {
+            id: gameIdFromTitle(title),
+            title,
+            highscoreMs: Math.max(0, durationMs),
+            achievedAt: options.now(),
+          })
+        : {
+            completedGames: sortCompletedGames([
+              {
+                id: `unnamed:${session.sessionId}`,
+                title: null,
+                highscoreMs: Math.max(0, durationMs),
+                achievedAt: options.now(),
               },
+              ...existingProgress.completedGames,
+            ]),
+            outcome: "completed" as const,
+          };
+      const progressByQuestId =
+        update.outcome === "not-improved"
+          ? state.progressByQuestId
+          : {
+              ...state.progressByQuestId,
+              [quest.id]: { completedGames: update.completedGames },
             };
+      const recentQuestIds = appendRecent(
+        state.recentQuestIds,
+        session.questId,
+      );
 
       set({
-        quests,
-        activeRun: null,
-        offeredQuestIds: createOffers(
-          quests,
-          null,
-          state.recentQuestIds,
+        progressByQuestId,
+        currentSession: null,
+        offeredQuestIds: generateQuestOffers(
+          state.profile,
+          recentQuestIds,
+          options.random,
         ),
+        recentQuestIds,
       });
       return update.outcome;
     },
-  };
-};
+  });
+}
 
 export function createQuestStore(
   storage?: PersistStorage<PersistedQuestState>,
+  storeOptions: StoreOptions = {},
 ) {
-  if (!storage) return createStore<QuestStore>()(createQuestState);
+  const options: Required<StoreOptions> = {
+    random: storeOptions.random ?? Math.random,
+    now: storeOptions.now ?? Date.now,
+    createSessionId:
+      storeOptions.createSessionId ?? (() => crypto.randomUUID()),
+  };
+  const stateCreator = createQuestState(options);
+  if (!storage) return createStore<QuestStore>()(stateCreator);
 
   return createStore<QuestStore>()(
-    persist(createQuestState, {
+    persist(stateCreator, {
       name: STORE_KEY,
       storage,
       version: STORE_VERSION,
-      partialize: ({ quests, activeRun, recentQuestIds }) => ({
-        quests,
-        activeRun,
+      partialize: ({
+        profile,
+        progressByQuestId,
+        currentSession,
+        offeredQuestIds,
+        recentQuestIds,
+      }) => ({
+        profile,
+        progressByQuestId,
+        currentSession,
+        offeredQuestIds,
         recentQuestIds,
       }),
       migrate: (persistedState, version) =>
-        version === 0
-          ? migrateLegacyRunState(persistedState)
-          : (persistedState as PersistedQuestState),
-      merge: (persistedState, currentState) => {
-        const persisted = persistedState as PersistedQuestState;
-        return {
-          ...currentState,
-          ...persisted,
-          offeredQuestIds: createOffers(
-            persisted.quests,
-            persisted.activeRun,
-            persisted.recentQuestIds,
-          ),
-        };
-      },
+        migratePersistedQuestState(persistedState, version),
+      merge: (persistedState, currentState) => ({
+        ...currentState,
+        ...sanitizePersistedQuestState(
+          persistedState,
+          options.random,
+        ),
+      }),
     }),
   );
 }
 
-const browserStorage = createJSONStorage<PersistedQuestState>(() =>
-  legacyAwareStorage(window.localStorage),
-);
+const browserStorage =
+  typeof window === "undefined"
+    ? undefined
+    : createJSONStorage<PersistedQuestState>(() => window.localStorage);
 
 export const questStore = createQuestStore(browserStorage);
 
@@ -244,110 +406,303 @@ export function useQuestStore<T>(selector: (state: QuestStore) => T) {
   return useStore(questStore, selector);
 }
 
+export function hydrateQuest(
+  questId: string,
+  progressByQuestId: Record<string, QuestProgress>,
+): Quest | null {
+  const definition = QUESTS_BY_ID[questId];
+  if (!definition) return null;
+  return {
+    ...definition,
+    completedGames: progressByQuestId[questId]?.completedGames ?? [],
+  };
+}
+
+export function generateQuestOffers(
+  profile: UserProfile,
+  recentQuestIds: readonly string[],
+  random: () => number = Math.random,
+  excludedIds: ReadonlySet<string> = new Set(),
+  count = 3,
+) {
+  if (!profile.onboardingComplete || profile.selectedGenres.length === 0) {
+    return [];
+  }
+
+  const selectedGenres = new Set(profile.selectedGenres);
+  const eligible = QUESTS.filter(
+    (quest) =>
+      selectedGenres.has(quest.primaryGenre) &&
+      (profile.onlinePreference !== "exclude" || !quest.requiresOnline),
+  );
+  const preferred = eligible.filter((quest) => !excludedIds.has(quest.id));
+  const pool = preferred.length >= count ? preferred : eligible;
+  return chooseDiverseQuests(pool, recentQuestIds, count, random).map(
+    (quest) => quest.id,
+  );
+}
+
+export function migratePersistedQuestState(
+  _persistedState: unknown,
+  version: number,
+): PersistedQuestState {
+  if (version !== STORE_VERSION) return createDefaultState();
+  return sanitizePersistedQuestState(_persistedState, Math.random);
+}
+
+export function sanitizePersistedQuestState(
+  value: unknown,
+  random: () => number = Math.random,
+): PersistedQuestState {
+  if (!isRecord(value)) return createDefaultState();
+
+  const profile = profileFromUnknown(value.profile);
+  if (!profile.onboardingComplete) {
+    return {
+      ...createDefaultState(),
+      profile,
+    };
+  }
+
+  const progressByQuestId = progressFromUnknown(value.progressByQuestId);
+  const currentSession = sessionFromUnknown(value.currentSession);
+  const recentQuestIds = stringArray(value.recentQuestIds)
+    .filter((id) => Boolean(QUESTS_BY_ID[id]))
+    .slice(-STORED_RECENT_LIMIT);
+  const offeredQuestIds = uniqueStrings(value.offeredQuestIds).filter(
+    (id) => Boolean(QUESTS_BY_ID[id]),
+  );
+
+  if (offeredQuestIds.length < 3) {
+    const generated = generateQuestOffers(
+      profile,
+      recentQuestIds,
+      random,
+      new Set(offeredQuestIds),
+    );
+    for (const questId of generated) {
+      if (offeredQuestIds.includes(questId)) continue;
+      offeredQuestIds.push(questId);
+      if (offeredQuestIds.length === 3) break;
+    }
+  }
+
+  return {
+    profile,
+    progressByQuestId,
+    currentSession,
+    offeredQuestIds: offeredQuestIds.slice(0, 3),
+    recentQuestIds,
+  };
+}
+
 export function getCompletionOutcome(
   completedGames: readonly CompletedGame[],
   gameTitle: string,
   durationMs: number,
 ): CompletionOutcome {
-  const gameId = gameIdFromTitle(gameTitle);
+  const title = cleanGameTitle(gameTitle);
+  if (!title) return "completed";
+  const gameId = gameIdFromTitle(title);
   const existing = completedGames.find((game) => game.id === gameId);
-
   if (!existing) return "new-title";
   return Math.max(0, durationMs) < existing.highscoreMs
     ? "new-highscore"
     : "not-improved";
 }
 
-export function migrateLegacyRunState(value: unknown): PersistedQuestState {
-  const quests = createQuestDocuments();
-  if (!isRecord(value)) {
-    return { quests, activeRun: null, recentQuestIds: [] };
+export function cleanGameTitle(gameTitle: string) {
+  return gameTitle.trim().replace(/\s+/gu, " ");
+}
+
+function validatedProfile(
+  input: ProfileInput,
+  fallbackAvatar: AvatarTheme,
+): UserProfile | null {
+  const selectedGenres = Array.from(
+    new Set(input.selectedGenres.filter(isQuestGenre)),
+  );
+  if (
+    selectedGenres.length === 0 ||
+    !isOnlinePreference(input.onlinePreference)
+  ) {
+    return null;
   }
+  return {
+    onboardingComplete: true,
+    selectedGenres,
+    onlinePreference: input.onlinePreference,
+    avatarTheme: isAvatarTheme(input.avatarTheme)
+      ? input.avatarTheme
+      : fallbackAvatar,
+  };
+}
 
-  if (Array.isArray(value.completed)) {
-    for (const group of value.completed) {
-      if (!isRecord(group)) continue;
-      const questId = resolveQuestId(group.taskId);
-      if (!questId) continue;
-      const entries = Array.isArray(group.entries) ? group.entries : [group];
-      let completedGames = quests[questId].completedGames;
+function profileFromUnknown(value: unknown): UserProfile {
+  if (!isRecord(value)) return { ...DEFAULT_PROFILE };
+  const selectedGenres = uniqueStrings(value.selectedGenres).filter(
+    isQuestGenre,
+  );
+  const hadCompletedProfile =
+    value.onboardingComplete === true && selectedGenres.length > 0;
+  const onlinePreference = isOnlinePreference(value.onlinePreference)
+    ? value.onlinePreference
+    : hadCompletedProfile
+      ? "include"
+      : null;
+  const onboardingComplete =
+    hadCompletedProfile && onlinePreference !== null;
+  return {
+    onboardingComplete,
+    selectedGenres,
+    onlinePreference,
+    avatarTheme: isAvatarTheme(value.avatarTheme)
+      ? value.avatarTheme
+      : "default",
+  };
+}
 
-      for (const entry of entries) {
-        const game = legacyCompletedGameFrom(entry);
-        if (!game) continue;
-        completedGames = upsertGameHighscore(completedGames, game).completedGames;
+function progressFromUnknown(value: unknown) {
+  if (!isRecord(value)) return {};
+  const progressByQuestId: Record<string, QuestProgress> = {};
+
+  for (const [questId, progress] of Object.entries(value)) {
+    if (!QUESTS_BY_ID[questId] || !isRecord(progress)) continue;
+    let completedGames: CompletedGame[] = [];
+    if (Array.isArray(progress.completedGames)) {
+      for (const game of progress.completedGames) {
+        const parsed = completedGameFromUnknown(game);
+        if (!parsed) continue;
+        completedGames = upsertGameHighscore(completedGames, parsed).completedGames;
       }
-
-      quests[questId] = { ...quests[questId], completedGames };
+    }
+    if (completedGames.length > 0) {
+      progressByQuestId[questId] = { completedGames };
     }
   }
 
-  const activeRun = Array.isArray(value.active)
-    ? value.active
-        .map(legacyActiveRunFrom)
-        .filter((run): run is ActiveRun => run !== null)
-        .sort((a, b) => b.startedAt - a.startedAt)[0] ?? null
-    : null;
-  const recentQuestIds = Array.isArray(value.recentTaskIds)
-    ? value.recentTaskIds
-        .flatMap((id) => {
-          const questId = resolveQuestId(id);
-          return questId ? [questId] : [];
-        })
-        .slice(-STORED_RECENT_LIMIT)
-    : [];
-
-  return { quests, activeRun, recentQuestIds };
+  return progressByQuestId;
 }
 
-function createQuestDocuments() {
-  return Object.fromEntries(
-    QUESTS.map((quest) => [
-      quest.id,
-      { ...quest, completedGames: [] satisfies CompletedGame[] },
-    ]),
-  ) as Record<string, Quest>;
+function sessionFromUnknown(value: unknown): QuestSession | null {
+  if (!isRecord(value)) return null;
+  if (
+    typeof value.sessionId !== "string" ||
+    !value.sessionId ||
+    typeof value.questId !== "string" ||
+    !QUESTS_BY_ID[value.questId]
+  ) {
+    return null;
+  }
+  const revealedAt = finiteNumber(value.revealedAt);
+  if (revealedAt === null) return null;
+  const storedStartedAt = finiteNumber(value.startedAt);
+  const startedAt =
+    storedStartedAt === null ? null : Math.max(revealedAt, storedStartedAt);
+  const storedPausedAt = finiteNumber(value.pausedAt);
+
+  return {
+    sessionId: value.sessionId,
+    questId: value.questId,
+    revealedAt,
+    startedAt,
+    pausedAt:
+      startedAt === null || storedPausedAt === null
+        ? null
+        : Math.max(startedAt, storedPausedAt),
+    pausedTotalMs: Math.max(0, finiteNumber(value.pausedTotalMs) ?? 0),
+  };
 }
 
-function createOffers(
-  quests: Record<string, Quest>,
-  activeRun: ActiveRun | null,
+function completedGameFromUnknown(value: unknown): CompletedGame | null {
+  if (!isRecord(value)) return null;
+  const title =
+    typeof value.title === "string"
+      ? cleanGameTitle(value.title)
+      : value.title === null
+        ? null
+        : undefined;
+  const highscoreMs = finiteNumber(value.highscoreMs);
+  const achievedAt = finiteNumber(value.achievedAt);
+  const id =
+    title
+      ? gameIdFromTitle(title)
+      : title === null &&
+          typeof value.id === "string" &&
+          value.id.startsWith("unnamed:")
+        ? value.id
+        : null;
+  if (
+    title === undefined ||
+    !id ||
+    highscoreMs === null ||
+    achievedAt === null
+  ) {
+    return null;
+  }
+  return {
+    id,
+    title,
+    highscoreMs: Math.max(0, highscoreMs),
+    achievedAt,
+  };
+}
+
+function chooseReplacementQuest(
+  profile: UserProfile,
   recentQuestIds: readonly string[],
-  excludedIds: ReadonlySet<string> = new Set(),
+  retainedIds: readonly string[],
+  random: () => number,
 ) {
-  const offered = new Set(excludedIds);
-  return DIFFICULTIES.flatMap((difficulty) => {
-    const quest = chooseQuest(
-      quests,
-      activeRun,
-      recentQuestIds,
-      difficulty,
-      offered,
-    );
-    if (!quest) return [];
-    offered.add(quest.id);
-    return [quest.id];
-  });
-}
-
-function chooseQuest(
-  quests: Record<string, Quest>,
-  activeRun: ActiveRun | null,
-  recentQuestIds: readonly string[],
-  difficulty: QuestDifficulty,
-  alreadyOffered: ReadonlySet<string>,
-) {
-  const blocked = new Set([
-    ...(activeRun ? [activeRun.questId] : []),
-    ...alreadyOffered,
-  ]);
-  const recent = new Set(recentQuestIds.slice(-RECENT_DRAW_WINDOW));
-  const difficultyPool = Object.values(quests).filter(
-    (quest) => quest.difficulty === difficulty && !blocked.has(quest.id),
+  const replacementIds = generateQuestOffers(
+    profile,
+    recentQuestIds,
+    random,
+    new Set(retainedIds),
+    1,
   );
-  const freshPool = difficultyPool.filter((quest) => !recent.has(quest.id));
-  const pool = freshPool.length > 0 ? freshPool : difficultyPool;
-  return pool[Math.floor(Math.random() * pool.length)];
+  return replacementIds.length > 0
+    ? QUESTS_BY_ID[replacementIds[0]]
+    : null;
+}
+
+function chooseDiverseQuests(
+  pool: readonly QuestDefinition[],
+  recentQuestIds: readonly string[],
+  count: number,
+  random: () => number,
+) {
+  const chosen: QuestDefinition[] = [];
+  const chosenIds = new Set<string>();
+  const chosenGenres = new Set<QuestGenre>();
+  const chosenArchetypes = new Set<QuestArchetype>();
+  const recent = new Set(recentQuestIds.slice(-RECENT_DRAW_WINDOW));
+
+  while (chosen.length < count) {
+    const available = pool.filter((quest) => !chosenIds.has(quest.id));
+    if (available.length === 0) break;
+    const fresh = available.filter((quest) => !recent.has(quest.id));
+    const candidates = fresh.length > 0 ? fresh : available;
+    const scores = candidates.map((quest) => ({
+      quest,
+      score:
+        (chosenGenres.has(quest.primaryGenre) ? 0 : 2) +
+        (chosenArchetypes.has(quest.archetype) ? 0 : 1),
+    }));
+    const bestScore = Math.max(...scores.map(({ score }) => score));
+    const best = scores
+      .filter(({ score }) => score === bestScore)
+      .map(({ quest }) => quest);
+    const selected = best[randomIndex(best.length, random)];
+    if (!selected) break;
+
+    chosen.push(selected);
+    chosenIds.add(selected.id);
+    chosenGenres.add(selected.primaryGenre);
+    chosenArchetypes.add(selected.archetype);
+  }
+
+  return chosen;
 }
 
 function upsertGameHighscore(
@@ -373,108 +728,20 @@ function upsertGameHighscore(
     };
   }
 
-  const updated = {
-    ...candidate,
-    id: existing.id,
-    title: existing.title,
-  };
   return {
     completedGames: sortCompletedGames(
       completedGames.map((game, index) =>
-        index === existingIndex ? updated : game,
+        index === existingIndex
+          ? { ...candidate, id: existing.id, title: existing.title }
+          : game,
       ),
     ),
     outcome: "new-highscore" as const,
   };
 }
 
-function legacyAwareStorage(storage: Storage): StateStorage {
-  return {
-    getItem: (name) => {
-      try {
-        const current = storage.getItem(name);
-        if (current) {
-          JSON.parse(current);
-          return current;
-        }
-      } catch {
-        // Fall through to the previous raw store.
-      }
-
-      try {
-        const legacy = storage.getItem(LEGACY_STORE_KEY);
-        if (!legacy) return null;
-        return JSON.stringify({
-          state: JSON.parse(legacy) as unknown,
-          version: 0,
-        });
-      } catch {
-        return null;
-      }
-    },
-    setItem: (name, value) => {
-      try {
-        storage.setItem(name, value);
-      } catch {
-        // The in-memory store remains usable when browser storage is unavailable.
-      }
-    },
-    removeItem: (name) => {
-      try {
-        storage.removeItem(name);
-      } catch {
-        // The in-memory store remains usable when browser storage is unavailable.
-      }
-    },
-  };
-}
-
-function legacyActiveRunFrom(value: unknown): ActiveRun | null {
-  if (!isRecord(value)) return null;
-  const questId = resolveQuestId(value.taskId);
-  const startedAt = finiteNumber(value.startedAt);
-  if (!questId || startedAt === null) return null;
-  const storedPausedAt = finiteNumber(value.pausedAt);
-
-  return {
-    assignmentId:
-      typeof value.assignmentId === "string"
-        ? value.assignmentId
-        : crypto.randomUUID(),
-    questId,
-    startedAt,
-    pausedAt:
-      storedPausedAt === null ? null : Math.max(startedAt, storedPausedAt),
-    pausedTotalMs: Math.max(0, finiteNumber(value.pausedTotalMs) ?? 0),
-  };
-}
-
-function legacyCompletedGameFrom(value: unknown): CompletedGame | null {
-  if (!isRecord(value)) return null;
-  const title =
-    typeof value.gameTitle === "string"
-      ? cleanGameTitle(value.gameTitle)
-      : "";
-  const highscoreMs = finiteNumber(value.durationMs);
-  const achievedAt = finiteNumber(value.completedAt);
-  if (!title || highscoreMs === null || achievedAt === null) return null;
-
-  return {
-    id: gameIdFromTitle(title),
-    title,
-    highscoreMs: Math.max(0, highscoreMs),
-    achievedAt,
-  };
-}
-
-function resolveQuestId(value: unknown) {
-  if (typeof value !== "string") return null;
-  if (QUESTS_BY_ID[value]) return value;
-  return QUEST_ID_BY_LEGACY_ID[value] ?? null;
-}
-
-export function cleanGameTitle(gameTitle: string) {
-  return gameTitle.trim().replace(/\s+/gu, " ");
+function appendRecent(recentQuestIds: readonly string[], questId: string) {
+  return [...recentQuestIds, questId].slice(-STORED_RECENT_LIMIT);
 }
 
 function gameIdFromTitle(gameTitle: string) {
@@ -482,7 +749,44 @@ function gameIdFromTitle(gameTitle: string) {
 }
 
 function sortCompletedGames(completedGames: CompletedGame[]) {
-  return completedGames.sort((a, b) => b.achievedAt - a.achievedAt);
+  return [...completedGames].sort((a, b) => b.achievedAt - a.achievedAt);
+}
+
+function randomIndex(length: number, random: () => number) {
+  if (length <= 1) return 0;
+  const value = random();
+  const normalized = Number.isFinite(value)
+    ? Math.max(0, Math.min(0.999999999, value))
+    : 0;
+  return Math.floor(normalized * length);
+}
+
+function uniqueStrings(value: unknown) {
+  return Array.from(new Set(stringArray(value)));
+}
+
+function stringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((entry): entry is string => typeof entry === "string")
+    : [];
+}
+
+function isQuestGenre(value: unknown): value is QuestGenre {
+  return (
+    typeof value === "string" &&
+    (QUEST_GENRES as readonly string[]).includes(value)
+  );
+}
+
+function isAvatarTheme(value: unknown): value is AvatarTheme {
+  return (
+    typeof value === "string" &&
+    (AVATAR_THEMES as readonly string[]).includes(value)
+  );
+}
+
+function isOnlinePreference(value: unknown): value is OnlinePreference {
+  return value === "include" || value === "exclude";
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

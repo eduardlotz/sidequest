@@ -193,6 +193,7 @@ export function useTiltEffect({
     handlePointerEnter,
     handlePointerLeave,
     handlePointerMove,
+    resetTilt: () => resetTilt(cardRef.current),
     rotateX,
     rotateY,
   };

@@ -26,7 +26,7 @@ export type RopeCut = {
   swipeX: number;
 };
 
-export type RopeMode = "running" | "paused" | "resumePullback";
+export type RopeMode = "ready" | "running" | "paused" | "resumePullback";
 export type TimerPose = RopePoint & {
   mode: RopeMode;
   rotation: number;
@@ -64,6 +64,7 @@ const ROPE_LINKS = 8;
 const CURVE_POINTS = 36;
 export const RUNNING_TIMER_TOP_RATIO = 0.35;
 export const PAUSED_TIMER_TOP_RATIO = 0.17;
+export const READY_TIMER_TOP_RATIO = PAUSED_TIMER_TOP_RATIO;
 export const RESUME_PULLBACK_TIMER_TOP_RATIO = 0.11;
 
 export function PhysicsRope({
@@ -152,15 +153,19 @@ function RopeSimulation({
   const handledReleaseSequence = useRef(0);
   const previousEndpointRef = useRef<RopePoint | null>(null);
   const anchorY = viewport.height / 2 + 0.08;
-  const timerTopRatio = mode === "paused"
-    ? PAUSED_TIMER_TOP_RATIO
+  const timerTopRatio = mode === "paused" || mode === "ready"
+    ? mode === "ready"
+      ? READY_TIMER_TOP_RATIO
+      : PAUSED_TIMER_TOP_RATIO
     : mode === "resumePullback"
       ? RESUME_PULLBACK_TIMER_TOP_RATIO
       : RUNNING_TIMER_TOP_RATIO;
+  const runningTargetY = viewport.height / 2 -
+    viewport.height * RUNNING_TIMER_TOP_RATIO;
   const targetY = viewport.height / 2 - viewport.height * timerTopRatio;
   const segmentLength = (anchorY - targetY) * 1.025 / ROPE_LINKS;
   const initialTargetRef = useRef(
-    offsetToWorld(initialOffset, targetY, size, viewport),
+    offsetToWorld(initialOffset, runningTargetY, size, viewport),
   );
   const cutTopology = cut ? resolveCutTopology(cut.curveT, segmentLength) : null;
   const cutWorldPoint = cut
@@ -179,8 +184,6 @@ function RopeSimulation({
     const endpoint = bodies[ROPE_LINKS];
     if (!endpoint) return;
 
-    const runningTargetY = viewport.height / 2 -
-      viewport.height * RUNNING_TIMER_TOP_RATIO;
     const target = new THREE.Vector3(
       (targetRef.current.x / Math.max(1, size.width)) * viewport.width,
       runningTargetY -

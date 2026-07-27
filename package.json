@@ -7,10 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "check": "tsc -b",
+    "test": "bun test",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@number-flow/react": "^0.6.1",
+    "@number-flow/react": "^0.6.2",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@react-three/rapier": "^2.2.0",
@@ -19,7 +20,6 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "three": "^0.185.1",
-    "torph": "^0.0.9",
     "vaul": "^1.1.2",
     "zustand": "^5.0.14"
   },
