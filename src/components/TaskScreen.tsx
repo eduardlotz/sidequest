@@ -2,54 +2,47 @@ import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { useRef } from "react";
 import { TextMorph } from "torph/react";
 import type {
-  ActiveRun,
   Quest,
+  QuestSession,
 } from "../stores/useQuestStore";
 import { ActiveTaskCard } from "./ActiveTaskCard";
 import { TaskPreviewDeck } from "./TaskPreviewDeck";
 import styles from "../App.module.css";
 
 type Props = {
-  activeQuest: Quest | null;
-  activeRun: ActiveRun | null;
+  currentQuest: Quest | null;
+  currentSession: QuestSession | null;
   offeredQuests: Quest[];
   animateEntrance: boolean;
   reduceMotion: boolean;
-  shuffling: boolean;
-  onSelect: (questId: string) => void;
-  onShuffleAnimationComplete: () => void;
-  onReplace: () => void;
+  onReveal: (questId: string) => void;
+  onDiscard: () => void;
+  onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
   onComplete: (durationMs: number, gameTitle: string) => void;
 };
 
 export function TaskScreen({
-  activeQuest,
-  activeRun,
+  currentQuest,
+  currentSession,
   offeredQuests,
   animateEntrance,
   reduceMotion,
-  shuffling,
-  onSelect,
-  onShuffleAnimationComplete,
-  onReplace,
+  onReveal,
+  onDiscard,
+  onStart,
   onPause,
   onResume,
   onComplete,
 }: Props) {
-  const isActive = Boolean(activeQuest && activeRun);
+  const isActive = Boolean(currentQuest && currentSession);
   const wasActiveRef = useRef(isActive);
   const deckSessionRef = useRef(0);
   if (wasActiveRef.current && !isActive) {
     deckSessionRef.current += 1;
   }
   wasActiveRef.current = isActive;
-
-  const deckKey = `deck-session-${deckSessionRef.current}`;
-  const activeKey = activeRun
-    ? `active-${activeRun.assignmentId}`
-    : "active";
 
   return (
     <section
@@ -58,27 +51,25 @@ export function TaskScreen({
       aria-labelledby="task-screen-title"
     >
       <h1 className={styles.srOnly} id="task-screen-title">
-          <TextMorph
-            as="span"
-            disabled={reduceMotion}
-            respectReducedMotion
-            duration={300}
-          >
-            {isActive ? "Current task" : "Choose a task"}
-          </TextMorph>
+        <TextMorph
+          as="span"
+          disabled={reduceMotion}
+          respectReducedMotion
+          duration={300}
+        >
+          {isActive ? "Current quest" : "Choose a quest"}
+        </TextMorph>
       </h1>
 
       <LayoutGroup id="task-selection">
         <AnimatePresence initial={animateEntrance} mode="sync">
-          {activeQuest && activeRun ? (
+          {currentQuest && currentSession ? (
             <motion.div
               className={styles.activeWrap}
-              key={activeKey}
+              key={`active-${currentSession.sessionId}`}
               initial={reduceMotion ? false : { opacity: 1 }}
               animate={{ opacity: 1 }}
-              exit={{
-                opacity: 0,
-              }}
+              exit={{ opacity: 0 }}
               transition={
                 reduceMotion
                   ? { duration: 0 }
@@ -86,11 +77,12 @@ export function TaskScreen({
               }
             >
               <ActiveTaskCard
-                quest={activeQuest}
-                run={activeRun}
-                previousCompletions={activeQuest.completedGames}
+                quest={currentQuest}
+                session={currentSession}
+                previousCompletions={currentQuest.completedGames}
                 reduceMotion={reduceMotion}
-                onReplace={onReplace}
+                onDiscard={onDiscard}
+                onStart={onStart}
                 onPause={onPause}
                 onResume={onResume}
                 onComplete={onComplete}
@@ -99,12 +91,8 @@ export function TaskScreen({
           ) : (
             <motion.div
               className={styles.deckWrap}
-              key={deckKey}
-              initial={
-                reduceMotion
-                  ? false
-                  : { opacity: 0, scale: 0.985 }
-              }
+              key={`deck-session-${deckSessionRef.current}`}
+              initial={reduceMotion ? false : { opacity: 0, scale: 0.985 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 1, scale: 1, pointerEvents: "none" }}
               transition={
@@ -114,12 +102,10 @@ export function TaskScreen({
               }
             >
               <TaskPreviewDeck
-                tasks={offeredQuests}
+                quests={offeredQuests}
                 animateEntrance={animateEntrance}
                 reduceMotion={reduceMotion}
-                shuffling={shuffling}
-                onSelect={onSelect}
-                onShuffleAnimationComplete={onShuffleAnimationComplete}
+                onReveal={onReveal}
               />
             </motion.div>
           )}

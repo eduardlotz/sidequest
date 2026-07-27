@@ -1,22 +1,23 @@
-import { arc, motion } from "motion/react";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { motion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import type { QuestDefinition } from "../data/quests";
+import { getQuestAccentStyle } from "../data/questColors";
+import { QUEST_GENRE_LABELS } from "../data/questTaxonomy";
 import { useTiltEffect } from "../hooks/useTiltEffect";
+import { CARD_LAYOUT_TRANSITION } from "../lib/cardMotion";
 import { playSound } from "../lib/sound";
-import { DifficultyDots } from "./DifficultyDots";
+import { QuestCardBack } from "./QuestCardBack";
 import styles from "../App.module.css";
 
 type Props = {
-  tasks: QuestDefinition[];
+  quests: QuestDefinition[];
   animateEntrance: boolean;
   reduceMotion: boolean;
-  shuffling: boolean;
-  onSelect: (questId: string) => void;
-  onShuffleAnimationComplete: () => void;
+  onReveal: (questId: string) => void;
 };
 
 type CardProps = {
-  task: QuestDefinition;
+  quest: QuestDefinition;
   index: number;
   isMobile: boolean;
   isTopCard: boolean;
@@ -26,25 +27,18 @@ type CardProps = {
   selectionStarted: boolean;
   animateEntrance: boolean;
   onCycle: (direction: -1 | 1, focusNext?: boolean) => void;
-  onSelect: (questId: string) => void;
+  onReveal: (questId: string) => void;
 };
 
 const cardRotations = [-9, 0, 9];
-const selectionArc = arc({
-  strength: 0.2,
-  peak: 0.52,
-  direction: "cw",
-});
 
 export function TaskPreviewDeck({
-  tasks,
+  quests,
   animateEntrance,
   reduceMotion,
-  shuffling,
-  onSelect,
-  onShuffleAnimationComplete,
+  onReveal,
 }: Props) {
-  const taskSetKey = tasks.map((task) => task.id).join("-");
+  const questSetKey = quests.map((quest) => quest.id).join("-");
   const [shouldAnimateEntrance] = useState(animateEntrance);
   const [selectedQuestId, setSelectedQuestId] = useState<string | null>(null);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
@@ -54,21 +48,20 @@ export function TaskPreviewDeck({
   useEffect(() => {
     setSelectedQuestId(null);
     setActiveCardIndex(0);
-  }, [taskSetKey]);
+  }, [questSetKey]);
 
   function selectCard(questId: string) {
     if (selectedQuestId) return;
     playSound("cardSelect");
     setSelectedQuestId(questId);
-    window.requestAnimationFrame(() => onSelect(questId));
+    window.requestAnimationFrame(() => onReveal(questId));
   }
 
   function cycleCard(direction: -1 | 1, focusNext = false) {
-    if (selectedQuestId || tasks.length < 2) return;
+    if (selectedQuestId || quests.length < 2) return;
     playSound("slide");
-
     setActiveCardIndex(
-      (current) => (current + direction + tasks.length) % tasks.length,
+      (current) => (current + direction + quests.length) % quests.length,
     );
     if (focusNext) {
       window.requestAnimationFrame(() => {
@@ -119,23 +112,11 @@ export function TaskPreviewDeck({
           Choose your next sidequest
         </motion.h2>
       </header>
-      <motion.div
-        className={styles.deck}
-        aria-label="Quest choices"
-        ref={deckRef}
-        animate={
-          shuffling
-            ? { opacity: 0, y: 20, scale: 0.97 }
-            : { opacity: 1, y: 0, scale: 1 }
-        }
-        transition={{ duration: 0.18, ease: "easeIn" }}
-        onAnimationComplete={() => {
-          if (shuffling) onShuffleAnimationComplete();
-        }}
-      >
-        {tasks.map((task, index) => {
+
+      <div className={styles.deck} aria-label="Hidden quest choices" ref={deckRef}>
+        {quests.map((quest, index) => {
           const stackOffset =
-            (index - activeCardIndex + tasks.length) % tasks.length;
+            (index - activeCardIndex + quests.length) % quests.length;
           const stackPosition =
             stackOffset === 0 ? "front" : stackOffset === 1 ? "middle" : "back";
 
@@ -146,36 +127,39 @@ export function TaskPreviewDeck({
                 index === 0 ? "left" : index === 2 ? "right" : "center"
               }
               data-stack-position={stackPosition}
-              key={task.id}
+              key={quest.id}
+              style={getQuestAccentStyle(quest.primaryGenre)}
             >
-              <PreviewTaskCard
-                task={task}
+              <PreviewQuestCard
+                quest={quest}
                 index={index}
                 isMobile={isMobile}
                 isTopCard={stackOffset === 0}
                 stackPosition={stackPosition}
                 reduceMotion={reduceMotion}
-                selected={selectedQuestId === task.id}
+                selected={selectedQuestId === quest.id}
                 selectionStarted={selectedQuestId !== null}
                 animateEntrance={shouldAnimateEntrance}
                 onCycle={cycleCard}
-                onSelect={selectCard}
+                onReveal={selectCard}
               />
             </div>
           );
         })}
         <span className={styles.srOnly} aria-live="polite">
-          {isMobile && tasks[activeCardIndex]
-            ? `Card ${activeCardIndex + 1} of ${tasks.length}: ${tasks[activeCardIndex].title}`
+          {isMobile && quests[activeCardIndex]
+            ? `Card ${activeCardIndex + 1} of ${quests.length}: hidden ${
+                QUEST_GENRE_LABELS[quests[activeCardIndex].primaryGenre]
+              } sidequest`
             : ""}
         </span>
-      </motion.div>
+      </div>
     </div>
   );
 }
 
-function PreviewTaskCard({
-  task,
+function PreviewQuestCard({
+  quest,
   index,
   isMobile,
   isTopCard,
@@ -185,7 +169,7 @@ function PreviewTaskCard({
   selectionStarted,
   animateEntrance,
   onCycle,
-  onSelect,
+  onReveal,
 }: CardProps) {
   const [entranceComplete, setEntranceComplete] = useState(
     reduceMotion || !animateEntrance,
@@ -195,20 +179,24 @@ function PreviewTaskCard({
     handlePointerEnter,
     handlePointerLeave,
     handlePointerMove,
+    resetTilt,
     rotateX,
     rotateY,
   } = useTiltEffect({
     maxTilt: 18,
-    reduceMotion: reduceMotion || selectionStarted || isMobile,
+    reduceMotion: reduceMotion || isMobile,
   });
+
+  useEffect(() => {
+    if (selectionStarted) resetTilt();
+  }, [resetTilt, selectionStarted]);
 
   return (
     <motion.div
       className={styles.previewCardProjection}
       data-position={index === 0 ? "left" : index === 2 ? "right" : "center"}
       data-stack-position={stackPosition}
-      key={task.id}
-      layoutId={`task-card-${task.id}`}
+      layoutId={`task-card-${quest.id}`}
       layoutCrossfade={false}
       drag={isMobile && isTopCard && !selectionStarted ? "x" : false}
       dragConstraints={{ left: 0, right: 0 }}
@@ -233,32 +221,21 @@ function PreviewTaskCard({
           suppressClickRef.current = false;
         }, 0);
       }}
-      style={
-        {
-          "--card-rotation": `${cardRotations[index] ?? 0}deg`,
-        } as CSSProperties
-      }
+      style={{ rotate: isMobile ? 0 : cardRotations[index] ?? 0 }}
       initial={
         reduceMotion || !animateEntrance
           ? false
-          : {
-              opacity: 0,
-              y: 72,
-              scale: 0.92,
-            }
+          : { opacity: 0, y: 72, scale: 0.92 }
       }
       animate={{
         opacity: selectionStarted && !selected ? 0.35 : 1,
         x: 0,
         y: 0,
-        scale: selected ? 1.035 : 1,
+        scale: 1,
       }}
       exit={
         selected
-          ? {
-              opacity: 1,
-              scale: 1.035,
-            }
+          ? { opacity: 1, scale: 1 }
           : {
               opacity: 0,
               y: reduceMotion ? 0 : index === 1 ? -150 : 120,
@@ -276,13 +253,7 @@ function PreviewTaskCard({
               mass: 0.88,
               delay:
                 selectionStarted || entranceComplete ? 0 : 0.38 + index * 0.08,
-              layout: {
-                type: "spring",
-                stiffness: 88,
-                damping: 16,
-                mass: 1.08,
-                path: selectionArc,
-              },
+              layout: CARD_LAYOUT_TRANSITION,
             }
       }
       onAnimationComplete={() => setEntranceComplete(true)}
@@ -290,12 +261,13 @@ function PreviewTaskCard({
       <button
         className={styles.previewCardHitArea}
         data-sound-card
+        data-quest-id={quest.id}
         data-selected={selected || undefined}
         type="button"
         tabIndex={isMobile && !isTopCard ? -1 : undefined}
         onClick={() => {
           if (suppressClickRef.current || (isMobile && !isTopCard)) return;
-          onSelect(task.id);
+          onReveal(quest.id);
         }}
         onKeyDown={(event) => {
           if (!isMobile || !isTopCard) return;
@@ -308,42 +280,24 @@ function PreviewTaskCard({
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
         onPointerOut={handlePointerLeave}
-        aria-label={`${difficultyLabel(task.difficulty)}, ${task.title}`}
+        aria-label={`Reveal hidden ${
+          QUEST_GENRE_LABELS[quest.primaryGenre]
+        } sidequest`}
         aria-pressed={selected}
       >
         <motion.span
           className={styles.previewCard}
-          data-difficulty={task.difficulty}
-          style={{
-            rotateX,
-            rotateY,
-            transformPerspective: 1000,
-          }}
+          style={{ rotateX, rotateY, transformPerspective: 1000 }}
         >
           <span className={styles.cardShimmer} aria-hidden="true" />
-          <span className={styles.cardDifficulty}>
-            <DifficultyDots difficulty={task.difficulty} />
-            {difficultyLabel(task.difficulty)}
-          </span>
-          <span className={styles.previewTitle}>{task.title}</span>
-          <span className={styles.cardBrand} aria-hidden="true">
-            <img
-              src={`${import.meta.env.BASE_URL}sidequest-wordmark.svg`}
-              alt=""
-              width="837"
-              height="550"
-            />
-          </span>
+          <QuestCardBack
+            genre={quest.primaryGenre}
+            revealGenreOnHover
+          />
         </motion.span>
       </button>
     </motion.div>
   );
-}
-
-function difficultyLabel(value: string) {
-  if (value === "easy") return "Easy";
-  if (value === "medium") return "Medium";
-  return "Hard";
 }
 
 function useMobileLayout() {

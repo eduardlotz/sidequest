@@ -1,359 +1,507 @@
-export const DIFFICULTIES = ["easy", "medium", "hard"] as const;
-
-export type QuestDifficulty = (typeof DIFFICULTIES)[number];
+import {
+  QUEST_ARCHETYPES,
+  QUEST_GENRES,
+  type QuestArchetype,
+  type QuestGenre,
+  type QuestSetting,
+} from "./questTaxonomy";
 
 export type QuestDefinition = {
   id: string;
   title: string;
-  difficulty: QuestDifficulty;
-  points: number;
+  objective: string;
+  primaryGenre: QuestGenre;
+  compatibleGenres: readonly QuestGenre[];
+  requirements: readonly string[];
+  archetype: QuestArchetype;
+  settings: readonly QuestSetting[];
+  requiresOnline: boolean;
 };
 
-type QuestSeed = readonly [
-  legacyId: string,
-  id: string,
-  title: string,
-];
-
-const POINTS: Record<QuestDifficulty, number> = {
-  easy: 25,
-  medium: 50,
-  hard: 100,
-};
-
-const questGroups: Record<QuestDifficulty, readonly QuestSeed[]> = {
-  easy: [
-    ["easy-001", "craft-a-tool", "Craft a tool"],
-    ["easy-002", "kill-a-zombie", "Kill a zombie"],
-    ["easy-003", "cut-down-a-tree", "Cut down a tree"],
-    ["easy-004", "ride-a-bicycle", "Ride a bicycle"],
-    ["easy-005", "ride-an-animal", "Ride an animal"],
-    ["easy-006", "drive-a-car", "Drive a car"],
-    ["easy-007", "travel-by-boat", "Travel by boat"],
-    ["easy-008", "light-a-fire", "Light a fire"],
-    ["easy-009", "cook-a-meal", "Cook a meal"],
-    ["easy-010", "catch-a-fish", "Catch a fish"],
-    ["easy-011", "pick-a-lock", "Pick a lock"],
-    ["easy-012", "open-a-treasure-chest", "Open a treasure chest"],
-    ["easy-013", "pet-an-animal", "Pet an animal"],
-    ["easy-014", "get-intoxicated", "Get intoxicated"],
-    ["easy-015", "steal-an-item", "Steal an item"],
-    ["easy-016", "break-a-window", "Break a window"],
-    ["easy-017", "set-a-trap", "Set a trap"],
-    ["easy-018", "plant-a-seed", "Plant a seed"],
-    ["easy-019", "repair-an-item", "Repair an item"],
-    ["easy-020", "buy-a-weapon", "Buy a weapon"],
-    ["easy-021", "sell-a-stolen-item", "Sell a stolen item"],
-    ["easy-022", "throw-an-explosive", "Throw an explosive"],
-    ["easy-023", "read-a-book", "Read a book"],
-    [
-      "easy-024",
-      "play-a-musical-instrument",
-      "Play a musical instrument",
+export const QUESTS = [
+  {
+    id: "a-thief-with-standards",
+    title: "A Thief With Standards",
+    objective:
+      "Steal one valuable item from a guarded location, escape without harming anyone, and sell it somewhere else.",
+    primaryGenre: "rpg",
+    compatibleGenres: ["action"],
+    requirements: ["theft", "stealth", "guarded locations", "merchants"],
+    archetype: "performance",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "the-oldest-promise",
+    title: "The Oldest Promise",
+    objective:
+      "Return to the side quest you have ignored the longest and finish its next objective without using fast travel.",
+    primaryGenre: "rpg",
+    compatibleGenres: ["action"],
+    requirements: ["quest log", "side quests", "open world", "fast travel"],
+    archetype: "expedition",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "forbidden-school",
+    title: "The Forbidden School",
+    objective:
+      "Complete the next combat encounter using only the spell or ability category you have invested in the least.",
+    primaryGenre: "rpg",
+    compatibleGenres: ["roguelike"],
+    requirements: [
+      "magic",
+      "ability categories",
+      "character progression",
+      "combat",
     ],
-    ["easy-025", "take-a-photograph", "Take a photograph"],
-    ["easy-026", "swim-underwater", "Swim underwater"],
-    ["easy-027", "climb-onto-a-roof", "Climb onto a roof"],
-    ["easy-028", "hide-inside-a-container", "Hide inside a container"],
-    ["easy-029", "wear-a-disguise", "Wear a disguise"],
-    ["easy-030", "dance-with-someone", "Dance with someone"],
-    ["easy-031", "feed-a-wild-animal", "Feed a wild animal"],
-    ["easy-032", "cast-a-spell", "Cast a spell"],
-    ["easy-033", "use-a-healing-item", "Use a healing item"],
-    ["easy-034", "eat-raw-food", "Eat raw food"],
-    ["easy-035", "drink-from-a-river", "Drink from a river"],
-    ["easy-036", "sleep-outdoors", "Sleep outdoors"],
-    ["easy-037", "enter-a-cave", "Enter a cave"],
-    ["easy-038", "cross-a-river", "Cross a river"],
-    ["easy-039", "ring-a-bell", "Ring a bell"],
-    [
-      "easy-040",
-      "knock-someone-unconscious",
-      "Knock someone unconscious",
+    archetype: "adaptation",
+    settings: ["fantasy"],
+    requiresOnline: false,
+  },
+  {
+    id: "the-strangers-build",
+    title: "The Stranger's Build",
+    objective:
+      "Take the first upgrade you would normally skip, then shape the rest of the run around it until you defeat an elite or boss.",
+    primaryGenre: "roguelike",
+    compatibleGenres: ["rpg"],
+    requirements: ["run-based upgrades", "elite enemies or bosses"],
+    archetype: "adaptation",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "empty-pockets",
+    title: "Empty Pockets",
+    objective:
+      "At the next shop, spend all your currency before leaving. Reach the following shop or boss using what you bought—no selling, rerolling, or replacing it.",
+    primaryGenre: "roguelike",
+    compatibleGenres: ["rpg"],
+    requirements: [
+      "shops",
+      "currency",
+      "run-based equipment or upgrades",
     ],
-  ],
-  medium: [
-    [
-      "medium-001",
-      "dive-deep-enough-to-see-fish",
-      "Dive deep enough to see fish",
+    archetype: "adaptation",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "take-the-first-offer",
+    title: "Take the First Offer",
+    objective:
+      "Reach the next boss without rerolling, skipping, or replacing any reward. Accept the first eligible option at every choice.",
+    primaryGenre: "roguelike",
+    compatibleGenres: [],
+    requirements: ["run-based rewards", "reward choices", "bosses"],
+    archetype: "performance",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "borrowed-arsenal",
+    title: "Borrowed Arsenal",
+    objective:
+      "After your first elimination, use only weapons dropped by defeated enemies until you defeat three more.",
+    primaryGenre: "shooter",
+    compatibleGenres: ["action"],
+    requirements: ["combat", "dropped weapons", "interchangeable equipment"],
+    archetype: "adaptation",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "nobody-saw-you-leave",
+    title: "Nobody Saw You Leave",
+    objective:
+      "Enter a guarded area, take its objective or most valuable item, and leave without triggering combat.",
+    primaryGenre: "shooter",
+    compatibleGenres: ["action", "rpg"],
+    requirements: [
+      "stealth",
+      "guarded areas",
+      "retrievable objective or item",
     ],
-    ["medium-002", "travel-in-time", "Travel in time"],
-    ["medium-003", "ride-a-dragon", "Ride a dragon"],
-    ["medium-004", "build-a-shelter", "Build a shelter"],
-    ["medium-005", "tame-a-wild-animal", "Tame a wild animal"],
-    [
-      "medium-006",
-      "craft-an-item-from-gathered-materials",
-      "Craft an item from gathered materials",
+    archetype: "performance",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "back-the-underdog",
+    title: "Back the Underdog",
+    objective:
+      "After the opening minute, identify the teammate at the bottom of the scoreboard. Help them earn an elimination, score, or objective contribution—and win the round.",
+    primaryGenre: "shooter",
+    compatibleGenres: ["sports"],
+    requirements: [
+      "online team mode",
+      "scoreboard",
+      "assists or shared objectives",
     ],
-    [
-      "medium-007",
-      "cook-a-meal-from-gathered-ingredients",
-      "Cook a meal from gathered ingredients",
+    archetype: "support",
+    settings: [],
+    requiresOnline: true,
+  },
+  {
+    id: "guardian-angel",
+    title: "Guardian Angel",
+    objective:
+      "Choose one teammate at the start of a round. Keep them alive until the round ends and help them earn at least one elimination or objective contribution.",
+    primaryGenre: "shooter",
+    compatibleGenres: ["action"],
+    requirements: [
+      "team mode",
+      "revives or healing",
+      "eliminations or shared objectives",
     ],
-    ["medium-008", "reach-an-island", "Reach an island"],
-    ["medium-009", "climb-a-mountain", "Climb a mountain"],
-    ["medium-010", "rob-a-store", "Rob a store"],
-    ["medium-011", "escape-from-prison", "Escape from prison"],
-    ["medium-012", "get-arrested", "Get arrested"],
-    ["medium-013", "start-a-chain-reaction", "Start a chain reaction"],
-    ["medium-014", "hunt-a-large-animal", "Hunt a large animal"],
-    [
-      "medium-015",
-      "survive-a-night-outdoors",
-      "Survive a night outdoors",
+    archetype: "support",
+    settings: [],
+    requiresOnline: true,
+  },
+  {
+    id: "make-every-shot-count",
+    title: "Make Every Shot Count",
+    objective:
+      "Complete the next combat encounter without reloading early. Empty every magazine before switching weapons or reloading, and finish the encounter alive.",
+    primaryGenre: "shooter",
+    compatibleGenres: ["action"],
+    requirements: ["combat", "limited magazines", "manual reloading"],
+    archetype: "performance",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "keep-moving",
+    title: "Keep Moving",
+    objective:
+      "Win the next combat encounter without remaining in the same cover position for more than ten seconds. Move to a new position after every elimination.",
+    primaryGenre: "shooter",
+    compatibleGenres: ["action"],
+    requirements: ["combat", "cover or combat positions", "eliminations"],
+    archetype: "adaptation",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "change-the-playbook",
+    title: "Change the Playbook",
+    objective:
+      "Finish a full match using a formation, team, or strategy you have never used before. Do not switch back during the match.",
+    primaryGenre: "sports",
+    compatibleGenres: [],
+    requirements: [
+      "selectable teams",
+      "formations",
+      "tactical strategies",
     ],
-    ["medium-016", "cross-a-desert", "Cross a desert"],
-    ["medium-017", "find-a-hidden-room", "Find a hidden room"],
-    [
-      "medium-018",
-      "solve-an-environmental-puzzle",
-      "Solve an environmental puzzle",
+    archetype: "adaptation",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "make-them-the-star",
+    title: "Make Them the Star",
+    objective:
+      "Choose the lowest-rated player in your active lineup. Help them score or create a scoring play, then win or draw the match.",
+    primaryGenre: "sports",
+    compatibleGenres: [],
+    requirements: ["team roster", "player ratings", "scoring or assists"],
+    archetype: "support",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "the-counterplan",
+    title: "The Counterplan",
+    objective:
+      "After the first period or half, identify the opponent's most effective player. Change your tactics and finish the match without letting them score again.",
+    primaryGenre: "sports",
+    compatibleGenres: [],
+    requirements: ["team sports", "match statistics", "tactical control"],
+    archetype: "optimization",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "night-supply-run",
+    title: "Night Supply Run",
+    objective:
+      "Leave your safest shelter after dark, gather one resource you are short on, and return without using a vehicle.",
+    primaryGenre: "survival",
+    compatibleGenres: ["action"],
+    requirements: ["shelter", "day/night cycle", "resource gathering"],
+    archetype: "expedition",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "pack-light",
+    title: "Pack Light",
+    objective:
+      "Leave shelter carrying only one weapon and one healing item. Return with enough materials to craft one meaningful upgrade.",
+    primaryGenre: "survival",
+    compatibleGenres: [],
+    requirements: ["inventory", "gathering", "crafting", "shelter"],
+    archetype: "expedition",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "the-backup-plan",
+    title: "The Backup Plan",
+    objective:
+      "Travel beyond your usual safe area and create an emergency stash or shelter using only materials gathered during the trip. Return to your main shelter afterward.",
+    primaryGenre: "survival",
+    compatibleGenres: ["building"],
+    requirements: [
+      "open world",
+      "gathering",
+      "storage or shelter building",
     ],
-    ["medium-019", "rescue-a-captive", "Rescue a captive"],
-    ["medium-020", "recruit-a-companion", "Recruit a companion"],
-    ["medium-021", "steal-a-guarded-item", "Steal a guarded item"],
-    [
-      "medium-022",
-      "enter-a-restricted-area-undetected",
-      "Enter a restricted area undetected",
+    archetype: "expedition",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "fix-the-bottleneck",
+    title: "Fix the Bottleneck",
+    objective:
+      "Find the slowest step in one production chain and automate everything from raw input to storage. Once started, make no manual transfers.",
+    primaryGenre: "building",
+    compatibleGenres: ["simulation"],
+    requirements: ["production chains", "automation", "storage"],
+    archetype: "optimization",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "no-new-land",
+    title: "No New Land",
+    objective:
+      "Improve the output or wellbeing of one settlement without expanding its footprint or purchasing additional land.",
+    primaryGenre: "building",
+    compatibleGenres: ["simulation"],
+    requirements: [
+      "construction",
+      "settlement management",
+      "measurable output or wellbeing",
     ],
-    [
-      "medium-023",
-      "escape-a-fight-without-attacking",
-      "Escape a fight without attacking",
+    archetype: "optimization",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "double-without-moving",
+    title: "Double Without Moving",
+    objective:
+      "Double the output of one production chain without moving or demolishing its existing structures. Use only upgrades and additions.",
+    primaryGenre: "building",
+    compatibleGenres: ["simulation"],
+    requirements: ["production chains", "upgrades", "measurable output"],
+    archetype: "optimization",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "use-what-you-own",
+    title: "Use What You Own",
+    objective:
+      "Complete one job or contract without buying, renting, crafting, or upgrading equipment.",
+    primaryGenre: "simulation",
+    compatibleGenres: [],
+    requirements: ["jobs or contracts", "equipment economy"],
+    archetype: "adaptation",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "manual-override",
+    title: "Manual Override",
+    objective:
+      "Complete one full job with an assist or automation feature you normally rely on disabled. Finish without damage or penalties.",
+    primaryGenre: "simulation",
+    compatibleGenres: ["sports"],
+    requirements: [
+      "jobs or events",
+      "optional assists or automation",
+      "penalties",
     ],
-    [
-      "medium-024",
-      "kill-an-enemy-with-a-trap",
-      "Kill an enemy with a trap",
+    archetype: "performance",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "the-perfect-shift",
+    title: "The Perfect Shift",
+    objective:
+      "Complete one full job while obeying every optional rule the game tracks. Finish without damage, fines, failed needs, or complaints.",
+    primaryGenre: "simulation",
+    compatibleGenres: [],
+    requirements: ["jobs", "simulation rules", "tracked penalties"],
+    archetype: "performance",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "the-other-entrance",
+    title: "The Other Entrance",
+    objective:
+      "Reach an objective through a route you have never used before, then leave the area by a different route.",
+    primaryGenre: "action",
+    compatibleGenres: ["rpg", "shooter"],
+    requirements: ["open levels", "alternate routes", "defined objectives"],
+    archetype: "expedition",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "improvised-escape",
+    title: "Improvised Escape",
+    objective:
+      "Trigger a high-alert pursuit and escape to safety without defeating any of the enemies chasing you.",
+    primaryGenre: "action",
+    compatibleGenres: ["shooter", "rpg"],
+    requirements: [
+      "alert or wanted system",
+      "pursuit",
+      "safe-state recovery",
     ],
-    [
-      "medium-025",
-      "kill-an-enemy-with-its-own-weapon",
-      "Kill an enemy with its own weapon",
+    archetype: "performance",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "environmental-advantage",
+    title: "Environmental Advantage",
+    objective:
+      "Finish one combat encounter using only traps, hazards, vehicles, thrown objects, or other environmental tools for the final blows.",
+    primaryGenre: "action",
+    compatibleGenres: ["shooter", "rpg"],
+    requirements: [
+      "combat",
+      "interactive environment",
+      "environmental damage",
     ],
-    [
-      "medium-026",
-      "make-two-enemies-fight-each-other",
-      "Make two enemies fight each other",
+    archetype: "adaptation",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "never-break-stride",
+    title: "Never Break Stride",
+    objective:
+      "Reach the next major checkpoint without standing still for more than three seconds or returning to a previous platform.",
+    primaryGenre: "platformer",
+    compatibleGenres: ["action"],
+    requirements: ["continuous movement", "checkpoints", "platforming"],
+    archetype: "performance",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "the-scenic-route",
+    title: "The Scenic Route",
+    objective:
+      "Reach the next checkpoint after taking every visible optional path along the way. Do not use a guide.",
+    primaryGenre: "platformer",
+    compatibleGenres: ["action"],
+    requirements: ["branching paths", "checkpoints", "optional routes"],
+    archetype: "expedition",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "one-clean-run",
+    title: "One Clean Run",
+    objective:
+      "Collect one optional secret or collectible and reach the next checkpoint without dying or restarting.",
+    primaryGenre: "platformer",
+    compatibleGenres: ["action"],
+    requirements: [
+      "collectibles or secrets",
+      "checkpoints",
+      "failure or restart state",
     ],
-    [
-      "medium-027",
-      "build-a-working-machine",
-      "Build a working machine",
-    ],
-    [
-      "medium-028",
-      "grow-a-plant-to-maturity",
-      "Grow a plant to maturity",
-    ],
-    ["medium-029", "brew-a-potion", "Brew a potion"],
-    [
-      "medium-030",
-      "perform-for-an-audience",
-      "Perform for an audience",
-    ],
-    ["medium-031", "win-a-race", "Win a race"],
-    ["medium-032", "win-a-match", "Win a match"],
-    ["medium-033", "score-from-long-range", "Score from long range"],
-    [
-      "medium-034",
-      "jump-a-vehicle-over-an-obstacle",
-      "Jump a vehicle over an obstacle",
-    ],
-    [
-      "medium-035",
-      "land-an-aircraft-away-from-a-runway",
-      "Land an aircraft away from a runway",
-    ],
-    ["medium-036", "follow-a-treasure-map", "Follow a treasure map"],
-    [
-      "medium-037",
-      "find-underwater-treasure",
-      "Find underwater treasure",
-    ],
-    [
-      "medium-038",
-      "restore-power-to-a-building",
-      "Restore power to a building",
-    ],
-    ["medium-039", "sink-a-boat", "Sink a boat"],
-    ["medium-040", "summon-a-creature", "Summon a creature"],
-  ],
-  hard: [
-    ["hard-001", "win-a-tournament", "Win a tournament"],
-    [
-      "hard-002",
-      "defeat-a-boss-without-healing",
-      "Defeat a boss without healing",
-    ],
-    [
-      "hard-003",
-      "clear-a-dungeon-without-leaving",
-      "Clear a dungeon without leaving",
-    ],
-    ["hard-004", "build-a-castle", "Build a castle"],
-    [
-      "hard-005",
-      "build-a-vehicle-from-parts",
-      "Build a vehicle from parts",
-    ],
-    [
-      "hard-006",
-      "reach-the-highest-accessible-point",
-      "Reach the highest accessible point",
-    ],
-    ["hard-007", "cross-the-map-on-foot", "Cross the map on foot"],
-    [
-      "hard-008",
-      "survive-a-full-day-on-gathered-supplies",
-      "Survive a full day on gathered supplies",
-    ],
-    [
-      "hard-009",
-      "complete-a-mission-without-violence",
-      "Complete a mission without violence",
-    ],
-    [
-      "hard-010",
-      "win-a-fight-without-taking-damage",
-      "Win a fight without taking damage",
-    ],
-    [
-      "hard-011",
-      "escape-from-a-maximum-security-prison",
-      "Escape from a maximum-security prison",
-    ],
-    ["hard-012", "rob-a-guarded-vault", "Rob a guarded vault"],
-    ["hard-013", "kill-a-dragon", "Kill a dragon"],
-    ["hard-014", "defeat-the-final-boss", "Defeat the final boss"],
-    [
-      "hard-015",
-      "reach-maximum-wanted-level-and-escape",
-      "Reach maximum wanted level and escape",
-    ],
-    [
-      "hard-016",
-      "survive-an-extreme-weather-event",
-      "Survive an extreme weather event",
-    ],
-    [
-      "hard-017",
-      "spend-a-night-in-enemy-territory",
-      "Spend a night in enemy territory",
-    ],
-    [
-      "hard-018",
-      "deliver-cargo-across-the-map-undamaged",
-      "Deliver cargo across the map undamaged",
-    ],
-    [
-      "hard-019",
-      "climb-the-tallest-mountain",
-      "Climb the tallest mountain",
-    ],
-    [
-      "hard-020",
-      "win-a-race-without-crashing",
-      "Win a race without crashing",
-    ],
-    [
-      "hard-021",
-      "win-a-match-without-conceding",
-      "Win a match without conceding",
-    ],
-    [
-      "hard-022",
-      "complete-an-obstacle-course-without-falling",
-      "Complete an obstacle course without falling",
-    ],
-    [
-      "hard-023",
-      "score-three-times-in-one-match",
-      "Score three times in one match",
-    ],
-    [
-      "hard-024",
-      "finish-first-in-a-battle-royale",
-      "Finish first in a battle royale",
-    ],
-    [
-      "hard-025",
-      "clear-an-enemy-camp-undetected",
-      "Clear an enemy camp undetected",
-    ],
-    [
-      "hard-026",
-      "kill-three-enemies-with-one-explosion",
-      "Kill three enemies with one explosion",
-    ],
-    [
-      "hard-027",
-      "defeat-a-boss-using-only-melee-attacks",
-      "Defeat a boss using only melee attacks",
-    ],
-    ["hard-028", "hunt-an-apex-predator", "Hunt an apex predator"],
-    [
-      "hard-029",
-      "steal-an-artifact-and-escape",
-      "Steal an artifact and escape",
-    ],
-    ["hard-030", "complete-a-heist", "Complete a heist"],
-    [
-      "hard-031",
-      "build-a-working-factory",
-      "Build a working factory",
-    ],
-    ["hard-032", "host-a-feast", "Host a feast"],
-    ["hard-033", "capture-a-fortress", "Capture a fortress"],
-    ["hard-034", "travel-into-space", "Travel into space"],
-    ["hard-035", "walk-on-a-moon", "Walk on a moon"],
-    ["hard-036", "reach-the-ocean-floor", "Reach the ocean floor"],
-    [
-      "hard-037",
-      "win-an-aerial-dogfight",
-      "Win an aerial dogfight",
-    ],
-    [
-      "hard-038",
-      "destroy-a-giant-structure",
-      "Destroy a giant structure",
-    ],
-    [
-      "hard-039",
-      "travel-to-another-dimension",
-      "Travel to another dimension",
-    ],
-    [
-      "hard-040",
-      "bring-someone-back-from-the-dead",
-      "Bring someone back from the dead",
-    ],
-  ],
-};
-
-const QUEST_SEEDS = DIFFICULTIES.flatMap((difficulty) =>
-  questGroups[difficulty].map(([legacyId, id, title]) => ({
-    legacyId,
-    definition: {
-      id,
-      title,
-      difficulty,
-      points: POINTS[difficulty],
-    },
-  })),
-);
-
-export const QUESTS: QuestDefinition[] = QUEST_SEEDS.map(
-  ({ definition }) => definition,
-);
+    archetype: "performance",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "no-second-chances",
+    title: "No Second Chances",
+    objective:
+      "Solve one complete puzzle without using a hint, undo, or restart.",
+    primaryGenre: "puzzle",
+    compatibleGenres: [],
+    requirements: ["discrete puzzles", "hint or undo systems"],
+    archetype: "performance",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "observe-first",
+    title: "Observe First",
+    objective:
+      "Spend one uninterrupted minute studying the next puzzle before making an input. Then solve it with no hints and at most one restart.",
+    primaryGenre: "puzzle",
+    compatibleGenres: [],
+    requirements: ["discrete puzzles", "restartable state"],
+    archetype: "performance",
+    settings: [],
+    requiresOnline: false,
+  },
+  {
+    id: "reverse-your-habit",
+    title: "Reverse Your Habit",
+    objective:
+      "Begin the next puzzle with the tool, rule, or move you normally save for last. Complete it without undoing that first decision.",
+    primaryGenre: "puzzle",
+    compatibleGenres: [],
+    requirements: ["multiple tools, rules, or opening moves"],
+    archetype: "adaptation",
+    settings: [],
+    requiresOnline: false,
+  },
+] as const satisfies readonly QuestDefinition[];
 
 export const QUESTS_BY_ID = Object.fromEntries(
   QUESTS.map((quest) => [quest.id, quest]),
 ) as Record<string, QuestDefinition>;
 
-export const QUEST_ID_BY_LEGACY_ID = Object.fromEntries(
-  QUEST_SEEDS.map(({ legacyId, definition }) => [legacyId, definition.id]),
-) as Record<string, string>;
+function validateCatalog() {
+  if (QUESTS.length !== 33) {
+    throw new Error(`Expected 33 built-in quests, received ${QUESTS.length}.`);
+  }
+
+  const ids = new Set<string>();
+  const genreCounts = new Map<QuestGenre, number>();
+  for (const quest of QUESTS) {
+    if (ids.has(quest.id)) throw new Error(`Duplicate quest ID: ${quest.id}`);
+    ids.add(quest.id);
+    genreCounts.set(
+      quest.primaryGenre,
+      (genreCounts.get(quest.primaryGenre) ?? 0) + 1,
+    );
+
+    if (!quest.title.trim() || !quest.objective.trim()) {
+      throw new Error(`Quest ${quest.id} needs a title and objective.`);
+    }
+    if (new Set(quest.requirements).size !== quest.requirements.length) {
+      throw new Error(`Quest ${quest.id} has duplicate requirements.`);
+    }
+    if (!QUEST_ARCHETYPES.includes(quest.archetype)) {
+      throw new Error(`Quest ${quest.id} has an invalid archetype.`);
+    }
+  }
+
+  for (const genre of QUEST_GENRES) {
+    const expectedCount = genre === "shooter" ? 6 : 3;
+    if (genreCounts.get(genre) !== expectedCount) {
+      throw new Error(`Expected exactly ${expectedCount} ${genre} quests.`);
+    }
+  }
+}
+
+if (import.meta.env.DEV) validateCatalog();

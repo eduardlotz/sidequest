@@ -135,7 +135,7 @@ function HistoryAccordion({
             <ul className={styles.historyEntries}>
               {quest.completedGames.map((game) => (
                 <li className={styles.historyEntry} key={game.id}>
-                  <strong>{game.title}</strong>
+                  <strong>{game.title ?? "Game not named"}</strong>
                   <time dateTime={`PT${Math.round(game.highscoreMs / 1000)}S`}>
                     {formatRunningDuration(game.highscoreMs)}
                   </time>

@@ -28,7 +28,6 @@ export type SoundName =
   | "modalClose"
   | "modalOpen"
   | "formSubmit"
-  | "shuffle"
   | "slide"
   | "tabSwitch"
   | "timerGrab"
@@ -96,7 +95,6 @@ const sounds: Record<SoundName, () => unknown> = {
   modalClose: defineSound(core.modalClose),
   modalOpen: defineSound(core.modalOpen),
   formSubmit: playFormSubmit,
-  shuffle: defineSound(core.sync),
   slide: defineSound(core.slide),
   tabSwitch: defineSound(core.tabSwitch),
   timerGrab: () => playTimerGrab({ volume: 0.5 }),
