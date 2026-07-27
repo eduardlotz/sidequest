@@ -10,16 +10,16 @@ const TEST_MARKS = {
 } as const;
 
 export const QUEST_MARK_BY_GENRE: Record<QuestGenre, string> = {
-  rpg: TEST_MARKS.wizard,
-  roguelike: TEST_MARKS.wizard,
-  shooter: TEST_MARKS.cowboyHat,
-  sports: TEST_MARKS.baseballCap,
-  survival: TEST_MARKS.cowboyHat,
-  building: TEST_MARKS.partyHat,
-  simulation: TEST_MARKS.baseballCap,
-  action: TEST_MARKS.cowboyHat,
-  platformer: TEST_MARKS.partyHat,
-  puzzle: TEST_MARKS.wizard,
+  rpg: "quest-hats/rpg-hat.svg",
+  roguelike: "quest-hats/rpg-hat.svg",
+  shooter: "quest-hats/shooter-hat.svg",
+  sports: "quest-hats/rpg-hat.svg",
+  survival: "quest-hats/shooter-hat.svg",
+  building: "quest-hats/building-hat.svg",
+  simulation: "quest-hats/simulation-hat.svg",
+  action: "quest-hats/adventure-hat.svg",
+  platformer: "quest-hats/adventure-hat.svg",
+  puzzle: "quest-hats/simulator-hat.svg",
 };
 
 export const AVATAR_MARK_BY_THEME: Record<AvatarTheme, string> = {
