@@ -2054,13 +2054,6 @@
   color: #85858d;
 }
 
-.onboardingScreen {
-  display: grid;
-  min-height: 100svh;
-  place-items: start center;
-  padding: 120px 20px 22px;
-}
-
 .preferencesPanel {
   height: 100%;
   overflow: hidden;
@@ -2077,15 +2070,6 @@
   border-radius: 22px;
   background: rgb(255 255 255 / 0.98);
   flex-direction: column;
-}
-
-.onboardingScreen .onboardingForm {
-  width: min(320px, calc(100vw - 40px));
-  height: min(578px, calc(100svh - 142px));
-  padding: 0;
-  margin: 0;
-  border-radius: 0;
-  background: transparent;
 }
 
 .preferencesPanel .onboardingForm {
@@ -2417,20 +2401,9 @@
     padding: 34px 24px 26px;
   }
 
-  .onboardingScreen {
-    padding: 90px 14px 16px;
-  }
-
   .onboardingForm {
     padding: 28px 20px;
     border-radius: 24px;
-  }
-
-  .onboardingScreen .onboardingForm {
-    width: min(320px, calc(100vw - 28px));
-    height: calc(100svh - 106px);
-    padding: 0;
-    border-radius: 0;
   }
 
   .preferencesPanel {
@@ -3046,21 +3019,6 @@
   text-transform: uppercase;
 }
 
-.onboardingMark {
-  display: grid;
-  width: 72px;
-  height: 72px;
-  place-items: center;
-  margin: 0 auto 22px;
-}
-
-.onboardingMark img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.onboardingIntro h1,
 .onboardingIntro h3 {
   margin: 0;
   color: #09090b;
@@ -3074,25 +3032,8 @@
   font-size: 1.45rem;
 }
 
-.onboardingIntro h1 + p,
 .onboardingIntro h3 + p {
   margin-top: 16px;
-}
-
-.onboardingScreen .onboardingForm {
-  width: min(420px, calc(100vw - 40px));
-  height: auto;
-  min-height: 0;
-  padding: 32px;
-  border-radius: 28px;
-  background: rgb(255 255 255 / 0.72);
-  box-shadow:
-    0 22px 55px rgb(8 8 10 / 0.08),
-    inset 0 1px 0 rgb(255 255 255 / 0.72);
-}
-
-.onboardingScreen .onlinePreference {
-  padding: 20px 2px 14px;
 }
 
 @media (max-width: 820px) {
@@ -3170,17 +3111,6 @@
     font-size: 0.95rem;
   }
 
-  .onboardingScreen {
-    place-items: center;
-    padding: 80px 14px 20px;
-  }
-
-  .onboardingScreen .onboardingForm {
-    width: min(420px, calc(100vw - 28px));
-    height: auto;
-    padding: 28px 22px 22px;
-    border-radius: 26px;
-  }
 }
 
 @media (max-height: 700px) {
