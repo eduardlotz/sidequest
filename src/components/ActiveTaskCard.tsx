@@ -4,7 +4,6 @@ import {
   motion,
   type PanInfo,
   type Variants,
-  useAnimationControls,
   useMotionValue,
   useMotionValueEvent,
   useSpring,
@@ -16,20 +15,12 @@ import NumberFlow, {
 import {
   useCallback,
   useEffect,
-  useId,
-  useLayoutEffect,
   useRef,
   useState,
-  type CSSProperties,
   type PointerEvent as ReactPointerEvent,
-  type UIEvent as ReactUIEvent,
 } from "react";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import {
-  cleanGameTitle,
-  getCompletionOutcome,
-  type CompletedGame,
-  type CompletionOutcome,
   type Quest,
   type QuestSession,
 } from "../stores/useQuestStore";
@@ -57,20 +48,18 @@ import styles from "../App.module.css";
 type Props = {
   quest: Quest;
   session: QuestSession;
-  previousCompletions: CompletedGame[];
   reduceMotion: boolean;
   onDiscard: () => void;
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
-  onComplete: (durationMs: number, gameTitle: string) => void;
+  onComplete: () => void;
 };
 
 type Phase = "ready" | "running" | "paused" | "cutting" | "completed";
 type Point = { x: number; y: number };
 
 const PAUSE_PULL_DISTANCE = 44;
-const GAME_TITLE_MAX_LENGTH = 36;
 const COMPLETION_FLIP_DURATION_MS = 740;
 const COMPLETION_FACE_REVEAL_MS = 340;
 const COMPLETION_HOLD_DURATION_MS = 1500;
@@ -125,7 +114,6 @@ const pausePanelItemVariants: Variants = {
 export function ActiveTaskCard({
   quest,
   session,
-  previousCompletions,
   reduceMotion,
   onDiscard,
   onStart,
@@ -159,13 +147,7 @@ export function ActiveTaskCard({
     readyEntranceDropRef.current,
   );
   const [cut, setCut] = useState<RopeCut | null>(null);
-  const [gameTitle, setGameTitle] = useState("");
-  const [savedGameTitle, setSavedGameTitle] = useState("");
-  const [completionOutcome, setCompletionOutcome] =
-    useState<CompletionOutcome>("new-title");
   const [showFinishedFace, setShowFinishedFace] = useState(false);
-  const [previousHistoryOpen, setPreviousHistoryOpen] = useState(false);
-  const [previousHistoryHeight, setPreviousHistoryHeight] = useState(0);
   const [completionOffset, setCompletionOffset] = useState<Point>({
     x: 0,
     y: 0,
@@ -242,7 +224,6 @@ export function ActiveTaskCard({
     damping: 18,
     mass: 0.72,
   });
-  const titleInputControls = useAnimationControls();
   const {
     handlePointerEnter: handleCardPointerEnter,
     handlePointerLeave: handleCardPointerLeave,
@@ -275,10 +256,6 @@ export function ActiveTaskCard({
     const interval = window.setInterval(update, 250);
     return () => window.clearInterval(interval);
   }, [phase, readElapsed]);
-
-  useEffect(() => {
-    if (phase !== "running") setPreviousHistoryOpen(false);
-  }, [phase]);
 
   useEffect(() => {
     if (!cardFocused) return;
@@ -470,24 +447,9 @@ export function ActiveTaskCard({
     if (capturedStartedAt !== null) onStart(capturedStartedAt);
   }
 
-  function shakeTitleInput() {
-    void titleInputControls.start(
-      reduceMotion
-        ? {
-            opacity: [1, 0.58, 1],
-            transition: { duration: 0.18 },
-          }
-        : {
-            x: [0, -6, 5, -4, 3, 0],
-            transition: { duration: 0.28, ease: "easeOut" },
-          },
-    );
-  }
-
   function beginExit(next: "cutting" | "completed", ropeCut?: RopeCut) {
     if (exitStartedRef.current || phase === "cutting" || phase === "completed")
       return;
-    const resolvedGameTitle = cleanGameTitle(gameTitle);
     if (next === "cutting" && !ropeCut) return;
     playSound(next === "completed" ? "formSubmit" : "cut");
     stopTimerAnimation();
@@ -502,9 +464,6 @@ export function ActiveTaskCard({
     }
     setElapsedMs(duration);
     if (next === "completed") {
-      setCompletionOutcome(
-        getCompletionOutcome(previousCompletions, resolvedGameTitle, duration),
-      );
       const cardRect = cardProjectionRef.current?.getBoundingClientRect();
       if (cardRect) {
         setCompletionOffset({
@@ -512,7 +471,6 @@ export function ActiveTaskCard({
           y: window.innerHeight / 2 - (cardRect.top + cardRect.height / 2),
         });
       }
-      setSavedGameTitle(resolvedGameTitle);
       setShowFinishedFace(reduceMotion);
       if (reduceMotion) {
         playSound("completion");
@@ -527,7 +485,7 @@ export function ActiveTaskCard({
     setPhase(next);
     exitTimeoutRef.current = window.setTimeout(
       () => {
-        if (next === "completed") onComplete(duration, resolvedGameTitle);
+        if (next === "completed") onComplete();
         else onDiscard();
       },
       next === "completed"
@@ -768,15 +726,7 @@ export function ActiveTaskCard({
       data-phase={phase}
       data-reveal-complete={revealFinished ? "true" : undefined}
       data-timer-entrance={timerEntranceSettling ? "dropping" : "settled"}
-      data-previous-history-open={
-        phase === "running" && previousHistoryOpen ? "true" : undefined
-      }
       data-rope-mode={ropeMode}
-      style={
-        {
-          "--previous-history-height": `${previousHistoryHeight}px`,
-        } as CSSProperties
-      }
     >
       <AnimatePresence>
         {cardFocused && (
@@ -973,13 +923,7 @@ export function ActiveTaskCard({
                               <strong>
                                 {formatRunningDuration(elapsedMs)}
                               </strong>
-                              {completionOutcome === "new-highscore" && (
-                                <span className={styles.completionHighscoreTag}>
-                                  New highscore
-                                </span>
-                              )}
                             </span>
-                            {savedGameTitle && <small>{savedGameTitle}</small>}
                           </motion.div>
                         </motion.div>
                       )}
@@ -1158,66 +1102,6 @@ export function ActiveTaskCard({
               exit={reduceMotion ? { opacity: 0 } : "exit"}
               variants={pausePanelVariants}
             >
-              <motion.label
-                className={styles.gameTitleField}
-                variants={pausePanelItemVariants}
-              >
-                <motion.span
-                  animate={titleInputControls}
-                  className={styles.gameTitleInputWrap}
-                >
-                  <input
-                    aria-label="Game title"
-                    autoComplete="off"
-                    maxLength={GAME_TITLE_MAX_LENGTH}
-                    placeholder="Game title (optional)"
-                    size={Math.max(
-                      gameTitle.length,
-                      "Game title (optional)".length,
-                      1,
-                    )}
-                    type="text"
-                    value={gameTitle}
-                    onChange={(event) => setGameTitle(event.target.value)}
-                    onKeyDown={(event) => {
-                      const selectionLength = Math.max(
-                        0,
-                        (event.currentTarget.selectionEnd ?? 0) -
-                          (event.currentTarget.selectionStart ?? 0),
-                      );
-                      if (
-                        gameTitle.length < GAME_TITLE_MAX_LENGTH ||
-                        selectionLength > 0 ||
-                        event.key.length !== 1 ||
-                        event.nativeEvent.isComposing ||
-                        event.altKey ||
-                        event.ctrlKey ||
-                        event.metaKey
-                      ) {
-                        return;
-                      }
-                      event.preventDefault();
-                      shakeTitleInput();
-                    }}
-                    onPaste={(event) => {
-                      const selectionLength = Math.max(
-                        0,
-                        (event.currentTarget.selectionEnd ?? 0) -
-                          (event.currentTarget.selectionStart ?? 0),
-                      );
-                      const remaining =
-                        GAME_TITLE_MAX_LENGTH -
-                        gameTitle.length +
-                        selectionLength;
-                      if (
-                        event.clipboardData.getData("text").length > remaining
-                      ) {
-                        shakeTitleInput();
-                      }
-                    }}
-                  />
-                </motion.span>
-              </motion.label>
               <motion.button
                 className={styles.saveAction}
                 data-sound-click-skip
@@ -1231,257 +1115,35 @@ export function ActiveTaskCard({
         </AnimatePresence>
 
         <AnimatePresence mode="wait">
-          {!exiting &&
-            !timerSettling &&
-            (phase === "running" && previousCompletions.length > 0 ? (
-              <PreviousCompletionHistory
-                entries={previousCompletions}
-                expanded={previousHistoryOpen}
-                reduceMotion={reduceMotion}
-                onListHeightChange={setPreviousHistoryHeight}
-                onToggle={() => {
-                  playSound(
-                    previousHistoryOpen ? "accordionClose" : "accordionOpen",
-                  );
-                  setPreviousHistoryOpen((open) => !open);
-                }}
-              />
-            ) : (
-              <motion.p
-                className={styles.timerHint}
-                key={phase}
-                initial={reduceMotion ? false : { opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.16,
-                  ease: "easeOut",
-                }}
-              >
-                <span>
-                  {phase === "ready"
-                    ? "Pull the timer to start."
-                    : `Pull the timer to ${
-                        phase === "paused" ? "resume" : "pause"
-                      }.`}
-                </span>
-                <span>
-                  {phase === "ready"
-                    ? "Cut the rope to choose another."
-                    : "Cut the rope to stop."}
-                </span>
-              </motion.p>
-            ))}
+          {!exiting && !timerSettling && (
+            <motion.p
+              className={styles.timerHint}
+              key={phase}
+              initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
+              transition={{
+                duration: reduceMotion ? 0 : 0.16,
+                ease: "easeOut",
+              }}
+            >
+              <span>
+                {phase === "ready"
+                  ? "Pull the timer to start."
+                  : `Pull the timer to ${
+                      phase === "paused" ? "resume" : "pause"
+                    }.`}
+              </span>
+              <span>
+                {phase === "ready"
+                  ? "Cut the rope to choose another."
+                  : "Cut the rope to stop."}
+              </span>
+            </motion.p>
+          )}
         </AnimatePresence>
       </motion.div>
     </div>
-  );
-}
-
-function PreviousCompletionHistory({
-  entries,
-  expanded,
-  onListHeightChange,
-  onToggle,
-  reduceMotion,
-}: {
-  entries: CompletedGame[];
-  expanded: boolean;
-  onListHeightChange: (height: number) => void;
-  onToggle: () => void;
-  reduceMotion: boolean;
-}) {
-  const mobileListId = useId();
-  const mobilePanelRef = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    if (!expanded) {
-      onListHeightChange(0);
-      return;
-    }
-
-    const panel = mobilePanelRef.current;
-    if (!panel) return;
-    const reportHeight = () => onListHeightChange(panel.scrollHeight);
-    reportHeight();
-    const resizeObserver = new ResizeObserver(reportHeight);
-    resizeObserver.observe(panel);
-    return () => resizeObserver.disconnect();
-  }, [entries, expanded, onListHeightChange]);
-
-  return (
-    <motion.section
-      className={styles.previousCompletionHistory}
-      key="previous-completions"
-      aria-label="Previous completions for this quest"
-      initial={reduceMotion ? false : { opacity: 0, y: 4 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
-      transition={{ duration: reduceMotion ? 0 : 0.16, ease: "easeOut" }}
-      onPointerDown={(event) => event.stopPropagation()}
-    >
-      <p className={styles.previousCompletionDesktopLabel}>
-        You&apos;ve completed this quest before.
-      </p>
-      <div className={styles.previousCompletionDesktopList}>
-        <PreviousCompletionList entries={entries} />
-      </div>
-
-      <div className={styles.previousCompletionMobileHeader}>
-        <p className={styles.previousCompletionMobileLabel}>
-          You&apos;ve completed this quest before.
-        </p>
-        <button
-          className={styles.previousCompletionToggle}
-          data-sound-click-skip
-          type="button"
-          aria-controls={mobileListId}
-          aria-expanded={expanded}
-          onClick={onToggle}
-        >
-          <span>{expanded ? "Hide" : "Show"}</span>
-          <svg viewBox="0 0 16 16" aria-hidden="true">
-            <path d="m4 6 4 4 4-4" />
-          </svg>
-        </button>
-      </div>
-      <AnimatePresence initial={false}>
-        {expanded && (
-          <motion.div
-            ref={mobilePanelRef}
-            className={styles.previousCompletionMobilePanel}
-            id={mobileListId}
-            key="mobile-completions"
-            initial={reduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={reduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
-            transition={
-              reduceMotion
-                ? { duration: 0 }
-                : { type: "spring", stiffness: 310, damping: 31, mass: 0.8 }
-            }
-          >
-            <PreviousCompletionList
-              animateEntries
-              entries={entries}
-              reduceMotion={reduceMotion}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.section>
-  );
-}
-
-function PreviousCompletionList({
-  animateEntries = false,
-  entries,
-  reduceMotion = false,
-}: {
-  animateEntries?: boolean;
-  entries: CompletedGame[];
-  reduceMotion?: boolean;
-}) {
-  const listRef = useRef<HTMLUListElement>(null);
-  const [scrollEdges, setScrollEdges] = useState({
-    atBottom: true,
-    atTop: true,
-  });
-
-  const updateScrollEdges = useCallback((element: HTMLUListElement) => {
-    setScrollEdges({
-      atBottom:
-        element.scrollHeight - element.clientHeight - element.scrollTop <= 1,
-      atTop: element.scrollTop <= 1,
-    });
-  }, []);
-
-  useEffect(() => {
-    const element = listRef.current;
-    if (!element) return;
-
-    updateScrollEdges(element);
-    const resizeObserver = new ResizeObserver(() => updateScrollEdges(element));
-    resizeObserver.observe(element);
-    return () => resizeObserver.disconnect();
-  }, [entries, updateScrollEdges]);
-
-  function handleScroll(event: ReactUIEvent<HTMLUListElement>) {
-    updateScrollEdges(event.currentTarget);
-  }
-
-  return (
-    <div
-      className={styles.previousCompletionViewport}
-      data-fade-bottom={!scrollEdges.atBottom || undefined}
-      data-fade-top={!scrollEdges.atTop || undefined}
-    >
-      <ul
-        ref={listRef}
-        className={styles.previousCompletionList}
-        onScroll={handleScroll}
-      >
-        <AnimatePresence initial={animateEntries} propagate>
-          {entries.map((entry, index) => (
-            <PreviousCompletionEntry
-              animate={animateEntries}
-              entry={entry}
-              index={index}
-              key={entry.id}
-              reduceMotion={reduceMotion}
-            />
-          ))}
-        </AnimatePresence>
-      </ul>
-    </div>
-  );
-}
-
-function PreviousCompletionEntry({
-  animate,
-  entry,
-  index,
-  reduceMotion,
-}: {
-  animate: boolean;
-  entry: CompletedGame;
-  index: number;
-  reduceMotion: boolean;
-}) {
-  const animateEntry = animate && !reduceMotion;
-
-  return (
-    <motion.li
-      className={styles.previousCompletionEntry}
-      initial={animateEntry ? { filter: "blur(5px)", opacity: 0, y: 3 } : false}
-      animate={{
-        filter: "blur(0px)",
-        opacity: 1,
-        y: 0,
-        transition: {
-          delay: animateEntry ? index * 0.025 : 0,
-          duration: animateEntry ? 0.18 : 0,
-          ease: "easeOut",
-        },
-      }}
-      exit={{
-        filter: animateEntry ? "blur(4px)" : "blur(0px)",
-        opacity: 0,
-        y: animateEntry ? -2 : 0,
-        transition: {
-          delay: 0,
-          duration: animateEntry ? 0.1 : 0,
-          ease: "easeIn",
-        },
-      }}
-    >
-      <strong title={entry.title ?? "Game not named"}>
-        {entry.title ?? "Game not named"}
-      </strong>
-      <time dateTime={`PT${Math.round(entry.highscoreMs / 1000)}S`}>
-        {formatRunningDuration(entry.highscoreMs)}
-      </time>
-    </motion.li>
   );
 }
 

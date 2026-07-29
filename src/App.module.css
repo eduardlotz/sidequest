@@ -504,29 +504,6 @@
   justify-content: center;
 }
 
-.completionHighscoreTag {
-  flex: 0 0 auto;
-  padding: 6px 9px 5px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: #09090b;
-  font-size: clamp(0.68rem, 2.6cqw, 0.82rem);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.completionMark small {
-  margin-top: 8px;
-  color: white;
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.1;
-  text-align: center;
-}
-
 .timerRig {
   position: relative;
   z-index: 4;
@@ -674,63 +651,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 34px;
-}
-
-.gameTitleField {
-  display: flex;
-  width: min(100%, 330px);
-  align-items: center;
-  flex-direction: column;
-}
-
-.gameTitleInputWrap {
-  position: relative;
-  z-index: 0;
-  display: flex;
-  width: fit-content;
-  min-width: min(100%, 250px);
-  max-width: 100%;
-  box-sizing: border-box;
-  justify-content: center;
-  padding: 10px 16px;
-  border-radius: 16px;
-  background: rgb(33 33 33 / 0.05);
-  transition: background 140ms ease;
-  will-change: transform;
-}
-
-.gameTitleInputWrap:focus-within {
-  background: rgb(8 8 10 / 0.09);
-}
-
-/* .gameTitleInputWrap:has(input:focus-visible) {
-  border-radius: 14px;
-  outline: 3px solid #000509;
-  outline-offset: 3px;
-} */
-
-.gameTitleField input {
-  display: block;
-  width: fit-content;
-  max-width: min(100%, 330px);
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #09090b;
-  field-sizing: content;
-  font-size: 1.25rem;
-  font-weight: 650;
-  outline: none;
-  text-align: center;
-}
-
-.gameTitleField input:focus {
-  outline: none;
-}
-
-.gameTitleField input::placeholder {
-  color: #a0a0a8;
+  gap: 0;
 }
 
 .saveAction,
@@ -747,7 +668,9 @@
 
 .saveAction {
   min-width: min(100%, 250px);
+  min-height: 60px;
   box-sizing: border-box;
+  border-radius: 18px;
   background: #09090b;
   color: white;
   font-size: 1.25rem;
@@ -787,110 +710,6 @@
   line-height: 1.35;
   text-align: center;
   pointer-events: none;
-}
-
-.previousCompletionHistory {
-  position: absolute;
-  top: calc(60% + 24px);
-  right: 5%;
-  left: 5%;
-  z-index: 8;
-  width: min(100%, 340px);
-  margin-inline: auto;
-  color: var(--ink);
-}
-
-.previousCompletionDesktopLabel,
-.previousCompletionMobileLabel {
-  margin: 0 0 16px;
-  color: rgb(8 8 10 / 0.5);
-  font-size: 0.82rem;
-  font-weight: 650;
-  line-height: 1.35;
-  text-align: center;
-}
-
-.previousCompletionMobileLabel,
-.previousCompletionMobileHeader,
-.previousCompletionToggle,
-.previousCompletionMobilePanel {
-  display: none;
-}
-
-.previousCompletionViewport {
-  position: relative;
-}
-
-.previousCompletionViewport::before,
-.previousCompletionViewport::after {
-  position: absolute;
-  right: 0;
-  left: 0;
-  z-index: 1;
-  height: 24px;
-  opacity: 0;
-  pointer-events: none;
-  content: "";
-  transition: opacity 140ms ease;
-}
-
-.previousCompletionViewport::before {
-  top: 0;
-  background: linear-gradient(to bottom, var(--canvas), transparent);
-}
-
-.previousCompletionViewport::after {
-  bottom: 0;
-  background: linear-gradient(to top, var(--canvas), transparent);
-}
-
-.previousCompletionViewport[data-fade-top]::before,
-.previousCompletionViewport[data-fade-bottom]::after {
-  opacity: 1;
-}
-
-.previousCompletionList {
-  display: grid;
-  max-height: 135px;
-  padding: 0 0 20px;
-  margin: 0;
-  gap: 6px;
-  list-style: none;
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
-  scrollbar-color: rgb(8 8 10 / 0.18) transparent;
-  scrollbar-width: thin;
-  touch-action: pan-y;
-}
-
-.previousCompletionEntry {
-  display: grid;
-  min-width: 0;
-  align-items: baseline;
-  gap: 18px;
-  grid-template-columns: minmax(0, 1fr) max-content;
-  font-size: 0.875rem;
-  font-weight: 650;
-  line-height: 1.35;
-}
-
-.previousCompletionEntry strong {
-  min-width: 0;
-  overflow: hidden;
-  color: rgb(8 8 10 / 1);
-  font: inherit;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.previousCompletionEntry time {
-  color: rgb(8 8 10 / 0.5);
-  font: inherit;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings:
-    "tnum" 1,
-    "lnum" 1;
-  text-align: right;
 }
 
 .activeCardProjection {
@@ -1151,7 +970,7 @@
   box-shadow: 0 12px 32px rgb(8 8 10 / 0.045);
 }
 
-.historyAccordionButton {
+.historyQuestRow {
   display: flex;
   width: 100%;
   min-height: 82px;
@@ -1161,84 +980,14 @@
   background: transparent;
   color: #09090b;
   text-align: left;
-  cursor: pointer;
-  transition: background 160ms ease;
 }
 
-.historyAccordionButton:hover {
-  background: rgb(8 8 10 / 0.035);
-}
-
-.accordionChevron {
-  display: grid;
-  width: 30px;
-  height: 30px;
+.historyCompletionCount {
   flex: 0 0 auto;
-  place-items: center;
-  border-radius: 50%;
-  background: #e8e8ef;
-  color: #696971;
-  font-size: 1.1rem;
-  font-weight: 700;
-  transition:
-    transform 240ms ease,
-    background 160ms ease;
-}
-
-.historyAccordionButton[aria-expanded="true"] .accordionChevron {
-  background: #09090b;
-  color: white;
-  transform: rotate(180deg);
-}
-
-.historyEntryPanel {
-  overflow: hidden;
-  border-top: 1px solid rgb(8 8 10 / 0.07);
-}
-
-.historyEntries {
-  padding: 6px 12px 12px;
-  margin: 0;
-  list-style: none;
-}
-
-.historyEntry {
-  display: flex;
-  min-height: 64px;
-  align-items: center;
-  gap: 14px;
-  justify-content: space-between;
-  padding: 12px 8px;
-}
-
-.historyEntry + .historyEntry {
-  border-top: 1px solid rgb(8 8 10 / 0.065);
-}
-
-.historyEntry > span {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.historyEntry strong {
-  overflow: hidden;
-  font-size: 0.95rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.historyEntry small,
-.rowContent small {
   color: var(--muted);
-  font-size: 0.76rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.historyEntry b {
-  flex: 0 0 auto;
   font-size: 0.84rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .rowCheck {
@@ -1411,10 +1160,6 @@
       transform 360ms cubic-bezier(0.22, 0.8, 0.24, 1);
   }
 
-  .activeExperience[data-previous-history-open] .activeCardStage {
-    top: calc(63svh + var(--previous-history-height, 0px));
-  }
-
   .screen:has(.activeExperience[data-card-focused="true"]) {
     z-index: 121;
   }
@@ -1484,10 +1229,6 @@
     pointer-events: none;
   }
 
-  .activeExperience[data-previous-history-open] .timerRig {
-    overflow: visible;
-  }
-
   .activeQuestCard {
     padding: clamp(21px, 5.5cqw, 30px);
     border-radius: 27px;
@@ -1540,78 +1281,6 @@
     font-size: 0.76rem;
   }
 
-  .previousCompletionHistory {
-    top: 70%;
-    right: 18px;
-    left: 18px;
-    width: min(calc(100% - 36px), 340px);
-  }
-
-  .previousCompletionDesktopLabel,
-  .previousCompletionDesktopList {
-    display: none;
-  }
-
-  .previousCompletionMobileHeader {
-    display: inline-flex;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    white-space: nowrap;
-  }
-
-  .previousCompletionMobileLabel {
-    display: block;
-    margin: 0;
-    text-align: left;
-  }
-
-  .previousCompletionToggle {
-    display: flex;
-    width: fit-content;
-    min-height: 30px;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    padding: 0 11px;
-    border: 0;
-    border-radius: 999px;
-    margin: 0;
-    background: rgb(8 8 10 / 0.055);
-    color: rgb(8 8 10 / 0.5);
-    cursor: pointer;
-    font-size: 0.72rem;
-    font-weight: 700;
-    touch-action: manipulation;
-    transition: background 140ms ease;
-  }
-
-  .previousCompletionToggle:hover {
-    background: rgb(8 8 10 / 0.09);
-  }
-
-  .previousCompletionToggle svg {
-    width: 13px;
-    height: 13px;
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 1.8;
-    transition: transform 180ms ease;
-  }
-
-  .previousCompletionToggle[aria-expanded="true"] svg {
-    transform: rotate(180deg);
-  }
-
-  .previousCompletionMobilePanel {
-    display: block;
-    padding-top: 10px;
-    overflow: hidden;
-  }
-
   .pausePanel {
     top: 56%;
     bottom: auto;
@@ -1623,8 +1292,9 @@
     padding: 0 18px;
   }
 
-  .gameTitleField input,
   .saveAction {
+    min-height: 56px;
+    border-radius: 16px;
     font-size: 1.25rem;
   }
 }
@@ -2134,16 +1804,12 @@
   box-shadow: none;
 }
 
-.historyAccordionButton {
+.historyQuestRow {
   min-height: 51px;
   gap: 8px;
   padding: 10px 16px;
   border-radius: 16px;
   background: #f0f0f1;
-}
-
-.historyAccordionButton:hover {
-  background: #e9e9eb;
 }
 
 .rowContent strong {
@@ -2152,62 +1818,9 @@
   line-height: 1.1;
 }
 
-.accordionChevron {
-  width: 20px;
-  height: 20px;
-  border-radius: 0;
-  background: transparent;
-  color: #111113;
-  font-size: 1rem;
-  transition: transform 180ms ease;
-}
-
-.historyAccordionButton[aria-expanded="true"] .accordionChevron {
-  background: transparent;
-  color: #111113;
-  transform: none;
-}
-
-.historyAccordionButton[aria-expanded="false"] .accordionChevron {
-  transform: rotate(180deg);
-}
-
-.historyEntryPanel {
-  border-top: 0;
-}
-
-.historyEntries {
-  padding: 6px 16px 0;
-}
-
-.historyEntry {
-  min-height: 63px;
-  padding: 0;
-}
-
-.historyEntry + .historyEntry {
-  border-top-color: #e8e8ea;
-}
-
-.historyEntry strong {
-  min-width: 0;
-  overflow: hidden;
-  color: #85858b;
-  font-size: 0.96rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.historyEntry time {
-  flex: 0 0 auto;
-  padding: 6px 10px 5px;
-  border-radius: 999px;
-  background: #f0f0f1;
+.historyCompletionCount {
   color: #85858b;
   font-size: 0.84rem;
-  font-variant-numeric: tabular-nums;
   font-weight: 700;
 }
 

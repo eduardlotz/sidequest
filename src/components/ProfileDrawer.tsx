@@ -70,7 +70,7 @@ export function ProfileDrawer({
         </div>
         <Drawer.Description>
           {activeView === "history"
-            ? "Your completed sidequests and best times."
+            ? "Your completed sidequests and completion counts."
             : "Choose the games you want quests for."}
         </Drawer.Description>
       </header>

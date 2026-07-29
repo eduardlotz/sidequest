@@ -69,11 +69,8 @@ export function App() {
     () =>
       QUESTS.flatMap((definition) => {
         const quest = hydrateQuest(definition.id, progressByQuestId);
-        return quest && quest.completedGames.length > 0 ? [quest] : [];
-      }).sort(
-        (a, b) =>
-          b.completedGames[0].achievedAt - a.completedGames[0].achievedAt,
-      ),
+        return quest && quest.completionCount > 0 ? [quest] : [];
+      }),
     [progressByQuestId],
   );
 
@@ -92,14 +89,13 @@ export function App() {
     return () => window.clearTimeout(timeout);
   }, [reduceMotion]);
 
-  function handleComplete(durationMs: number, gameTitle: string) {
+  function handleComplete() {
     if (!currentQuest || !currentSession) return;
     const nextToast = {
       id: currentSession.sessionId,
       title: currentQuest.title,
     };
-    const outcome = completeQuest(durationMs, gameTitle);
-    if (outcome) setToast(nextToast);
+    if (completeQuest()) setToast(nextToast);
   }
 
   function handleAboutOpenChange(open: boolean) {
@@ -321,15 +317,15 @@ function AboutSidequest() {
             <li>Check that the objective fits the game you want to play</li>
             <li>Pull the waiting timer down to start</li>
             <li>Pull to pause or resume, and cut the rope to stop</li>
-            <li>Enter the game title while paused to complete the quest</li>
+            <li>Use the Complete quest button while paused</li>
           </ol>
         </section>
 
         <section className={styles.aboutSection}>
           <h3>Try it your way</h3>
           <p>
-            Complete a quest in another compatible game or beat your best
-            manually measured time.
+            Repeat any quest whenever it fits. Every completion adds to its
+            count.
           </p>
         </section>
 

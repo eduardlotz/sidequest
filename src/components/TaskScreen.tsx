@@ -16,7 +16,7 @@ type Props = {
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
-  onComplete: (durationMs: number, gameTitle: string) => void;
+  onComplete: () => void;
 };
 
 export function TaskScreen({
@@ -69,7 +69,6 @@ export function TaskScreen({
               <ActiveTaskCard
                 quest={currentQuest}
                 session={currentSession}
-                previousCompletions={currentQuest.completedGames}
                 reduceMotion={reduceMotion}
                 onDiscard={onDiscard}
                 onStart={onStart}

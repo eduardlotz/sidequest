@@ -1,7 +1,4 @@
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
-import { formatRunningDuration } from "../lib/format";
-import { playSound } from "../lib/sound";
+import { motion } from "motion/react";
 import type { Quest } from "../stores/useQuestStore";
 import { CheckIcon } from "./Icons";
 import styles from "../App.module.css";
@@ -17,29 +14,9 @@ export function HistoryScreen({
   reduceMotion,
   totalQuestCount,
 }: Props) {
-  const [expandedQuestIds, setExpandedQuestIds] = useState(
-    () => new Set(completedQuests.map((quest) => quest.id)),
-  );
   const completedPercentage = totalQuestCount > 0
     ? Math.round(completedQuests.length / totalQuestCount * 100)
     : 0;
-
-  useEffect(() => {
-    setExpandedQuestIds((current) => {
-      const next = new Set(current);
-      completedQuests.forEach((quest) => next.add(quest.id));
-      return next;
-    });
-  }, [completedQuests]);
-
-  function toggleQuest(questId: string) {
-    setExpandedQuestIds((current) => {
-      const next = new Set(current);
-      if (next.has(questId)) next.delete(questId);
-      else next.add(questId);
-      return next;
-    });
-  }
 
   return (
     <section className={styles.historyScreen} aria-labelledby="history-title">
@@ -58,24 +35,17 @@ export function HistoryScreen({
           <div className={styles.historyEmpty}>
             <span className={styles.emptyCheck} aria-hidden="true"><CheckIcon /></span>
             <h2>No completed sidequests yet</h2>
-            <p>Saved quests will appear here with every game you played.</p>
+            <p>Completed quests will appear here with their completion count.</p>
           </div>
         ) : (
           <motion.ol className={styles.historyList} layout>
-            <AnimatePresence initial={false}>
-              {completedQuests.map((quest) => {
-                const expanded = expandedQuestIds.has(quest.id);
-                return (
-                  <HistoryAccordion
-                    expanded={expanded}
-                    quest={quest}
-                    key={quest.id}
-                    reduceMotion={reduceMotion}
-                    onToggle={() => toggleQuest(quest.id)}
-                  />
-                );
-              })}
-            </AnimatePresence>
+            {completedQuests.map((quest) => (
+              <HistoryQuest
+                quest={quest}
+                key={quest.id}
+                reduceMotion={reduceMotion}
+              />
+            ))}
           </motion.ol>
         )}
       </div>
@@ -83,19 +53,13 @@ export function HistoryScreen({
   );
 }
 
-function HistoryAccordion({
-  expanded,
+function HistoryQuest({
   quest,
-  onToggle,
   reduceMotion,
 }: {
-  expanded: boolean;
   quest: Quest;
-  onToggle: () => void;
   reduceMotion: boolean;
 }) {
-  const panelId = `history-entries-${quest.id}`;
-
   return (
     <motion.li
       className={styles.historyRow}
@@ -105,46 +69,15 @@ function HistoryAccordion({
       exit={{ opacity: 0 }}
       transition={{ duration: reduceMotion ? 0 : 0.2 }}
     >
-      <button
-        className={styles.historyAccordionButton}
-        data-sound-click-skip
-        type="button"
-        aria-expanded={expanded}
-        aria-controls={panelId}
-        onClick={() => {
-          playSound(expanded ? "accordionClose" : "accordionOpen");
-          onToggle();
-        }}
-      >
+      <div className={styles.historyQuestRow}>
         <span className={styles.rowContent}>
           <strong>{quest.title}</strong>
         </span>
-        <span className={styles.accordionChevron} aria-hidden="true">⌃</span>
-      </button>
-
-      <AnimatePresence initial={false}>
-        {expanded && (
-          <motion.div
-            className={styles.historyEntryPanel}
-            id={panelId}
-            initial={reduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={reduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
-            transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 310, damping: 31, mass: 0.8 }}
-          >
-            <ul className={styles.historyEntries}>
-              {quest.completedGames.map((game) => (
-                <li className={styles.historyEntry} key={game.id}>
-                  <strong>{game.title ?? "Game not named"}</strong>
-                  <time dateTime={`PT${Math.round(game.highscoreMs / 1000)}S`}>
-                    {formatRunningDuration(game.highscoreMs)}
-                  </time>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        <strong className={styles.historyCompletionCount}>
+          {quest.completionCount}{" "}
+          {quest.completionCount === 1 ? "completion" : "completions"}
+        </strong>
+      </div>
     </motion.li>
   );
 }

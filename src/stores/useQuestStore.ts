@@ -13,7 +13,7 @@ import {
 } from "../data/questTaxonomy";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 2;
+export const STORE_VERSION = 3;
 export const RECENT_DRAW_WINDOW = 12;
 export const STORED_RECENT_LIMIT = 30;
 
@@ -48,15 +48,8 @@ export type ProfileInput = {
   avatarTheme?: AvatarTheme;
 };
 
-export type CompletedGame = {
-  id: string;
-  title: string | null;
-  highscoreMs: number;
-  achievedAt: number;
-};
-
 export type QuestProgress = {
-  completedGames: CompletedGame[];
+  completionCount: number;
 };
 
 export type QuestSession = {
@@ -84,10 +77,7 @@ type QuestActions = {
   pauseQuest: (pausedAt: number) => void;
   resumeQuest: (resumedAt: number) => void;
   discardCurrentSession: () => void;
-  completeQuest: (
-    durationMs: number,
-    gameTitle: string,
-  ) => CompletionOutcome | null;
+  completeQuest: () => boolean | null;
 };
 
 export type QuestStore = QuestState & QuestActions;
@@ -102,14 +92,8 @@ export type PersistedQuestState = Pick<
 >;
 
 export type Quest = QuestDefinition & {
-  completedGames: CompletedGame[];
+  completionCount: number;
 };
-
-export type CompletionOutcome =
-  | "completed"
-  | "new-title"
-  | "new-highscore"
-  | "not-improved";
 
 type StoreOptions = {
   random?: () => number;
@@ -294,50 +278,25 @@ function createQuestState(options: Required<StoreOptions>): StateCreator<QuestSt
         };
       });
     },
-    completeQuest: (durationMs, gameTitle) => {
+    completeQuest: () => {
       const state = get();
       const session = state.currentSession;
       if (!session || session.startedAt === null) return null;
-      const title = cleanGameTitle(gameTitle);
       const quest = QUESTS_BY_ID[session.questId];
       if (!quest) return null;
 
-      const existingProgress = state.progressByQuestId[quest.id] ?? {
-        completedGames: [],
-      };
-      const update = title
-        ? upsertGameHighscore(existingProgress.completedGames, {
-            id: gameIdFromTitle(title),
-            title,
-            highscoreMs: Math.max(0, durationMs),
-            achievedAt: options.now(),
-          })
-        : {
-            completedGames: sortCompletedGames([
-              {
-                id: `unnamed:${session.sessionId}`,
-                title: null,
-                highscoreMs: Math.max(0, durationMs),
-                achievedAt: options.now(),
-              },
-              ...existingProgress.completedGames,
-            ]),
-            outcome: "completed" as const,
-          };
-      const progressByQuestId =
-        update.outcome === "not-improved"
-          ? state.progressByQuestId
-          : {
-              ...state.progressByQuestId,
-              [quest.id]: { completedGames: update.completedGames },
-            };
+      const completionCount =
+        (state.progressByQuestId[quest.id]?.completionCount ?? 0) + 1;
       const recentQuestIds = appendRecent(
         state.recentQuestIds,
         session.questId,
       );
 
       set({
-        progressByQuestId,
+        progressByQuestId: {
+          ...state.progressByQuestId,
+          [quest.id]: { completionCount },
+        },
         currentSession: null,
         offeredQuestIds: generateQuestOffers(
           state.profile,
@@ -346,7 +305,7 @@ function createQuestState(options: Required<StoreOptions>): StateCreator<QuestSt
         ),
         recentQuestIds,
       });
-      return update.outcome;
+      return true;
     },
   });
 }
@@ -414,7 +373,7 @@ export function hydrateQuest(
   if (!definition) return null;
   return {
     ...definition,
-    completedGames: progressByQuestId[questId]?.completedGames ?? [],
+    completionCount: progressByQuestId[questId]?.completionCount ?? 0,
   };
 }
 
@@ -446,7 +405,7 @@ export function migratePersistedQuestState(
   _persistedState: unknown,
   version: number,
 ): PersistedQuestState {
-  if (version !== STORE_VERSION) return createDefaultState();
+  if (version !== 2 && version !== STORE_VERSION) return createDefaultState();
   return sanitizePersistedQuestState(_persistedState, Math.random);
 }
 
@@ -494,25 +453,6 @@ export function sanitizePersistedQuestState(
     offeredQuestIds: offeredQuestIds.slice(0, 3),
     recentQuestIds,
   };
-}
-
-export function getCompletionOutcome(
-  completedGames: readonly CompletedGame[],
-  gameTitle: string,
-  durationMs: number,
-): CompletionOutcome {
-  const title = cleanGameTitle(gameTitle);
-  if (!title) return "completed";
-  const gameId = gameIdFromTitle(title);
-  const existing = completedGames.find((game) => game.id === gameId);
-  if (!existing) return "new-title";
-  return Math.max(0, durationMs) < existing.highscoreMs
-    ? "new-highscore"
-    : "not-improved";
-}
-
-export function cleanGameTitle(gameTitle: string) {
-  return gameTitle.trim().replace(/\s+/gu, " ");
 }
 
 function validatedProfile(
@@ -568,16 +508,13 @@ function progressFromUnknown(value: unknown) {
 
   for (const [questId, progress] of Object.entries(value)) {
     if (!QUESTS_BY_ID[questId] || !isRecord(progress)) continue;
-    let completedGames: CompletedGame[] = [];
-    if (Array.isArray(progress.completedGames)) {
-      for (const game of progress.completedGames) {
-        const parsed = completedGameFromUnknown(game);
-        if (!parsed) continue;
-        completedGames = upsertGameHighscore(completedGames, parsed).completedGames;
-      }
-    }
-    if (completedGames.length > 0) {
-      progressByQuestId[questId] = { completedGames };
+    const storedCount = finiteNumber(progress.completionCount);
+    const completionCount =
+      storedCount === null
+        ? legacyCompletionCount(progress.completedGames)
+        : Math.max(0, Math.floor(storedCount));
+    if (completionCount > 0) {
+      progressByQuestId[questId] = { completionCount };
     }
   }
 
@@ -611,40 +548,6 @@ function sessionFromUnknown(value: unknown): QuestSession | null {
         ? null
         : Math.max(startedAt, storedPausedAt),
     pausedTotalMs: Math.max(0, finiteNumber(value.pausedTotalMs) ?? 0),
-  };
-}
-
-function completedGameFromUnknown(value: unknown): CompletedGame | null {
-  if (!isRecord(value)) return null;
-  const title =
-    typeof value.title === "string"
-      ? cleanGameTitle(value.title)
-      : value.title === null
-        ? null
-        : undefined;
-  const highscoreMs = finiteNumber(value.highscoreMs);
-  const achievedAt = finiteNumber(value.achievedAt);
-  const id =
-    title
-      ? gameIdFromTitle(title)
-      : title === null &&
-          typeof value.id === "string" &&
-          value.id.startsWith("unnamed:")
-        ? value.id
-        : null;
-  if (
-    title === undefined ||
-    !id ||
-    highscoreMs === null ||
-    achievedAt === null
-  ) {
-    return null;
-  }
-  return {
-    id,
-    title,
-    highscoreMs: Math.max(0, highscoreMs),
-    achievedAt,
   };
 }
 
@@ -705,51 +608,19 @@ function chooseDiverseQuests(
   return chosen;
 }
 
-function upsertGameHighscore(
-  completedGames: readonly CompletedGame[],
-  candidate: CompletedGame,
-) {
-  const existingIndex = completedGames.findIndex(
-    (game) => game.id === candidate.id,
-  );
-
-  if (existingIndex === -1) {
-    return {
-      completedGames: sortCompletedGames([candidate, ...completedGames]),
-      outcome: "new-title" as const,
-    };
-  }
-
-  const existing = completedGames[existingIndex];
-  if (candidate.highscoreMs >= existing.highscoreMs) {
-    return {
-      completedGames: [...completedGames],
-      outcome: "not-improved" as const,
-    };
-  }
-
-  return {
-    completedGames: sortCompletedGames(
-      completedGames.map((game, index) =>
-        index === existingIndex
-          ? { ...candidate, id: existing.id, title: existing.title }
-          : game,
-      ),
-    ),
-    outcome: "new-highscore" as const,
-  };
-}
-
 function appendRecent(recentQuestIds: readonly string[], questId: string) {
   return [...recentQuestIds, questId].slice(-STORED_RECENT_LIMIT);
 }
 
-function gameIdFromTitle(gameTitle: string) {
-  return cleanGameTitle(gameTitle).normalize("NFKC").toLocaleLowerCase();
-}
-
-function sortCompletedGames(completedGames: CompletedGame[]) {
-  return [...completedGames].sort((a, b) => b.achievedAt - a.achievedAt);
+function legacyCompletionCount(value: unknown) {
+  if (!Array.isArray(value)) return 0;
+  return value.filter(
+    (entry) =>
+      isRecord(entry) &&
+      finiteNumber(entry.highscoreMs) !== null &&
+      finiteNumber(entry.achievedAt) !== null &&
+      (typeof entry.title === "string" || entry.title === null),
+  ).length;
 }
 
 function randomIndex(length: number, random: () => number) {
