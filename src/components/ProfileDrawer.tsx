@@ -2,32 +2,33 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Drawer } from "vaul";
 import type {
+  CompletedQuest,
+  LegacyCompletion,
   ProfileInput,
-  Quest,
   UserProfile,
 } from "../stores/useQuestStore";
 import styles from "../App.module.css";
 import { HistoryScreen } from "./HistoryScreen";
 import { SettingsIcon } from "./Icons";
-import { OnboardingScreen } from "./OnboardingScreen";
+import { ProfilePreferences } from "./ProfilePreferences";
 
 type ProfileView = "preferences" | "history";
 
 type Props = {
-  completedQuests: Quest[];
+  completedQuests: CompletedQuest[];
+  legacyCompletions: LegacyCompletion[];
   open: boolean;
   profile: UserProfile;
   reduceMotion: boolean;
-  totalQuestCount: number;
   onSaveProfile: (profile: ProfileInput) => boolean;
 };
 
 export function ProfileDrawer({
   completedQuests,
+  legacyCompletions,
   open,
   profile,
   reduceMotion,
-  totalQuestCount,
   onSaveProfile,
 }: Props) {
   const [activeView, setActiveView] = useState<ProfileView>("history");
@@ -70,8 +71,8 @@ export function ProfileDrawer({
         </div>
         <Drawer.Description>
           {activeView === "history"
-            ? "Your completed sidequests and completion counts."
-            : "Choose the games you want quests for."}
+            ? "The sessions you chose and completed."
+            : "Choose which objectives can appear."}
         </Drawer.Description>
       </header>
 
@@ -86,10 +87,8 @@ export function ProfileDrawer({
               exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -8 }}
               transition={{ duration: reduceMotion ? 0 : 0.16 }}
             >
-              <OnboardingScreen
-                initialProfile={profile}
-                mode="preferences"
-                reduceMotion={reduceMotion}
+              <ProfilePreferences
+                profile={profile}
                 onSubmit={handleSaveProfile}
               />
             </motion.div>
@@ -104,8 +103,8 @@ export function ProfileDrawer({
             >
               <HistoryScreen
                 completedQuests={completedQuests}
+                legacyCompletions={legacyCompletions}
                 reduceMotion={reduceMotion}
-                totalQuestCount={totalQuestCount}
               />
             </motion.div>
           )}

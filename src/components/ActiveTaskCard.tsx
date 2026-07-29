@@ -24,12 +24,22 @@ import {
   type Quest,
   type QuestSession,
 } from "../stores/useQuestStore";
-import { getQuestAccentStyle } from "../data/questColors";
-import { QUEST_GENRE_LABELS } from "../data/questTaxonomy";
+import {
+  MODIFIERS,
+  modifierFitsObjective,
+} from "../data/decks";
+import { getCardAccentStyle } from "../data/questColors";
 import { CARD_LAYOUT_TRANSITION } from "../lib/cardMotion";
 import { formatRunningDuration } from "../lib/format";
 import { playSound } from "../lib/sound";
 import { CompletionCheckIcon } from "./CompletionCheckIcon";
+import {
+  CheckIcon,
+  ModifierIcon,
+  SparkIcon,
+  TargetIcon,
+  TimerIcon,
+} from "./Icons";
 import { QuestCardBack } from "./QuestCardBack";
 import {
   PAUSED_TIMER_TOP_RATIO,
@@ -49,11 +59,12 @@ type Props = {
   quest: Quest;
   session: QuestSession;
   reduceMotion: boolean;
+  onToggleModifier: (modifierId: string) => void;
   onDiscard: () => void;
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
-  onComplete: () => void;
+  onComplete: (durationMs: number) => void;
 };
 
 type Phase = "ready" | "running" | "paused" | "cutting" | "completed";
@@ -115,6 +126,7 @@ export function ActiveTaskCard({
   quest,
   session,
   reduceMotion,
+  onToggleModifier,
   onDiscard,
   onStart,
   onPause,
@@ -135,11 +147,7 @@ export function ActiveTaskCard({
   const [ropeMode, setRopeMode] = useState<RopeMode>(
     initiallyReady ? "ready" : initiallyPaused ? "paused" : "running",
   );
-  const readyEntranceDropRef = useRef(
-    initiallyReady &&
-      !reduceMotion &&
-      Date.now() - assignment.revealedAt < 2_500,
-  );
+  const readyEntranceDropRef = useRef(false);
   const [timerSettling, setTimerSettling] = useState(
     readyEntranceDropRef.current,
   );
@@ -162,6 +170,7 @@ export function ActiveTaskCard({
   const [animateReveal] = useState(
     () => !reduceMotion && Date.now() - assignment.revealedAt < 1_500,
   );
+  const revealSoundPlayedRef = useRef(false);
   const [revealFinished, setRevealFinished] = useState(!animateReveal);
   const [cutTrail, setCutTrail] = useState<Point[] | null>(null);
   const dropOnStartRef = useRef(
@@ -421,6 +430,28 @@ export function ActiveTaskCard({
     setPhase("paused");
   }
 
+  function startFromButton() {
+    if (phase !== "ready" || startedAtRef.current !== null) return;
+    const startedAt = Date.now();
+    const entranceOffset = initialTimerOffset(
+      !reduceMotion,
+      RUNNING_TIMER_TOP_RATIO,
+    );
+    startedAtRef.current = startedAt;
+    pausedAtRef.current = null;
+    playSound("toggleOn");
+    x.set(entranceOffset.x);
+    y.set(entranceOffset.y);
+    ropeTargetRef.current = entranceOffset;
+    timerRotationTarget.set(0);
+    timerEntranceStartedAtRef.current = performance.now();
+    setTimerEntranceSettling(!reduceMotion);
+    setTimerSettling(!reduceMotion);
+    setRopeMode("running");
+    setPhase("running");
+    onStart(startedAt);
+  }
+
   function finishPullback(pose: TimerPose) {
     if (!resumePendingRef.current && !startPendingRef.current) return;
     const starting = startPendingRef.current;
@@ -451,7 +482,8 @@ export function ActiveTaskCard({
     if (exitStartedRef.current || phase === "cutting" || phase === "completed")
       return;
     if (next === "cutting" && !ropeCut) return;
-    playSound(next === "completed" ? "formSubmit" : "cut");
+    if (next === "cutting") playSound("cut");
+    else if (!reduceMotion) playSound("cardFlip");
     stopTimerAnimation();
     timerReturningRef.current = false;
     timerDraggingRef.current = false;
@@ -485,7 +517,7 @@ export function ActiveTaskCard({
     setPhase(next);
     exitTimeoutRef.current = window.setTimeout(
       () => {
-        if (next === "completed") onComplete();
+        if (next === "completed") onComplete(duration);
         else onDiscard();
       },
       next === "completed"
@@ -567,6 +599,7 @@ export function ActiveTaskCard({
     const target = event.target as HTMLElement;
     if (
       exitStartedRef.current ||
+      phase === "ready" ||
       target.closest("button") ||
       target.closest("[data-timer-drag]")
     )
@@ -616,22 +649,18 @@ export function ActiveTaskCard({
     (pose: TimerPose) => {
       timerRotationTarget.set(reduceMotion ? 0 : pose.rotation);
 
-      if (timerEntranceSettling && pose.mode === "ready") {
+      if (timerEntranceSettling && pose.mode === "running") {
         const now = performance.now();
         if (timerEntranceStartedAtRef.current === 0) {
           timerEntranceStartedAtRef.current = now;
         }
         const elapsed = now - timerEntranceStartedAtRef.current;
-        const rigHeight = rigRef.current?.clientHeight ?? window.innerHeight;
-        const restingY =
-          -rigHeight * (RUNNING_TIMER_TOP_RATIO - READY_TIMER_TOP_RATIO);
-        const distanceFromRest = Math.hypot(pose.x, pose.y - restingY);
+        const distanceFromRest = Math.hypot(pose.x, pose.y);
         const speed = Math.hypot(pose.velocity.x, pose.velocity.y);
         const physicallySettled =
           elapsed > 480 && distanceFromRest < 22 && speed < 130;
 
         if (physicallySettled || elapsed > 2_400) {
-          readyEntranceDropRef.current = false;
           setTimerEntranceSettling(false);
           setTimerSettling(false);
         }
@@ -697,7 +726,18 @@ export function ActiveTaskCard({
 
   const exiting = phase === "cutting" || phase === "completed";
   const completed = phase === "completed";
+  const timerVisible =
+    phase === "running" ||
+    phase === "paused" ||
+    phase === "cutting" ||
+    phase === "completed";
   const cardFocusAvailable = isMobileViewport && revealFinished && !exiting;
+
+  useEffect(() => {
+    if (!animateReveal || revealSoundPlayedRef.current) return;
+    revealSoundPlayedRef.current = true;
+    playSound("cardFlip");
+  }, [animateReveal]);
 
   function closeCardFocus() {
     setCardFocused(false);
@@ -746,7 +786,7 @@ export function ActiveTaskCard({
 
       <div
         className={styles.activeCardStage}
-        style={getQuestAccentStyle(task.primaryGenre)}
+        style={getCardAccentStyle(task.id)}
       >
         <motion.div
           ref={cardProjectionRef}
@@ -814,7 +854,7 @@ export function ActiveTaskCard({
               className={`${styles.activeQuestCard} ${styles.revealBack}`}
               aria-hidden="true"
             >
-              <QuestCardBack genre={task.primaryGenre} />
+              <QuestCardBack motivation={task.motivation} />
             </div>
 
             <div className={styles.revealFront}>
@@ -841,9 +881,7 @@ export function ActiveTaskCard({
                   onPointerOut={(event) => {
                     handleCardPointerLeave(event);
                   }}
-                  aria-label={`Active ${
-                    QUEST_GENRE_LABELS[task.primaryGenre]
-                  } quest: ${task.title}`}
+                  aria-label={`Active ${task.mood.displayName} quest: ${task.title}`}
                 >
                   <motion.div
                     className={styles.activeQuestCard}
@@ -857,31 +895,39 @@ export function ActiveTaskCard({
                     <span className={styles.cardShimmer} aria-hidden="true" />
                     <header className={styles.questCardHeader}>
                       <h2 className={styles.activeTitle}>{task.title}</h2>
-                      <div
-                        className={styles.questHeaderMetadata}
-                        aria-label="Quest metadata"
-                      >
-                        <span className={styles.questPrimaryGenre}>
-                          <span>{QUEST_GENRE_LABELS[task.primaryGenre]}</span>
-                        </span>
-                        {task.settings.map((setting) => (
-                          <span
-                            className={styles.questHeaderMetaValue}
-                            key={setting}
-                          >
-                            {setting === "fantasy" ? "Fantasy" : setting}
-                          </span>
-                        ))}
-                        {task.requiresOnline && (
-                          <span className={styles.questHeaderMetaValue}>
-                            Online
-                          </span>
-                        )}
-                      </div>
+                      <span className={styles.questDuration}>
+                        <TimerIcon />
+                        {task.sessionMinutes[0]}–{task.sessionMinutes[1]}
+                      </span>
                     </header>
 
                     <motion.div className={styles.questDetails} initial={false}>
                       <p className={styles.questObjective}>{task.objective}</p>
+                      <ul
+                        className={styles.questSupportDetails}
+                        aria-label="Quest details"
+                      >
+                        <li className={styles.questSupportItem}>
+                          <TargetIcon />
+                          <p>{task.goal}</p>
+                        </li>
+                        <li className={styles.questSupportItem}>
+                          <SparkIcon />
+                          <p>{task.reward}</p>
+                        </li>
+                        {task.modifiers.map((modifier) => (
+                          <li
+                            className={styles.questSupportItem}
+                            key={modifier.id}
+                          >
+                            <CheckIcon />
+                            <div>
+                              <strong>{modifier.title}</strong>
+                              <p>{modifier.instruction}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
                     </motion.div>
 
                     {!showFinishedFace && (
@@ -943,7 +989,7 @@ export function ActiveTaskCard({
                   className={`${styles.activeQuestCard} ${styles.completionCardBack}`}
                   aria-hidden="true"
                 >
-                  <QuestCardBack genre={task.primaryGenre} />
+                  <QuestCardBack motivation={task.motivation} />
                 </div>
               </div>
             </div>
@@ -967,7 +1013,7 @@ export function ActiveTaskCard({
         onPointerUp={endCut}
         onPointerCancel={endCut}
       >
-        {revealFinished && (
+        {revealFinished && timerVisible && (
           <PhysicsRope
             cut={phase === "cutting" ? cut : null}
             dragVelocityRef={timerDragVelocityRef}
@@ -999,95 +1045,180 @@ export function ActiveTaskCard({
           </AnimatePresence>
         </svg>
 
-        <motion.div
-          className={styles.timerPosition}
-          data-timer-drag
-          drag={
-            (phase === "ready" || phase === "running" || phase === "paused") &&
-            ropeMode !== "resumePullback" &&
-            !timerEntranceSettling &&
-            !exiting
-          }
-          dragConstraints={{ left: -190, right: 190, top: -130, bottom: 130 }}
-          dragElastic={0.06}
-          dragMomentum={false}
-          style={{ x, y }}
-          onDragStart={() => {
-            playSound("timerGrab");
-            stopTimerAnimation();
-            timerReturningRef.current = false;
-            setTimerSettling(true);
-            timerDraggingRef.current = true;
-            timerDragVelocityRef.current = { x: 0, y: 0 };
-            ropeReleaseRef.current = null;
-            dragOriginRef.current = { x: x.get(), y: y.get() };
-            dragTargetRef.current = dragOriginRef.current;
-          }}
-          onDrag={onTimerDrag}
-          onDragEnd={settleTimerPull}
-          whileDrag={{ scale: 1.035, cursor: "grabbing" }}
-        >
-          <motion.div
-            className={styles.timerCapsule}
-            animate={{ opacity: phase === "cutting" && reduceMotion ? 0 : 1 }}
-            style={{ rotate: timerRotation }}
-            transition={{ duration: reduceMotion ? 0.08 : 0.16 }}
-          >
-            <span className={styles.grabDots} aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </span>
-            <div
-              className={styles.elapsedTime}
-              role="timer"
-              aria-live="off"
-              aria-label={`Elapsed time ${formatRunningDuration(elapsedMs)}`}
+        <AnimatePresence>
+          {timerVisible && (
+            <motion.div
+              className={styles.timerPosition}
+              data-timer-drag
+              drag={
+                (phase === "running" || phase === "paused") &&
+                ropeMode !== "resumePullback" &&
+                !timerEntranceSettling &&
+                !exiting
+              }
+              dragConstraints={{
+                left: -190,
+                right: 190,
+                top: -130,
+                bottom: 130,
+              }}
+              dragElastic={0.06}
+              dragMomentum={false}
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reduceMotion ? 0 : 0.12 }}
+              style={{ x, y }}
+              onDragStart={() => {
+                playSound("timerGrab");
+                stopTimerAnimation();
+                timerReturningRef.current = false;
+                setTimerSettling(true);
+                timerDraggingRef.current = true;
+                timerDragVelocityRef.current = { x: 0, y: 0 };
+                ropeReleaseRef.current = null;
+                dragOriginRef.current = { x: x.get(), y: y.get() };
+                dragTargetRef.current = dragOriginRef.current;
+              }}
+              onDrag={onTimerDrag}
+              onDragEnd={settleTimerPull}
+              whileDrag={{ scale: 1.035, cursor: "grabbing" }}
             >
-              <NumberFlowGroup>
-                <div className={styles.timerDigits} aria-hidden="true">
-                  {timerHours > 0 && (
-                    <NumberFlow
-                      animated={!reduceMotion}
-                      format={TIMER_TWO_DIGIT_FORMAT}
-                      trend={1}
-                      value={timerHours}
-                    />
-                  )}
-                  <NumberFlow
-                    animated={!reduceMotion}
-                    digits={TIMER_BASE_SIXTY_DIGITS}
-                    format={TIMER_TWO_DIGIT_FORMAT}
-                    prefix={timerHours > 0 ? ":" : undefined}
-                    trend={1}
-                    value={timerMinutes}
-                  />
-                  <NumberFlow
-                    animated={!reduceMotion}
-                    digits={TIMER_BASE_SIXTY_DIGITS}
-                    format={TIMER_TWO_DIGIT_FORMAT}
-                    prefix=":"
-                    trend={1}
-                    value={timerSeconds}
-                  />
-                </div>
-              </NumberFlowGroup>
-            </div>
-          </motion.div>
-          <AnimatePresence>
-            {(phase === "ready" || phase === "paused") && !timerSettling && (
-              <motion.span
-                className={styles.timerStatus}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: reduceMotion ? 0 : 0.12 }}
+              <motion.div
+                className={styles.timerCapsule}
+                animate={{
+                  opacity: phase === "cutting" && reduceMotion ? 0 : 1,
+                }}
+                style={{ rotate: timerRotation }}
+                transition={{ duration: reduceMotion ? 0.08 : 0.16 }}
               >
-                {phase === "ready" ? "Ready" : "Paused"}
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </motion.div>
+                <span className={styles.grabDots} aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                <div
+                  className={styles.elapsedTime}
+                  role="timer"
+                  aria-live="off"
+                  aria-label={`Elapsed time ${formatRunningDuration(elapsedMs)}`}
+                >
+                  <NumberFlowGroup>
+                    <div className={styles.timerDigits} aria-hidden="true">
+                      {timerHours > 0 && (
+                        <NumberFlow
+                          animated={!reduceMotion}
+                          format={TIMER_TWO_DIGIT_FORMAT}
+                          trend={1}
+                          value={timerHours}
+                        />
+                      )}
+                      <NumberFlow
+                        animated={!reduceMotion}
+                        digits={TIMER_BASE_SIXTY_DIGITS}
+                        format={TIMER_TWO_DIGIT_FORMAT}
+                        prefix={timerHours > 0 ? ":" : undefined}
+                        trend={1}
+                        value={timerMinutes}
+                      />
+                      <NumberFlow
+                        animated={!reduceMotion}
+                        digits={TIMER_BASE_SIXTY_DIGITS}
+                        format={TIMER_TWO_DIGIT_FORMAT}
+                        prefix=":"
+                        trend={1}
+                        value={timerSeconds}
+                      />
+                    </div>
+                  </NumberFlowGroup>
+                </div>
+              </motion.div>
+              <AnimatePresence>
+                {phase === "paused" && !timerSettling && (
+                  <motion.span
+                    className={styles.timerStatus}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.12 }}
+                  >
+                    Paused
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {phase === "ready" && !timerSettling && (
+            <motion.section
+              className={styles.readyPanel}
+              aria-labelledby="modifier-title"
+              initial={reduceMotion ? false : "hidden"}
+              animate="visible"
+              exit={reduceMotion ? { opacity: 0 } : "exit"}
+              variants={pausePanelVariants}
+            >
+              <motion.div
+                className={styles.modifierIntro}
+                variants={pausePanelItemVariants}
+              >
+                <h3 id="modifier-title">Optional modifier</h3>
+                <p>Add any twists you want, or leave them all unchecked.</p>
+              </motion.div>
+              <motion.div
+                className={styles.modifierChoices}
+                role="group"
+                aria-label="Optional modifier"
+                variants={pausePanelItemVariants}
+              >
+                {MODIFIERS.filter((modifier) =>
+                  modifierFitsObjective(modifier.id, task.id),
+                ).map((modifier) => {
+                  const selected = assignment.modifierIds.includes(modifier.id);
+                  return (
+                    <button
+                      type="button"
+                      aria-pressed={selected}
+                      data-selected={selected || undefined}
+                      key={modifier.id}
+                      onClick={() => onToggleModifier(modifier.id)}
+                    >
+                      <span className={styles.modifierChoiceTop}>
+                        <span
+                          className={styles.modifierIcon}
+                          aria-hidden="true"
+                        >
+                          <ModifierIcon modifierId={modifier.id} />
+                        </span>
+                        <span
+                          className={styles.modifierCheck}
+                          aria-hidden="true"
+                        >
+                          {selected && <CheckIcon />}
+                        </span>
+                      </span>
+                      <span className={styles.modifierChoiceCopy}>
+                        <strong>{modifier.title}</strong>
+                        <small>{modifier.instruction}</small>
+                      </span>
+                    </button>
+                  );
+                })}
+              </motion.div>
+              <motion.button
+                className={styles.startTimerAction}
+                data-sound-click-skip
+                type="button"
+                variants={pausePanelItemVariants}
+                onClick={startFromButton}
+              >
+                Start timer
+              </motion.button>
+            </motion.section>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence>
           {phase === "paused" && !timerSettling && (
@@ -1129,7 +1260,7 @@ export function ActiveTaskCard({
             >
               <span>
                 {phase === "ready"
-                  ? "Pull the timer to start."
+                  ? "Choose a modifier, then start."
                   : `Pull the timer to ${
                       phase === "paused" ? "resume" : "pause"
                     }.`}

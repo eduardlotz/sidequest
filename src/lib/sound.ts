@@ -1,5 +1,4 @@
 import {
-  defineSequence,
   defineSound,
   ensureReady,
   setMasterVolume,
@@ -17,7 +16,7 @@ export type SoundName =
   | "buttonClick"
   | "buttonHover"
   | "cardHover"
-  | "cardSelect"
+  | "cardFlip"
   | "completion"
   | "cut"
   | "drawerClose"
@@ -27,36 +26,11 @@ export type SoundName =
   | "inputFocus"
   | "modalClose"
   | "modalOpen"
-  | "formSubmit"
   | "slide"
   | "tabSwitch"
   | "timerGrab"
   | "toggleOff"
   | "toggleOn";
-
-const bloom: SoundDefinition = {
-  layers: [
-    {
-      source: { type: "sine", frequency: 528 },
-      envelope: { attack: 0.06, decay: 0.32, sustain: 0, release: 0.04 },
-      gain: 0.03,
-    },
-    {
-      source: { type: "sine", frequency: 528, detune: 12 },
-      envelope: { attack: 0.06, decay: 0.34, sustain: 0, release: 0.04 },
-      gain: 0.025,
-    },
-  ],
-  effects: [
-    {
-      type: "delay",
-      time: 0.15,
-      feedback: 0.2,
-      feedbackFilter: { type: "lowpass", frequency: 2500 },
-      mix: 0.12,
-    },
-  ],
-};
 
 const cut: SoundDefinition = {
   source: { type: "noise", color: "white" },
@@ -68,11 +42,8 @@ const cut: SoundDefinition = {
 const playPause = defineSound(core.slideDown);
 const playResume = defineSound(core.toggleOn);
 const playTimerGrab = defineSound(core.select);
-const playFormSubmit = defineSequence([
-  { sound: core.click, at: 0, volume: 0.35 },
-  { sound: core.save, at: 0.04, volume: 1 },
-]);
 const playCompletion = defineSound(organic.success);
+const playCardFlip = defineSound(core.swoosh);
 
 const sounds: Record<SoundName, () => unknown> = {
   accordionClose: defineSound(core.collapse),
@@ -80,7 +51,7 @@ const sounds: Record<SoundName, () => unknown> = {
   buttonClick: defineSound(core.click),
   buttonHover: defineSound(core.hover),
   cardHover: defineSound(core.hover),
-  cardSelect: defineSound(bloom),
+  cardFlip: () => playCardFlip({ volume: 0.72 }),
   completion: playCompletion,
   cut: defineSound(cut),
   drawerClose: defineSound(core.drawerClose),
@@ -90,7 +61,6 @@ const sounds: Record<SoundName, () => unknown> = {
   inputFocus: defineSound(core.click),
   modalClose: defineSound(core.modalClose),
   modalOpen: defineSound(core.modalOpen),
-  formSubmit: playFormSubmit,
   slide: defineSound(core.slide),
   tabSwitch: defineSound(core.tabSwitch),
   timerGrab: () => playTimerGrab({ volume: 0.5 }),

@@ -1,20 +1,16 @@
-import { QUEST_MARK_BY_GENRE, markAssetUrl } from "../data/questMarks";
+import type { PlayerMotivation } from "../data/deckTypes";
 import {
-  QUEST_GENRE_LABELS,
-  type QuestGenre,
-} from "../data/questTaxonomy";
+  QUEST_MARK_BY_MOTIVATION,
+  markAssetUrl,
+} from "../data/questMarks";
 import styles from "../App.module.css";
 
 type Props = {
-  genre: QuestGenre;
-  revealGenreOnHover?: boolean;
+  motivation?: PlayerMotivation;
 };
 
-export function QuestCardBack({
-  genre,
-  revealGenreOnHover = false,
-}: Props) {
-  const mark = markAssetUrl(QUEST_MARK_BY_GENRE[genre]);
+export function QuestCardBack({ motivation = "experience" }: Props) {
+  const mark = markAssetUrl(QUEST_MARK_BY_MOTIVATION[motivation]);
 
   return (
     <span className={styles.questCardBackContent} aria-hidden="true">
@@ -29,11 +25,6 @@ export function QuestCardBack({
           />
         ))}
       </span>
-      {revealGenreOnHover && (
-        <strong className={styles.questCardBackGenre}>
-          {QUEST_GENRE_LABELS[genre]}
-        </strong>
-      )}
     </span>
   );
 }

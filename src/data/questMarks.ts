@@ -1,4 +1,5 @@
 import type { AvatarTheme } from "../stores/useQuestStore";
+import type { PlayerMotivation } from "./deckTypes";
 import type { QuestGenre } from "./questTaxonomy";
 
 const GENERIC_MARK = "sidequest-mark.svg";
@@ -20,6 +21,14 @@ export const QUEST_MARK_BY_GENRE: Record<QuestGenre, string> = {
   action: "quest-hats/adventure-hat.svg",
   platformer: "quest-hats/adventure-hat.svg",
   puzzle: "quest-hats/simulator-hat.svg",
+};
+
+export const QUEST_MARK_BY_MOTIVATION: Record<PlayerMotivation, string> = {
+  discover: "quest-hats/adventure-hat.svg",
+  improve: "quest-hats/simulator-hat.svg",
+  create: "quest-hats/building-hat.svg",
+  overcome: "quest-hats/shooter-hat.svg",
+  experience: "quest-hats/rpg-hat.svg",
 };
 
 export const AVATAR_MARK_BY_THEME: Record<AvatarTheme, string> = {

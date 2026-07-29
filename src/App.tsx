@@ -4,13 +4,19 @@ import { Drawer } from "vaul";
 import { useShallow } from "zustand/react/shallow";
 import styles from "./App.module.css";
 import { CheckIcon } from "./components/Icons";
-import { OnboardingScreen } from "./components/OnboardingScreen";
 import { ProfileDrawer } from "./components/ProfileDrawer";
 import { TaskScreen } from "./components/TaskScreen";
+import {
+  MOODS_BY_ID,
+  objectivesForMood,
+} from "./data/decks";
 import { AVATAR_MARK_BY_THEME, markAssetUrl } from "./data/questMarks";
-import { QUESTS } from "./data/quests";
 import { playSound } from "./lib/sound";
-import { hydrateQuest, useQuestStore } from "./stores/useQuestStore";
+import {
+  hydrateCompletedQuest,
+  hydrateQuest,
+  useQuestStore,
+} from "./stores/useQuestStore";
 
 type Toast = {
   id: string;
@@ -19,30 +25,36 @@ type Toast = {
 
 export function App() {
   const {
-    completeOnboarding,
     completeQuest,
+    completedSessions,
     currentSession,
     discardCurrentSession,
-    offeredQuestIds,
+    editMood,
+    legacyCompletions,
     pauseQuest,
     profile,
-    progressByQuestId,
-    revealQuest,
     resumeQuest,
+    toggleModifier,
+    selectMood,
+    selectObjective,
+    selectedMoodId,
     startQuest,
     updateProfile,
   } = useQuestStore(
     useShallow((state) => ({
-      completeOnboarding: state.completeOnboarding,
       completeQuest: state.completeQuest,
+      completedSessions: state.completedSessions,
       currentSession: state.currentSession,
       discardCurrentSession: state.discardCurrentSession,
-      offeredQuestIds: state.offeredQuestIds,
+      editMood: state.editMood,
+      legacyCompletions: state.legacyCompletions,
       pauseQuest: state.pauseQuest,
       profile: state.profile,
-      progressByQuestId: state.progressByQuestId,
-      revealQuest: state.revealQuest,
       resumeQuest: state.resumeQuest,
+      toggleModifier: state.toggleModifier,
+      selectMood: state.selectMood,
+      selectObjective: state.selectObjective,
+      selectedMoodId: state.selectedMoodId,
       startQuest: state.startQuest,
       updateProfile: state.updateProfile,
     })),
@@ -55,23 +67,28 @@ export function App() {
   const [brandRotation, setBrandRotation] = useState(0);
   const desktop = useDesktopSheet();
   const currentQuest = currentSession
-    ? hydrateQuest(currentSession.questId, progressByQuestId)
+    ? hydrateQuest(currentSession, completedSessions)
     : null;
-  const offeredQuests = useMemo(
+  const selectedMood = selectedMoodId
+    ? MOODS_BY_ID[selectedMoodId] ?? null
+    : null;
+  const objectives = useMemo(
     () =>
-      offeredQuestIds.flatMap((id) => {
-        const quest = hydrateQuest(id, progressByQuestId);
-        return quest ? [quest] : [];
-      }),
-    [offeredQuestIds, progressByQuestId],
+      selectedMood
+        ? objectivesForMood(
+            selectedMood.id,
+            profile.onlinePreference !== "exclude",
+          )
+        : [],
+    [profile.onlinePreference, selectedMood],
   );
   const completedQuests = useMemo(
     () =>
-      QUESTS.flatMap((definition) => {
-        const quest = hydrateQuest(definition.id, progressByQuestId);
-        return quest && quest.completionCount > 0 ? [quest] : [];
+      completedSessions.flatMap((completion) => {
+        const quest = hydrateCompletedQuest(completion);
+        return quest ? [quest] : [];
       }),
-    [progressByQuestId],
+    [completedSessions],
   );
 
   useEffect(() => {
@@ -89,13 +106,13 @@ export function App() {
     return () => window.clearTimeout(timeout);
   }, [reduceMotion]);
 
-  function handleComplete() {
+  function handleComplete(durationMs: number) {
     if (!currentQuest || !currentSession) return;
     const nextToast = {
       id: currentSession.sessionId,
       title: currentQuest.title,
     };
-    if (completeQuest()) setToast(nextToast);
+    if (completeQuest(durationMs)) setToast(nextToast);
   }
 
   function handleAboutOpenChange(open: boolean) {
@@ -232,16 +249,11 @@ export function App() {
                 )}
                 <ProfileDrawer
                   completedQuests={completedQuests}
+                  legacyCompletions={legacyCompletions}
                   open={profileOpen}
                   profile={profile}
                   reduceMotion={reduceMotion}
-                  totalQuestCount={QUESTS.length}
-                  onSaveProfile={(input) => {
-                    const saved = profile.onboardingComplete
-                      ? updateProfile(input)
-                      : completeOnboarding(input);
-                    return saved;
-                  }}
+                  onSaveProfile={updateProfile}
                 />
               </Drawer.Content>
             </Drawer.Portal>
@@ -250,27 +262,23 @@ export function App() {
       </header>
 
       <main className={styles.main} id="main-content">
-        {profile.onboardingComplete ? (
-          <TaskScreen
-            currentQuest={currentQuest}
-            currentSession={currentSession}
-            offeredQuests={offeredQuests}
-            animateEntrance={!introComplete}
-            reduceMotion={reduceMotion}
-            onReveal={revealQuest}
-            onDiscard={discardCurrentSession}
-            onStart={startQuest}
-            onPause={pauseQuest}
-            onResume={resumeQuest}
-            onComplete={handleComplete}
-          />
-        ) : (
-          <OnboardingScreen
-            initialProfile={profile}
-            reduceMotion={reduceMotion}
-            onSubmit={completeOnboarding}
-          />
-        )}
+        <TaskScreen
+          currentQuest={currentQuest}
+          currentSession={currentSession}
+          selectedMood={selectedMood}
+          objectives={objectives}
+          animateEntrance={!introComplete}
+          reduceMotion={reduceMotion}
+          onSelectMood={selectMood}
+          onEditMood={editMood}
+          onSelectObjective={selectObjective}
+          onToggleModifier={toggleModifier}
+          onDiscard={discardCurrentSession}
+          onStart={startQuest}
+          onPause={pauseQuest}
+          onResume={resumeQuest}
+          onComplete={handleComplete}
+        />
       </main>
 
       <div className={styles.toastRegion} aria-live="polite" aria-atomic="true">
@@ -313,9 +321,9 @@ function AboutSidequest() {
       <div className={styles.aboutBody}>
         <section className={styles.aboutSection}>
           <ol className={styles.aboutSteps}>
-            <li>Choose a hidden card to reveal its quest</li>
-            <li>Check that the objective fits the game you want to play</li>
-            <li>Pull the waiting timer down to start</li>
+            <li>Scroll through the moods and choose how you want to play</li>
+            <li>Pick the objective that brings the right game to mind</li>
+            <li>Add an optional modifier, then start the timer</li>
             <li>Pull to pause or resume, and cut the rope to stop</li>
             <li>Use the Complete quest button while paused</li>
           </ol>
@@ -324,8 +332,8 @@ function AboutSidequest() {
         <section className={styles.aboutSection}>
           <h3>Try it your way</h3>
           <p>
-            Repeat any quest whenever it fits. Every completion adds to its
-            count.
+            The cards give you just enough direction to choose a game while
+            leaving the session itself up to you.
           </p>
         </section>
 
