@@ -616,7 +616,11 @@
 }
 
 .elapsedTime {
+  display: flex;
   width: 100%;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
   color: #09090b;
   font-size: clamp(3rem, 4.85cqw, 5rem);
   font-variant-numeric: tabular-nums;
@@ -630,8 +634,8 @@
 }
 
 .timerDigits {
-  display: flex;
-  align-items: baseline;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
   font-variant-numeric: tabular-nums;
   font-feature-settings:
@@ -639,6 +643,36 @@
     "lnum" 1;
   letter-spacing: 0;
   line-height: 1.08;
+  overflow: visible;
+}
+
+.timerDigitCell {
+  position: relative;
+  display: block;
+  width: 0.64em;
+  height: 1.08em;
+  flex: 0 0 0.64em;
+  overflow: visible;
+}
+
+.timerDigit {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  overflow: visible;
+  place-items: center;
+  line-height: 1;
+  transform-origin: center;
+  will-change: filter, opacity, transform;
+}
+
+.timerColon {
+  display: grid;
+  width: 0.3em;
+  height: 1.08em;
+  flex: 0 0 0.3em;
+  place-items: center;
+  line-height: 1;
 }
 
 .pausePanel {
