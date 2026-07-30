@@ -1,4 +1,3 @@
-# Sidequest
+A companion-app for people with too many video games.
 
-A companion-app with ≈ 300 objectives for any video game.
-Progress is only saved in the browser.
+Progress is saved in the browser.
