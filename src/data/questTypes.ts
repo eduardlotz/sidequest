@@ -1,17 +1,38 @@
-import type {
-  QuestArchetype,
-  QuestGenre,
-  QuestSetting,
-} from "./questTaxonomy";
+export const MOOD_IDS = [
+  "relax",
+  "explore",
+  "progress",
+  "create",
+  "challenge",
+  "connect",
+  "nostalgic",
+  "overwhelmed",
+  "restless",
+  "focused",
+  "curious",
+  "low-energy",
+] as const;
 
-export type QuestDefinition = {
+export type MoodId = (typeof MOOD_IDS)[number];
+
+export type MoodDefinition = {
+  id: MoodId;
+  title: string;
+  subtitle: string;
+};
+
+export type QuestTip = {
+  title: string;
+  description: string;
+};
+
+export type MoodQuestDefinition = {
   id: string;
+  moodId: MoodId;
   title: string;
   objective: string;
-  primaryGenre: QuestGenre;
-  compatibleGenres: readonly QuestGenre[];
-  requirements: readonly string[];
-  archetype: QuestArchetype;
-  settings: readonly QuestSetting[];
-  requiresOnline: boolean;
+  completion: string;
+  durationMinutes: number;
+  rewardPoints: number;
+  tips: readonly QuestTip[];
 };

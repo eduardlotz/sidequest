@@ -5,7 +5,7 @@ import {
   setMasterVolume,
   type SoundDefinition,
 } from "@web-kits/audio";
-import { core } from "../../.web-kits";
+import { core, organic } from "../../.web-kits";
 
 const SOUND_ENABLED_STORAGE_KEY = "sidequest.sound.enabled.v1";
 const HOVER_GAP_MS = 110;
@@ -27,7 +27,9 @@ export type SoundName =
   | "inputFocus"
   | "modalClose"
   | "modalOpen"
+  | "moodStep"
   | "formSubmit"
+  | "shuffle"
   | "slide"
   | "tabSwitch"
   | "timerGrab"
@@ -72,10 +74,12 @@ const playFormSubmit = defineSequence([
   { sound: core.click, at: 0, volume: 0.35 },
   { sound: core.save, at: 0.04, volume: 1 },
 ]);
-const playCompletion = defineSequence([
-  { sound: core.success, at: 0, volume: 0.55 },
-  { sound: core.star, at: 0.1, volume: 0.45 },
-  { sound: core.confetti, at: 0.2, volume: 0.3 },
+const playCompletion = defineSound(organic.success);
+const playMoodStep = defineSound(organic.click);
+const playShuffle = defineSequence([
+  { sound: organic.tap, at: 0, volume: 0.42 },
+  { sound: organic.tap, at: 0.045, volume: 0.3 },
+  { sound: organic.tap, at: 0.09, volume: 0.48 },
 ]);
 
 const sounds: Record<SoundName, () => unknown> = {
@@ -94,7 +98,9 @@ const sounds: Record<SoundName, () => unknown> = {
   inputFocus: defineSound(core.click),
   modalClose: defineSound(core.modalClose),
   modalOpen: defineSound(core.modalOpen),
+  moodStep: () => playMoodStep({ volume: 0.22 }),
   formSubmit: playFormSubmit,
+  shuffle: playShuffle,
   slide: defineSound(core.slide),
   tabSwitch: defineSound(core.tabSwitch),
   timerGrab: () => playTimerGrab({ volume: 0.5 }),
