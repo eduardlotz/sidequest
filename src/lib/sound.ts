@@ -27,7 +27,9 @@ export type SoundName =
   | "inputFocus"
   | "modalClose"
   | "modalOpen"
+  | "moodStep"
   | "formSubmit"
+  | "shuffle"
   | "slide"
   | "tabSwitch"
   | "timerGrab"
@@ -73,6 +75,12 @@ const playFormSubmit = defineSequence([
   { sound: core.save, at: 0.04, volume: 1 },
 ]);
 const playCompletion = defineSound(organic.success);
+const playMoodStep = defineSound(organic.click);
+const playShuffle = defineSequence([
+  { sound: organic.tap, at: 0, volume: 0.42 },
+  { sound: organic.tap, at: 0.045, volume: 0.3 },
+  { sound: organic.tap, at: 0.09, volume: 0.48 },
+]);
 
 const sounds: Record<SoundName, () => unknown> = {
   accordionClose: defineSound(core.collapse),
@@ -90,7 +98,9 @@ const sounds: Record<SoundName, () => unknown> = {
   inputFocus: defineSound(core.click),
   modalClose: defineSound(core.modalClose),
   modalOpen: defineSound(core.modalOpen),
+  moodStep: () => playMoodStep({ volume: 0.22 }),
   formSubmit: playFormSubmit,
+  shuffle: playShuffle,
   slide: defineSound(core.slide),
   tabSwitch: defineSound(core.tabSwitch),
   timerGrab: () => playTimerGrab({ volume: 0.5 }),

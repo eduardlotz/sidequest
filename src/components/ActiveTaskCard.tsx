@@ -20,13 +20,13 @@ import {
   type Quest,
   type QuestSession,
 } from "../stores/useQuestStore";
-import { getQuestAccentStyle } from "../data/questColors";
-import { QUEST_GENRE_LABELS } from "../data/questTaxonomy";
+import { getQuestCardAccentStyle } from "../data/questColors";
 import { CARD_LAYOUT_TRANSITION } from "../lib/cardMotion";
 import { formatRunningDuration } from "../lib/format";
 import { playSound } from "../lib/sound";
 import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
 import { CompletionCheckIcon } from "./CompletionCheckIcon";
+import { CheckIcon, TimerIcon } from "./Icons";
 import { QuestCardBack } from "./QuestCardBack";
 import {
   PAUSED_TIMER_TOP_RATIO,
@@ -45,12 +45,13 @@ import styles from "../App.module.css";
 type Props = {
   quest: Quest;
   session: QuestSession;
+  layoutSessionId: string;
   reduceMotion: boolean;
   onDiscard: () => void;
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
-  onComplete: () => void;
+  onComplete: (durationMs: number, followedModifierIds: string[]) => void;
 };
 
 type Phase = "ready" | "running" | "paused" | "cutting" | "completed";
@@ -105,6 +106,7 @@ const pausePanelItemVariants: Variants = {
 export function ActiveTaskCard({
   quest,
   session,
+  layoutSessionId,
   reduceMotion,
   onDiscard,
   onStart,
@@ -139,6 +141,7 @@ export function ActiveTaskCard({
   );
   const [cut, setCut] = useState<RopeCut | null>(null);
   const [showFinishedFace, setShowFinishedFace] = useState(false);
+  const [followedModifierIds, setFollowedModifierIds] = useState<string[]>([]);
   const [completionOffset, setCompletionOffset] = useState<Point>({
     x: 0,
     y: 0,
@@ -203,6 +206,7 @@ export function ActiveTaskCard({
   const trailClearTimeoutRef = useRef<number | null>(null);
   const exitTimeoutRef = useRef<number | null>(null);
   const completionRevealTimeoutRef = useRef<number | null>(null);
+  const followedModifierIdsRef = useRef<string[]>([]);
   const x = useMotionValue(initialTimerOffsetRef.current.x);
   const y = useMotionValue(initialTimerOffsetRef.current.y);
   const timerRotationTarget = useMotionValue(0);
@@ -247,7 +251,12 @@ export function ActiveTaskCard({
   useEffect(() => {
     if (!cardFocused) return;
 
-    if (!isMobileViewport || phase === "cutting" || phase === "completed") {
+    if (
+      !isMobileViewport ||
+      phase === "paused" ||
+      phase === "cutting" ||
+      phase === "completed"
+    ) {
       setCardFocused(false);
       return;
     }
@@ -408,6 +417,40 @@ export function ActiveTaskCard({
     setPhase("paused");
   }
 
+  function toggleTimerFromKeyboard() {
+    if (
+      timerSettling ||
+      timerEntranceSettling ||
+      phase === "cutting" ||
+      phase === "completed" ||
+      ropeMode === "resumePullback"
+    ) {
+      return;
+    }
+
+    if (phase === "running") {
+      pause();
+      return;
+    }
+
+    playSound("toggleOn");
+    if (phase === "ready") {
+      const startedAt = Date.now();
+      startedAtRef.current = startedAt;
+      onStart(startedAt);
+    } else if (phase === "paused" && pausedAtRef.current !== null) {
+      const resumedAt = Date.now();
+      pausedTotalRef.current += resumedAt - pausedAtRef.current;
+      pausedAtRef.current = null;
+      onResume(resumedAt);
+    } else {
+      return;
+    }
+
+    setRopeMode("running");
+    setPhase("running");
+  }
+
   function finishPullback(pose: TimerPose) {
     if (!resumePendingRef.current && !startPendingRef.current) return;
     const starting = startPendingRef.current;
@@ -472,7 +515,9 @@ export function ActiveTaskCard({
     setPhase(next);
     exitTimeoutRef.current = window.setTimeout(
       () => {
-        if (next === "completed") onComplete();
+        if (next === "completed") {
+          onComplete(duration, followedModifierIdsRef.current);
+        }
         else onDiscard();
       },
       next === "completed"
@@ -555,6 +600,7 @@ export function ActiveTaskCard({
     if (
       exitStartedRef.current ||
       target.closest("button") ||
+      target.closest("[data-cut-ignore]") ||
       target.closest("[data-timer-drag]")
     )
       return;
@@ -733,12 +779,12 @@ export function ActiveTaskCard({
 
       <div
         className={styles.activeCardStage}
-        style={getQuestAccentStyle(task.primaryGenre)}
+        style={getQuestCardAccentStyle(task.id, task.moodId)}
       >
         <motion.div
           ref={cardProjectionRef}
           className={styles.activeCardProjection}
-          layoutId={`task-card-${task.id}`}
+          layoutId={`task-card-${layoutSessionId}-${task.id}`}
           layoutCrossfade={false}
           drag={cardFocused}
           dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
@@ -801,7 +847,7 @@ export function ActiveTaskCard({
               className={`${styles.activeQuestCard} ${styles.revealBack}`}
               aria-hidden="true"
             >
-              <QuestCardBack genre={task.primaryGenre} />
+              <QuestCardBack title={task.title} revealTitle />
             </div>
 
             <div className={styles.revealFront}>
@@ -813,8 +859,10 @@ export function ActiveTaskCard({
                   ref={cardHitAreaRef}
                   className={styles.activeCardHitArea}
                   data-sound-card
+                  data-flow-focus
                   data-hover-ready={cardHoverArmed ? "true" : undefined}
                   data-sound-skip={cardHoverArmed ? undefined : "true"}
+                  tabIndex={-1}
                   onPointerEnter={(event) => {
                     if (cardHoverArmed) handleCardPointerEnter(event);
                   }}
@@ -828,9 +876,7 @@ export function ActiveTaskCard({
                   onPointerOut={(event) => {
                     handleCardPointerLeave(event);
                   }}
-                  aria-label={`Active ${
-                    QUEST_GENRE_LABELS[task.primaryGenre]
-                  } quest: ${task.title}`}
+                  aria-label={`Active ${task.mood.title} quest: ${task.title}`}
                 >
                   <motion.div
                     className={styles.activeQuestCard}
@@ -849,26 +895,34 @@ export function ActiveTaskCard({
                         aria-label="Quest metadata"
                       >
                         <span className={styles.questPrimaryGenre}>
-                          <span>{QUEST_GENRE_LABELS[task.primaryGenre]}</span>
+                          <span>{task.mood.title}</span>
                         </span>
-                        {task.settings.map((setting) => (
-                          <span
-                            className={styles.questHeaderMetaValue}
-                            key={setting}
-                          >
-                            {setting === "fantasy" ? "Fantasy" : setting}
-                          </span>
-                        ))}
-                        {task.requiresOnline && (
-                          <span className={styles.questHeaderMetaValue}>
-                            Online
-                          </span>
-                        )}
+                        <span className={styles.questHeaderMetaValue}>
+                          <TimerIcon />
+                          {task.durationMinutes} min
+                        </span>
                       </div>
                     </header>
 
                     <motion.div className={styles.questDetails} initial={false}>
                       <p className={styles.questObjective}>{task.objective}</p>
+                      <p className={styles.questCompletion}>
+                        {task.completion}
+                      </p>
+                      <ul
+                        className={styles.assignedModifiers}
+                        aria-label="Optional quest modifiers"
+                      >
+                        {task.modifiers.map((modifier) => (
+                          <li key={modifier.id}>
+                            <CheckIcon />
+                            <span>
+                              <strong>{modifier.title}</strong>
+                              <small>{modifier.instruction}</small>
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
                     </motion.div>
 
                     {!showFinishedFace && (
@@ -930,7 +984,7 @@ export function ActiveTaskCard({
                   className={`${styles.activeQuestCard} ${styles.completionCardBack}`}
                   aria-hidden="true"
                 >
-                  <QuestCardBack genre={task.primaryGenre} />
+                  <QuestCardBack title={task.title} revealTitle />
                 </div>
               </div>
             </div>
@@ -989,6 +1043,23 @@ export function ActiveTaskCard({
         <motion.div
           className={styles.timerPosition}
           data-timer-drag
+          role="button"
+          tabIndex={0}
+          aria-disabled={
+            timerSettling ||
+            timerEntranceSettling ||
+            exiting ||
+            ropeMode === "resumePullback"
+          }
+          aria-label={
+            phase === "ready"
+              ? "Start quest timer"
+              : phase === "paused"
+                ? "Resume quest timer"
+                : phase === "running"
+                  ? "Pause quest timer"
+                  : "Quest timer unavailable"
+          }
           drag={
             (phase === "ready" || phase === "running" || phase === "paused") &&
             ropeMode !== "resumePullback" &&
@@ -1012,6 +1083,11 @@ export function ActiveTaskCard({
           }}
           onDrag={onTimerDrag}
           onDragEnd={settleTimerPull}
+          onKeyDown={(event) => {
+            if (event.key !== "Enter" && event.key !== " ") return;
+            event.preventDefault();
+            toggleTimerFromKeyboard();
+          }}
           whileDrag={{ scale: 1.035, cursor: "grabbing" }}
         >
           <motion.div
@@ -1049,8 +1125,10 @@ export function ActiveTaskCard({
           {phase === "paused" && !timerSettling && (
             <motion.form
               className={styles.pausePanel}
+              data-cut-ignore
               onSubmit={(event) => {
                 event.preventDefault();
+                followedModifierIdsRef.current = [...followedModifierIds];
                 beginExit("completed");
               }}
               initial={reduceMotion ? false : "hidden"}
@@ -1058,6 +1136,46 @@ export function ActiveTaskCard({
               exit={reduceMotion ? { opacity: 0 } : "exit"}
               variants={pausePanelVariants}
             >
+              <motion.fieldset
+                className={styles.modifierReview}
+                variants={pausePanelItemVariants}
+              >
+                <legend>optional modifier</legend>
+                <div className={styles.modifierReviewChoices}>
+                  {task.modifiers.map((modifier) => {
+                    const followed = followedModifierIds.includes(modifier.id);
+                    return (
+                      <label
+                        data-followed={followed || undefined}
+                        key={modifier.id}
+                      >
+                        <input
+                          checked={followed}
+                          type="checkbox"
+                          onChange={(event) => {
+                            const checked = event.currentTarget.checked;
+                            setFollowedModifierIds((current) =>
+                              checked
+                                ? [...current, modifier.id]
+                                : current.filter((id) => id !== modifier.id),
+                            );
+                          }}
+                        />
+                        <span
+                          className={styles.modifierReviewCheck}
+                          aria-hidden="true"
+                        >
+                          {followed && <CheckIcon />}
+                        </span>
+                        <span className={styles.modifierReviewCopy}>
+                          <strong>{modifier.title}</strong>
+                          <small>+{modifier.bonusPoints} points</small>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </motion.fieldset>
               <motion.button
                 className={styles.saveAction}
                 data-sound-click-skip

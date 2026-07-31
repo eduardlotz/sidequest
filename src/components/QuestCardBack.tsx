@@ -1,20 +1,16 @@
-import { QUEST_MARK_BY_GENRE, markAssetUrl } from "../data/questMarks";
-import {
-  QUEST_GENRE_LABELS,
-  type QuestGenre,
-} from "../data/questTaxonomy";
+import { markAssetUrl } from "../data/questMarks";
 import styles from "../App.module.css";
 
 type Props = {
-  genre: QuestGenre;
-  revealGenreOnHover?: boolean;
+  title?: string;
+  revealTitle?: boolean;
 };
 
 export function QuestCardBack({
-  genre,
-  revealGenreOnHover = false,
+  title,
+  revealTitle = false,
 }: Props) {
-  const mark = markAssetUrl(QUEST_MARK_BY_GENRE[genre]);
+  const mark = markAssetUrl("sidequest-mark.svg");
 
   return (
     <span className={styles.questCardBackContent} aria-hidden="true">
@@ -29,10 +25,8 @@ export function QuestCardBack({
           />
         ))}
       </span>
-      {revealGenreOnHover && (
-        <strong className={styles.questCardBackGenre}>
-          {QUEST_GENRE_LABELS[genre]}
-        </strong>
+      {revealTitle && title && (
+        <strong className={styles.questCardBackTitle}>{title}</strong>
       )}
     </span>
   );

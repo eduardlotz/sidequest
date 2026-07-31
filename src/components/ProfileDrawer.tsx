@@ -1,115 +1,66 @@
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { motion } from "motion/react";
 import { Drawer } from "vaul";
 import type {
-  ProfileInput,
-  Quest,
+  CompletedQuest,
   UserProfile,
 } from "../stores/useQuestStore";
 import styles from "../App.module.css";
+import { formatScore } from "../lib/format";
 import { HistoryScreen } from "./HistoryScreen";
-import { SettingsIcon } from "./Icons";
-import { OnboardingScreen } from "./OnboardingScreen";
-
-type ProfileView = "preferences" | "history";
 
 type Props = {
-  completedQuests: Quest[];
+  completedQuests: CompletedQuest[];
+  legacyCompletionCount: number;
   open: boolean;
   profile: UserProfile;
   reduceMotion: boolean;
-  totalQuestCount: number;
-  onSaveProfile: (profile: ProfileInput) => boolean;
 };
 
 export function ProfileDrawer({
   completedQuests,
+  legacyCompletionCount,
   open,
   profile,
   reduceMotion,
-  totalQuestCount,
-  onSaveProfile,
 }: Props) {
-  const [activeView, setActiveView] = useState<ProfileView>("history");
-
-  useEffect(() => {
-    if (open) setActiveView("history");
-  }, [open]);
-
-  function handleSaveProfile(input: ProfileInput) {
-    const saved = onSaveProfile(input);
-    if (saved) setActiveView("history");
-    return saved;
-  }
-
   return (
-    <section className={styles.profileDrawer} aria-labelledby="profile-title">
+    <section
+      className={styles.profileDrawer}
+      data-open={open || undefined}
+      aria-labelledby="profile-title"
+    >
       <header className={styles.profileDrawerHeader}>
         <div className={styles.profileDrawerTitleRow}>
           <Drawer.Title asChild>
             <h2 id="profile-title">Your profile</h2>
           </Drawer.Title>
-          <button
-            className={styles.profileSettingsButton}
-            data-active={activeView === "preferences" || undefined}
-            type="button"
-            aria-label={
-              activeView === "preferences"
-                ? "Show quest history"
-                : "Edit game preferences"
-            }
-            aria-pressed={activeView === "preferences"}
-            onClick={() =>
-              setActiveView((current) =>
-                current === "history" ? "preferences" : "history",
-              )
-            }
+          <p
+            className={styles.profilePointBalance}
+            aria-label={`${formatScore(profile.points)} points`}
           >
-            <SettingsIcon />
-          </button>
+            <span>Points</span>
+            <strong>{formatScore(profile.points)}</strong>
+          </p>
         </div>
         <Drawer.Description>
-          {activeView === "history"
-            ? "Your completed sidequests and completion counts."
-            : "Choose the games you want quests for."}
+          Your points and completed sidequests.
         </Drawer.Description>
       </header>
 
       <div className={styles.profileDrawerBody}>
-        <AnimatePresence initial={false} mode="wait">
-          {activeView === "preferences" ? (
-            <motion.div
-              id="profile-preferences-panel"
-              key="preferences"
-              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -8 }}
-              transition={{ duration: reduceMotion ? 0 : 0.16 }}
-            >
-              <OnboardingScreen
-                initialProfile={profile}
-                mode="preferences"
-                reduceMotion={reduceMotion}
-                onSubmit={handleSaveProfile}
-              />
-            </motion.div>
-          ) : (
-            <motion.div
-              id="profile-history-panel"
-              key="history"
-              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 8 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 8 }}
-              transition={{ duration: reduceMotion ? 0 : 0.16 }}
-            >
-              <HistoryScreen
-                completedQuests={completedQuests}
-                reduceMotion={reduceMotion}
-                totalQuestCount={totalQuestCount}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <motion.div
+          className={styles.profileHistoryPanel}
+          id="profile-history-panel"
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 8 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.16 }}
+        >
+          <HistoryScreen
+            completedQuests={completedQuests}
+            legacyCompletionCount={legacyCompletionCount}
+            reduceMotion={reduceMotion}
+          />
+        </motion.div>
       </div>
     </section>
   );

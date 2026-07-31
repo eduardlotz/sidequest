@@ -4,13 +4,20 @@ import { Drawer } from "vaul";
 import { useShallow } from "zustand/react/shallow";
 import styles from "./App.module.css";
 import { CheckIcon } from "./components/Icons";
-import { OnboardingScreen } from "./components/OnboardingScreen";
 import { ProfileDrawer } from "./components/ProfileDrawer";
 import { TaskScreen } from "./components/TaskScreen";
+import { MOODS_BY_ID } from "./data/moods";
+import { QUESTS_BY_ID } from "./data/quests";
 import { AVATAR_MARK_BY_THEME, markAssetUrl } from "./data/questMarks";
-import { QUESTS } from "./data/quests";
+import { formatScore } from "./lib/format";
 import { playSound } from "./lib/sound";
-import { hydrateQuest, useQuestStore } from "./stores/useQuestStore";
+import {
+  MOOD_RESET_MS,
+  SHUFFLE_COST,
+  hydrateCompletedQuest,
+  hydrateQuest,
+  useQuestStore,
+} from "./stores/useQuestStore";
 
 type Toast = {
   id: string;
@@ -19,32 +26,42 @@ type Toast = {
 
 export function App() {
   const {
-    completeOnboarding,
     completeQuest,
+    completedSessions,
     currentSession,
     discardCurrentSession,
+    editMood,
+    legacyCompletionCount,
+    moodSelectedAt,
     offeredQuestIds,
     pauseQuest,
     profile,
-    progressByQuestId,
+    refreshMoodWindow,
     revealQuest,
     resumeQuest,
+    selectMood,
+    selectedMoodId,
+    shuffleOffers,
     startQuest,
-    updateProfile,
   } = useQuestStore(
     useShallow((state) => ({
-      completeOnboarding: state.completeOnboarding,
       completeQuest: state.completeQuest,
+      completedSessions: state.completedSessions,
       currentSession: state.currentSession,
       discardCurrentSession: state.discardCurrentSession,
+      editMood: state.editMood,
+      legacyCompletionCount: state.legacyCompletionCount,
+      moodSelectedAt: state.moodSelectedAt,
       offeredQuestIds: state.offeredQuestIds,
       pauseQuest: state.pauseQuest,
       profile: state.profile,
-      progressByQuestId: state.progressByQuestId,
+      refreshMoodWindow: state.refreshMoodWindow,
       revealQuest: state.revealQuest,
       resumeQuest: state.resumeQuest,
+      selectMood: state.selectMood,
+      selectedMoodId: state.selectedMoodId,
+      shuffleOffers: state.shuffleOffers,
       startQuest: state.startQuest,
-      updateProfile: state.updateProfile,
     })),
   );
   const reduceMotion = Boolean(useReducedMotion());
@@ -55,23 +72,30 @@ export function App() {
   const [brandRotation, setBrandRotation] = useState(0);
   const desktop = useDesktopSheet();
   const currentQuest = currentSession
-    ? hydrateQuest(currentSession.questId, progressByQuestId)
+    ? hydrateQuest(
+        currentSession.questId,
+        completedSessions,
+        currentSession.modifierIds,
+      )
+    : null;
+  const selectedMood = selectedMoodId
+    ? MOODS_BY_ID[selectedMoodId] ?? null
     : null;
   const offeredQuests = useMemo(
     () =>
       offeredQuestIds.flatMap((id) => {
-        const quest = hydrateQuest(id, progressByQuestId);
+        const quest = QUESTS_BY_ID[id];
         return quest ? [quest] : [];
       }),
-    [offeredQuestIds, progressByQuestId],
+    [offeredQuestIds],
   );
   const completedQuests = useMemo(
     () =>
-      QUESTS.flatMap((definition) => {
-        const quest = hydrateQuest(definition.id, progressByQuestId);
-        return quest && quest.completionCount > 0 ? [quest] : [];
+      completedSessions.flatMap((completion) => {
+        const quest = hydrateCompletedQuest(completion);
+        return quest ? [quest] : [];
       }),
-    [progressByQuestId],
+    [completedSessions],
   );
 
   useEffect(() => {
@@ -89,13 +113,43 @@ export function App() {
     return () => window.clearTimeout(timeout);
   }, [reduceMotion]);
 
-  function handleComplete() {
+  useEffect(() => {
+    const refresh = () => refreshMoodWindow();
+    refresh();
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") refresh();
+    }
+
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    const remaining =
+      currentSession || moodSelectedAt === null
+        ? null
+        : Math.max(0, moodSelectedAt + MOOD_RESET_MS - Date.now());
+    const timeout =
+      remaining === null
+        ? null
+        : window.setTimeout(refresh, Math.min(remaining + 25, 2_147_483_647));
+
+    return () => {
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (timeout !== null) window.clearTimeout(timeout);
+    };
+  }, [currentSession, moodSelectedAt, refreshMoodWindow]);
+
+  function handleComplete(
+    durationMs: number,
+    followedModifierIds: string[],
+  ) {
     if (!currentQuest || !currentSession) return;
     const nextToast = {
       id: currentSession.sessionId,
       title: currentQuest.title,
     };
-    if (completeQuest()) setToast(nextToast);
+    if (completeQuest(durationMs, followedModifierIds)) setToast(nextToast);
   }
 
   function handleAboutOpenChange(open: boolean) {
@@ -205,72 +259,67 @@ export function App() {
                 }
           }
         >
-          <Drawer.Root
-            direction={desktop ? "right" : "bottom"}
-            open={profileOpen}
-            onOpenChange={handleProfileOpenChange}
-            shouldScaleBackground={false}
-          >
-            <Drawer.Trigger asChild>
-              <button
-                className={styles.navAction}
-                data-active={profileOpen || undefined}
-                data-sound-click-skip
-                type="button"
-              >
-                Your profile
-              </button>
-            </Drawer.Trigger>
-            <Drawer.Portal>
-              <Drawer.Overlay className={styles.drawerOverlay} />
-              <Drawer.Content
-                className={styles.floatingDrawer}
-                data-direction={desktop ? "right" : "bottom"}
-              >
-                {!desktop && (
-                  <div className={styles.drawerHandle} aria-hidden="true" />
-                )}
-                <ProfileDrawer
-                  completedQuests={completedQuests}
-                  open={profileOpen}
-                  profile={profile}
-                  reduceMotion={reduceMotion}
-                  totalQuestCount={QUESTS.length}
-                  onSaveProfile={(input) => {
-                    const saved = profile.onboardingComplete
-                      ? updateProfile(input)
-                      : completeOnboarding(input);
-                    return saved;
-                  }}
-                />
-              </Drawer.Content>
-            </Drawer.Portal>
-          </Drawer.Root>
+          <div className={styles.navActionGroup}>
+            <Drawer.Root
+              direction={desktop ? "right" : "bottom"}
+              open={profileOpen}
+              onOpenChange={handleProfileOpenChange}
+              shouldScaleBackground={false}
+            >
+              <Drawer.Trigger asChild>
+                <button
+                  className={styles.navAction}
+                  data-active={profileOpen || undefined}
+                  data-sound-click-skip
+                  type="button"
+                  aria-label={`Your profile, ${formatScore(profile.points)} points`}
+                >
+                  {formatScore(profile.points)} points
+                </button>
+              </Drawer.Trigger>
+              <Drawer.Portal>
+                <Drawer.Overlay className={styles.drawerOverlay} />
+                <Drawer.Content
+                  className={styles.floatingDrawer}
+                  data-direction={desktop ? "right" : "bottom"}
+                >
+                  {!desktop && (
+                    <div className={styles.drawerHandle} aria-hidden="true" />
+                  )}
+                  <ProfileDrawer
+                    completedQuests={completedQuests}
+                    legacyCompletionCount={legacyCompletionCount}
+                    open={profileOpen}
+                    profile={profile}
+                    reduceMotion={reduceMotion}
+                  />
+                </Drawer.Content>
+              </Drawer.Portal>
+            </Drawer.Root>
+          </div>
         </motion.div>
       </header>
 
       <main className={styles.main} id="main-content">
-        {profile.onboardingComplete ? (
-          <TaskScreen
-            currentQuest={currentQuest}
-            currentSession={currentSession}
-            offeredQuests={offeredQuests}
-            animateEntrance={!introComplete}
-            reduceMotion={reduceMotion}
-            onReveal={revealQuest}
-            onDiscard={discardCurrentSession}
-            onStart={startQuest}
-            onPause={pauseQuest}
-            onResume={resumeQuest}
-            onComplete={handleComplete}
-          />
-        ) : (
-          <OnboardingScreen
-            initialProfile={profile}
-            reduceMotion={reduceMotion}
-            onSubmit={completeOnboarding}
-          />
-        )}
+        <TaskScreen
+          currentQuest={currentQuest}
+          currentSession={currentSession}
+          selectedMood={selectedMood}
+          offeredQuests={offeredQuests}
+          points={profile.points}
+          shuffleCost={SHUFFLE_COST}
+          animateEntrance={!introComplete}
+          reduceMotion={reduceMotion}
+          onSelectMood={selectMood}
+          onEditMood={editMood}
+          onRevealQuest={revealQuest}
+          onShuffle={shuffleOffers}
+          onDiscard={discardCurrentSession}
+          onStart={startQuest}
+          onPause={pauseQuest}
+          onResume={resumeQuest}
+          onComplete={handleComplete}
+        />
       </main>
 
       <div className={styles.toastRegion} aria-live="polite" aria-atomic="true">
@@ -306,29 +355,28 @@ function AboutSidequest() {
           <h2 id="about-title">Welcome to sidequest</h2>
         </Drawer.Title>
         <Drawer.Description>
-          A small companion app for your video games.
+          A small companion for choosing what to play.
         </Drawer.Description>
       </header>
 
       <div className={styles.aboutBody}>
         <section className={styles.aboutSection}>
           <ol className={styles.aboutSteps}>
-            <li>Choose a hidden card to reveal its quest</li>
-            <li>Check that the objective fits the game you want to play</li>
-            <li>Pull the waiting timer down to start</li>
-            <li>Pull to pause or resume, and cut the rope to stop</li>
-            <li>Use the Complete quest button while paused</li>
+            <li>Choose how you feel right now</li>
+            <li>Pick one of the three quests that brings a game to mind</li>
+            <li>Follow any optional modifiers and start the rope timer</li>
+            <li>Pause to confirm your modifiers and complete the quest</li>
+            <li>Spend earned points when you need a fresh set of cards</li>
           </ol>
         </section>
 
         <section className={styles.aboutSection}>
-          <h3>Try it your way</h3>
+          <h3>Less choosing, more playing</h3>
           <p>
-            Repeat any quest whenever it fits. Every completion adds to its
-            count.
+            Your mood resets after four hours, while points and completed
+            sessions stay in your local profile.
           </p>
         </section>
-
       </div>
 
       <footer className={styles.aboutCredit}>

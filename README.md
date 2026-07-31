@@ -1,7 +1,8 @@
 # Sidequest
 
-A local-first challenge deck for turning any video game into a run of small,
-genre-agnostic objectives.
+A local-first mood deck for answering “what should I play?” with one bounded,
+game-agnostic quest. Choose a mood, pick one of three cards, and earn points
+for completed quests and optional modifiers.
 
 ## Run locally
 
@@ -11,7 +12,8 @@ bun dev
 ```
 
 Progress is saved in the browser. There is no account or backend in this first
-review version.
+review version. Mood selections reset after four hours; points, active quests,
+and completion history persist locally.
 
 ## Scripts
 

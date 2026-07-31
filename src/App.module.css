@@ -564,6 +564,15 @@
   touch-action: none;
 }
 
+.timerPosition:focus-visible {
+  outline: none;
+}
+
+.timerPosition:focus-visible .timerCapsule {
+  outline: 3px solid rgb(8 8 10 / 0.34);
+  outline-offset: 5px;
+}
+
 .timerStatus {
   position: absolute;
   top: calc(100% + 8px);
@@ -1295,6 +1304,21 @@
     border-top: 0;
   }
 
+  .activeExperience[data-phase="paused"] .timerRig {
+    height: 100svh;
+  }
+
+  .activeExperience[data-phase="paused"] .timerPosition {
+    top: 21svh;
+  }
+
+  .activeExperience[data-phase="paused"] .pausePanel {
+    top: 22svh;
+    bottom: 20px;
+    overflow-y: auto;
+    padding-bottom: 16px;
+  }
+
   .timerPosition {
     --timer-width: 220px;
     top: 35%;
@@ -1350,6 +1374,1047 @@
   .activeCardStage {
     width: min(25cqw, 365px);
   }
+}
+
+/* Refined mood and quest selection */
+.navAction {
+  background: #e9e9f1;
+  opacity: 1;
+}
+
+.navAction:hover,
+.navAction:active,
+.navAction[data-active]:hover {
+  background: #dcdce6;
+}
+
+.selectionScreen {
+  padding-top: 92px;
+}
+
+.selectionHeader {
+  min-height: 78px;
+}
+
+.selectionHeader > p {
+  margin-top: 8px;
+  color: #aaaab3;
+  font-size: 0.84rem;
+}
+
+.arcDeck {
+  height: calc(100svh - 170px);
+  min-height: 510px;
+  overscroll-behavior-y: none;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.arcDeck::before,
+.arcDeck::after {
+  display: none;
+}
+
+.arcDeckTrack {
+  top: 98px;
+}
+
+.arcCardSlot {
+  width: clamp(255px, 23cqw, 310px);
+  margin-left: calc(clamp(255px, 23cqw, 310px) / -2);
+  opacity: 1;
+}
+
+.moodCardExit {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  will-change: filter, opacity, transform;
+}
+
+.moodCardStack {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+}
+
+.moodCardStack i {
+  position: absolute;
+  inset: 0;
+  border: 4px solid #74747b;
+  border-radius: 30px;
+  background: #09090b;
+  box-shadow: 0 0 0 3px #252529;
+}
+
+.moodCardStack i:nth-child(1) {
+  transform: translate(-8px, 9px) rotate(-4.2deg);
+}
+
+.moodCardStack i:nth-child(2) {
+  transform: translate(8px, 7px) rotate(3.1deg);
+}
+
+.moodCardStack i:nth-child(3) {
+  transform: translate(-2px, 12px) rotate(-1.2deg);
+}
+
+.arcCard {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 4px solid #74747b;
+  border-radius: 30px;
+  background: #09090b;
+  box-shadow:
+    0 0 0 3px #252529,
+    0 22px 45px rgb(8 8 10 / 0.2);
+  color: white;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+}
+
+.arcCard:hover {
+  box-shadow:
+    0 0 0 3px #252529,
+    0 31px 62px rgb(8 8 10 / 0.26);
+}
+
+.arcCard:focus-visible {
+  outline: 3px solid rgb(8 8 10 / 0.28);
+  outline-offset: 9px;
+}
+
+.moodCardVisual {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  border-radius: inherit;
+  inset: 0;
+  pointer-events: none;
+}
+
+.arcCardContent {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  left: 28px;
+  z-index: 3;
+  display: flex;
+  height: auto;
+  flex-direction: column;
+}
+
+.arcCardTitle {
+  max-width: 94%;
+  margin: 0;
+  color: #f7f7fa;
+  font-size: clamp(1.75rem, 10cqw, 2.4rem);
+  font-weight: 750;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.arcCardDescription {
+  max-width: 94%;
+  margin-top: 7px;
+  color: rgb(247 247 250 / 0.88);
+  font-size: clamp(0.92rem, 4.7cqw, 1.08rem);
+  font-weight: 620;
+  letter-spacing: -0.025em;
+  line-height: 1.16;
+}
+
+.moodIllustration {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  width: min(66%, 190px);
+  height: auto;
+  transform: translate(-50%, -44%);
+}
+
+.moodDeckControls {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  z-index: 60;
+  display: grid;
+  align-items: center;
+  color: rgb(41 45 50 / 0.25);
+  grid-template-columns: 59px auto 59px;
+  gap: 18px;
+  transform: translateX(-50%);
+}
+
+.moodDeckControls span {
+  color: #aaaab3;
+  font-size: 0.76rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.moodArrow {
+  display: block;
+  width: 59px;
+  height: 35px;
+}
+
+.moodArrow[data-right] {
+  transform: scaleX(-1);
+}
+
+.questSelectionScreen {
+  position: relative;
+  display: flex;
+  min-height: 100svh;
+  align-items: center;
+  padding-top: 92px;
+  flex-direction: column;
+  overflow: visible;
+}
+
+.questSelectionHeader {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  min-height: 150px;
+  align-items: center;
+  flex: 0 0 auto;
+  flex-direction: column;
+}
+
+.questSelectionPrompt {
+  margin: 18px 0 0;
+  color: #aaaab3;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.moodEditControl {
+  position: relative;
+  display: inline-block;
+}
+
+.moodEditControl button {
+  padding: 0 0 3px;
+  border-bottom: 2px solid rgb(8 8 10 / 0.2);
+  background: transparent;
+  color: #242428;
+  font: inherit;
+  font-weight: 720;
+  cursor: pointer;
+  transition: border-color 150ms ease;
+}
+
+.moodEditControl:hover button,
+.moodEditControl:focus-within button {
+  border-color: #242428;
+}
+
+.moodEditControl button:focus-visible {
+  border-radius: 2px;
+  outline: 3px solid rgb(8 8 10 / 0.18);
+  outline-offset: 4px;
+}
+
+.moodEditTooltip {
+  position: absolute;
+  top: calc(100% + 9px);
+  left: 50%;
+  z-index: 80;
+  padding: 6px 9px;
+  border-radius: 7px;
+  background: #09090b;
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 650;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -3px);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+  white-space: nowrap;
+}
+
+.moodEditControl:hover .moodEditTooltip,
+.moodEditControl:focus-within .moodEditTooltip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.questShuffleControl {
+  display: flex;
+  align-items: center;
+  margin-top: 29px;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shuffleAction {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 13px;
+  border: 1px solid rgb(8 8 10 / 0.12);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.96), rgb(239 239 245 / 0.95));
+  box-shadow:
+    0 2px 5px rgb(8 8 10 / 0.12),
+    inset 0 1px 0 white;
+  color: #2c2c31;
+  font-size: 0.78rem;
+  font-weight: 720;
+  gap: 6px;
+  cursor: pointer;
+  transition:
+    box-shadow 150ms ease,
+    filter 150ms ease,
+    transform 150ms ease;
+}
+
+.shuffleAction > span {
+  color: #73737b;
+  font-size: 0.94rem;
+  line-height: 1;
+}
+
+.shuffleAction:hover:not(:disabled) {
+  box-shadow:
+    0 4px 9px rgb(8 8 10 / 0.15),
+    inset 0 1px 0 white;
+  filter: brightness(0.985);
+  transform: translateY(-1px);
+}
+
+.shuffleAction:active:not(:disabled) {
+  box-shadow:
+    0 1px 3px rgb(8 8 10 / 0.12),
+    inset 0 1px 0 white;
+  transform: translateY(0);
+}
+
+.shuffleAction:disabled {
+  color: #aaaab2;
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.questShuffleControl > span {
+  color: #aaaab3;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.activeExperience[data-phase="paused"] .timerRig {
+  z-index: 10;
+}
+
+.historySession > .historyMood {
+  display: block;
+  padding: 0 16px;
+  margin: 0 0 6px;
+  color: #686870;
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.025em;
+  line-height: 1.2;
+  text-transform: none;
+}
+
+@media (max-width: 820px) {
+  .selectionScreen {
+    padding-top: 78px;
+  }
+
+  .selectionHeader {
+    min-height: 86px;
+  }
+
+  .arcDeck {
+    height: calc(100svh - 164px);
+    min-height: 450px;
+  }
+
+  .arcDeckTrack {
+    top: 90px;
+  }
+
+  .arcCardSlot {
+    width: min(70vw, 300px);
+    margin-left: calc(min(70vw, 300px) / -2);
+  }
+
+  .moodCardStack i,
+  .arcCard {
+    border-radius: 28px;
+  }
+
+  .moodDeckControls {
+    bottom: 8px;
+    gap: 11px;
+  }
+
+  .moodDeckControls span {
+    font-size: 0.68rem;
+  }
+
+  .questSelectionScreen {
+    padding-top: 74px;
+  }
+
+  .questSelectionHeader {
+    min-height: 148px;
+  }
+
+  .questSelectionPrompt {
+    margin-top: 18px;
+    font-size: 0.8rem;
+  }
+
+  .questShuffleControl {
+    margin-top: 25px;
+  }
+}
+
+@media (max-height: 700px) {
+  .selectionScreen {
+    padding-top: 70px;
+  }
+
+  .selectionHeader {
+    min-height: 66px;
+  }
+
+  .arcDeck {
+    height: calc(100svh - 136px);
+    min-height: 380px;
+  }
+
+  .arcDeckTrack {
+    top: 70px;
+  }
+
+  .questSelectionScreen {
+    padding-top: 68px;
+  }
+
+  .questSelectionHeader {
+    min-height: 130px;
+  }
+
+  .questSelectionPrompt {
+    margin-top: 9px;
+  }
+
+  .questShuffleControl {
+    margin-top: 20px;
+  }
+}
+
+/* Mood-first quest flow */
+.selectionScreen {
+  position: relative;
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  padding-top: 92px;
+}
+
+.selectionHeader {
+  position: relative;
+  z-index: 60;
+  display: flex;
+  min-height: 92px;
+  align-items: center;
+  justify-content: flex-end;
+  flex-direction: column;
+  text-align: center;
+}
+
+.selectionHeader > p {
+  margin: 18px 20px 0;
+  color: #5f5f68;
+  font-size: 0.92rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.selectedMood {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 8px 7px 15px;
+  border: 1px solid rgb(8 8 10 / 0.08);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.52);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.62);
+  gap: 10px;
+}
+
+.selectedMood strong {
+  color: #09090b;
+  font-size: 0.86rem;
+}
+
+.selectedMood button {
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: #09090b;
+  color: white;
+  font-size: 0.74rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.arcDeck {
+  position: relative;
+  width: 100%;
+  height: calc(100svh - 184px);
+  min-height: 500px;
+  overflow: hidden;
+  cursor: grab;
+  perspective: 1600px;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.arcDeck:active {
+  cursor: grabbing;
+}
+
+.arcDeck::before,
+.arcDeck::after {
+  position: absolute;
+  z-index: 50;
+  top: 0;
+  bottom: 0;
+  width: clamp(100px, 18vw, 270px);
+  content: "";
+  pointer-events: none;
+}
+
+.arcDeck::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--canvas), transparent);
+}
+
+.arcDeck::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--canvas), transparent);
+}
+
+.arcDeckTrack {
+  position: absolute;
+  top: 58px;
+  left: 50%;
+  width: 0;
+  height: calc(100% - 58px);
+  transform-style: preserve-3d;
+}
+
+.arcCardSlot {
+  --accent: #31ff6c;
+  --accent-rgb: 49 255 108;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: clamp(250px, 23cqw, 310px);
+  aspect-ratio: 0.7;
+  margin-left: calc(clamp(250px, 23cqw, 310px) / -2);
+  container-name: arc-card;
+  container-type: inline-size;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
+.arcCardFlip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.arcCard {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: clamp(24px, 8cqw, 34px);
+  border: clamp(3px, 1.35cqw, 5px) solid var(--accent);
+  border-radius: 30px;
+  background: #09090b;
+  box-shadow:
+    0 0 0 3px #242427,
+    0 22px 45px rgb(8 8 10 / 0.2),
+    0 0 52px rgb(var(--accent-rgb) / 0.1);
+  color: #f8f8fb;
+  text-align: left;
+  cursor: pointer;
+  isolation: isolate;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+button.arcCard {
+  appearance: none;
+}
+
+.arcCardFace {
+  position: absolute;
+  inset: 0;
+}
+
+.arcCardFront {
+  transform: rotateY(0deg);
+}
+
+.arcCardBack {
+  padding: 0;
+  transform: rotateY(180deg);
+}
+
+.arcCardSlot[data-center] .arcCardFront:hover {
+  box-shadow:
+    0 0 0 3px #242427,
+    0 32px 64px rgb(8 8 10 / 0.27),
+    0 0 68px rgb(var(--accent-rgb) / 0.16);
+}
+
+.arcCardSlot[data-center] .arcCardFront:focus-visible {
+  outline: 3px solid rgb(var(--accent-rgb) / 0.46);
+  outline-offset: 8px;
+}
+
+.arcCardContent {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.arcCardTitle {
+  max-width: 94%;
+  margin-top: clamp(8px, 5cqw, 22px);
+  color: var(--accent);
+  font-size: clamp(1.75rem, 11cqw, 2.85rem);
+  font-weight: 750;
+  letter-spacing: -0.058em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.arcCardDescription {
+  max-width: 94%;
+  margin-top: clamp(12px, 5cqw, 20px);
+  color: rgb(246 246 250 / 0.76);
+  font-size: clamp(0.95rem, 5cqw, 1.2rem);
+  font-weight: 620;
+  letter-spacing: -0.025em;
+  line-height: 1.16;
+  text-wrap: balance;
+}
+
+.arcCardFront[data-kind="quest"] .arcCardTitle {
+  color: #f6f6fa;
+  font-size: clamp(1.42rem, 8.5cqw, 2.18rem);
+}
+
+.arcCardFront[data-kind="quest"] .arcCardDescription {
+  color: var(--accent);
+}
+
+.arcCard .questCardBackContent {
+  z-index: 0;
+}
+
+.arcCard .questCardBackPattern {
+  opacity: 0.1;
+}
+
+.questOfferActions {
+  position: absolute;
+  bottom: 34px;
+  left: 50%;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+  transform: translateX(-50%);
+}
+
+.shuffleAction {
+  min-width: 170px;
+  min-height: 46px;
+  padding: 0 20px;
+  border-radius: 16px;
+  background: #09090b;
+  box-shadow:
+    0 12px 30px rgb(8 8 10 / 0.2),
+    inset 0 1px 0 rgb(255 255 255 / 0.12);
+  color: white;
+  font-size: 0.86rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.shuffleAction:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+}
+
+.shuffleAction:focus-visible,
+.selectedMood button:focus-visible {
+  outline: 3px solid rgb(8 8 10 / 0.24);
+  outline-offset: 3px;
+}
+
+.questOfferActions > span {
+  color: #9d9da6;
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.deckGestureHint {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  z-index: 60;
+  margin: 0;
+  color: #b4b4bd;
+  font-size: 0.72rem;
+  font-weight: 650;
+  transform: translateX(-50%);
+}
+
+.questCompletion {
+  margin: 18px 0 0;
+  color: rgb(246 246 250 / 0.66);
+  font-size: clamp(0.78rem, 3.15cqw, 1rem);
+  font-weight: 600;
+  line-height: 1.32;
+}
+
+.assignedModifiers {
+  display: flex;
+  padding: 0 0 42px;
+  margin: 20px 0 0;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+}
+
+.assignedModifiers li {
+  display: grid;
+  align-items: start;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.assignedModifiers svg {
+  width: 19px;
+  color: var(--accent);
+}
+
+.assignedModifiers strong,
+.assignedModifiers small {
+  display: block;
+}
+
+.assignedModifiers strong {
+  color: #f6f6fa;
+  font-size: clamp(0.74rem, 3cqw, 0.92rem);
+}
+
+.assignedModifiers small {
+  margin-top: 3px;
+  color: rgb(246 246 250 / 0.52);
+  font-size: clamp(0.66rem, 2.65cqw, 0.78rem);
+  font-weight: 600;
+  line-height: 1.26;
+}
+
+.modifierReview {
+  width: min(100%, 360px);
+  padding: 0;
+  border: 0;
+  margin: 0 0 16px;
+  text-align: left;
+}
+
+.modifierReview legend {
+  padding: 0 0 8px;
+  margin: 0;
+  color: #77777f;
+  font-size: clamp(0.78rem, 1.3cqw, 1rem);
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.modifierReviewChoices {
+  display: flex;
+  flex-direction: column;
+}
+
+.modifierReviewChoices label {
+  display: flex;
+  min-height: 45px;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  gap: 12px;
+}
+
+.modifierReviewChoices input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.modifierReviewChoices label:has(input:focus-visible) {
+  outline: 3px solid rgb(8 8 10 / 0.3);
+  outline-offset: 3px;
+}
+
+.modifierReviewCheck {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #d3d3d8;
+  border-radius: 999px;
+  background: white;
+  color: white;
+  place-items: center;
+}
+
+.modifierReviewCheck svg {
+  width: 13px;
+  stroke-width: 3;
+}
+
+.modifierReviewChoices label[data-followed] .modifierReviewCheck {
+  border-color: #19e85a;
+  background: #19e85a;
+}
+
+.modifierReviewCopy {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.modifierReviewChoices strong {
+  color: #17171a;
+  font-size: 0.8rem;
+}
+
+.modifierReviewChoices small {
+  color: #77777f;
+  font-size: clamp(0.7rem, 1.15cqw, 0.78rem);
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+@media (max-width: 820px) {
+  .selectionScreen {
+    padding-top: 78px;
+  }
+
+  .selectionHeader {
+    min-height: 100px;
+  }
+
+  .arcDeck {
+    height: calc(100svh - 178px);
+    min-height: 430px;
+  }
+
+  .arcDeck::before,
+  .arcDeck::after {
+    width: clamp(54px, 17vw, 82px);
+  }
+
+  .arcDeckTrack {
+    top: 58px;
+  }
+
+  .arcCardSlot {
+    width: min(70vw, 300px);
+    margin-left: calc(min(70vw, 300px) / -2);
+  }
+
+  .arcCard {
+    border-radius: 28px;
+  }
+
+  .questOfferActions {
+    bottom: 32px;
+  }
+
+  .modifierReview {
+    width: 100%;
+  }
+
+}
+
+@media (max-height: 700px) {
+  .selectionScreen {
+    padding-top: 72px;
+  }
+
+  .selectionHeader {
+    min-height: 80px;
+  }
+
+  .arcDeck {
+    height: calc(100svh - 152px);
+    min-height: 380px;
+  }
+
+  .arcDeckTrack {
+    top: 26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arcCard,
+  .shuffleAction,
+  .selectedMood button {
+    transition: none;
+  }
+}
+
+.profilePointBalance {
+  display: flex;
+  align-items: flex-end;
+  margin: 0;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.profilePointBalance span {
+  color: #9999a1;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.profilePointBalance strong {
+  color: #09090b;
+  font-size: 1.2rem;
+  letter-spacing: -0.04em;
+}
+
+.profileHistoryPanel {
+  min-height: 0;
+}
+
+.legacyCompletionSummary {
+  padding: 11px 13px;
+  border-radius: 13px;
+  margin-bottom: 12px;
+  background: rgb(8 8 10 / 0.045);
+  color: #7d7d85;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.historySession {
+  width: 100%;
+}
+
+.historyMood {
+  display: block;
+  margin-bottom: 4px;
+  color: #686870;
+  font-size: 0.64rem;
+  font-weight: 750;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.historyObjective {
+  display: block;
+  margin-top: 4px;
+  color: #686870;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.historySessionMeta {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.historyPointsAwarded {
+  color: #0d7430;
+  font-size: 0.68rem;
+}
+
+.historyModifiers {
+  display: flex;
+  padding: 10px 0 0;
+  margin: 10px 0 0;
+  border-top: 1px solid rgb(8 8 10 / 0.07);
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+}
+
+.historyModifier {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgb(8 8 10 / 0.045);
+  color: #9999a1;
+  font-size: 0.66rem;
+  font-weight: 650;
+  gap: 5px;
+}
+
+.historyModifier[data-followed] {
+  background: rgb(25 232 90 / 0.1);
+  color: #117232;
+}
+
+.historyModifierStatus {
+  font-weight: 800;
+}
+
+.historyModifiersEmpty {
+  margin: 10px 0 0;
+  color: #9999a1;
+  font-size: 0.68rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1998,7 +3063,7 @@
   transform: rotate(180deg);
 }
 
-.questCardBackGenre {
+.questCardBackTitle {
   position: absolute;
   inset: 0;
   z-index: 2;
@@ -2026,12 +3091,12 @@
 }
 
 .previewCardHitArea:not([data-selected]):is(:hover, :focus-visible)
-  .questCardBackGenre {
+  .questCardBackTitle {
   opacity: 1;
   transform: translateY(0);
 }
 
-.previewCardHitArea[data-selected] .questCardBackGenre {
+.previewCardHitArea[data-selected] .questCardBackTitle {
   opacity: 0;
   transform: translateY(-4px);
 }
@@ -2556,5 +3621,394 @@
 
   .previewCardSlot {
     width: min(21cqw, 270px);
+  }
+}
+
+/* Final selection overrides stay last to beat the legacy deck rules above. */
+.navAction {
+  background: #e9e9f1;
+  opacity: 1;
+}
+
+.navAction:hover,
+.navAction:active,
+.navAction[data-active]:hover {
+  background: #dcdce6;
+}
+
+.selectionScreen {
+  padding-top: 92px;
+}
+
+.selectionHeader {
+  min-height: 78px;
+}
+
+.selectionHeader > p {
+  margin-top: 8px;
+  color: #aaaab3;
+  font-size: 0.84rem;
+}
+
+.arcDeck {
+  height: calc(100svh - 170px);
+  min-height: 510px;
+  overscroll-behavior-y: none;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.arcDeck::before,
+.arcDeck::after {
+  display: none;
+}
+
+.arcDeckTrack {
+  top: 98px;
+}
+
+.arcCardSlot {
+  width: clamp(255px, 23cqw, 310px);
+  margin-left: calc(clamp(255px, 23cqw, 310px) / -2);
+  opacity: 1;
+}
+
+.arcCard {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 4px solid #74747b;
+  border-radius: 30px;
+  background: #09090b;
+  box-shadow:
+    0 0 0 3px #252529,
+    0 22px 45px rgb(8 8 10 / 0.2);
+  color: white;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+}
+
+.arcCardContent {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  left: 28px;
+  z-index: 3;
+  display: flex;
+  height: auto;
+  flex-direction: column;
+}
+
+.arcCardTitle {
+  max-width: 94%;
+  margin: 0;
+  color: #f7f7fa;
+  font-size: clamp(1.75rem, 10cqw, 2.4rem);
+}
+
+.arcCardDescription {
+  max-width: 94%;
+  margin-top: 7px;
+  color: rgb(247 247 250 / 0.88);
+  font-size: clamp(0.92rem, 4.7cqw, 1.08rem);
+}
+
+.shuffleAction {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 13px;
+  border: 1px solid rgb(8 8 10 / 0.12);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.96), rgb(239 239 245 / 0.95));
+  box-shadow:
+    0 2px 5px rgb(8 8 10 / 0.12),
+    inset 0 1px 0 white;
+  color: #2c2c31;
+  font-size: 0.78rem;
+  font-weight: 720;
+}
+
+.shuffleAction:disabled {
+  color: #aaaab2;
+  opacity: 0.62;
+}
+
+.activeExperience[data-phase="paused"] .timerHint {
+  display: none;
+}
+
+@media (max-width: 820px) {
+  .selectionScreen {
+    padding-top: 78px;
+  }
+
+  .selectionHeader {
+    min-height: 86px;
+  }
+
+  .arcDeck {
+    height: calc(100svh - 164px);
+    min-height: 450px;
+  }
+
+  .arcDeckTrack {
+    top: 90px;
+  }
+
+  .arcCardSlot {
+    width: min(70vw, 300px);
+    margin-left: calc(min(70vw, 300px) / -2);
+  }
+
+  .arcCard {
+    border-radius: 28px;
+  }
+}
+
+@media (max-height: 700px) {
+  .selectionScreen {
+    padding-top: 70px;
+  }
+
+  .selectionHeader {
+    min-height: 66px;
+  }
+
+  .arcDeck {
+    height: calc(100svh - 136px);
+    min-height: 380px;
+  }
+
+  .arcDeckTrack {
+    top: 70px;
+  }
+}
+
+/* Quest selection handoff and title reveal */
+.deckWrap > .selectionScreen,
+.deckWrap > .questSelectionScreen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+}
+
+.selectionHeader > p {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.deck {
+  margin-top: 28px;
+}
+
+.moodCardStack {
+  top: -42px;
+  right: auto;
+  bottom: auto;
+  left: 0;
+  width: clamp(255px, 23cqw, 310px);
+  aspect-ratio: 0.7;
+  margin-left: calc(clamp(255px, 23cqw, 310px) / -2);
+  transform-style: preserve-3d;
+}
+
+.moodFakeCardSlot {
+  position: absolute;
+  display: block;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.selectionCardBody {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  border: 4px solid var(--selection-card-border, #74747b);
+  border-radius: 30px;
+  background: #09090b;
+  box-shadow:
+    0 0 0 3px #252529,
+    0 22px 45px rgb(8 8 10 / 0.2);
+  inset: 0;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+
+.selectionCardContent {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  overflow: hidden;
+  border-radius: 30px;
+  inset: 0;
+  pointer-events: none;
+}
+
+.arcCardHitArea {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 30px;
+  background: transparent;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  transform-style: preserve-3d;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.arcCardHitArea:hover .selectionCardBody {
+  box-shadow:
+    0 0 0 3px #252529,
+    0 31px 62px rgb(8 8 10 / 0.26);
+}
+
+.arcCardHitArea:focus-visible {
+  outline: 3px solid rgb(8 8 10 / 0.28);
+  outline-offset: 9px;
+}
+
+.arcCardHitArea[data-selected]:focus-visible {
+  outline: none;
+}
+
+.previewCardTilt {
+  position: absolute;
+  display: block;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition:
+    filter 180ms ease,
+    scale 400ms cubic-bezier(0.03, 0.98, 0.52, 0.99);
+}
+
+.questSelectionCardContent {
+  color: #f8f8fb;
+  isolation: isolate;
+}
+
+.questSelectionCardBody {
+  --selection-card-border: var(--accent);
+  box-shadow:
+    0 0 0 3px #252529,
+    0 0 52px rgb(var(--accent-rgb) / 0.11),
+    0 22px 45px rgb(8 8 10 / 0.2);
+}
+
+.previewCardHitArea:not([data-selected]):hover .previewCardTilt {
+  scale: 1.012;
+}
+
+.previewCardHitArea:active .previewCardTilt {
+  filter: brightness(1.08);
+}
+
+.previewCardSlot {
+  width: clamp(255px, 23cqw, 310px);
+  aspect-ratio: 0.7;
+}
+
+.previewCardProjection {
+  position: absolute;
+  inset: 0;
+}
+
+.questSelectionPrompt {
+  color: #c0c0c9;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.moodEditControl button {
+  padding: 0 0 5px;
+  border-bottom: 3px solid #b2b2bb;
+  color: #2c2d32;
+  font-size: inherit;
+  font-weight: 600;
+  letter-spacing: inherit;
+}
+
+.moodEditControl:hover button,
+.moodEditControl:focus-within button {
+  border-color: #2c2d32;
+}
+
+.moodEditTooltip {
+  top: auto;
+  bottom: calc(100% + 14px);
+  padding: 8px 13px 9px;
+  border-radius: 14px;
+  background: #2d2e33;
+  box-shadow: 0 7px 18px rgb(8 8 10 / 0.14);
+  color: #f5f5f8;
+  font-size: clamp(0.84rem, 1.35cqw, 1.02rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  transform: translate(-50%, 6px);
+}
+
+.moodEditControl:hover .moodEditTooltip,
+.moodEditControl:focus-within .moodEditTooltip {
+  transform: translate(-50%, 0);
+}
+
+.revealBack .questCardBackTitle,
+.completionCardBack .questCardBackTitle {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 820px) {
+  .moodCardStack {
+    width: min(70vw, 300px);
+    margin-left: calc(min(70vw, 300px) / -2);
+  }
+
+  .selectionCardBody,
+  .selectionCardContent,
+  .arcCardHitArea {
+    border-radius: 28px;
+  }
+
+  .previewCardSlot {
+    width: min(70vw, 300px);
+  }
+
+  .questSelectionPrompt {
+    font-size: 0.875rem;
+  }
+
+  .deck {
+    margin-top: 24px;
+  }
+
+  .previewCardHitArea .questCardBackPattern,
+  .revealBack .questCardBackPattern,
+  .completionCardBack .questCardBackPattern {
+    opacity: 0.025;
+  }
+
+  .previewCardHitArea .questCardBackTitle,
+  .revealBack .questCardBackTitle,
+  .completionCardBack .questCardBackTitle {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -1,48 +1,67 @@
 import { motion } from "motion/react";
-import type { Quest } from "../stores/useQuestStore";
+import type { ModifierDefinition } from "../data/questTypes";
+import { formatRunningDuration, formatScore } from "../lib/format";
+import type { CompletedQuest } from "../stores/useQuestStore";
 import { CheckIcon } from "./Icons";
 import styles from "../App.module.css";
 
 type Props = {
-  completedQuests: Quest[];
+  completedQuests: CompletedQuest[];
+  legacyCompletionCount: number;
   reduceMotion: boolean;
-  totalQuestCount: number;
 };
 
 export function HistoryScreen({
   completedQuests,
+  legacyCompletionCount,
   reduceMotion,
-  totalQuestCount,
 }: Props) {
-  const completedPercentage = totalQuestCount > 0
-    ? Math.round(completedQuests.length / totalQuestCount * 100)
-    : 0;
+  const hasCurrentCompletions = completedQuests.length > 0;
 
   return (
     <section className={styles.historyScreen} aria-labelledby="history-title">
       <header className={styles.historySummary}>
-        <h2 className={styles.srOnly} id="history-title">Quest history</h2>
+        <h2 className={styles.srOnly} id="history-title">
+          Quest history
+        </h2>
         <p>
-          <span>{completedQuests.length}</span> of{" "}
-          <strong>{totalQuestCount}</strong>{" "}
-          sidequests completed
+          <span>{completedQuests.length}</span>{" "}
+          {completedQuests.length === 1
+            ? "completed session"
+            : "completed sessions"}
         </p>
-        <CompletionBadge percentage={completedPercentage} />
       </header>
 
       <div className={styles.historyContent}>
-        {completedQuests.length === 0 ? (
+        {legacyCompletionCount > 0 && (
+          <aside
+            className={styles.legacyCompletionSummary}
+            aria-label="Earlier quest history"
+          >
+            <strong>{legacyCompletionCount}</strong>{" "}
+            {legacyCompletionCount === 1
+              ? "completion from an earlier Sidequest version"
+              : "completions from an earlier Sidequest version"}
+          </aside>
+        )}
+
+        {!hasCurrentCompletions ? (
           <div className={styles.historyEmpty}>
-            <span className={styles.emptyCheck} aria-hidden="true"><CheckIcon /></span>
-            <h2>No completed sidequests yet</h2>
-            <p>Completed quests will appear here with their completion count.</p>
+            <span className={styles.emptyCheck} aria-hidden="true">
+              <CheckIcon />
+            </span>
+            <h2>No completed sessions yet</h2>
+            <p>
+              Completed quests will appear here with their modifiers and
+              rewards.
+            </p>
           </div>
         ) : (
           <motion.ol className={styles.historyList} layout>
-            {completedQuests.map((quest) => (
+            {completedQuests.map((completion) => (
               <HistoryQuest
-                quest={quest}
-                key={quest.id}
+                completion={completion}
+                key={completion.id}
                 reduceMotion={reduceMotion}
               />
             ))}
@@ -54,12 +73,16 @@ export function HistoryScreen({
 }
 
 function HistoryQuest({
-  quest,
+  completion,
   reduceMotion,
 }: {
-  quest: Quest;
+  completion: CompletedQuest;
   reduceMotion: boolean;
 }) {
+  const followedModifierIds = new Set(
+    completion.followedModifiers.map((modifier) => modifier.id),
+  );
+
   return (
     <motion.li
       className={styles.historyRow}
@@ -69,38 +92,65 @@ function HistoryQuest({
       exit={{ opacity: 0 }}
       transition={{ duration: reduceMotion ? 0 : 0.2 }}
     >
-      <div className={styles.historyQuestRow}>
-        <span className={styles.rowContent}>
-          <strong>{quest.title}</strong>
-        </span>
-        <strong className={styles.historyCompletionCount}>
-          {quest.completionCount}{" "}
-          {quest.completionCount === 1 ? "completion" : "completions"}
-        </strong>
-      </div>
+      <article className={styles.historySession}>
+        <span className={styles.historyMood}>{completion.mood.title}</span>
+        <header className={styles.historyQuestRow}>
+          <span className={styles.rowContent}>
+            <strong>{completion.quest.title}</strong>
+            <span className={styles.historyObjective}>
+              {completion.quest.objective}
+            </span>
+          </span>
+          <span className={styles.historySessionMeta}>
+            <strong>{formatRunningDuration(completion.durationMs)}</strong>
+            <strong className={styles.historyPointsAwarded}>
+              +{formatScore(completion.pointsAwarded)} points
+            </strong>
+          </span>
+        </header>
+
+        <ModifierResults
+          assignedModifiers={completion.modifiers}
+          followedModifierIds={followedModifierIds}
+        />
+      </article>
     </motion.li>
   );
 }
 
-function CompletionBadge({ percentage }: { percentage: number }) {
-  const radius = 17;
-  const circumference = 2 * Math.PI * radius;
-  const clampedPercentage = Math.max(0, Math.min(100, percentage));
+function ModifierResults({
+  assignedModifiers,
+  followedModifierIds,
+}: {
+  assignedModifiers: readonly ModifierDefinition[];
+  followedModifierIds: ReadonlySet<string>;
+}) {
+  if (assignedModifiers.length === 0) {
+    return (
+      <p className={styles.historyModifiersEmpty}>No modifiers assigned.</p>
+    );
+  }
 
   return (
-    <span className={styles.historyCompletionBadge} aria-label={`${clampedPercentage}% completed`}>
-      <svg viewBox="0 0 44 44" aria-hidden="true">
-        <circle className={styles.badgeTrack} cx="22" cy="22" r={radius} />
-        <circle
-          className={styles.badgeProgress}
-          cx="22"
-          cy="22"
-          r={radius}
-          strokeDasharray={circumference}
-          strokeDashoffset={circumference * (1 - clampedPercentage / 100)}
-        />
-      </svg>
-      <strong>{clampedPercentage}%</strong>
-    </span>
+    <ul className={styles.historyModifiers} aria-label="Quest modifiers">
+      {assignedModifiers.map((modifier) => {
+        const followed = followedModifierIds.has(modifier.id);
+        return (
+          <li
+            className={styles.historyModifier}
+            data-followed={followed || undefined}
+            key={modifier.id}
+          >
+            <span className={styles.historyModifierStatus} aria-hidden="true">
+              {followed ? "✓" : "—"}
+            </span>
+            <span>{modifier.title}</span>
+            <span className={styles.srOnly}>
+              {followed ? "Followed" : "Not followed"}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
