@@ -18,6 +18,12 @@ export const QUEST_ACCENT_BY_MOOD: Record<MoodId, QuestAccent> = {
   create: { color: "#FF7AD9", rgb: "255 122 217" },
   challenge: { color: "#FF626B", rgb: "255 98 107" },
   connect: { color: "#C8F04A", rgb: "200 240 74" },
+  nostalgic: { color: "#C88BFF", rgb: "200 139 255" },
+  overwhelmed: { color: "#FF9F6E", rgb: "255 159 110" },
+  restless: { color: "#FFCF4A", rgb: "255 207 74" },
+  focused: { color: "#6E8BFF", rgb: "110 139 255" },
+  curious: { color: "#4FE0C1", rgb: "79 224 193" },
+  "low-energy": { color: "#9BA7C9", rgb: "155 167 201" },
 };
 
 export function getMoodAccentStyle(moodId: MoodId): QuestAccentStyle {

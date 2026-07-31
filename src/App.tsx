@@ -4,7 +4,9 @@ import { Drawer } from "vaul";
 import { useShallow } from "zustand/react/shallow";
 import styles from "./App.module.css";
 import { CheckIcon } from "./components/Icons";
+import { InteractiveDotBackground } from "./components/InteractiveDotBackground";
 import { ProfileDrawer } from "./components/ProfileDrawer";
+import { SolidButton } from "./components/SolidButton";
 import { TaskScreen } from "./components/TaskScreen";
 import { MOODS_BY_ID } from "./data/moods";
 import { QUESTS_BY_ID } from "./data/quests";
@@ -72,11 +74,7 @@ export function App() {
   const [brandRotation, setBrandRotation] = useState(0);
   const desktop = useDesktopSheet();
   const currentQuest = currentSession
-    ? hydrateQuest(
-        currentSession.questId,
-        completedSessions,
-        currentSession.modifierIds,
-      )
+    ? hydrateQuest(currentSession.questId, completedSessions)
     : null;
   const selectedMood = selectedMoodId
     ? MOODS_BY_ID[selectedMoodId] ?? null
@@ -140,16 +138,13 @@ export function App() {
     };
   }, [currentSession, moodSelectedAt, refreshMoodWindow]);
 
-  function handleComplete(
-    durationMs: number,
-    followedModifierIds: string[],
-  ) {
+  function handleComplete(durationMs: number) {
     if (!currentQuest || !currentSession) return;
     const nextToast = {
       id: currentSession.sessionId,
       title: currentQuest.title,
     };
-    if (completeQuest(durationMs, followedModifierIds)) setToast(nextToast);
+    if (completeQuest(durationMs)) setToast(nextToast);
   }
 
   function handleAboutOpenChange(open: boolean) {
@@ -166,6 +161,8 @@ export function App() {
 
   return (
     <div className={styles.app}>
+      <InteractiveDotBackground reduceMotion={reduceMotion} />
+
       <a className={styles.skipLink} href="#main-content">
         Skip to content
       </a>
@@ -194,14 +191,13 @@ export function App() {
             shouldScaleBackground={false}
           >
             <Drawer.Trigger asChild>
-              <button
-                className={styles.navAction}
+              <SolidButton
                 data-active={aboutOpen || undefined}
                 data-sound-click-skip
                 type="button"
               >
                 About
-              </button>
+              </SolidButton>
             </Drawer.Trigger>
             <Drawer.Portal>
               <Drawer.Overlay className={styles.drawerOverlay} />
@@ -267,15 +263,14 @@ export function App() {
               shouldScaleBackground={false}
             >
               <Drawer.Trigger asChild>
-                <button
-                  className={styles.navAction}
+                <SolidButton
                   data-active={profileOpen || undefined}
                   data-sound-click-skip
                   type="button"
                   aria-label={`Your profile, ${formatScore(profile.points)} points`}
                 >
                   {formatScore(profile.points)} points
-                </button>
+                </SolidButton>
               </Drawer.Trigger>
               <Drawer.Portal>
                 <Drawer.Overlay className={styles.drawerOverlay} />
@@ -364,8 +359,8 @@ function AboutSidequest() {
           <ol className={styles.aboutSteps}>
             <li>Choose how you feel right now</li>
             <li>Pick one of the three quests that brings a game to mind</li>
-            <li>Follow any optional modifiers and start the rope timer</li>
-            <li>Pause to confirm your modifiers and complete the quest</li>
+            <li>Use the quest-specific tips and start the rope timer</li>
+            <li>Pause when you are ready to complete the quest</li>
             <li>Spend earned points when you need a fresh set of cards</li>
           </ol>
         </section>

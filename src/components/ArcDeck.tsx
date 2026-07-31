@@ -3,7 +3,6 @@ import {
   motion,
   useMotionValue,
   useMotionValueEvent,
-  useIsPresent,
   useTransform,
   type MotionValue,
 } from "motion/react";
@@ -35,9 +34,10 @@ type Props = {
   items: readonly ArcDeckItem[];
   initialItemId?: MoodId;
   label: string;
+  layerPresent: boolean;
   layoutSessionId: number | string;
   reduceMotion: boolean;
-  onSelect: (id: MoodId) => void;
+  onSelect: (id: MoodId) => boolean;
 };
 
 type DragState = {
@@ -55,7 +55,7 @@ type CardProps = {
   index: number;
   item: ArcDeckItem;
   itemCount: number;
-  isPresent: boolean;
+  layerPresent: boolean;
   layoutSessionId: number | string;
   mobile: boolean;
   position: MotionValue<number>;
@@ -87,6 +87,7 @@ export function ArcDeck({
   items,
   initialItemId,
   label,
+  layerPresent,
   layoutSessionId,
   reduceMotion,
   onSelect,
@@ -107,13 +108,11 @@ export function ArcDeck({
   const revealTimeoutRef = useRef<number | null>(null);
   const deckRef = useRef<HTMLDivElement>(null);
   const mobile = useMobileLayout();
-  const isPresent = useIsPresent();
   const [revealCards, setRevealCards] = useState(
     reduceMotion || !initialItemId,
   );
   const itemKey = items.map((item) => item.id).join("|");
   const cardGap = mobile ? 282 : 360;
-  const sharedCardSlotIndex = mobile ? 0 : 1;
 
   useEffect(() => {
     animationRef.current?.stop();
@@ -284,11 +283,11 @@ export function ArcDeck({
     setSelectedId(itemId);
     playSound("cardSelect");
     if (reduceMotion) {
-      onSelect(itemId);
+      if (!onSelect(itemId)) setSelectedId(null);
     } else {
       selectionFrameRef.current = window.requestAnimationFrame(() => {
         selectionFrameRef.current = null;
-        onSelect(itemId);
+        if (!onSelect(itemId)) setSelectedId(null);
       });
     }
     if (focusNext) {
@@ -311,26 +310,23 @@ export function ArcDeck({
     >
       <div className={styles.arcDeckTrack}>
         <span className={styles.moodCardStack} aria-hidden="true">
-          {FAKE_CARD_POSES.map((pose, index) =>
-            index === sharedCardSlotIndex ? null : (
-              <motion.span
-                className={styles.moodFakeCardSlot}
-                key={index}
-                style={{
-                  rotate: pose.rotate,
-                  x: pose.x,
-                  y: pose.y,
-                  zIndex: index,
-                }}
-              >
-                <SelectionCardBody
-                  layoutId={moodOfferSlotLayoutId(layoutSessionId, index)}
-                  reduceMotion={reduceMotion}
-                  visible={isPresent}
-                />
-              </motion.span>
-            ),
-          )}
+          {FAKE_CARD_POSES.map((pose, index) => (
+            <motion.span
+              className={styles.moodFakeCardSlot}
+              key={index}
+              style={{
+                rotate: pose.rotate,
+                x: pose.x,
+                y: pose.y,
+                zIndex: index,
+              }}
+            >
+              <SelectionCardBody
+                layoutId={moodOfferSlotLayoutId(layoutSessionId, index)}
+                reduceMotion={reduceMotion}
+              />
+            </motion.span>
+          ))}
         </span>
 
         {items.map((item, index) => (
@@ -339,8 +335,8 @@ export function ArcDeck({
             index={index}
             item={item}
             itemCount={items.length}
-            isPresent={isPresent}
             key={item.id}
+            layerPresent={layerPresent}
             layoutSessionId={layoutSessionId}
             mobile={mobile}
             position={position}
@@ -356,7 +352,7 @@ export function ArcDeck({
       <motion.div
         className={styles.moodDeckControls}
         aria-hidden="true"
-        animate={{ opacity: selectedId ? 0 : 1 }}
+        animate={{ opacity: selectedId || !layerPresent ? 0 : 1 }}
         transition={{ duration: reduceMotion ? 0 : 0.18 }}
       >
         <MoodArrow />
@@ -380,7 +376,7 @@ function ArcCard({
   index,
   item,
   itemCount,
-  isPresent,
+  layerPresent,
   layoutSessionId,
   mobile,
   position,
@@ -410,6 +406,8 @@ function ArcCard({
   const interactive = Math.abs(discreteDistance) <= 1;
   const center = index === activeIndex;
   const selected = selectedId === item.id;
+  const foregroundExiting = Boolean(selectedId) || !layerPresent;
+  const primaryExit = selected || (!selectedId && center);
   const {
     handlePointerEnter,
     handlePointerLeave,
@@ -433,7 +431,7 @@ function ArcCard({
       data-visible={visible || undefined}
       style={{
         pointerEvents:
-          interactive && !selectedId && (revealCards || center)
+          interactive && !selectedId && layerPresent && (revealCards || center)
             ? "auto"
             : "none",
         rotate,
@@ -448,17 +446,23 @@ function ArcCard({
         initial={
           reduceMotion
             ? false
-            : { filter: "blur(0px)", opacity: 0, scale: 0.94, x: 0, y: 56 }
+            : {
+                filter: "blur(0px)",
+                opacity: 0,
+                scale: 0.94,
+                x: 0,
+                y: 56,
+              }
         }
         animate={
-          selectedId
-            ? selected
+          foregroundExiting
+            ? primaryExit
               ? {
                   filter: "blur(0px)",
-                  opacity: 1,
-                  scale: 1,
+                  opacity: 0,
+                  scale: 0.95,
                   x: 0,
-                  y: 0,
+                  y: 24,
                 }
               : {
                   filter: "blur(0px)",
@@ -481,14 +485,17 @@ function ArcCard({
         transition={
           reduceMotion
             ? { duration: 0 }
-            : selectedId
-              ? selected
+            : foregroundExiting
+              ? primaryExit
                 ? {
-                    opacity: { duration: 0 },
+                    opacity: {
+                      duration: 0.42,
+                      ease: MOOD_FADE_EASE,
+                    },
                     filter: { duration: 0 },
-                    scale: { duration: 0 },
+                    scale: MOOD_POSITION_TRANSITION,
                     x: { duration: 0 },
-                    y: { duration: 0 },
+                    y: MOOD_POSITION_TRANSITION,
                   }
                 : {
                     opacity: {
@@ -515,74 +522,73 @@ function ArcCard({
                 }
         }
       >
-          <motion.button
-            className={styles.arcCardHitArea}
-            data-flow-focus={center || undefined}
-            data-selected={selected || undefined}
-            type="button"
-            tabIndex={center ? 0 : -1}
-            aria-current={center ? "true" : undefined}
-            aria-label={`${center ? "Choose" : "Center"} ${item.title}. ${
-              item.subtitle
-            }`}
-            style={{
-              rotateX,
-              rotateY,
-              transformPerspective: 1_000,
-            }}
-            whileHover={
-              reduceMotion || !center ? undefined : { scale: 1.035, y: -8 }
+        <motion.button
+          className={styles.arcCardHitArea}
+          data-flow-focus={center || undefined}
+          data-selected={selected || undefined}
+          type="button"
+          tabIndex={center ? 0 : -1}
+          aria-current={center ? "true" : undefined}
+          aria-label={`${center ? "Choose" : "Center"} ${item.title}. ${
+            item.subtitle
+          }`}
+          style={{
+            rotateX,
+            rotateY,
+            transformPerspective: 1_000,
+          }}
+          whileHover={
+            reduceMotion || !center ? undefined : { scale: 1.035, y: -8 }
+          }
+          whileFocus={
+            reduceMotion || !center ? undefined : { scale: 1.025, y: -5 }
+          }
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 24,
+            mass: 0.74,
+          }}
+          onClick={(event) => {
+            const keyboardClick = event.detail === 0;
+            if (center) onSelect(item.id, keyboardClick);
+            else onCenter(index, keyboardClick);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+              event.preventDefault();
+              const direction = event.key === "ArrowRight" ? 1 : -1;
+              onCenter(modulo(activeIndex + direction, itemCount), true);
             }
-            whileFocus={
-              reduceMotion || !center ? undefined : { scale: 1.025, y: -5 }
-            }
-            transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 24,
-              mass: 0.74,
-            }}
-            onClick={(event) => {
-              const keyboardClick = event.detail === 0;
-              if (center) onSelect(item.id, keyboardClick);
-              else onCenter(index, keyboardClick);
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-                event.preventDefault();
-                const direction = event.key === "ArrowRight" ? 1 : -1;
-                onCenter(modulo(activeIndex + direction, itemCount), true);
-              }
-            }}
-            onPointerEnter={handlePointerEnter}
-            onPointerMove={handlePointerMove}
-            onPointerLeave={handlePointerLeave}
-            onPointerOut={handlePointerLeave}
+          }}
+          onPointerEnter={handlePointerEnter}
+          onPointerMove={handlePointerMove}
+          onPointerLeave={handlePointerLeave}
+          onPointerOut={handlePointerLeave}
+        >
+          <SelectionCardBody
+            contentKey={`mood-${item.id}`}
+            contentVisible={!foregroundExiting || primaryExit}
+            layoutId={moodCardLayoutId(layoutSessionId, item.id)}
+            reduceMotion={reduceMotion}
           >
-            <SelectionCardBody
-              contentKey={`mood-${item.id}`}
-              contentVisible={!selectedId}
-              layoutId={moodCardLayoutId(layoutSessionId, item.id)}
-              reduceMotion={reduceMotion}
-              visible={isPresent}
+            <motion.span
+              className={styles.moodCardVisual}
+              style={{ opacity: contentOpacity }}
             >
-              <motion.span
-                className={styles.moodCardVisual}
-                style={{ opacity: contentOpacity }}
-              >
-                <span className={styles.arcCardContent}>
-                  <strong className={styles.arcCardTitle}>{item.title}</strong>
-                  <span className={styles.arcCardDescription}>
-                    {item.subtitle}
-                  </span>
+              <span className={styles.arcCardContent}>
+                <strong className={styles.arcCardTitle}>{item.title}</strong>
+                <span className={styles.arcCardDescription}>
+                  {item.subtitle}
                 </span>
-                <MoodIllustration
-                  className={styles.moodIllustration}
-                  moodId={item.id}
-                />
-              </motion.span>
-            </SelectionCardBody>
-          </motion.button>
+              </span>
+              <MoodIllustration
+                className={styles.moodIllustration}
+                moodId={item.id}
+              />
+            </motion.span>
+          </SelectionCardBody>
+        </motion.button>
       </motion.div>
     </motion.div>
   );

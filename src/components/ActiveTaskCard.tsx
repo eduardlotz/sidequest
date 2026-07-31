@@ -26,7 +26,6 @@ import { formatRunningDuration } from "../lib/format";
 import { playSound } from "../lib/sound";
 import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
 import { CompletionCheckIcon } from "./CompletionCheckIcon";
-import { CheckIcon, TimerIcon } from "./Icons";
 import { QuestCardBack } from "./QuestCardBack";
 import {
   PAUSED_TIMER_TOP_RATIO,
@@ -51,7 +50,7 @@ type Props = {
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
-  onComplete: (durationMs: number, followedModifierIds: string[]) => void;
+  onComplete: (durationMs: number) => void;
 };
 
 type Phase = "ready" | "running" | "paused" | "cutting" | "completed";
@@ -141,7 +140,6 @@ export function ActiveTaskCard({
   );
   const [cut, setCut] = useState<RopeCut | null>(null);
   const [showFinishedFace, setShowFinishedFace] = useState(false);
-  const [followedModifierIds, setFollowedModifierIds] = useState<string[]>([]);
   const [completionOffset, setCompletionOffset] = useState<Point>({
     x: 0,
     y: 0,
@@ -206,7 +204,6 @@ export function ActiveTaskCard({
   const trailClearTimeoutRef = useRef<number | null>(null);
   const exitTimeoutRef = useRef<number | null>(null);
   const completionRevealTimeoutRef = useRef<number | null>(null);
-  const followedModifierIdsRef = useRef<string[]>([]);
   const x = useMotionValue(initialTimerOffsetRef.current.x);
   const y = useMotionValue(initialTimerOffsetRef.current.y);
   const timerRotationTarget = useMotionValue(0);
@@ -516,7 +513,7 @@ export function ActiveTaskCard({
     exitTimeoutRef.current = window.setTimeout(
       () => {
         if (next === "completed") {
-          onComplete(duration, followedModifierIdsRef.current);
+          onComplete(duration);
         }
         else onDiscard();
       },
@@ -890,18 +887,9 @@ export function ActiveTaskCard({
                     <span className={styles.cardShimmer} aria-hidden="true" />
                     <header className={styles.questCardHeader}>
                       <h2 className={styles.activeTitle}>{task.title}</h2>
-                      <div
-                        className={styles.questHeaderMetadata}
-                        aria-label="Quest metadata"
-                      >
-                        <span className={styles.questPrimaryGenre}>
-                          <span>{task.mood.title}</span>
-                        </span>
-                        <span className={styles.questHeaderMetaValue}>
-                          <TimerIcon />
-                          {task.durationMinutes} min
-                        </span>
-                      </div>
+                      <span className={styles.questHeaderMetaValue}>
+                        {task.durationMinutes} min
+                      </span>
                     </header>
 
                     <motion.div className={styles.questDetails} initial={false}>
@@ -909,17 +897,11 @@ export function ActiveTaskCard({
                       <p className={styles.questCompletion}>
                         {task.completion}
                       </p>
-                      <ul
-                        className={styles.assignedModifiers}
-                        aria-label="Optional quest modifiers"
-                      >
-                        {task.modifiers.map((modifier) => (
-                          <li key={modifier.id}>
-                            <CheckIcon />
-                            <span>
-                              <strong>{modifier.title}</strong>
-                              <small>{modifier.instruction}</small>
-                            </span>
+                      <ul className={styles.questTips} aria-label="Quest tips">
+                        {task.tips.map((tip) => (
+                          <li key={tip.title}>
+                            <strong>{tip.title}</strong>
+                            <small>{tip.description}</small>
                           </li>
                         ))}
                       </ul>
@@ -1128,7 +1110,6 @@ export function ActiveTaskCard({
               data-cut-ignore
               onSubmit={(event) => {
                 event.preventDefault();
-                followedModifierIdsRef.current = [...followedModifierIds];
                 beginExit("completed");
               }}
               initial={reduceMotion ? false : "hidden"}
@@ -1136,46 +1117,6 @@ export function ActiveTaskCard({
               exit={reduceMotion ? { opacity: 0 } : "exit"}
               variants={pausePanelVariants}
             >
-              <motion.fieldset
-                className={styles.modifierReview}
-                variants={pausePanelItemVariants}
-              >
-                <legend>optional modifier</legend>
-                <div className={styles.modifierReviewChoices}>
-                  {task.modifiers.map((modifier) => {
-                    const followed = followedModifierIds.includes(modifier.id);
-                    return (
-                      <label
-                        data-followed={followed || undefined}
-                        key={modifier.id}
-                      >
-                        <input
-                          checked={followed}
-                          type="checkbox"
-                          onChange={(event) => {
-                            const checked = event.currentTarget.checked;
-                            setFollowedModifierIds((current) =>
-                              checked
-                                ? [...current, modifier.id]
-                                : current.filter((id) => id !== modifier.id),
-                            );
-                          }}
-                        />
-                        <span
-                          className={styles.modifierReviewCheck}
-                          aria-hidden="true"
-                        >
-                          {followed && <CheckIcon />}
-                        </span>
-                        <span className={styles.modifierReviewCopy}>
-                          <strong>{modifier.title}</strong>
-                          <small>+{modifier.bonusPoints} points</small>
-                        </span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </motion.fieldset>
               <motion.button
                 className={styles.saveAction}
                 data-sound-click-skip

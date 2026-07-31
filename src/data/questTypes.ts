@@ -5,20 +5,25 @@ export const MOOD_IDS = [
   "create",
   "challenge",
   "connect",
+  "nostalgic",
+  "overwhelmed",
+  "restless",
+  "focused",
+  "curious",
+  "low-energy",
 ] as const;
 
 export type MoodId = (typeof MOOD_IDS)[number];
-
-export type CompatibilityTag =
-  | `mode:${string}`
-  | `play:${string}`
-  | `system:${string}`
-  | `allow:${string}`;
 
 export type MoodDefinition = {
   id: MoodId;
   title: string;
   subtitle: string;
+};
+
+export type QuestTip = {
+  title: string;
+  description: string;
 };
 
 export type MoodQuestDefinition = {
@@ -29,16 +34,5 @@ export type MoodQuestDefinition = {
   completion: string;
   durationMinutes: number;
   rewardPoints: number;
-  motivation: string;
-  compatibilityTags: readonly CompatibilityTag[];
-};
-
-export type ModifierDefinition = {
-  id: string;
-  title: string;
-  instruction: string;
-  bonusPoints: number;
-  requiredTags?: readonly CompatibilityTag[];
-  excludedTags?: readonly CompatibilityTag[];
-  exclusiveGroup?: string;
+  tips: readonly QuestTip[];
 };

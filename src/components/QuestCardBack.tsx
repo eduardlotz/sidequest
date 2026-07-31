@@ -2,11 +2,13 @@ import { markAssetUrl } from "../data/questMarks";
 import styles from "../App.module.css";
 
 type Props = {
+  durationMinutes?: number;
   title?: string;
   revealTitle?: boolean;
 };
 
 export function QuestCardBack({
+  durationMinutes,
   title,
   revealTitle = false,
 }: Props) {
@@ -25,9 +27,17 @@ export function QuestCardBack({
           />
         ))}
       </span>
-      {revealTitle && title && (
-        <strong className={styles.questCardBackTitle}>{title}</strong>
-      )}
+      {revealTitle && title &&
+        (durationMinutes ? (
+          <span className={styles.questCardBackSummary}>
+            <strong className={styles.questCardBackTitle}>{title}</strong>
+            <span className={styles.questCardBackEstimate}>
+              ~{durationMinutes} min
+            </span>
+          </span>
+        ) : (
+          <strong className={styles.questCardBackTitle}>{title}</strong>
+        ))}
     </span>
   );
 }

@@ -1,12 +1,10 @@
-import { AnimatePresence, motion, useIsPresent } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import type { MoodId } from "../data/moods";
 import type { QuestDefinition } from "../data/quests";
 import { getQuestCardAccentStyle } from "../data/questColors";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import {
   CARD_LAYOUT_TRANSITION,
-  moodCardLayoutId,
   moodOfferSlotLayoutId,
 } from "../lib/cardMotion";
 import { playSound } from "../lib/sound";
@@ -19,11 +17,9 @@ export type QuestOfferItem = QuestDefinition;
 type Props = {
   items: readonly QuestOfferItem[];
   entryMotion: "bottom" | "shared";
-  exitingToMood: boolean;
   layoutSessionId: string;
   moodTransition: {
     layoutSessionId: number | string;
-    moodId: MoodId;
   } | null;
   reduceMotion: boolean;
   onSelectionStart: () => void;
@@ -39,8 +35,6 @@ type CardProps = {
   reduceMotion: boolean;
   selected: boolean;
   selectionStarted: boolean;
-  reverseHandoff: boolean;
-  sharedBodyVisible: boolean;
   sharedLayoutId: string;
   layoutSessionId: string;
   onCycle: (direction: -1 | 1, focusNext?: boolean) => void;
@@ -61,7 +55,6 @@ const CARD_POSITION_TRANSITION = {
 export function QuestOfferDeck({
   items,
   entryMotion,
-  exitingToMood,
   layoutSessionId,
   moodTransition,
   reduceMotion,
@@ -74,7 +67,6 @@ export function QuestOfferDeck({
   const deckRef = useRef<HTMLDivElement>(null);
   const selectionFrameRef = useRef<number | null>(null);
   const isMobile = useMobileLayout();
-  const isPresent = useIsPresent();
 
   useEffect(() => {
     setSelectedId(null);
@@ -133,18 +125,12 @@ export function QuestOfferDeck({
           (index - activeCardIndex + items.length) % items.length;
         const stackPosition =
           stackOffset === 0 ? "front" : stackOffset === 1 ? "middle" : "back";
-        const sharedCardSlotIndex = isMobile ? 0 : 1;
         const physicalSlotIndex = isMobile ? stackOffset : index;
         const slotLayoutId = moodTransition
-          ? physicalSlotIndex === sharedCardSlotIndex
-            ? moodCardLayoutId(
-                moodTransition.layoutSessionId,
-                moodTransition.moodId,
-              )
-            : moodOfferSlotLayoutId(
-                moodTransition.layoutSessionId,
-                physicalSlotIndex,
-              )
+          ? moodOfferSlotLayoutId(
+              moodTransition.layoutSessionId,
+              physicalSlotIndex,
+            )
           : `quest-offer-slot-${layoutSessionId}-${index}`;
 
         return (
@@ -168,10 +154,6 @@ export function QuestOfferDeck({
                 reduceMotion={reduceMotion}
                 selected={selectedId === item.id}
                 selectionStarted={selectedId !== null}
-                reverseHandoff={
-                  selectedId === null && (exitingToMood || !isPresent)
-                }
-                sharedBodyVisible={isPresent || selectedId !== null}
                 sharedLayoutId={slotLayoutId}
                 onCycle={cycleCard}
                 onSelect={selectCard}
@@ -202,8 +184,6 @@ function QuestOfferCard({
   reduceMotion,
   selected,
   selectionStarted,
-  reverseHandoff,
-  sharedBodyVisible,
   sharedLayoutId,
   onCycle,
   onSelect,
@@ -368,17 +348,19 @@ function QuestOfferCard({
           style={{ rotateX, rotateY, transformPerspective: 1_000 }}
         >
           <SelectionCardBody
+            animateContentOnMount={false}
             className={styles.questSelectionCardBody}
             contentClassName={styles.questSelectionCardContent}
             contentKey={`quest-${item.id}`}
-            contentVisible={!reverseHandoff}
-            key={sharedLayoutId}
             layoutId={sharedLayoutId}
             reduceMotion={reduceMotion}
-            visible={sharedBodyVisible}
           >
             <span className={styles.cardShimmer} aria-hidden="true" />
-            <QuestCardBack title={item.title} revealTitle />
+            <QuestCardBack
+              durationMinutes={item.durationMinutes}
+              title={item.title}
+              revealTitle
+            />
           </SelectionCardBody>
         </motion.span>
       </button>

@@ -31,6 +31,7 @@
 }
 
 :root {
+  --text: #292d32;
   font-family:
     "Open Runde",
     -apple-system,
@@ -40,7 +41,7 @@
     Arial,
     system-ui,
     sans-serif;
-  color: #151515;
+  color: var(--text);
   background: #f2f2f7;
   font-synthesis: none;
   text-rendering: optimizeLegibility;

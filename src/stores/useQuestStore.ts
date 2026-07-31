@@ -6,12 +6,6 @@ import {
 } from "zustand/middleware";
 import { createStore, type StateCreator } from "zustand/vanilla";
 import {
-  MODIFIERS_BY_ID,
-  compatibleModifiersForQuest,
-  drawRandomModifiers,
-  type ModifierDefinition,
-} from "../data/modifiers";
-import {
   MOODS_BY_ID,
   type MoodDefinition,
   type MoodId,
@@ -23,7 +17,7 @@ import {
 } from "../data/quests";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 4;
+export const STORE_VERSION = 6;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const SHUFFLE_COST = 25;
 export const QUEST_OFFER_COUNT = 3;
@@ -54,7 +48,6 @@ export type QuestSession = {
   sessionId: string;
   moodId: MoodId;
   questId: string;
-  modifierIds: string[];
   revealedAt: number;
   startedAt: number | null;
   pausedAt: number | null;
@@ -65,8 +58,6 @@ export type CompletedSession = {
   id: string;
   moodId: MoodId;
   questId: string;
-  modifierIds: string[];
-  followedModifierIds: string[];
   durationMs: number;
   pointsAwarded: number;
   completedAt: number;
@@ -93,10 +84,7 @@ type QuestActions = {
   pauseQuest: (pausedAt: number) => void;
   resumeQuest: (resumedAt: number) => void;
   discardCurrentSession: () => void;
-  completeQuest: (
-    durationMs: number,
-    followedModifierIds: readonly string[],
-  ) => boolean | null;
+  completeQuest: (durationMs: number) => boolean | null;
 };
 
 export type QuestStore = QuestState & QuestActions;
@@ -115,15 +103,12 @@ export type PersistedQuestState = Pick<
 
 export type Quest = QuestDefinition & {
   mood: MoodDefinition;
-  modifiers: ModifierDefinition[];
   completionCount: number;
 };
 
 export type CompletedQuest = CompletedSession & {
   mood: MoodDefinition;
   quest: QuestDefinition;
-  modifiers: ModifierDefinition[];
-  followedModifiers: ModifierDefinition[];
 };
 
 type StoreOptions = {
@@ -264,19 +249,11 @@ function createQuestState(
         return false;
       }
 
-      const modifierIds = validDrawnModifierIds(
-        quest,
-        drawRandomModifiers(quest, options.random),
-        options.random,
-      );
-      if (modifierIds.length < 1 || modifierIds.length > 3) return false;
-
       set({
         currentSession: {
           sessionId: options.createSessionId(),
           moodId: state.selectedMoodId,
           questId,
-          modifierIds,
           revealedAt: now,
           startedAt: null,
           pausedAt: null,
@@ -348,7 +325,7 @@ function createQuestState(
         );
       });
     },
-    completeQuest: (durationMs, followedModifierIds) => {
+    completeQuest: (durationMs) => {
       const state = get();
       const session = state.currentSession;
       if (
@@ -362,22 +339,11 @@ function createQuestState(
       const quest = QUESTS_BY_ID[session.questId];
       if (!quest || quest.moodId !== session.moodId) return null;
 
-      const followedIds = uniqueStrings(followedModifierIds).filter((id) =>
-        session.modifierIds.includes(id),
-      );
-      const modifierBonus = followedIds.reduce(
-        (total, id) =>
-          total + safeNonNegativeInteger(MODIFIERS_BY_ID[id]?.bonusPoints),
-        0,
-      );
-      const pointsAwarded =
-        safeNonNegativeInteger(quest.rewardPoints) + modifierBonus;
+      const pointsAwarded = safeNonNegativeInteger(quest.rewardPoints);
       const completedSession: CompletedSession = {
         id: session.sessionId,
         moodId: session.moodId,
         questId: session.questId,
-        modifierIds: [...session.modifierIds],
-        followedModifierIds: followedIds,
         durationMs: safeNonNegativeInteger(durationMs),
         pointsAwarded,
         completedAt: options.now(),
@@ -478,7 +444,6 @@ export function useQuestStore<T>(selector: (state: QuestStore) => T) {
 export function hydrateQuest(
   questId: string,
   completedSessions: readonly CompletedSession[],
-  modifierIds: readonly string[] = [],
 ): Quest | null {
   const quest = QUESTS_BY_ID[questId];
   if (!quest) return null;
@@ -488,10 +453,6 @@ export function hydrateQuest(
   return {
     ...quest,
     mood,
-    modifiers: modifierIds.flatMap((modifierId) => {
-      const modifier = MODIFIERS_BY_ID[modifierId];
-      return modifier ? [modifier] : [];
-    }),
     completionCount: completedSessions.filter(
       (completion) => completion.questId === questId,
     ).length,
@@ -509,14 +470,6 @@ export function hydrateCompletedQuest(
     ...completion,
     mood,
     quest,
-    modifiers: completion.modifierIds.flatMap((modifierId) => {
-      const modifier = MODIFIERS_BY_ID[modifierId];
-      return modifier ? [modifier] : [];
-    }),
-    followedModifiers: completion.followedModifierIds.flatMap((modifierId) => {
-      const modifier = MODIFIERS_BY_ID[modifierId];
-      return modifier ? [modifier] : [];
-    }),
   };
 }
 
@@ -540,8 +493,39 @@ export function migratePersistedQuestState(
   now: number = Date.now(),
   random: () => number = Math.random,
 ): PersistedQuestState {
-  if (version === STORE_VERSION) {
+  if (version === STORE_VERSION || version === 4) {
     return sanitizePersistedQuestState(persistedState, now, random);
+  }
+  if (version === 5) {
+    const sanitized = sanitizePersistedQuestState(
+      persistedState,
+      now,
+      random,
+    );
+    const session = sanitized.currentSession;
+
+    if (!session) {
+      return {
+        ...sanitized,
+        selectedMoodId: null,
+        moodSelectedAt: null,
+        offeredQuestIds: [],
+        offerSetsByMoodId: {},
+      };
+    }
+
+    const offeredQuestIds = generateQuestOffers(
+      session.moodId,
+      random,
+      new Set([session.questId]),
+    );
+    return {
+      ...sanitized,
+      offeredQuestIds,
+      offerSetsByMoodId: {
+        [session.moodId]: offeredQuestIds,
+      },
+    };
   }
   if (version === 2 || version === 3) {
     return migrateLegacyQuestState(persistedState);
@@ -703,7 +687,6 @@ function sessionFromUnknown(value: unknown): QuestSession | null {
     sessionId: value.sessionId,
     moodId: value.moodId,
     questId: value.questId,
-    modifierIds: validStoredModifierIds(value.modifierIds, quest),
     revealedAt,
     startedAt,
     pausedAt:
@@ -735,18 +718,11 @@ function completionsFromUnknown(value: unknown): CompletedSession[] {
 
     const completedAt = finiteNumber(entry.completedAt);
     if (completedAt === null) continue;
-    const modifierIds = validStoredModifierIds(entry.modifierIds, quest);
-    const followedModifierIds = uniqueStrings(
-      entry.followedModifierIds,
-    ).filter((id) => modifierIds.includes(id));
-
     ids.add(entry.id);
     completions.push({
       id: entry.id,
       moodId: entry.moodId,
       questId: entry.questId,
-      modifierIds,
-      followedModifierIds,
       durationMs: safeNonNegativeInteger(entry.durationMs),
       pointsAwarded: safeNonNegativeInteger(entry.pointsAwarded),
       completedAt,
@@ -755,35 +731,6 @@ function completionsFromUnknown(value: unknown): CompletedSession[] {
   }
 
   return completions;
-}
-
-function validDrawnModifierIds(
-  quest: QuestDefinition,
-  drawn: readonly ModifierDefinition[],
-  random: () => number,
-) {
-  const compatible = compatibleModifiersForQuest(quest);
-  const compatibleIds = new Set(compatible.map((modifier) => modifier.id));
-  const ids = uniqueStrings(drawn.map((modifier) => modifier.id))
-    .filter((id) => compatibleIds.has(id))
-    .slice(0, 3);
-
-  if (ids.length > 0) return ids;
-  return sampleWithoutReplacement(compatible, 1, random).map(
-    (modifier) => modifier.id,
-  );
-}
-
-function validStoredModifierIds(
-  value: unknown,
-  quest: QuestDefinition,
-) {
-  const compatibleIds = new Set(
-    compatibleModifiersForQuest(quest).map((modifier) => modifier.id),
-  );
-  return uniqueStrings(value)
-    .filter((id) => compatibleIds.has(id))
-    .slice(0, 3);
 }
 
 function moodWindowState(

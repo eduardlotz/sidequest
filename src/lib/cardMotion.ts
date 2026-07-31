@@ -2,13 +2,13 @@ import { arc } from "motion/react";
 
 export const CARD_LAYOUT_TRANSITION = {
   type: "spring" as const,
-  stiffness: 62,
-  damping: 13,
-  mass: 1.18,
+  stiffness: 54,
+  damping: 11,
+  mass: 1.26,
   restDelta: 0.001,
   restSpeed: 0.001,
   path: arc({
-    strength: 0.24,
+    strength: 0.32,
     peak: 0.52,
     direction: "cw",
   }),

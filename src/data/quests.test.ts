@@ -1,10 +1,4 @@
 import { describe, expect, test } from "bun:test";
-import {
-  MODIFIERS,
-  MODIFIERS_BY_ID,
-  compatibleModifiersForQuest,
-  drawRandomModifiers,
-} from "./modifiers";
 import { MOODS, MOODS_BY_ID } from "./moods";
 import {
   QUESTS,
@@ -14,14 +8,14 @@ import {
 } from "./quests";
 
 describe("mood quest catalog", () => {
-  test("contains exactly six moods with six quests each", () => {
-    expect(MOODS).toHaveLength(6);
-    expect(new Set(MOODS.map((mood) => mood.id)).size).toBe(6);
-    expect(QUESTS).toHaveLength(36);
+  test("contains exactly twelve moods with thirty quests each", () => {
+    expect(MOODS).toHaveLength(12);
+    expect(new Set(MOODS.map((mood) => mood.id)).size).toBe(12);
+    expect(QUESTS).toHaveLength(360);
 
     for (const mood of MOODS) {
-      expect(questsForMood(mood.id)).toHaveLength(6);
-      expect(QUESTS_BY_MOOD[mood.id]).toHaveLength(6);
+      expect(questsForMood(mood.id)).toHaveLength(30);
+      expect(QUESTS_BY_MOOD[mood.id]).toHaveLength(30);
       expect(MOODS_BY_ID[mood.id].id).toBe(mood.id);
     }
   });
@@ -38,8 +32,23 @@ describe("mood quest catalog", () => {
       expect(quest.title.trim().length > 0).toBe(true);
       expect(quest.objective.trim().length > 0).toBe(true);
       expect(quest.completion.trim().length > 0).toBe(true);
-      expect(quest.motivation.trim().length > 0).toBe(true);
-      expect(quest.compatibilityTags.length > 0).toBe(true);
+      expect("motivation" in quest).toBe(false);
+      expect(quest.tips).toHaveLength(2);
+      expect(new Set(quest.tips.map((tip) => tip.title)).size).toBe(2);
+      expect(
+        quest.tips.every(
+          (tip) =>
+            tip.title.trim().length > 0 && tip.description.trim().length > 0,
+        ),
+      ).toBe(true);
+      expect(
+        quest.tips.every(
+          (tip) =>
+            !/\b(library|launch|choose a game|pick a game)\b/i.test(
+              `${tip.title} ${tip.description}`,
+            ) && !("bonusPoints" in tip),
+        ),
+      ).toBe(true);
       expect(quest.durationMinutes >= 20).toBe(true);
       expect(quest.durationMinutes <= 60).toBe(true);
       expect(quest.rewardPoints >= 100).toBe(true);
@@ -50,13 +59,15 @@ describe("mood quest catalog", () => {
 
   test("answers which game to launch instead of assuming one is running", () => {
     const selectionLanguage =
-      /\b(game|shooter|fighting|racing|sport|sandbox|library|world|series|franchise)\b/i;
+      /\b(game|games|shooter|fighting|racing|sport|sandbox|library|world|series|franchise|title|save|campaign|mode)\b/i;
+    const selectionAction =
+      /\b(choose|pick|find|identify|scan|launch|open|play|return|think of|among)\b/i;
 
     for (const quest of QUESTS) {
-      expect(selectionLanguage.test(quest.objective)).toBe(true);
-      expect(/\b(choose|launch|open|play|return|think of)\b/i.test(
-        quest.completion,
-      )).toBe(true);
+      expect(
+        selectionLanguage.test(`${quest.objective} ${quest.completion}`),
+      ).toBe(true);
+      expect(selectionAction.test(quest.completion)).toBe(true);
     }
   });
 
@@ -110,58 +121,5 @@ describe("mood quest catalog", () => {
         QUESTS_BY_ID["connect-follow-their-lead"].objective,
       ),
     ).toBe(true);
-  });
-});
-
-describe("quest modifiers", () => {
-  test("uses the confirmed bonus range and exports an ID map", () => {
-    expect(MODIFIERS.length > 0).toBe(true);
-
-    for (const modifier of MODIFIERS) {
-      expect(modifier.bonusPoints >= 50).toBe(true);
-      expect(modifier.bonusPoints <= 100).toBe(true);
-      expect(MODIFIERS_BY_ID[modifier.id].id).toBe(modifier.id);
-    }
-  });
-
-  test("only exposes tag-compatible gated modifiers", () => {
-    const familiarPlace = QUESTS_BY_ID["relax-one-good-loop"];
-    const compatibleIds = compatibleModifiersForQuest(familiarPlace).map(
-      (modifier) => modifier.id,
-    );
-
-    expect(compatibleIds).toContain("modifier-one-track");
-    expect(compatibleIds).toContain("modifier-minimal-hud");
-    expect(compatibleIds).toContain("modifier-no-map");
-    expect(compatibleIds).toContain("modifier-no-sprint");
-    expect(compatibleIds).toContain("modifier-no-fast-travel");
-    expect(compatibleIds.includes("modifier-no-healing")).toBe(false);
-  });
-
-  test("gives every quest enough candidates for a one-to-three draw", () => {
-    for (const quest of QUESTS) {
-      expect(compatibleModifiersForQuest(quest).length >= 3).toBe(true);
-    }
-  });
-
-  test("draws one to three unique, mutually compatible modifiers", () => {
-    const quest = QUESTS_BY_ID["explore-edge-of-known"];
-    const one = drawRandomModifiers(quest, () => 0);
-    expect(one).toHaveLength(1);
-
-    const values = [0.999, 0.25, 0.75, 0.45];
-    let valueIndex = 0;
-    const three = drawRandomModifiers(
-      quest,
-      () => values[valueIndex++] ?? 0.5,
-    );
-
-    expect(three).toHaveLength(3);
-    expect(new Set(three.map((modifier) => modifier.id)).size).toBe(3);
-
-    const groups = three
-      .map((modifier) => modifier.exclusiveGroup)
-      .filter((group): group is string => Boolean(group));
-    expect(new Set(groups).size).toBe(groups.length);
   });
 });

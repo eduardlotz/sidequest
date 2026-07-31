@@ -142,6 +142,87 @@ function illustrationForMood(moodId: MoodId) {
           />
         </g>
       );
+
+    case "nostalgic":
+      return (
+        <g strokeLinecap="round" strokeLinejoin="round">
+          <path
+            d="M43 50h74a13 13 0 0 1 13 13v51a13 13 0 0 1-13 13H43a13 13 0 0 1-13-13V63a13 13 0 0 1 13-13Z"
+            fill="#8d61d4"
+            stroke="#c88bff"
+            strokeWidth="7"
+          />
+          <circle cx="58" cy="89" r="18" fill="#f4cf45" />
+          <circle cx="102" cy="89" r="18" fill="#ff735d" />
+          <path d="M58 89h44M52 38h56" stroke="#65d6b4" strokeWidth="8" />
+        </g>
+      );
+
+    case "overwhelmed":
+      return (
+        <g strokeLinecap="round">
+          <path
+            d="M35 43h90M29 68h102M38 93h84M48 118h64"
+            stroke="#ff9f6e"
+            strokeWidth="13"
+          />
+          <circle cx="80" cy="68" r="17" fill="#f4cf45" />
+          <path d="m72 68 6 6 12-15" fill="none" stroke="#28343b" strokeWidth="7" />
+        </g>
+      );
+
+    case "restless":
+      return (
+        <g strokeLinecap="round" strokeLinejoin="round">
+          <path
+            d="M18 98 46 54l24 47 25-64 47 65"
+            fill="none"
+            stroke="#ffcf4a"
+            strokeWidth="14"
+          />
+          <path d="m111 33 26 4-5 25" fill="none" stroke="#ff735d" strokeWidth="9" />
+          <circle cx="34" cy="119" r="12" fill="#65d6b4" />
+        </g>
+      );
+
+    case "focused":
+      return (
+        <g fill="none" strokeWidth="11">
+          <circle cx="80" cy="80" r="53" stroke="#6e8bff" />
+          <circle cx="80" cy="80" r="31" stroke="#65d6b4" />
+          <circle cx="80" cy="80" r="10" fill="#f4cf45" stroke="#ff735d" />
+          <path d="M80 14v18M80 128v18M14 80h18M128 80h18" stroke="#ff735d" />
+        </g>
+      );
+
+    case "curious":
+      return (
+        <g strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="70" cy="68" r="39" fill="#173f46" stroke="#4fe0c1" strokeWidth="9" />
+          <path d="m99 99 34 34" stroke="#f4cf45" strokeWidth="13" />
+          <path
+            d="M58 58c2-12 24-14 27-1 3 12-13 14-13 26"
+            fill="none"
+            stroke="#ff735d"
+            strokeWidth="9"
+          />
+          <circle cx="72" cy="95" r="5" fill="#ff735d" />
+        </g>
+      );
+
+    case "low-energy":
+      return (
+        <g strokeLinecap="round" strokeLinejoin="round">
+          <path
+            d="M101 25a55 55 0 1 0 31 88 48 48 0 0 1-31-88Z"
+            fill="#9ba7c9"
+            stroke="#6e8bff"
+            strokeWidth="7"
+          />
+          <path d="M36 39h20M26 61h25M42 19h12" stroke="#f4cf45" strokeWidth="7" />
+          <circle cx="108" cy="114" r="9" fill="#65d6b4" />
+        </g>
+      );
   }
 }
 

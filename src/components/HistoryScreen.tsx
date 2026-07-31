@@ -1,5 +1,4 @@
 import { motion } from "motion/react";
-import type { ModifierDefinition } from "../data/questTypes";
 import { formatRunningDuration, formatScore } from "../lib/format";
 import type { CompletedQuest } from "../stores/useQuestStore";
 import { CheckIcon } from "./Icons";
@@ -52,8 +51,7 @@ export function HistoryScreen({
             </span>
             <h2>No completed sessions yet</h2>
             <p>
-              Completed quests will appear here with their modifiers and
-              rewards.
+              Completed quests will appear here with their time and reward.
             </p>
           </div>
         ) : (
@@ -79,10 +77,6 @@ function HistoryQuest({
   completion: CompletedQuest;
   reduceMotion: boolean;
 }) {
-  const followedModifierIds = new Set(
-    completion.followedModifiers.map((modifier) => modifier.id),
-  );
-
   return (
     <motion.li
       className={styles.historyRow}
@@ -108,49 +102,7 @@ function HistoryQuest({
             </strong>
           </span>
         </header>
-
-        <ModifierResults
-          assignedModifiers={completion.modifiers}
-          followedModifierIds={followedModifierIds}
-        />
       </article>
     </motion.li>
-  );
-}
-
-function ModifierResults({
-  assignedModifiers,
-  followedModifierIds,
-}: {
-  assignedModifiers: readonly ModifierDefinition[];
-  followedModifierIds: ReadonlySet<string>;
-}) {
-  if (assignedModifiers.length === 0) {
-    return (
-      <p className={styles.historyModifiersEmpty}>No modifiers assigned.</p>
-    );
-  }
-
-  return (
-    <ul className={styles.historyModifiers} aria-label="Quest modifiers">
-      {assignedModifiers.map((modifier) => {
-        const followed = followedModifierIds.has(modifier.id);
-        return (
-          <li
-            className={styles.historyModifier}
-            data-followed={followed || undefined}
-            key={modifier.id}
-          >
-            <span className={styles.historyModifierStatus} aria-hidden="true">
-              {followed ? "✓" : "—"}
-            </span>
-            <span>{modifier.title}</span>
-            <span className={styles.srOnly}>
-              {followed ? "Followed" : "Not followed"}
-            </span>
-          </li>
-        );
-      })}
-    </ul>
   );
 }

@@ -1,5 +1,4 @@
 import { describe, expect, test } from "bun:test";
-import { MODIFIERS_BY_ID } from "../data/modifiers";
 import { questsForMood } from "../data/quests";
 import {
   DEFAULT_PROFILE,
@@ -146,7 +145,7 @@ describe("mood quest store", () => {
     expect(store.getState().offeredQuestIds).toEqual(after);
   });
 
-  test("only reveals an offered quest and assigns one compatible modifier", () => {
+  test("only reveals an offered quest and preserves its authored tips", () => {
     const { store } = makeStore(() => 0);
     store.getState().selectMood("create");
     const offeredId = store.getState().offeredQuestIds[0];
@@ -165,20 +164,11 @@ describe("mood quest store", () => {
       pausedAt: null,
       pausedTotalMs: 0,
     });
-    expect(store.getState().currentSession?.modifierIds).toHaveLength(1);
-  });
-
-  test("can assign three unique compatible modifiers", () => {
-    const { store } = makeStore(() => 0.999);
-    store.getState().selectMood("challenge");
-    const offeredId = store.getState().offeredQuestIds[0];
-
-    expect(store.getState().revealQuest(offeredId)).toBe(true);
-    const modifierIds = store.getState().currentSession!.modifierIds;
-    expect(modifierIds).toHaveLength(3);
-    expect(new Set(modifierIds).size).toBe(3);
     expect(
-      modifierIds.every((modifierId) => Boolean(MODIFIERS_BY_ID[modifierId])),
+      Boolean(
+        questsForMood("create").find((quest) => quest.id === offeredId)?.tips
+          .length,
+      ),
     ).toBe(true);
   });
 
@@ -196,29 +186,20 @@ describe("mood quest store", () => {
     expect(store.getState().currentSession?.pausedTotalMs).toBe(500);
   });
 
-  test("only completes while paused, saves followed subset, and awards points once", () => {
+  test("only completes while paused and awards base quest points once", () => {
     const { store, setNow } = makeStore(() => 0);
     store.getState().selectMood("relax");
     const questId = store.getState().offeredQuestIds[0];
     store.getState().revealQuest(questId);
-    const assignedIds = [...store.getState().currentSession!.modifierIds];
     store.getState().startQuest(1_100);
 
-    expect(store.getState().completeQuest(900, assignedIds)).toBeNull();
+    expect(store.getState().completeQuest(900)).toBeNull();
     store.getState().pauseQuest(2_000);
     setNow(2_100);
 
-    const followedId = assignedIds[0];
     const expectedPoints =
-      questsForMood("relax").find((quest) => quest.id === questId)!
-        .rewardPoints + MODIFIERS_BY_ID[followedId].bonusPoints;
-    expect(
-      store.getState().completeQuest(900.8, [
-        followedId,
-        followedId,
-        "not-assigned",
-      ]),
-    ).toBe(true);
+      questsForMood("relax").find((quest) => quest.id === questId)!.rewardPoints;
+    expect(store.getState().completeQuest(900.8)).toBe(true);
 
     expect(store.getState().profile.points).toBe(expectedPoints);
     expect(store.getState().currentSession).toBeNull();
@@ -227,13 +208,11 @@ describe("mood quest store", () => {
       id: "session-1",
       moodId: "relax",
       questId,
-      modifierIds: assignedIds,
-      followedModifierIds: [followedId],
       durationMs: 900,
       pointsAwarded: expectedPoints,
       completedAt: 2_100,
     });
-    expect(store.getState().completeQuest(900, [followedId])).toBeNull();
+    expect(store.getState().completeQuest(900)).toBeNull();
     expect(store.getState().profile.points).toBe(expectedPoints);
   });
 
@@ -352,10 +331,9 @@ describe("mood quest persistence", () => {
     }
   });
 
-  test("sanitizes malformed v4 profile, offers, completion modifiers, and numbers", () => {
+  test("migrates malformed v4 data and removes obsolete modifier fields", () => {
     const quest = questsForMood("relax")[0];
-    const modifierId = MODIFIERS_BY_ID["modifier-one-track"].id;
-    const sanitized = sanitizePersistedQuestState(
+    const sanitized = migratePersistedQuestState(
       {
         profile: { avatarTheme: "wizard", points: -42.9 },
         selectedMoodId: "relax",
@@ -371,8 +349,8 @@ describe("mood quest persistence", () => {
             id: "completion-1",
             moodId: "relax",
             questId: quest.id,
-            modifierIds: [modifierId, modifierId, "missing"],
-            followedModifierIds: [modifierId, "missing"],
+            modifierIds: ["modifier-one-track", "missing"],
+            followedModifierIds: ["modifier-one-track", "missing"],
             durationMs: -5,
             pointsAwarded: -10,
             completedAt: 2_000,
@@ -380,6 +358,7 @@ describe("mood quest persistence", () => {
         ],
         legacyCompletionCount: -3,
       },
+      4,
       1_001,
       () => 0,
     );
@@ -399,11 +378,11 @@ describe("mood quest persistence", () => {
       sanitized.offeredQuestIds,
     );
     expect(sanitized.completedSessions[0]).toMatchObject({
-      modifierIds: [modifierId],
-      followedModifierIds: [modifierId],
       durationMs: 0,
       pointsAwarded: 0,
     });
+    expect("modifierIds" in sanitized.completedSessions[0]).toBe(false);
+    expect("followedModifierIds" in sanitized.completedSessions[0]).toBe(false);
     expect(sanitized.legacyCompletionCount).toBe(0);
   });
 
@@ -452,8 +431,7 @@ describe("mood quest persistence", () => {
 
   test("preserves a valid active v4 session beyond the mood window", () => {
     const quest = questsForMood("progress")[0];
-    const modifierId = "modifier-one-track";
-    const sanitized = sanitizePersistedQuestState(
+    const sanitized = migratePersistedQuestState(
       {
         profile: { avatarTheme: "default", points: 50 },
         selectedMoodId: "progress",
@@ -465,15 +443,27 @@ describe("mood quest persistence", () => {
           sessionId: "saved-session",
           moodId: "progress",
           questId: quest.id,
-          modifierIds: [modifierId],
+          modifierIds: ["modifier-one-track"],
           revealedAt: 1_100,
           startedAt: 1_200,
           pausedAt: 1_300,
           pausedTotalMs: 25,
         },
-        completedSessions: [],
+        completedSessions: [
+          {
+            id: "old-completion",
+            moodId: "progress",
+            questId: quest.id,
+            modifierIds: ["modifier-one-track"],
+            followedModifierIds: ["modifier-one-track"],
+            durationMs: 900,
+            pointsAwarded: 300,
+            completedAt: 1_400,
+          },
+        ],
         legacyCompletionCount: 2,
       },
+      4,
       1_000 + MOOD_RESET_MS,
       () => 0,
     );
@@ -486,39 +476,103 @@ describe("mood quest persistence", () => {
       sessionId: "saved-session",
       moodId: "progress",
       questId: quest.id,
-      modifierIds: [modifierId],
       startedAt: 1_200,
       pausedAt: 1_300,
       pausedTotalMs: 25,
     });
     expect(sanitized.profile.points).toBe(50);
+    expect(sanitized.completedSessions[0]).toMatchObject({
+      id: "old-completion",
+      pointsAwarded: 300,
+    });
+    expect("modifierIds" in sanitized.currentSession!).toBe(false);
+    expect("modifierIds" in sanitized.completedSessions[0]).toBe(false);
     expect(sanitized.legacyCompletionCount).toBe(2);
+  });
+
+  test("refreshes idle v5 offer caches for the expanded mood catalog", () => {
+    const oldOffers = questsForMood("relax")
+      .slice(0, QUEST_OFFER_COUNT)
+      .map((quest) => quest.id);
+    const migrated = migratePersistedQuestState(
+      {
+        profile: { avatarTheme: "wizard", points: 75 },
+        selectedMoodId: "relax",
+        moodSelectedAt: 1_000,
+        offeredQuestIds: oldOffers,
+        offerSetsByMoodId: { relax: oldOffers },
+        currentSession: null,
+        completedSessions: [],
+        legacyCompletionCount: 3,
+      },
+      5,
+      1_001,
+      () => 0,
+    );
+
+    expect(migrated.profile).toEqual({ avatarTheme: "wizard", points: 75 });
+    expect(migrated.selectedMoodId).toBeNull();
+    expect(migrated.moodSelectedAt).toBeNull();
+    expect(migrated.offeredQuestIds).toEqual([]);
+    expect(migrated.offerSetsByMoodId).toEqual({});
+    expect(migrated.legacyCompletionCount).toBe(3);
+  });
+
+  test("preserves an active v5 quest while refreshing its return offers", () => {
+    const quest = questsForMood("relax")[0];
+    const migrated = migratePersistedQuestState(
+      {
+        profile: DEFAULT_PROFILE,
+        selectedMoodId: "relax",
+        moodSelectedAt: 1_000,
+        offeredQuestIds: [quest.id],
+        offerSetsByMoodId: { relax: [quest.id] },
+        currentSession: {
+          sessionId: "active-v5",
+          moodId: "relax",
+          questId: quest.id,
+          revealedAt: 1_100,
+          startedAt: null,
+          pausedAt: null,
+          pausedTotalMs: 0,
+        },
+        completedSessions: [],
+        legacyCompletionCount: 0,
+      },
+      5,
+      1_200,
+      () => 0,
+    );
+
+    expect(migrated.currentSession).toMatchObject({
+      sessionId: "active-v5",
+      moodId: "relax",
+      questId: quest.id,
+    });
+    expect(migrated.offeredQuestIds).toHaveLength(QUEST_OFFER_COUNT);
+    expect(migrated.offeredQuestIds).not.toContain(quest.id);
+    expect(migrated.offerSetsByMoodId.relax).toEqual(
+      migrated.offeredQuestIds,
+    );
   });
 
   test("hydrates offered, active, and completed quest views", () => {
     const quest = questsForMood("relax")[0];
-    const modifierId = "modifier-one-track";
     const completion = {
       id: "completion-1",
       moodId: "relax" as const,
       questId: quest.id,
-      modifierIds: [modifierId],
-      followedModifierIds: [modifierId],
       durationMs: 1_000,
-      pointsAwarded: quest.rewardPoints + MODIFIERS_BY_ID[modifierId].bonusPoints,
+      pointsAwarded: quest.rewardPoints,
       completedAt: 2_000,
     };
 
     expect(hydrateQuest(quest.id, [completion])?.completionCount).toBe(1);
-    expect(
-      hydrateQuest(quest.id, [completion], [modifierId])?.modifiers[0].id,
-    ).toBe(modifierId);
+    expect(hydrateQuest(quest.id, [completion])?.tips).toEqual(quest.tips);
     expect(hydrateCompletedQuest(completion)).toMatchObject({
       id: "completion-1",
       quest: { id: quest.id },
       mood: { id: "relax" },
-      modifiers: [{ id: modifierId }],
-      followedModifiers: [{ id: modifierId }],
     });
   });
 
