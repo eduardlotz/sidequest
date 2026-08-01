@@ -1,6 +1,5 @@
 import {
   AnimatePresence,
-  animate,
   motion,
   type PanInfo,
   type Variants,
@@ -28,6 +27,7 @@ import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
 import { CompletionCheckIcon } from "./CompletionCheckIcon";
 import { QuestCardBack } from "./QuestCardBack";
 import {
+  MOBILE_PAUSED_TIMER_TOP_RATIO,
   PAUSED_TIMER_TOP_RATIO,
   PhysicsRope,
   READY_TIMER_TOP_RATIO,
@@ -166,8 +166,11 @@ export function ActiveTaskCard({
       initiallyReady
         ? READY_TIMER_TOP_RATIO
         : initiallyPaused
-          ? PAUSED_TIMER_TOP_RATIO
+          ? isMobileViewport
+            ? MOBILE_PAUSED_TIMER_TOP_RATIO
+            : PAUSED_TIMER_TOP_RATIO
           : RUNNING_TIMER_TOP_RATIO,
+      initiallyPaused,
     ),
   );
   const rigRef = useRef<HTMLDivElement>(null);
@@ -191,8 +194,6 @@ export function ActiveTaskCard({
   const timerReturnLastAtRef = useRef(0);
   const timerReturnVelocityRef = useRef<RopePoint>({ x: 0, y: 0 });
   const timerEntranceStartedAtRef = useRef(0);
-  const timerAnimationRef = useRef<Array<{ stop: () => void }>>([]);
-  const timerAnimationSequenceRef = useRef(0);
   const resumePendingRef = useRef(false);
   const startPendingRef = useRef(false);
   const startedAtRef = useRef<number | null>(assignment.startedAt);
@@ -208,9 +209,9 @@ export function ActiveTaskCard({
   const y = useMotionValue(initialTimerOffsetRef.current.y);
   const timerRotationTarget = useMotionValue(0);
   const timerRotation = useSpring(timerRotationTarget, {
-    stiffness: 175,
-    damping: 18,
-    mass: 0.72,
+    stiffness: 260,
+    damping: 26,
+    mass: 0.58,
   });
   const {
     handlePointerEnter: handleCardPointerEnter,
@@ -315,17 +316,9 @@ export function ActiveTaskCard({
       if (completionRevealTimeoutRef.current !== null) {
         window.clearTimeout(completionRevealTimeoutRef.current);
       }
-      timerAnimationSequenceRef.current += 1;
-      timerAnimationRef.current.forEach((control) => control.stop());
     },
     [],
   );
-
-  function stopTimerAnimation() {
-    timerAnimationSequenceRef.current += 1;
-    timerAnimationRef.current.forEach((control) => control.stop());
-    timerAnimationRef.current = [];
-  }
 
   function queueRopeRelease(
     mode: RopeMode,
@@ -348,7 +341,6 @@ export function ActiveTaskCard({
     offset: RopePoint,
     velocity: RopePoint,
   ) {
-    stopTimerAnimation();
     const now = performance.now();
     timerReturningRef.current = true;
     timerReturnModeRef.current = mode;
@@ -362,47 +354,6 @@ export function ActiveTaskCard({
     queueRopeRelease(mode, offset, velocity);
   }
 
-  function settleTimerTo(target: RopePoint, velocity: RopePoint) {
-    stopTimerAnimation();
-    const sequence = timerAnimationSequenceRef.current;
-    const springVelocity = {
-      x: Math.max(-900, Math.min(900, velocity.x)),
-      y: Math.max(-900, Math.min(900, velocity.y)),
-    };
-    setTimerSettling(true);
-
-    if (reduceMotion) {
-      x.set(target.x);
-      y.set(target.y);
-      timerDraggingRef.current = false;
-      setTimerSettling(false);
-      return;
-    }
-
-    const xControl = animate(x, target.x, {
-      type: "spring",
-      stiffness: 235,
-      damping: 24,
-      mass: 0.82,
-      velocity: springVelocity.x,
-    });
-    const yControl = animate(y, target.y, {
-      type: "spring",
-      stiffness: 235,
-      damping: 24,
-      mass: 0.82,
-      velocity: springVelocity.y,
-    });
-    timerAnimationRef.current = [xControl, yControl];
-
-    Promise.all([xControl, yControl]).then(() => {
-      if (timerAnimationSequenceRef.current !== sequence) return;
-      timerAnimationRef.current = [];
-      timerDraggingRef.current = false;
-      setTimerSettling(false);
-    });
-  }
-
   function pause() {
     if (pausedAtRef.current !== null || phase !== "running") return;
     playSound("toggleOff");
@@ -412,6 +363,17 @@ export function ActiveTaskCard({
     setElapsedMs(readElapsed());
     setRopeMode("paused");
     setPhase("paused");
+  }
+
+  function resume() {
+    if (pausedAtRef.current === null || phase !== "paused") return false;
+    playSound("toggleOn");
+    const resumedAt = Date.now();
+    pausedTotalRef.current += resumedAt - pausedAtRef.current;
+    pausedAtRef.current = null;
+    onResume(resumedAt);
+    setPhase("running");
+    return true;
   }
 
   function toggleTimerFromKeyboard() {
@@ -430,22 +392,17 @@ export function ActiveTaskCard({
       return;
     }
 
-    playSound("toggleOn");
     if (phase === "ready") {
+      playSound("toggleOn");
       const startedAt = Date.now();
       startedAtRef.current = startedAt;
       onStart(startedAt);
-    } else if (phase === "paused" && pausedAtRef.current !== null) {
-      const resumedAt = Date.now();
-      pausedTotalRef.current += resumedAt - pausedAtRef.current;
-      pausedAtRef.current = null;
-      onResume(resumedAt);
-    } else {
+      setPhase("running");
+    } else if (!resume()) {
       return;
     }
 
     setRopeMode("running");
-    setPhase("running");
   }
 
   function finishPullback(pose: TimerPose) {
@@ -454,13 +411,7 @@ export function ActiveTaskCard({
     const capturedStartedAt = starting ? startedAtRef.current : null;
     resumePendingRef.current = false;
     startPendingRef.current = false;
-    playSound("toggleOn");
-    if (!starting && pausedAtRef.current !== null) {
-      const resumedAt = Date.now();
-      pausedTotalRef.current += resumedAt - pausedAtRef.current;
-      pausedAtRef.current = null;
-      onResume(resumedAt);
-    }
+    if (starting) playSound("toggleOn");
     const offset = { x: pose.x, y: pose.y };
     x.set(offset.x);
     y.set(offset.y);
@@ -479,7 +430,6 @@ export function ActiveTaskCard({
       return;
     if (next === "cutting" && !ropeCut) return;
     playSound(next === "completed" ? "formSubmit" : "cut");
-    stopTimerAnimation();
     timerReturningRef.current = false;
     timerDraggingRef.current = false;
     setTimerSettling(false);
@@ -569,10 +519,15 @@ export function ActiveTaskCard({
         : shouldPause
           ? "paused"
           : ropeMode;
-    const retracted = projectTimerToRope(requested, destinationMode, rigHeight);
+    const retracted = projectTimerToRope(
+      requested,
+      destinationMode,
+      rigHeight,
+      isMobileViewport,
+    );
 
     if (shouldPause) pause();
-    if (shouldResume) {
+    if (shouldResume && resume()) {
       resumePendingRef.current = true;
       setRopeMode("resumePullback");
     }
@@ -657,10 +612,11 @@ export function ActiveTaskCard({
           -rigHeight * (RUNNING_TIMER_TOP_RATIO - READY_TIMER_TOP_RATIO);
         const distanceFromRest = Math.hypot(pose.x, pose.y - restingY);
         const speed = Math.hypot(pose.velocity.x, pose.velocity.y);
-        const physicallySettled =
+        const settled =
           elapsed > 480 && distanceFromRest < 22 && speed < 130;
+        const timedOut = elapsed > 2_400;
 
-        if (physicallySettled || elapsed > 2_400) {
+        if (settled || timedOut) {
           readyEntranceDropRef.current = false;
           setTimerEntranceSettling(false);
           setTimerSettling(false);
@@ -758,21 +714,15 @@ export function ActiveTaskCard({
       data-timer-entrance={timerEntranceSettling ? "dropping" : "settled"}
       data-rope-mode={ropeMode}
     >
-      <AnimatePresence>
-        {cardFocused && (
-          <motion.button
-            ref={cardFocusBackdropRef}
-            className={styles.cardFocusBackdrop}
-            type="button"
-            aria-label="Close focused quest card"
-            initial={reduceMotion ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0 : 0.22 }}
-            onClick={closeCardFocus}
-          />
-        )}
-      </AnimatePresence>
+      {cardFocused && (
+        <button
+          ref={cardFocusBackdropRef}
+          className={styles.cardFocusBackdrop}
+          type="button"
+          aria-label="Close focused quest card"
+          onClick={closeCardFocus}
+        />
+      )}
 
       <div
         className={styles.activeCardStage}
@@ -844,7 +794,11 @@ export function ActiveTaskCard({
               className={`${styles.activeQuestCard} ${styles.revealBack}`}
               aria-hidden="true"
             >
-              <QuestCardBack title={task.title} revealTitle />
+              <QuestCardBack
+                durationMinutes={task.durationMinutes}
+                title={task.title}
+                revealTitle
+              />
             </div>
 
             <div className={styles.revealFront}>
@@ -995,6 +949,7 @@ export function ActiveTaskCard({
             cut={phase === "cutting" ? cut : null}
             dragVelocityRef={timerDragVelocityRef}
             draggingRef={timerDraggingRef}
+            isMobileViewport={isMobileViewport}
             mode={ropeMode}
             onTimerMove={syncTimerToPhysics}
             reduceMotion={reduceMotion}
@@ -1054,7 +1009,6 @@ export function ActiveTaskCard({
           style={{ x, y }}
           onDragStart={() => {
             playSound("timerGrab");
-            stopTimerAnimation();
             timerReturningRef.current = false;
             setTimerSettling(true);
             timerDraggingRef.current = true;
@@ -1311,9 +1265,11 @@ function elapsedForAssignment(assignment: QuestSession, now: number) {
 function initialTimerOffset(
   shouldDrop: boolean,
   restingTopRatio: number,
+  useFullMobileRig: boolean,
 ): RopePoint {
   const compactLayout = window.matchMedia("(max-width: 820px)").matches;
-  const rigHeight = window.innerHeight * (compactLayout ? 0.52 : 1);
+  const rigHeight = window.innerHeight *
+    (compactLayout && !useFullMobileRig ? 0.52 : 1);
   if (!shouldDrop) {
     return {
       x: 0,
@@ -1369,12 +1325,15 @@ function projectTimerToRope(
   target: RopePoint,
   mode: RopeMode,
   rigHeight: number,
+  isMobileViewport: boolean,
 ) {
   const runningTop = rigHeight * RUNNING_TIMER_TOP_RATIO;
   const modeTop =
     rigHeight *
     (mode === "paused"
-      ? PAUSED_TIMER_TOP_RATIO
+      ? isMobileViewport
+        ? MOBILE_PAUSED_TIMER_TOP_RATIO
+        : PAUSED_TIMER_TOP_RATIO
       : mode === "ready"
         ? READY_TIMER_TOP_RATIO
         : mode === "resumePullback"

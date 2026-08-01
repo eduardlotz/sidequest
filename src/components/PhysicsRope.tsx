@@ -44,6 +44,7 @@ type Props = {
   cut: RopeCut | null;
   dragVelocityRef: MutableRefObject<RopePoint>;
   draggingRef: MutableRefObject<boolean>;
+  isMobileViewport: boolean;
   mode: RopeMode;
   onTimerMove: (pose: TimerPose) => void;
   reduceMotion: boolean;
@@ -64,13 +65,15 @@ const ROPE_LINKS = 8;
 const CURVE_POINTS = 36;
 export const RUNNING_TIMER_TOP_RATIO = 0.35;
 export const PAUSED_TIMER_TOP_RATIO = 0.17;
-export const READY_TIMER_TOP_RATIO = PAUSED_TIMER_TOP_RATIO;
+export const MOBILE_PAUSED_TIMER_TOP_RATIO = 0.185;
+export const READY_TIMER_TOP_RATIO = 0.17;
 export const RESUME_PULLBACK_TIMER_TOP_RATIO = 0.11;
 
 export function PhysicsRope({
   cut,
   dragVelocityRef,
   draggingRef,
+  isMobileViewport,
   mode,
   onTimerMove,
   reduceMotion,
@@ -97,11 +100,12 @@ export function PhysicsRope({
       >
         <Physics gravity={[0, -36, 0]} interpolate timeStep={1 / 60}>
           <RopeSimulation
-            key={mode}
+            key={`${mode}-${isMobileViewport ? "mobile" : "desktop"}`}
             cut={cut}
             dragVelocityRef={dragVelocityRef}
             draggingRef={draggingRef}
             initialOffset={initialOffset}
+            isMobileViewport={isMobileViewport}
             lowerPathRef={lowerPathRef}
             mode={mode}
             onTimerMove={onTimerMove}
@@ -126,6 +130,7 @@ function RopeSimulation({
   dragVelocityRef,
   draggingRef,
   initialOffset,
+  isMobileViewport,
   lowerPathRef,
   mode,
   onTimerMove,
@@ -156,7 +161,9 @@ function RopeSimulation({
   const timerTopRatio = mode === "paused" || mode === "ready"
     ? mode === "ready"
       ? READY_TIMER_TOP_RATIO
-      : PAUSED_TIMER_TOP_RATIO
+      : isMobileViewport
+        ? MOBILE_PAUSED_TIMER_TOP_RATIO
+        : PAUSED_TIMER_TOP_RATIO
     : mode === "resumePullback"
       ? RESUME_PULLBACK_TIMER_TOP_RATIO
       : RUNNING_TIMER_TOP_RATIO;
@@ -184,11 +191,11 @@ function RopeSimulation({
     const endpoint = bodies[ROPE_LINKS];
     if (!endpoint) return;
 
-    const target = new THREE.Vector3(
-      (targetRef.current.x / Math.max(1, size.width)) * viewport.width,
-      runningTargetY -
-        (targetRef.current.y / Math.max(1, size.height)) * viewport.height,
-      0,
+    const target = offsetToWorld(
+      targetRef.current,
+      runningTargetY,
+      size,
+      viewport,
     );
 
     const dragging = draggingRef.current && !cutTopology;
@@ -265,7 +272,6 @@ function RopeSimulation({
       const speed = Math.min(1, followDelta * (0.82 + Math.min(1, distance) * 1.8));
       point.lerp(livePoint, speed);
     });
-
     let timerRopePoints: RopePoint[] = [];
 
     if (!cutTopology) {
@@ -552,8 +558,8 @@ function timerRotationFromRope(points: RopePoint[], horizontalVelocity: number) 
   const end = points[points.length - 1];
   const tangent = points[Math.max(0, points.length - 5)];
   const ropeAngle = Math.atan2(end.x - tangent.x, end.y - tangent.y) * 180 / Math.PI;
-  const velocityTilt = THREE.MathUtils.clamp(horizontalVelocity * 0.0025, -3, 3);
-  return THREE.MathUtils.clamp(ropeAngle * 0.28 + velocityTilt, -16, 16);
+  const velocityTilt = THREE.MathUtils.clamp(horizontalVelocity * 0.0014, -2, 2);
+  return THREE.MathUtils.clamp(ropeAngle * 0.18 + velocityTilt, -10, 10);
 }
 
 function screenToWorld(

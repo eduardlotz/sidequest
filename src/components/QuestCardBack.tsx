@@ -15,7 +15,11 @@ export function QuestCardBack({
   const mark = markAssetUrl("sidequest-mark.svg");
 
   return (
-    <span className={styles.questCardBackContent} aria-hidden="true">
+    <span
+      className={styles.questCardBackContent}
+      data-summary={durationMinutes ? "true" : undefined}
+      aria-hidden="true"
+    >
       <span className={styles.questCardBackPattern}>
         {Array.from({ length: 35 }, (_, index) => (
           <img

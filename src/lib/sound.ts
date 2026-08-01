@@ -75,7 +75,7 @@ const playFormSubmit = defineSequence([
   { sound: core.save, at: 0.04, volume: 1 },
 ]);
 const playCompletion = defineSound(organic.success);
-const playMoodStep = defineSound(organic.click);
+const playMoodStep = defineSound(core.tap);
 const playShuffle = defineSequence([
   { sound: organic.tap, at: 0, volume: 0.42 },
   { sound: organic.tap, at: 0.045, volume: 0.3 },
@@ -98,7 +98,7 @@ const sounds: Record<SoundName, () => unknown> = {
   inputFocus: defineSound(core.click),
   modalClose: defineSound(core.modalClose),
   modalOpen: defineSound(core.modalOpen),
-  moodStep: () => playMoodStep({ volume: 0.22 }),
+  moodStep: () => playMoodStep({ volume: 0.15 }),
   formSubmit: playFormSubmit,
   shuffle: playShuffle,
   slide: defineSound(core.slide),

@@ -2,229 +2,184 @@ import type { QuestTip } from "../questTypes";
 
 export const QUEST_TIPS = {
   oneTrack: {
-    title: "One Track",
-    description:
-      "Ignore every unrelated mission, activity, and marker until this quest reaches its finish.",
+    title: "Stay on One Goal",
+    description: "Skip unrelated missions and markers until the goal is done.",
   },
   noOutsideHelp: {
     title: "No Outside Help",
-    description:
-      "Use no walkthrough, build guide, solution, wiki, or external map during the quest.",
+    description: "Use no guides, wikis, solution videos, or external maps.",
   },
   letItStand: {
     title: "Let It Stand",
-    description:
-      "Once the game reveals an outcome, do not undo, reroll, or reload it.",
+    description: "Accept the first result; do not reload or reroll it.",
   },
   minimalHud: {
     title: "Minimal HUD",
-    description:
-      "Hide every optional HUD element the game lets you disable for the duration of the quest.",
+    description: "Hide the optional HUD elements you do not need.",
   },
   noMap: {
     title: "No Map",
-    description:
-      "Navigate without opening the map or following a route overlay.",
+    description: "Navigate without opening the map or route overlay.",
   },
   longWay: {
-    title: "The Long Way",
-    description:
-      "Use no fast travel, teleport, or menu-based travel during the quest.",
+    title: "No Fast Travel",
+    description: "Travel through the world instead of using menu shortcuts.",
   },
   measuredPace: {
-    title: "Measured Pace",
-    description:
-      "Do not sprint, boost, or skip traversal unless the game requires it to proceed.",
+    title: "Move Without Rushing",
+    description: "Avoid sprinting, boosting, or skipping the journey.",
   },
   fixedKit: {
-    title: "Fixed Kit",
-    description:
-      "Do not change character, loadout, deck, vehicle, or equipped tools after the quest begins.",
+    title: "Keep Your Setup",
+    description: "Do not change character, loadout, deck, or vehicle.",
   },
   basicTools: {
-    title: "Basic Tools",
-    description:
-      "Leave your strongest or rarest option unused and play with ordinary equipment.",
+    title: "Use Basic Gear",
+    description: "Leave your strongest or rarest option unused.",
   },
   noRecovery: {
-    title: "No Recovery",
-    description:
-      "Use no optional healing, repair, or recovery item during the quest.",
+    title: "No Optional Recovery",
+    description: "Use no optional healing or repair items.",
   },
   keepReserve: {
     title: "Keep One in Reserve",
-    description:
-      "Name one limited resource before starting and finish with at least one use remaining.",
+    description: "Finish with one use of a limited resource left.",
   },
   cleanExit: {
-    title: "Clean Exit",
-    description:
-      "After the goal resolves, reach a safe or neutral state without starting another objective.",
+    title: "Stop Cleanly",
+    description: "End somewhere safe without starting another objective.",
   },
   useWhatYouFind: {
     title: "Use What You Find",
-    description:
-      "Use at least one tool, item, resource, or opportunity found after the quest begins.",
+    description: "Use one useful thing found after the quest begins.",
   },
   helpFirst: {
     title: "Help First",
-    description:
-      "Complete one assist, handoff, rescue, or resource share before pursuing your own result.",
+    description: "Assist, rescue, or share before chasing your own result.",
   },
   holdYourRole: {
-    title: "Hold Your Role",
-    description:
-      "Take one team responsibility and keep it until the shared result is recorded.",
+    title: "Keep Your Role",
+    description: "Hold one team responsibility through the full result.",
   },
   oneMoreCorner: {
-    title: "One More Corner",
-    description:
-      "Take one optional detour beside the quest route before reaching the main finish.",
+    title: "Take One Detour",
+    description: "Explore one optional turn beside the main route.",
   },
   noRestart: {
     title: "Play It Out",
-    description:
-      "Accept mistakes and continue from the next valid state instead of restarting or reloading.",
+    description: "Continue after mistakes instead of restarting or reloading.",
   },
   noUpgrades: {
-    title: "As You Are",
-    description:
-      "Buy, unlock, and equip no upgrades until the quest is complete.",
+    title: "No Upgrades",
+    description: "Buy, unlock, and equip no upgrades during the quest.",
   },
   spendTheGoodStuff: {
-    title: "Use the Good Stuff",
-    description:
-      "Spend one item, ability, or resource you usually save for a more important moment.",
+    title: "Spend the Good Stuff",
+    description: "Use one valuable resource you usually save.",
   },
   noCombat: {
-    title: "Another Way Through",
-    description:
-      "Avoid optional combat and solve resistance through movement, dialogue, stealth, or patience.",
+    title: "Avoid Optional Combat",
+    description: "Use movement, dialogue, stealth, or patience instead.",
   },
   firstInstinct: {
     title: "First Instinct",
-    description:
-      "Take the first sincere dialogue, route, or tactical choice without comparing alternatives.",
+    description: "Take the first sincere choice without comparing alternatives.",
   },
   oppositeInstinct: {
-    title: "The Other Instinct",
-    description:
-      "When a meaningful choice appears, take the option opposite to your usual habit.",
+    title: "Opposite Instinct",
+    description: "Choose the meaningful option opposite to your usual habit.",
   },
   landmarksOnly: {
     title: "Landmarks Only",
-    description:
-      "Navigate by visible places and remembered shapes instead of markers or route lines.",
+    description: "Navigate by visible places instead of route lines.",
   },
   listenFirst: {
     title: "Listen First",
-    description:
-      "Pause when the world speaks; let dialogue and environmental sound guide the next action.",
+    description: "Let dialogue and world sounds guide the next action.",
   },
   followTheLocal: {
-    title: "Follow the Local",
-    description:
-      "Let an NPC, creature, traffic flow, or resident routine determine your route for a while.",
+    title: "Follow a Local",
+    description: "Let one resident or creature determine your route.",
   },
   oneTool: {
-    title: "One Tool",
-    description:
-      "Use one weapon, verb, tool, or interaction as the main answer throughout the quest.",
+    title: "One Main Tool",
+    description: "Use one tool or action as your main answer.",
   },
   localMaterials: {
     title: "Local Materials",
-    description:
-      "Build or customize only with materials already present in the current place.",
+    description: "Build only with materials already in the current place.",
   },
   onePalette: {
     title: "One Palette",
-    description:
-      "Limit the result to one dominant color family and one contrasting accent.",
+    description: "Use one color family and one contrasting accent.",
   },
   noUndo: {
     title: "No Undo",
-    description:
-      "Keep every placed, painted, built, or customized choice instead of erasing it.",
+    description: "Keep every placed, painted, or customized choice.",
   },
   firstTake: {
-    title: "First Take",
-    description:
-      "Keep the first complete version, performance, route, or image without polishing another take.",
+    title: "Keep the First Take",
+    description: "Keep the first complete version without another polish pass.",
   },
   oneRoom: {
-    title: "One Room",
-    description:
-      "Keep every change inside one room, plot, block, screen, or similarly contained space.",
+    title: "One Space",
+    description: "Keep every change inside one small bounded area.",
   },
   photoProof: {
     title: "Bring Back One Image",
-    description:
-      "Capture one screenshot at the finish that shows what changed or where the quest led.",
+    description: "Capture one screenshot showing the finished result.",
   },
   leaveAGift: {
     title: "Leave a Gift",
-    description:
-      "Leave behind one useful object, improvement, message, or resource for someone else.",
+    description: "Leave one useful improvement or resource for someone else.",
   },
   stayTogether: {
     title: "Stay Together",
-    description:
-      "Remain within sight or support range of another player until the shared activity ends.",
+    description: "Remain within sight or support range of another player.",
   },
   quietLobby: {
     title: "No Microphone Needed",
-    description:
-      "Keep voice chat off and communicate only through movement, pings, emotes, or short text.",
+    description: "Communicate through pings, movement, emotes, or short text.",
   },
   borrowedStyle: {
     title: "Borrow Their Style",
-    description:
-      "Copy one visible route, build, rhythm, or technique from another player for this quest.",
+    description: "Copy one visible route, build, rhythm, or technique.",
   },
   threeAttempts: {
     title: "Three Attempts",
-    description:
-      "Give the same challenge three committed attempts before changing strategy, gear, or target.",
+    description: "Give the same challenge three complete attempts.",
   },
   damageBudget: {
     title: "Damage Budget",
-    description:
-      "Set a small damage allowance and continue the attempt until it is spent or the goal is reached.",
+    description: "Set a damage limit and stop when it is spent.",
   },
   underdogKit: {
-    title: "Underdog Kit",
-    description:
-      "Use a character, vehicle, card, or loadout you consider weaker than your usual favorite.",
+    title: "Underdog Option",
+    description: "Use a viable option weaker than your usual favorite.",
   },
   oneMove: {
     title: "One Move Deeper",
-    description:
-      "Center the whole quest on one mechanic and deliberately use it in three different situations.",
+    description: "Use one mechanic deliberately in three situations.",
   },
   noShopping: {
     title: "No Shopping",
-    description:
-      "Buy nothing during the quest; solve each need with what is already owned or found.",
+    description: "Buy nothing; use only what you own or find.",
   },
   noLooting: {
-    title: "Travel Light",
-    description:
-      "Collect no optional loot and leave inventory management alone until the quest ends.",
+    title: "No Optional Loot",
+    description: "Leave optional loot and inventory management alone.",
   },
   noMarkers: {
     title: "No Markers",
-    description:
-      "Disable objective markers and follow only information provided inside the world.",
+    description: "Disable markers and follow information inside the world.",
   },
   worldAudio: {
     title: "World Audio",
-    description:
-      "Lower the music and let environmental sound and effects become the main guide.",
+    description: "Lower the music and listen to the environment.",
   },
   groundLevel: {
     title: "Ground Level",
-    description:
-      "Keep the camera close to the character or street instead of using overhead or distant views.",
+    description: "Keep the camera close instead of overhead or distant.",
   },
 } as const satisfies Record<string, QuestTip>;
 

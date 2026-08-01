@@ -315,10 +315,17 @@ function createQuestState(
     },
     discardCurrentSession: () => {
       set((state) => {
-        if (!state.currentSession) return state;
+        const session = state.currentSession;
+        if (!session) return state;
+        const rotatedOffers = rotateSessionOffer(
+          state,
+          session,
+          options.random,
+        );
         return moodWindowState(
           {
             ...state,
+            ...rotatedOffers,
             currentSession: null,
           },
           options.now(),
@@ -348,9 +355,15 @@ function createQuestState(
         pointsAwarded,
         completedAt: options.now(),
       };
+      const rotatedOffers = rotateSessionOffer(
+        state,
+        session,
+        options.random,
+      );
       const nextState = moodWindowState(
         {
           ...state,
+          ...rotatedOffers,
           profile: {
             ...state.profile,
             points: safeNonNegativeInteger(
@@ -485,6 +498,51 @@ export function generateQuestOffers(
   return sampleWithoutReplacement(pool, count, random).map(
     (quest) => quest.id,
   );
+}
+
+function rotateSessionOffer(
+  state: QuestState,
+  session: QuestSession,
+  random: () => number,
+): Pick<QuestState, "offeredQuestIds" | "offerSetsByMoodId"> {
+  const storedOffers = state.offerSetsByMoodId[session.moodId];
+  const moodOffers = storedOffers?.length === QUEST_OFFER_COUNT
+    ? [...storedOffers]
+    : state.selectedMoodId === session.moodId
+      ? [...state.offeredQuestIds]
+      : [];
+  const slotIndex = moodOffers.indexOf(session.questId);
+  if (slotIndex < 0) {
+    return {
+      offeredQuestIds: state.offeredQuestIds,
+      offerSetsByMoodId: state.offerSetsByMoodId,
+    };
+  }
+
+  const replacementId = generateQuestOffers(
+    session.moodId,
+    random,
+    new Set(moodOffers),
+    1,
+  )[0];
+  if (!replacementId) {
+    return {
+      offeredQuestIds: state.offeredQuestIds,
+      offerSetsByMoodId: state.offerSetsByMoodId,
+    };
+  }
+
+  moodOffers[slotIndex] = replacementId;
+  return {
+    offeredQuestIds:
+      state.selectedMoodId === session.moodId
+        ? moodOffers
+        : state.offeredQuestIds,
+    offerSetsByMoodId: {
+      ...state.offerSetsByMoodId,
+      [session.moodId]: moodOffers,
+    },
+  };
 }
 
 export function migratePersistedQuestState(
