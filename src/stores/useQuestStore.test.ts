@@ -199,10 +199,19 @@ describe("mood quest store", () => {
 
     const expectedPoints =
       questsForMood("relax").find((quest) => quest.id === questId)!.rewardPoints;
+    const offersBeforeCompletion = [...store.getState().offeredQuestIds];
     expect(store.getState().completeQuest(900.8)).toBe(true);
 
     expect(store.getState().profile.points).toBe(expectedPoints);
     expect(store.getState().currentSession).toBeNull();
+    expect(store.getState().offeredQuestIds).toHaveLength(QUEST_OFFER_COUNT);
+    expect(store.getState().offeredQuestIds).not.toContain(questId);
+    expect(store.getState().offeredQuestIds.slice(1)).toEqual(
+      offersBeforeCompletion.slice(1),
+    );
+    expect(store.getState().offerSetsByMoodId.relax).toEqual(
+      store.getState().offeredQuestIds,
+    );
     expect(store.getState().completedSessions).toHaveLength(1);
     expect(store.getState().completedSessions[0]).toMatchObject({
       id: "session-1",
@@ -216,15 +225,29 @@ describe("mood quest store", () => {
     expect(store.getState().profile.points).toBe(expectedPoints);
   });
 
-  test("keeps the same offers after discarding instead of granting a free shuffle", () => {
+  test("replaces only the discarded quest for free", () => {
     const { store } = makeStore();
     store.getState().selectMood("connect");
     const offers = [...store.getState().offeredQuestIds];
-    store.getState().revealQuest(offers[0]);
+    const discardedQuestId = offers[1];
+    store.setState({
+      profile: {
+        ...store.getState().profile,
+        points: SHUFFLE_COST,
+      },
+    });
+    store.getState().revealQuest(discardedQuestId);
 
     store.getState().discardCurrentSession();
+    const rotatedOffers = store.getState().offeredQuestIds;
     expect(store.getState().currentSession).toBeNull();
-    expect(store.getState().offeredQuestIds).toEqual(offers);
+    expect(rotatedOffers).toHaveLength(QUEST_OFFER_COUNT);
+    expect(rotatedOffers).not.toContain(discardedQuestId);
+    expect(rotatedOffers[0]).toBe(offers[0]);
+    expect(rotatedOffers[1]).not.toBe(offers[1]);
+    expect(rotatedOffers[2]).toBe(offers[2]);
+    expect(store.getState().offerSetsByMoodId.connect).toEqual(rotatedOffers);
+    expect(store.getState().profile.points).toBe(SHUFFLE_COST);
   });
 
   test("resets an idle mood at exactly four hours without touching profile or history", () => {
