@@ -14,6 +14,7 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import {
   type Quest,
@@ -113,6 +114,7 @@ export function ActiveTaskCard({
   onResume,
   onComplete,
 }: Props) {
+  const { t } = useTranslation();
   const task = quest;
   const assignment = session;
   const initiallyReady = assignment.startedAt === null;
@@ -429,7 +431,7 @@ export function ActiveTaskCard({
     if (exitStartedRef.current || phase === "cutting" || phase === "completed")
       return;
     if (next === "cutting" && !ropeCut) return;
-    playSound(next === "completed" ? "formSubmit" : "cut");
+    if (next === "cutting") playSound("cut");
     timerReturningRef.current = false;
     timerDraggingRef.current = false;
     setTimerSettling(false);
@@ -719,7 +721,7 @@ export function ActiveTaskCard({
           ref={cardFocusBackdropRef}
           className={styles.cardFocusBackdrop}
           type="button"
-          aria-label="Close focused quest card"
+          aria-label={t("ui.quest.closeFocusedCard")}
           onClick={closeCardFocus}
         />
       )}
@@ -797,7 +799,7 @@ export function ActiveTaskCard({
               <QuestCardBack
                 durationMinutes={task.durationMinutes}
                 title={task.title}
-                revealTitle
+                variant="summary"
               />
             </div>
 
@@ -827,7 +829,10 @@ export function ActiveTaskCard({
                   onPointerOut={(event) => {
                     handleCardPointerLeave(event);
                   }}
-                  aria-label={`Active ${task.mood.title} quest: ${task.title}`}
+                  aria-label={t("ui.quest.activeLabel", {
+                    mood: task.mood.title,
+                    title: task.title,
+                  })}
                 >
                   <motion.div
                     className={styles.activeQuestCard}
@@ -842,7 +847,9 @@ export function ActiveTaskCard({
                     <header className={styles.questCardHeader}>
                       <h2 className={styles.activeTitle}>{task.title}</h2>
                       <span className={styles.questHeaderMetaValue}>
-                        {task.durationMinutes} min
+                        {t("ui.quest.minutes", {
+                          count: task.durationMinutes,
+                        })}
                       </span>
                     </header>
 
@@ -851,7 +858,10 @@ export function ActiveTaskCard({
                       <p className={styles.questCompletion}>
                         {task.completion}
                       </p>
-                      <ul className={styles.questTips} aria-label="Quest tips">
+                      <ul
+                        className={styles.questTips}
+                        aria-label={t("ui.quest.tips")}
+                      >
                         {task.tips.map((tip) => (
                           <li key={tip.title}>
                             <strong>{tip.title}</strong>
@@ -911,17 +921,21 @@ export function ActiveTaskCard({
                       ref={cardFocusTriggerRef}
                       className={styles.cardFocusTrigger}
                       type="button"
-                      aria-label={`Focus quest card: ${task.title}`}
+                      aria-label={t("ui.quest.focusCard", {
+                        title: task.title,
+                      })}
                       onClick={() => setCardFocused(true)}
                     />
                   )}
                 </article>
-                <div
-                  className={`${styles.activeQuestCard} ${styles.completionCardBack}`}
-                  aria-hidden="true"
-                >
-                  <QuestCardBack title={task.title} revealTitle />
-                </div>
+                {revealFinished && (
+                  <div
+                    className={`${styles.activeQuestCard} ${styles.completionCardBack}`}
+                    aria-hidden="true"
+                  >
+                    <QuestCardBack title={task.title} variant="completion" />
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
@@ -990,12 +1004,12 @@ export function ActiveTaskCard({
           }
           aria-label={
             phase === "ready"
-              ? "Start quest timer"
+              ? t("ui.timer.start")
               : phase === "paused"
-                ? "Resume quest timer"
+                ? t("ui.timer.resume")
                 : phase === "running"
-                  ? "Pause quest timer"
-                  : "Quest timer unavailable"
+                  ? t("ui.timer.pause")
+                  : t("ui.timer.unavailable")
           }
           drag={
             (phase === "ready" || phase === "running" || phase === "paused") &&
@@ -1051,7 +1065,9 @@ export function ActiveTaskCard({
                 exit={{ opacity: 0 }}
                 transition={{ duration: reduceMotion ? 0 : 0.12 }}
               >
-                {phase === "ready" ? "Ready" : "Paused"}
+                {phase === "ready"
+                  ? t("ui.timer.ready")
+                  : t("ui.timer.paused")}
               </motion.span>
             )}
           </AnimatePresence>
@@ -1073,11 +1089,10 @@ export function ActiveTaskCard({
             >
               <motion.button
                 className={styles.saveAction}
-                data-sound-click-skip
                 type="submit"
                 variants={pausePanelItemVariants}
               >
-                Complete quest
+                {t("ui.timer.completeQuest")}
               </motion.button>
             </motion.form>
           )}
@@ -1098,15 +1113,15 @@ export function ActiveTaskCard({
             >
               <span>
                 {phase === "ready"
-                  ? "Pull the timer to start."
-                  : `Pull the timer to ${
-                      phase === "paused" ? "resume" : "pause"
-                    }.`}
+                  ? t("ui.timer.pullStart")
+                  : phase === "paused"
+                    ? t("ui.timer.pullResume")
+                    : t("ui.timer.pullPause")}
               </span>
               <span>
                 {phase === "ready"
-                  ? "Cut the rope to choose another."
-                  : "Cut the rope to stop."}
+                  ? t("ui.timer.cutChooseAnother")
+                  : t("ui.timer.cutStop")}
               </span>
             </motion.p>
           )}

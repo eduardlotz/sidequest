@@ -39,6 +39,7 @@ describe("mood quest catalog", () => {
       expect(wordCount(quest.completion) <= 12).toBe(true);
       expect("motivation" in quest).toBe(false);
       expect(quest.tips).toHaveLength(2);
+      expect(quest.tipIds).toHaveLength(2);
       expect(new Set(quest.tips.map((tip) => tip.title)).size).toBe(2);
       expect(
         quest.tips.every(

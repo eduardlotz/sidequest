@@ -28,7 +28,6 @@ export type SoundName =
   | "modalClose"
   | "modalOpen"
   | "moodStep"
-  | "formSubmit"
   | "shuffle"
   | "slide"
   | "tabSwitch"
@@ -67,14 +66,18 @@ const cut: SoundDefinition = {
   gain: 0.06,
 };
 
+// Matches the WebKits Minimal patch click without installing the patch.
+const minimalClick: SoundDefinition = {
+  source: { type: "sine", frequency: 800 },
+  envelope: { attack: 0, decay: 0.015, sustain: 0, release: 0.005 },
+  gain: 0.1,
+};
+
 const playPause = defineSound(core.slideDown);
 const playResume = defineSound(core.toggleOn);
 const playTimerGrab = defineSound(core.select);
-const playFormSubmit = defineSequence([
-  { sound: core.click, at: 0, volume: 0.35 },
-  { sound: core.save, at: 0.04, volume: 1 },
-]);
-const playCompletion = defineSound(organic.success);
+const playButtonClick = defineSound(minimalClick);
+const playCompletion = defineSound(organic.notification);
 const playMoodStep = defineSound(core.tap);
 const playShuffle = defineSequence([
   { sound: organic.tap, at: 0, volume: 0.42 },
@@ -85,7 +88,7 @@ const playShuffle = defineSequence([
 const sounds: Record<SoundName, () => unknown> = {
   accordionClose: defineSound(core.collapse),
   accordionOpen: defineSound(core.expand),
-  buttonClick: defineSound(core.click),
+  buttonClick: playButtonClick,
   buttonHover: defineSound(core.hover),
   cardHover: defineSound(core.hover),
   cardSelect: defineSound(bloom),
@@ -99,7 +102,6 @@ const sounds: Record<SoundName, () => unknown> = {
   modalClose: defineSound(core.modalClose),
   modalOpen: defineSound(core.modalOpen),
   moodStep: () => playMoodStep({ volume: 0.15 }),
-  formSubmit: playFormSubmit,
   shuffle: playShuffle,
   slide: defineSound(core.slide),
   tabSwitch: defineSound(core.tabSwitch),

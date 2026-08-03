@@ -12,9 +12,13 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { MOODS, type MoodDefinition, type MoodId } from "../data/moods";
 import type { QuestDefinition } from "../data/quests";
+import { formatScore } from "../lib/format";
 import { playSound } from "../lib/sound";
+import { localizeMood } from "../localization/catalog";
+import { normalizeLanguage } from "../localization/i18n";
 import type { Quest, QuestSession } from "../stores/useQuestStore";
 import { ActiveTaskCard } from "./ActiveTaskCard";
 import { ArcDeck, type ArcDeckItem } from "./ArcDeck";
@@ -134,6 +138,8 @@ export function TaskScreen({
   onResume,
   onComplete,
 }: Props) {
+  const { i18n, t } = useTranslation();
+  const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const isActive = Boolean(currentQuest && currentSession);
   const wasActiveRef = useRef(isActive);
   const returnedFromActive = wasActiveRef.current && !isActive;
@@ -171,12 +177,19 @@ export function TaskScreen({
   const editMoodFrameRef = useRef<number | null>(null);
   const moodItems = useMemo<ArcDeckItem[]>(
     () =>
-      MOODS.map((mood) => ({
-        id: mood.id,
-        title: mood.title,
-        subtitle: mood.subtitle,
-      })),
-    [],
+      MOODS.flatMap((mood) => {
+        const localizedMood = localizeMood(mood.id, language);
+        return localizedMood
+          ? [
+              {
+                id: localizedMood.id,
+                title: localizedMood.title,
+                subtitle: localizedMood.subtitle,
+              },
+            ]
+          : [];
+      }),
+    [language],
   );
 
   useEffect(() => {
@@ -244,10 +257,10 @@ export function TaskScreen({
     >
       <h1 className={styles.srOnly} id="task-screen-title">
         {isActive
-          ? "Current quest"
+          ? t("ui.task.currentQuest")
           : selectedMood
-            ? `Choose a ${selectedMood.title} quest`
-            : "Select your mood"}
+            ? t("ui.task.chooseMoodQuest", { mood: selectedMood.title })
+            : t("ui.task.selectMood")}
       </h1>
 
       <LayoutGroup id="quest-flow">
@@ -338,7 +351,7 @@ export function TaskScreen({
                             reduceMotion ? { duration: 0 } : NAV_ITEM_TRANSITION
                           }
                         >
-                          <span>Choose a </span>
+                          <span>{t("ui.task.choosePrefix")}</span>
                           <span className={styles.moodEditControl}>
                             <button
                               type="button"
@@ -352,10 +365,10 @@ export function TaskScreen({
                               id="change-mood-tooltip"
                               role="tooltip"
                             >
-                              Change Mood
+                              {t("ui.task.changeMood")}
                             </span>
                           </span>
-                          <span> sidequest</span>
+                          <span>{t("ui.task.chooseSuffix")}</span>
                         </motion.p>
 
                         <motion.div
@@ -373,7 +386,10 @@ export function TaskScreen({
                             data-sound-click-skip
                             type="button"
                             disabled={points < shuffleCost}
-                            aria-label={`Shuffle quest cards for ${shuffleCost} points. ${points} points available.`}
+                            aria-label={t("ui.task.shuffleLabel", {
+                              cost: formatScore(shuffleCost, language),
+                              available: formatScore(points, language),
+                            })}
                             onClick={shuffleCards}
                             iconLeft={
                               <motion.span
@@ -392,9 +408,13 @@ export function TaskScreen({
                               </motion.span>
                             }
                           >
-                            Shuffle cards
+                            {t("ui.task.shuffleCards")}
                           </SolidButton>
-                          <span>costs {shuffleCost} points</span>
+                          <span>
+                            {t("ui.task.costsPoints", {
+                              points: formatScore(shuffleCost, language),
+                            })}
+                          </span>
                         </motion.div>
                       </header>
 
@@ -434,13 +454,13 @@ export function TaskScreen({
                           animate={{ opacity: present ? 1 : 0 }}
                           transition={{ duration: reduceMotion ? 0 : 0.2 }}
                         >
-                          <p>Select your mood</p>
+                          <p>{t("ui.task.selectMood")}</p>
                         </motion.header>
 
                         <ArcDeck
                           items={moodItems}
                           initialItemId={lastSelectedMoodIdRef.current}
-                          label="Mood cards"
+                          label={t("ui.task.moodCards")}
                           layerPresent={present}
                           layoutSessionId={selectionLayoutSessionId}
                           reduceMotion={reduceMotion}

@@ -11,8 +11,8 @@ import {
   type MoodId,
 } from "../data/moods";
 import {
-  QUESTS_BY_ID,
-  questsForMood,
+  QUEST_CORES_BY_ID,
+  questCoresForMood,
   type QuestDefinition,
 } from "../data/quests";
 
@@ -240,7 +240,7 @@ function createQuestState(
         return false;
       }
 
-      const quest = QUESTS_BY_ID[questId];
+      const quest = QUEST_CORES_BY_ID[questId];
       if (
         !quest ||
         quest.moodId !== state.selectedMoodId ||
@@ -343,7 +343,7 @@ function createQuestState(
         return null;
       }
 
-      const quest = QUESTS_BY_ID[session.questId];
+      const quest = QUEST_CORES_BY_ID[session.questId];
       if (!quest || quest.moodId !== session.moodId) return null;
 
       const pointsAwarded = safeNonNegativeInteger(quest.rewardPoints);
@@ -454,45 +454,13 @@ export function useQuestStore<T>(selector: (state: QuestStore) => T) {
   return useStore(questStore, selector);
 }
 
-export function hydrateQuest(
-  questId: string,
-  completedSessions: readonly CompletedSession[],
-): Quest | null {
-  const quest = QUESTS_BY_ID[questId];
-  if (!quest) return null;
-  const mood = MOODS_BY_ID[quest.moodId];
-  if (!mood) return null;
-
-  return {
-    ...quest,
-    mood,
-    completionCount: completedSessions.filter(
-      (completion) => completion.questId === questId,
-    ).length,
-  };
-}
-
-export function hydrateCompletedQuest(
-  completion: CompletedSession,
-): CompletedQuest | null {
-  const quest = QUESTS_BY_ID[completion.questId];
-  const mood = MOODS_BY_ID[completion.moodId];
-  if (!quest || !mood || quest.moodId !== mood.id) return null;
-
-  return {
-    ...completion,
-    mood,
-    quest,
-  };
-}
-
 export function generateQuestOffers(
   moodId: MoodId,
   random: () => number = Math.random,
   excludedIds: ReadonlySet<string> = new Set(),
   count = QUEST_OFFER_COUNT,
 ) {
-  const eligible = questsForMood(moodId);
+  const eligible = questCoresForMood(moodId);
   const preferred = eligible.filter((quest) => !excludedIds.has(quest.id));
   const pool = preferred.length >= count ? preferred : eligible;
   return sampleWithoutReplacement(pool, count, random).map(
@@ -696,7 +664,7 @@ function sanitizedOfferSet(
   random: () => number,
 ) {
   const offeredQuestIds = uniqueStrings(value).filter(
-    (questId) => QUESTS_BY_ID[questId]?.moodId === moodId,
+    (questId) => QUEST_CORES_BY_ID[questId]?.moodId === moodId,
   );
   if (offeredQuestIds.length < QUEST_OFFER_COUNT) {
     const generated = generateQuestOffers(
@@ -731,7 +699,7 @@ function sessionFromUnknown(value: unknown): QuestSession | null {
   ) {
     return null;
   }
-  const quest = QUESTS_BY_ID[value.questId];
+  const quest = QUEST_CORES_BY_ID[value.questId];
   if (!quest || quest.moodId !== value.moodId) return null;
 
   const revealedAt = finiteNumber(value.revealedAt);
@@ -771,7 +739,7 @@ function completionsFromUnknown(value: unknown): CompletedSession[] {
     ) {
       continue;
     }
-    const quest = QUESTS_BY_ID[entry.questId];
+    const quest = QUEST_CORES_BY_ID[entry.questId];
     if (!quest || quest.moodId !== entry.moodId) continue;
 
     const completedAt = finiteNumber(entry.completedAt);

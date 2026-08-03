@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { QuestDefinition } from "../data/quests";
 import { getQuestCardAccentStyle } from "../data/questColors";
 import { useTiltEffect } from "../hooks/useTiltEffect";
@@ -61,6 +62,7 @@ export function QuestOfferDeck({
   onSelectionStart,
   onSelect,
 }: Props) {
+  const { t } = useTranslation();
   const itemKey = items.map((item) => item.id).join("-");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
@@ -117,7 +119,7 @@ export function QuestOfferDeck({
   return (
     <div
       className={styles.deck}
-      aria-label="Choose one of three hidden quest cards"
+      aria-label={t("ui.offers.deckLabel")}
       ref={deckRef}
     >
       {items.map((item, index) => {
@@ -165,9 +167,16 @@ export function QuestOfferDeck({
 
       <span className={styles.srOnly} aria-live="polite">
         {isMobile && items[activeCardIndex]
-          ? `Card ${activeCardIndex + 1} of ${items.length}: hidden quest`
+          ? t("ui.offers.cardStatus", {
+              current: activeCardIndex + 1,
+              total: items.length,
+            })
           : selectedId
-            ? `Opening ${items.find((item) => item.id === selectedId)?.title ?? "quest"}`
+            ? t("ui.offers.opening", {
+                title:
+                  items.find((item) => item.id === selectedId)?.title ??
+                  t("ui.offers.hiddenQuest"),
+              })
             : ""}
       </span>
     </div>
@@ -188,6 +197,7 @@ function QuestOfferCard({
   onCycle,
   onSelect,
 }: CardProps) {
+  const { t } = useTranslation();
   const suppressClickRef = useRef(false);
   const {
     handlePointerEnter,
@@ -269,7 +279,12 @@ function QuestOfferCard({
       exit={
         selectionStarted
           ? selected
-            ? { filter: "blur(0px)", opacity: 1, scale: 1 }
+            ? {
+                filter: "blur(0px)",
+                opacity: 0,
+                scale: 1,
+                transition: { opacity: { duration: 0 } },
+              }
             : {
                 filter: "blur(5px)",
                 opacity: 0,
@@ -340,7 +355,7 @@ function QuestOfferCard({
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
         onPointerOut={handlePointerLeave}
-        aria-label={`Reveal hidden quest card ${index + 1}`}
+        aria-label={t("ui.offers.revealCard", { number: index + 1 })}
         aria-pressed={selected}
       >
         <motion.span
@@ -359,7 +374,7 @@ function QuestOfferCard({
             <QuestCardBack
               durationMinutes={item.durationMinutes}
               title={item.title}
-              revealTitle
+              variant="summary"
             />
           </SelectionCardBody>
         </motion.span>

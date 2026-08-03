@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, type Variants } from "motion/react";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { formatRunningDuration } from "../lib/format";
 import styles from "../App.module.css";
 
@@ -81,6 +82,7 @@ const digitVariants: Variants = {
 };
 
 export function AnimatedElapsedTime({ elapsedMs, reduceMotion }: Props) {
+  const { t } = useTranslation();
   const formatted = formatRunningDuration(elapsedMs);
   const tokens = tokenize(formatted);
   const previousFormattedRef = useRef(formatted);
@@ -106,7 +108,7 @@ export function AnimatedElapsedTime({ elapsedMs, reduceMotion }: Props) {
       className={styles.elapsedTime}
       role="timer"
       aria-live="off"
-      aria-label={`Elapsed time ${formatted}`}
+      aria-label={t("ui.timer.elapsed", { time: formatted })}
     >
       <span className={styles.timerDigits} aria-hidden="true">
         {tokens.map(({ character, slot }) => {

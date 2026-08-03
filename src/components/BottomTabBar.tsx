@@ -1,4 +1,5 @@
 import { HistoryIcon, TimerIcon } from "./Icons";
+import { useTranslation } from "react-i18next";
 import { playSound } from "../lib/sound";
 import styles from "../App.module.css";
 
@@ -10,21 +11,23 @@ type Props = {
 };
 
 export function BottomTabBar({ selectedTab, onSelect }: Props) {
+  const { t } = useTranslation();
+
   return (
-    <nav className={styles.tabBar} aria-label="Main navigation">
+    <nav className={styles.tabBar} aria-label={t("ui.nav.mainNavigation")}>
       <div className={styles.tabBarInner} role="tablist">
         <TabButton
           active={selectedTab === "task"}
           icon={<TimerIcon />}
           tab="task"
-          label="Task"
+          label={t("ui.nav.task")}
           onClick={() => onSelect("task")}
         />
         <TabButton
           active={selectedTab === "history"}
           icon={<HistoryIcon />}
           tab="history"
-          label="History"
+          label={t("ui.nav.history")}
           onClick={() => onSelect("history")}
         />
       </div>

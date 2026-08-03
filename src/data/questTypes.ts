@@ -34,5 +34,20 @@ export type MoodQuestDefinition = {
   completion: string;
   durationMinutes: number;
   rewardPoints: number;
+  tipIds: readonly [string, string];
   tips: readonly QuestTip[];
 };
+
+export type QuestCoreDefinition = Pick<
+  MoodQuestDefinition,
+  | "id"
+  | "moodId"
+  | "durationMinutes"
+  | "rewardPoints"
+  | "tipIds"
+>;
+
+export type QuestTranslation = Pick<
+  MoodQuestDefinition,
+  "title" | "objective" | "completion"
+>;

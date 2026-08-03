@@ -13,6 +13,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type WheelEvent,
 } from "react";
+import { useTranslation } from "react-i18next";
 import type { MoodId } from "../data/moods";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import {
@@ -92,11 +93,13 @@ export function ArcDeck({
   reduceMotion,
   onSelect,
 }: Props) {
+  const { t } = useTranslation();
   const initialIndex = Math.max(
     0,
     items.findIndex((item) => item.id === initialItemId),
   );
   const [activeIndex, setActiveIndex] = useState(initialIndex);
+  const activeIndexRef = useRef(initialIndex);
   const [selectedId, setSelectedId] = useState<MoodId | null>(null);
   const position = useMotionValue(initialIndex);
   const targetRef = useRef(initialIndex);
@@ -118,6 +121,7 @@ export function ArcDeck({
     animationRef.current?.stop();
     position.set(initialIndex);
     targetRef.current = initialIndex;
+    activeIndexRef.current = initialIndex;
     setActiveIndex(initialIndex);
     setSelectedId(null);
     setRevealCards(reduceMotion || !initialItemId);
@@ -152,10 +156,10 @@ export function ArcDeck({
   useMotionValueEvent(position, "change", (latest) => {
     if (items.length === 0) return;
     const nextIndex = modulo(Math.round(latest), items.length);
-    setActiveIndex((current) => {
-      if (current !== nextIndex && !selectedId) playSound("moodStep");
-      return nextIndex;
-    });
+    if (activeIndexRef.current === nextIndex) return;
+    activeIndexRef.current = nextIndex;
+    setActiveIndex(nextIndex);
+    if (!selectedId) playSound("moodStep");
   });
 
   function moveTo(next: number, focus = false) {
@@ -356,16 +360,19 @@ export function ArcDeck({
         transition={{ duration: reduceMotion ? 0 : 0.18 }}
       >
         <MoodArrow />
-        <span>Drag or Scroll</span>
+        <span>{t("ui.arc.dragOrScroll")}</span>
         <MoodArrow right />
       </motion.div>
 
       <span className={styles.srOnly} aria-live="polite">
         {items[activeIndex]
-          ? `${activeIndex + 1} of ${items.length}: ${
-              items[activeIndex].title
-            }. ${items[activeIndex].subtitle}`
-          : "No cards available"}
+          ? t("ui.arc.status", {
+              current: activeIndex + 1,
+              total: items.length,
+              title: items[activeIndex].title,
+              subtitle: items[activeIndex].subtitle,
+            })
+          : t("ui.arc.noCards")}
       </span>
     </div>
   );
@@ -386,6 +393,7 @@ function ArcCard({
   onCenter,
   onSelect,
 }: CardProps) {
+  const { t } = useTranslation();
   const distance = useTransform(position, (latest) =>
     loopDistance(index - latest, itemCount),
   );
@@ -526,12 +534,16 @@ function ArcCard({
           className={styles.arcCardHitArea}
           data-flow-focus={center || undefined}
           data-selected={selected || undefined}
+          data-sound-card={center || undefined}
+          data-sound-skip={!center || undefined}
           type="button"
           tabIndex={center ? 0 : -1}
           aria-current={center ? "true" : undefined}
-          aria-label={`${center ? "Choose" : "Center"} ${item.title}. ${
-            item.subtitle
-          }`}
+          aria-label={t("ui.arc.cardLabel", {
+            action: t(center ? "ui.arc.choose" : "ui.arc.center"),
+            title: item.title,
+            subtitle: item.subtitle,
+          })}
           style={{
             rotateX,
             rotateY,

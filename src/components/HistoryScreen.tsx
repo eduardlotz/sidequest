@@ -1,5 +1,7 @@
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 import { formatRunningDuration, formatScore } from "../lib/format";
+import { normalizeLanguage } from "../localization/i18n";
 import type { CompletedQuest } from "../stores/useQuestStore";
 import { CheckIcon } from "./Icons";
 import styles from "../App.module.css";
@@ -15,19 +17,20 @@ export function HistoryScreen({
   legacyCompletionCount,
   reduceMotion,
 }: Props) {
+  const { t } = useTranslation();
   const hasCurrentCompletions = completedQuests.length > 0;
 
   return (
     <section className={styles.historyScreen} aria-labelledby="history-title">
       <header className={styles.historySummary}>
         <h2 className={styles.srOnly} id="history-title">
-          Quest history
+          {t("ui.history.title")}
         </h2>
         <p>
           <span>{completedQuests.length}</span>{" "}
-          {completedQuests.length === 1
-            ? "completed session"
-            : "completed sessions"}
+          {t("ui.history.completedSessions", {
+            count: completedQuests.length,
+          })}
         </p>
       </header>
 
@@ -35,12 +38,12 @@ export function HistoryScreen({
         {legacyCompletionCount > 0 && (
           <aside
             className={styles.legacyCompletionSummary}
-            aria-label="Earlier quest history"
+            aria-label={t("ui.history.earlierLabel")}
           >
             <strong>{legacyCompletionCount}</strong>{" "}
-            {legacyCompletionCount === 1
-              ? "completion from an earlier Sidequest version"
-              : "completions from an earlier Sidequest version"}
+            {t("ui.history.earlierCompletions", {
+              count: legacyCompletionCount,
+            })}
           </aside>
         )}
 
@@ -49,10 +52,8 @@ export function HistoryScreen({
             <span className={styles.emptyCheck} aria-hidden="true">
               <CheckIcon />
             </span>
-            <h2>No completed sessions yet</h2>
-            <p>
-              Completed quests will appear here with their time and reward.
-            </p>
+            <h2>{t("ui.history.emptyTitle")}</h2>
+            <p>{t("ui.history.emptyDescription")}</p>
           </div>
         ) : (
           <motion.ol className={styles.historyList} layout>
@@ -77,6 +78,9 @@ function HistoryQuest({
   completion: CompletedQuest;
   reduceMotion: boolean;
 }) {
+  const { i18n, t } = useTranslation();
+  const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
+
   return (
     <motion.li
       className={styles.historyRow}
@@ -98,7 +102,9 @@ function HistoryQuest({
           <span className={styles.historySessionMeta}>
             <strong>{formatRunningDuration(completion.durationMs)}</strong>
             <strong className={styles.historyPointsAwarded}>
-              +{formatScore(completion.pointsAwarded)} points
+              {t("ui.history.pointsAwarded", {
+                points: formatScore(completion.pointsAwarded, language),
+              })}
             </strong>
           </span>
         </header>

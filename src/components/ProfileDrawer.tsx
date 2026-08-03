@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import type {
   CompletedQuest,
@@ -6,6 +7,7 @@ import type {
 } from "../stores/useQuestStore";
 import styles from "../App.module.css";
 import { formatScore } from "../lib/format";
+import { normalizeLanguage } from "../localization/i18n";
 import { HistoryScreen } from "./HistoryScreen";
 
 type Props = {
@@ -23,6 +25,10 @@ export function ProfileDrawer({
   profile,
   reduceMotion,
 }: Props) {
+  const { i18n, t } = useTranslation();
+  const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
+  const formattedPoints = formatScore(profile.points, language);
+
   return (
     <section
       className={styles.profileDrawer}
@@ -32,18 +38,20 @@ export function ProfileDrawer({
       <header className={styles.profileDrawerHeader}>
         <div className={styles.profileDrawerTitleRow}>
           <Drawer.Title asChild>
-            <h2 id="profile-title">Your profile</h2>
+            <h2 id="profile-title">{t("ui.profile.title")}</h2>
           </Drawer.Title>
           <p
             className={styles.profilePointBalance}
-            aria-label={`${formatScore(profile.points)} points`}
+            aria-label={t("ui.profile.pointsLabel", {
+              points: formattedPoints,
+            })}
           >
-            <span>Points</span>
-            <strong>{formatScore(profile.points)}</strong>
+            <span>{t("ui.profile.points")}</span>
+            <strong>{formattedPoints}</strong>
           </p>
         </div>
         <Drawer.Description>
-          Your points and completed sidequests.
+          {t("ui.profile.description")}
         </Drawer.Description>
       </header>
 

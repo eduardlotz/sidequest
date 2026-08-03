@@ -15,6 +15,7 @@ export function defineMoodDeck(
   return quests.map(({ tipIds, ...quest }) => ({
     ...quest,
     moodId,
+    tipIds,
     tips: resolveQuestTips(tipIds),
   }));
 }

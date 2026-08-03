@@ -1,14 +1,16 @@
 import { describe, expect, test } from "bun:test";
 import { questsForMood } from "../data/quests";
 import {
+  hydrateCompletedQuest,
+  hydrateQuest,
+} from "../localization/catalog";
+import {
   DEFAULT_PROFILE,
   MOOD_RESET_MS,
   QUEST_OFFER_COUNT,
   SHUFFLE_COST,
   STORE_VERSION,
   createQuestStore,
-  hydrateCompletedQuest,
-  hydrateQuest,
   migratePersistedQuestState,
   sanitizePersistedQuestState,
 } from "./useQuestStore";
@@ -590,9 +592,9 @@ describe("mood quest persistence", () => {
       completedAt: 2_000,
     };
 
-    expect(hydrateQuest(quest.id, [completion])?.completionCount).toBe(1);
-    expect(hydrateQuest(quest.id, [completion])?.tips).toEqual(quest.tips);
-    expect(hydrateCompletedQuest(completion)).toMatchObject({
+    expect(hydrateQuest(quest.id, [completion], "en")?.completionCount).toBe(1);
+    expect(hydrateQuest(quest.id, [completion], "en")?.tips).toEqual(quest.tips);
+    expect(hydrateCompletedQuest(completion, "en")).toMatchObject({
       id: "completion-1",
       quest: { id: quest.id },
       mood: { id: "relax" },

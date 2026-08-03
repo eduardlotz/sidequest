@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { useShallow } from "zustand/react/shallow";
 import styles from "./App.module.css";
@@ -8,25 +9,30 @@ import { InteractiveDotBackground } from "./components/InteractiveDotBackground"
 import { ProfileDrawer } from "./components/ProfileDrawer";
 import { SolidButton } from "./components/SolidButton";
 import { TaskScreen } from "./components/TaskScreen";
-import { MOODS_BY_ID } from "./data/moods";
-import { QUESTS_BY_ID } from "./data/quests";
 import { AVATAR_MARK_BY_THEME, markAssetUrl } from "./data/questMarks";
 import { formatScore } from "./lib/format";
 import { playSound } from "./lib/sound";
 import {
-  MOOD_RESET_MS,
-  SHUFFLE_COST,
   hydrateCompletedQuest,
   hydrateQuest,
+  localizeMood,
+  localizeQuest,
+} from "./localization/catalog";
+import { normalizeLanguage } from "./localization/i18n";
+import {
+  MOOD_RESET_MS,
+  SHUFFLE_COST,
   useQuestStore,
 } from "./stores/useQuestStore";
 
 type Toast = {
   id: string;
-  title: string;
+  questId: string;
 };
 
 export function App() {
+  const { i18n, t } = useTranslation();
+  const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const {
     completeQuest,
     completedSessions,
@@ -74,27 +80,31 @@ export function App() {
   const [brandRotation, setBrandRotation] = useState(0);
   const desktop = useDesktopSheet();
   const currentQuest = currentSession
-    ? hydrateQuest(currentSession.questId, completedSessions)
+    ? hydrateQuest(currentSession.questId, completedSessions, language)
     : null;
   const selectedMood = selectedMoodId
-    ? MOODS_BY_ID[selectedMoodId] ?? null
+    ? localizeMood(selectedMoodId, language)
     : null;
   const offeredQuests = useMemo(
     () =>
       offeredQuestIds.flatMap((id) => {
-        const quest = QUESTS_BY_ID[id];
+        const quest = localizeQuest(id, language);
         return quest ? [quest] : [];
       }),
-    [offeredQuestIds],
+    [language, offeredQuestIds],
   );
   const completedQuests = useMemo(
     () =>
       completedSessions.flatMap((completion) => {
-        const quest = hydrateCompletedQuest(completion);
+        const quest = hydrateCompletedQuest(completion, language);
         return quest ? [quest] : [];
       }),
-    [completedSessions],
+    [completedSessions, language],
   );
+  const formattedPoints = formatScore(profile.points, language);
+  const toastTitle = toast
+    ? localizeQuest(toast.questId, language)?.title ?? ""
+    : "";
 
   useEffect(() => {
     if (!toast) return;
@@ -142,7 +152,7 @@ export function App() {
     if (!currentQuest || !currentSession) return;
     const nextToast = {
       id: currentSession.sessionId,
-      title: currentQuest.title,
+      questId: currentSession.questId,
     };
     if (completeQuest(durationMs)) setToast(nextToast);
   }
@@ -159,15 +169,27 @@ export function App() {
     setProfileOpen(open);
   }
 
+  function toggleLanguage() {
+    void i18n.changeLanguage(language === "en" ? "de" : "en");
+  }
+
+  const nextLanguage = language === "en" ? "de" : "en";
+  const nextLanguageName = t(
+    nextLanguage === "de" ? "ui.nav.german" : "ui.nav.english",
+  );
+
   return (
     <div className={styles.app}>
       <InteractiveDotBackground reduceMotion={reduceMotion} />
 
       <a className={styles.skipLink} href="#main-content">
-        Skip to content
+        {t("ui.nav.skipToContent")}
       </a>
 
-      <header className={styles.topNavigation} aria-label="Main navigation">
+      <header
+        className={styles.topNavigation}
+        aria-label={t("ui.nav.mainNavigation")}
+      >
         <motion.div
           className={styles.navActionSlot}
           initial={reduceMotion ? false : { opacity: 0, y: -14 }}
@@ -184,42 +206,54 @@ export function App() {
                 }
           }
         >
-          <Drawer.Root
-            direction={desktop ? "left" : "bottom"}
-            open={aboutOpen}
-            onOpenChange={handleAboutOpenChange}
-            shouldScaleBackground={false}
-          >
-            <Drawer.Trigger asChild>
-              <SolidButton
-                data-active={aboutOpen || undefined}
-                data-sound-click-skip
-                type="button"
-              >
-                About
-              </SolidButton>
-            </Drawer.Trigger>
-            <Drawer.Portal>
-              <Drawer.Overlay className={styles.drawerOverlay} />
-              <Drawer.Content
-                className={`${styles.floatingDrawer} ${styles.aboutDrawer}`}
-                data-direction={desktop ? "left" : "bottom"}
-              >
-                {!desktop && (
-                  <div className={styles.drawerHandle} aria-hidden="true" />
-                )}
-                <AboutSidequest />
-              </Drawer.Content>
-            </Drawer.Portal>
-          </Drawer.Root>
+          <div className={styles.navActionGroup}>
+            <Drawer.Root
+              direction={desktop ? "left" : "bottom"}
+              open={aboutOpen}
+              onOpenChange={handleAboutOpenChange}
+              shouldScaleBackground={false}
+            >
+              <Drawer.Trigger asChild>
+                <SolidButton
+                  data-active={aboutOpen || undefined}
+                  data-sound-click-skip
+                  type="button"
+                >
+                  {t("ui.nav.about")}
+                </SolidButton>
+              </Drawer.Trigger>
+              <Drawer.Portal>
+                <Drawer.Overlay className={styles.drawerOverlay} />
+                <Drawer.Content
+                  className={`${styles.floatingDrawer} ${styles.aboutDrawer}`}
+                  data-direction={desktop ? "left" : "bottom"}
+                >
+                  {!desktop && (
+                    <div className={styles.drawerHandle} aria-hidden="true" />
+                  )}
+                  <AboutSidequest />
+                </Drawer.Content>
+              </Drawer.Portal>
+            </Drawer.Root>
+            <SolidButton
+              type="button"
+              aria-label={t("ui.nav.switchLanguage", {
+                language: nextLanguageName,
+              })}
+              lang={nextLanguage}
+              onClick={toggleLanguage}
+            >
+              {nextLanguage.toUpperCase()}
+            </SolidButton>
+          </div>
         </motion.div>
 
         <button
           className={styles.brandMark}
           data-sound-click-skip
           type="button"
-          aria-label="Spin Sidequest logo"
-          title="Spin Sidequest logo"
+          aria-label={t("ui.nav.spinLogo")}
+          title={t("ui.nav.spinLogo")}
           onClick={() => setBrandRotation((rotation) => rotation + 360)}
         >
           <motion.img
@@ -267,9 +301,11 @@ export function App() {
                   data-active={profileOpen || undefined}
                   data-sound-click-skip
                   type="button"
-                  aria-label={`Your profile, ${formatScore(profile.points)} points`}
+                  aria-label={t("ui.nav.profileLabel", {
+                    points: formattedPoints,
+                  })}
                 >
-                  {formatScore(profile.points)} points
+                  {t("ui.nav.points", { points: formattedPoints })}
                 </SolidButton>
               </Drawer.Trigger>
               <Drawer.Portal>
@@ -328,12 +364,12 @@ export function App() {
               exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
               transition={{ duration: reduceMotion ? 0 : 0.18 }}
               role="status"
-              aria-label={`Quest complete: ${toast.title}`}
+              aria-label={t("ui.toast.completeLabel", { title: toastTitle })}
             >
               <span aria-hidden="true">
                 <CheckIcon />
               </span>
-              <strong>Quest complete</strong>
+              <strong>{t("ui.toast.complete")}</strong>
             </motion.div>
           )}
         </AnimatePresence>
@@ -343,39 +379,38 @@ export function App() {
 }
 
 function AboutSidequest() {
+  const { t } = useTranslation();
+
   return (
     <section className={styles.aboutContent} aria-labelledby="about-title">
       <header className={styles.aboutIntro}>
         <Drawer.Title asChild>
-          <h2 id="about-title">Welcome to sidequest</h2>
+          <h2 id="about-title">{t("ui.about.title")}</h2>
         </Drawer.Title>
         <Drawer.Description>
-          A small companion for choosing what to play.
+          {t("ui.about.description")}
         </Drawer.Description>
       </header>
 
       <div className={styles.aboutBody}>
         <section className={styles.aboutSection}>
           <ol className={styles.aboutSteps}>
-            <li>Choose how you feel right now</li>
-            <li>Pick one of the three quests that brings a game to mind</li>
-            <li>Use the quest-specific tips and start the rope timer</li>
-            <li>Pause when you are ready to complete the quest</li>
-            <li>Spend earned points when you need a fresh set of cards</li>
+            <li>{t("ui.about.step1")}</li>
+            <li>{t("ui.about.step2")}</li>
+            <li>{t("ui.about.step3")}</li>
+            <li>{t("ui.about.step4")}</li>
+            <li>{t("ui.about.step5")}</li>
           </ol>
         </section>
 
         <section className={styles.aboutSection}>
-          <h3>Less choosing, more playing</h3>
-          <p>
-            Your mood resets after four hours, while points and completed
-            sessions stay in your local profile.
-          </p>
+          <h3>{t("ui.about.lessChoosing")}</h3>
+          <p>{t("ui.about.moodReset")}</p>
         </section>
       </div>
 
       <footer className={styles.aboutCredit}>
-        Made by{" "}
+        {t("ui.about.madeBy")} {" "}
         <a href="https://eduardlotz.de" rel="noreferrer" target="_blank">
           Eduard Lotz
         </a>

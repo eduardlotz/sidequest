@@ -1,4 +1,9 @@
-import { MOOD_IDS, type MoodId, type MoodQuestDefinition } from "../questTypes";
+import {
+  MOOD_IDS,
+  type MoodId,
+  type MoodQuestDefinition,
+  type QuestCoreDefinition,
+} from "../questTypes";
 import { CHALLENGE_QUESTS } from "./challenge";
 import { CONNECT_QUESTS } from "./connect";
 import { CREATE_QUESTS } from "./create";
@@ -15,6 +20,8 @@ import { RESTLESS_QUESTS } from "./restless";
 export type {
   MoodId,
   MoodQuestDefinition as QuestDefinition,
+  QuestCoreDefinition,
+  QuestTranslation,
 } from "../questTypes";
 
 const MOOD_DECKS = [
@@ -38,6 +45,20 @@ export const QUESTS_BY_ID = Object.fromEntries(
   QUESTS.map((quest) => [quest.id, quest]),
 ) as Record<string, MoodQuestDefinition>;
 
+export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
+  ({ id, moodId, durationMinutes, rewardPoints, tipIds }) => ({
+    id,
+    moodId,
+    durationMinutes,
+    rewardPoints,
+    tipIds,
+  }),
+);
+
+export const QUEST_CORES_BY_ID = Object.fromEntries(
+  QUEST_CORES.map((quest) => [quest.id, quest]),
+) as Record<string, QuestCoreDefinition>;
+
 export const QUESTS_BY_MOOD = MOOD_IDS.reduce(
   (decks, moodId) => {
     decks[moodId] = QUESTS.filter((quest) => quest.moodId === moodId);
@@ -50,4 +71,10 @@ export function questsForMood(
   moodId: MoodId,
 ): readonly MoodQuestDefinition[] {
   return QUESTS_BY_MOOD[moodId];
+}
+
+export function questCoresForMood(
+  moodId: MoodId,
+): readonly QuestCoreDefinition[] {
+  return QUEST_CORES.filter((quest) => quest.moodId === moodId);
 }
