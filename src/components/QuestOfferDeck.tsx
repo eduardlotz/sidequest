@@ -1,38 +1,38 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { QuestDefinition } from "../data/quests";
 import { getQuestCardAccentStyle } from "../data/questColors";
 import { useTiltEffect } from "../hooks/useTiltEffect";
-import {
-  CARD_LAYOUT_TRANSITION,
-  moodOfferSlotLayoutId,
-} from "../lib/cardMotion";
+import { CARD_LAYOUT_TRANSITION } from "../lib/cardMotion";
 import { playSound } from "../lib/sound";
 import styles from "../App.module.css";
 import { QuestCardBack } from "./QuestCardBack";
 import { SelectionCardBody } from "./SelectionCard";
 
 export type QuestOfferItem = QuestDefinition;
+type QuestEntryMotion = "bottom" | "shared";
 
 type Props = {
   items: readonly QuestOfferItem[];
-  entryMotion: "bottom" | "shared";
+  entryMotion: QuestEntryMotion;
   layoutSessionId: string;
-  moodTransition: {
-    layoutSessionId: number | string;
-  } | null;
   reduceMotion: boolean;
+  returningQuestId?: string;
+  returningToMoods: boolean;
   onSelectionStart: () => void;
   onSelect: (questId: string) => void;
 };
 
 type CardProps = {
+  entryMotion: QuestEntryMotion;
   item: QuestOfferItem;
   index: number;
   isMobile: boolean;
   isTopCard: boolean;
   stackPosition: "front" | "middle" | "back";
   reduceMotion: boolean;
+  returningToMoods: boolean;
   selected: boolean;
   selectionStarted: boolean;
   sharedLayoutId: string;
@@ -51,26 +51,52 @@ const CARD_POSITION_TRANSITION = {
   restDelta: 0.001,
   restSpeed: 0.001,
 };
+const MOOD_HANDOFF_TRANSITION = {
+  type: "spring" as const,
+  stiffness: 125,
+  damping: 14,
+  mass: 0.9,
+  restDelta: 0.001,
+  restSpeed: 0.001,
+};
+const CARD_CENTER_STAGGER_SECONDS = 0.08;
+const MOOD_HANDOFF_OFFSET_Y = -280;
 
 export function QuestOfferDeck({
   items,
   entryMotion,
   layoutSessionId,
-  moodTransition,
   reduceMotion,
+  returningQuestId,
+  returningToMoods,
   onSelectionStart,
   onSelect,
 }: Props) {
+  const { t } = useTranslation();
   const itemKey = items.map((item) => item.id).join("-");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const [activeCardIndex, setActiveCardIndex] = useState(() =>
+    returningQuestId
+      ? Math.max(
+          0,
+          items.findIndex((item) => item.id === returningQuestId),
+        )
+      : 0,
+  );
   const deckRef = useRef<HTMLDivElement>(null);
   const selectionFrameRef = useRef<number | null>(null);
   const isMobile = useMobileLayout();
 
   useEffect(() => {
     setSelectedId(null);
-    setActiveCardIndex(0);
+    setActiveCardIndex(
+      returningQuestId
+        ? Math.max(
+            0,
+            items.findIndex((item) => item.id === returningQuestId),
+          )
+        : 0,
+    );
   }, [itemKey]);
 
   useEffect(
@@ -117,7 +143,7 @@ export function QuestOfferDeck({
   return (
     <div
       className={styles.deck}
-      aria-label="Choose one of three hidden quest cards"
+      aria-label={t("ui.offers.deckLabel")}
       ref={deckRef}
     >
       {items.map((item, index) => {
@@ -125,13 +151,7 @@ export function QuestOfferDeck({
           (index - activeCardIndex + items.length) % items.length;
         const stackPosition =
           stackOffset === 0 ? "front" : stackOffset === 1 ? "middle" : "back";
-        const physicalSlotIndex = isMobile ? stackOffset : index;
-        const slotLayoutId = moodTransition
-          ? moodOfferSlotLayoutId(
-              moodTransition.layoutSessionId,
-              physicalSlotIndex,
-            )
-          : `quest-offer-slot-${layoutSessionId}-${index}`;
+        const slotLayoutId = `quest-offer-slot-${layoutSessionId}-${index}`;
 
         return (
           <motion.div
@@ -142,8 +162,9 @@ export function QuestOfferDeck({
             data-stack-position={stackPosition}
             key={`quest-offer-slot-${index}`}
           >
-            <AnimatePresence initial={entryMotion !== "shared"} mode="sync">
+            <AnimatePresence mode="sync">
               <QuestOfferCard
+                entryMotion={entryMotion}
                 item={item}
                 index={index}
                 isMobile={isMobile}
@@ -152,6 +173,7 @@ export function QuestOfferDeck({
                 layoutSessionId={layoutSessionId}
                 stackPosition={stackPosition}
                 reduceMotion={reduceMotion}
+                returningToMoods={returningToMoods}
                 selected={selectedId === item.id}
                 selectionStarted={selectedId !== null}
                 sharedLayoutId={slotLayoutId}
@@ -165,9 +187,18 @@ export function QuestOfferDeck({
 
       <span className={styles.srOnly} aria-live="polite">
         {isMobile && items[activeCardIndex]
-          ? `Card ${activeCardIndex + 1} of ${items.length}: hidden quest`
+          ? t("ui.offers.cardStatus", {
+              current: activeCardIndex + 1,
+              total: items.length,
+              name: items[activeCardIndex].name,
+              title: items[activeCardIndex].title,
+            })
           : selectedId
-            ? `Opening ${items.find((item) => item.id === selectedId)?.title ?? "quest"}`
+            ? t("ui.offers.opening", {
+                title:
+                  items.find((item) => item.id === selectedId)?.title ??
+                  t("ui.offers.hiddenQuest"),
+              })
             : ""}
       </span>
     </div>
@@ -175,6 +206,7 @@ export function QuestOfferDeck({
 }
 
 function QuestOfferCard({
+  entryMotion,
   item,
   index,
   isMobile,
@@ -182,12 +214,14 @@ function QuestOfferCard({
   layoutSessionId,
   stackPosition,
   reduceMotion,
+  returningToMoods,
   selected,
   selectionStarted,
   sharedLayoutId,
   onCycle,
   onSelect,
 }: CardProps) {
+  const { t } = useTranslation();
   const suppressClickRef = useRef(false);
   const {
     handlePointerEnter,
@@ -205,9 +239,35 @@ function QuestOfferCard({
     if (selectionStarted) resetTilt();
   }, [resetTilt, selectionStarted]);
 
+  const centerOffsetX = isMobile
+    ? 0
+    : index === 0
+      ? 150
+      : index === 2
+        ? -150
+        : 0;
+  const centerStaggerDelay = isMobile
+    ? stackPosition === "front"
+      ? 0
+      : stackPosition === "middle"
+        ? CARD_CENTER_STAGGER_SECONDS
+        : CARD_CENTER_STAGGER_SECONDS * 2
+    : Math.abs(index - 1) * CARD_CENTER_STAGGER_SECONDS;
+  const moodHandoffActive =
+    !selectionStarted && (entryMotion === "shared" || returningToMoods);
+  const positionTransition = moodHandoffActive
+    ? MOOD_HANDOFF_TRANSITION
+    : CARD_POSITION_TRANSITION;
+  const positionDelay = selectionStarted
+    ? 0
+    : moodHandoffActive
+      ? centerStaggerDelay
+      : index * 0.05;
+
   return (
     <motion.div
       className={styles.previewCardProjection}
+      data-mood-handoff={moodHandoffActive || undefined}
       data-position={index === 0 ? "left" : index === 2 ? "right" : "center"}
       data-stack-position={stackPosition}
       layoutId={`task-card-${layoutSessionId}-${item.id}`}
@@ -239,17 +299,29 @@ function QuestOfferCard({
       initial={
         reduceMotion
           ? false
-          : {
-              filter: "blur(5px)",
-              opacity: 0,
-              y: 72,
-              scale: 0.92,
-            }
+          : entryMotion === "shared"
+            ? {
+                filter: "none",
+                opacity: 0,
+                x: centerOffsetX,
+                y: MOOD_HANDOFF_OFFSET_Y,
+                scale: 0.96,
+              }
+            : {
+                filter: "blur(5px)",
+                opacity: 0,
+                y: 72,
+                scale: 0.92,
+              }
       }
       animate={{
-        filter:
-          selectionStarted && !selected ? "blur(5px)" : "blur(0px)",
-        opacity: selectionStarted && !selected ? 0 : 1,
+        filter: moodHandoffActive
+          ? "none"
+          : selectionStarted && !selected
+            ? "blur(5px)"
+            : "blur(0px)",
+        opacity:
+          (selectionStarted && !selected) || returningToMoods ? 0 : 1,
         x:
           selectionStarted && !selected
             ? index === 0
@@ -257,33 +329,55 @@ function QuestOfferCard({
               : index === 2
                 ? 210
                 : 0
-            : 0,
+            : returningToMoods
+              ? centerOffsetX
+              : 0,
         y:
           selectionStarted && !selected
             ? index === 1
               ? -150
               : 120
-            : 0,
-        scale: selectionStarted && !selected ? 0.72 : 1,
+            : returningToMoods
+              ? MOOD_HANDOFF_OFFSET_Y
+              : 0,
+        scale:
+          selectionStarted && !selected
+            ? 0.72
+            : returningToMoods
+              ? 0.96
+              : 1,
       }}
       exit={
-        selectionStarted
-          ? selected
-            ? { filter: "blur(0px)", opacity: 1, scale: 1 }
-            : {
-                filter: "blur(5px)",
-                opacity: 0,
-                y: reduceMotion ? 0 : index === 1 ? -150 : 120,
-                x: reduceMotion
-                  ? 0
-                  : index === 0
-                    ? -210
-                    : index === 2
-                      ? 210
-                      : 0,
-                scale: reduceMotion ? 1 : 0.72,
-              }
-          : { filter: "blur(0px)", opacity: 1, y: 0, scale: 1 }
+        returningToMoods
+          ? {
+              filter: "none",
+              opacity: 0,
+              x: centerOffsetX,
+              y: MOOD_HANDOFF_OFFSET_Y,
+              scale: 0.96,
+            }
+          : selectionStarted
+            ? selected
+              ? {
+                  filter: "blur(0px)",
+                  opacity: 0,
+                  scale: 1,
+                  transition: { opacity: { duration: 0 } },
+                }
+              : {
+                  filter: "blur(5px)",
+                  opacity: 0,
+                  y: reduceMotion ? 0 : index === 1 ? -150 : 120,
+                  x: reduceMotion
+                    ? 0
+                    : index === 0
+                      ? -210
+                      : index === 2
+                        ? 210
+                        : 0,
+                  scale: reduceMotion ? 1 : 0.72,
+                }
+            : { filter: "blur(0px)", opacity: 1, y: 0, scale: 1 }
       }
       transition={
         reduceMotion
@@ -291,26 +385,26 @@ function QuestOfferCard({
           : {
               layout: CARD_LAYOUT_TRANSITION,
               x: {
-                ...CARD_POSITION_TRANSITION,
-                delay: selectionStarted ? 0 : index * 0.05,
+                ...positionTransition,
+                delay: positionDelay,
               },
               y: {
-                ...CARD_POSITION_TRANSITION,
-                delay: selectionStarted ? 0 : index * 0.05,
+                ...positionTransition,
+                delay: positionDelay,
               },
               scale: {
-                ...CARD_POSITION_TRANSITION,
-                delay: selectionStarted ? 0 : index * 0.05,
+                ...positionTransition,
+                delay: positionDelay,
               },
               opacity: {
-                duration: 0.26,
+                duration: moodHandoffActive ? 0.4 : 0.26,
                 ease: CARD_FADE_EASE,
-                delay: selectionStarted ? 0 : index * 0.05,
+                delay: positionDelay,
               },
               filter: {
-                duration: 0.24,
+                duration: moodHandoffActive ? 0 : 0.24,
                 ease: CARD_FADE_EASE,
-                delay: selectionStarted ? 0 : index * 0.05,
+                delay: positionDelay,
               },
             }
       }
@@ -340,7 +434,10 @@ function QuestOfferCard({
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
         onPointerOut={handlePointerLeave}
-        aria-label={`Reveal hidden quest card ${index + 1}`}
+        aria-label={t("ui.offers.selectQuest", {
+          name: item.name,
+          title: item.title,
+        })}
         aria-pressed={selected}
       >
         <motion.span
@@ -357,9 +454,12 @@ function QuestOfferCard({
           >
             <span className={styles.cardShimmer} aria-hidden="true" />
             <QuestCardBack
-              durationMinutes={item.durationMinutes}
+              minimumDurationMinutes={item.minimumDurationMinutes}
+              moodTitle={t(`moods.${item.moodId}.title`)}
+              name={item.name}
+              suggestedDurationMinutes={item.suggestedDurationMinutes}
               title={item.title}
-              revealTitle
+              variant="summary"
             />
           </SelectionCardBody>
         </motion.span>

@@ -1,15 +1,29 @@
 import { describe, expect, test } from "bun:test";
 import { questsForMood } from "../data/quests";
 import {
-  DEFAULT_PROFILE,
-  MOOD_RESET_MS,
-  QUEST_OFFER_COUNT,
-  SHUFFLE_COST,
-  STORE_VERSION,
-  createQuestStore,
   hydrateCompletedQuest,
   hydrateQuest,
+} from "../localization/catalog";
+import {
+  DEFAULT_PROFILE,
+  DEFAULT_QUEST_STATS,
+  INITIAL_RED_ROPES,
+  MAX_COMPLETION_POINTS,
+  MAX_GAME_TITLE_LENGTH,
+  MOOD_RESET_MS,
+  POINTS_DURATION_CAP_MS,
+  QUEST_OFFER_COUNT,
+  RED_ROPE_BUNDLE_COST,
+  RED_ROPE_BUNDLE_SIZE,
+  SHUFFLE_COST,
+  STORED_COMPLETION_LIMIT,
+  STORE_VERSION,
+  activeSessionDurationMs,
+  calculateCompletionPoints,
+  canCompleteQuest,
+  createQuestStore,
   migratePersistedQuestState,
+  sanitizeGameTitle,
   sanitizePersistedQuestState,
 } from "./useQuestStore";
 
@@ -186,22 +200,39 @@ describe("mood quest store", () => {
     expect(store.getState().currentSession?.pausedTotalMs).toBe(500);
   });
 
-  test("only completes while paused and awards base quest points once", () => {
+  test("only completes while paused at the card minimum and calculates points from active time", () => {
     const { store, setNow } = makeStore(() => 0);
     store.getState().selectMood("relax");
     const questId = store.getState().offeredQuestIds[0];
+    const quest = questsForMood("relax").find(
+      (candidate) => candidate.id === questId,
+    )!;
+    const minimumDurationMs = quest.minimumDurationMinutes * 60_000;
     store.getState().revealQuest(questId);
     store.getState().startQuest(1_100);
 
-    expect(store.getState().completeQuest(900)).toBeNull();
-    store.getState().pauseQuest(2_000);
-    setNow(2_100);
+    expect(store.getState().completeQuest()).toBeNull();
+    store.getState().pauseQuest(1_100 + minimumDurationMs);
+    setNow(1_200 + minimumDurationMs);
 
-    const expectedPoints =
-      questsForMood("relax").find((quest) => quest.id === questId)!.rewardPoints;
+    const expectedPoints = calculateCompletionPoints(minimumDurationMs);
     const offersBeforeCompletion = [...store.getState().offeredQuestIds];
-    expect(store.getState().completeQuest(900.8)).toBe(true);
+    const pausedSession = store.getState().currentSession;
+    expect(activeSessionDurationMs(pausedSession!)).toBe(minimumDurationMs);
+    expect(canCompleteQuest(pausedSession)).toBe(true);
+    const completion = store
+      .getState()
+      .completeQuest("  Outer   Wilds\nEchoes  ");
 
+    expect(completion).toMatchObject({
+      id: "session-1",
+      moodId: "relax",
+      questId,
+      durationMs: minimumDurationMs,
+      pointsAwarded: expectedPoints,
+      completedAt: 1_200 + minimumDurationMs,
+      gameTitle: "Outer Wilds Echoes",
+    });
     expect(store.getState().profile.points).toBe(expectedPoints);
     expect(store.getState().currentSession).toBeNull();
     expect(store.getState().offeredQuestIds).toHaveLength(QUEST_OFFER_COUNT);
@@ -217,15 +248,101 @@ describe("mood quest store", () => {
       id: "session-1",
       moodId: "relax",
       questId,
-      durationMs: 900,
+      durationMs: minimumDurationMs,
       pointsAwarded: expectedPoints,
-      completedAt: 2_100,
+      completedAt: 1_200 + minimumDurationMs,
+      gameTitle: "Outer Wilds Echoes",
     });
-    expect(store.getState().completeQuest(900)).toBeNull();
+    expect(store.getState().stats).toMatchObject({
+      completedQuestCount: 1,
+      uniqueCompletedQuestCount: 1,
+      totalPlayedMs: minimumDurationMs,
+      repeatedCompletionCount: 0,
+      completionCountsByQuestId: { [questId]: 1 },
+      completionCountsByMoodId: { relax: 1 },
+      favoriteMoodId: "relax",
+    });
+    expect(store.getState().completeQuest()).toBeNull();
     expect(store.getState().profile.points).toBe(expectedPoints);
   });
 
-  test("replaces only the discarded quest for free", () => {
+  test("rejects completion one millisecond before the card minimum", () => {
+    const { store, setNow } = makeStore(() => 0);
+    store.getState().selectMood("relax");
+    const questId = store.getState().offeredQuestIds[0];
+    const quest = questsForMood("relax").find(
+      (candidate) => candidate.id === questId,
+    )!;
+    const startedAt = 1_100;
+    const pausedAt =
+      startedAt + quest.minimumDurationMinutes * 60_000 - 1;
+    store.getState().revealQuest(questId);
+    store.getState().startQuest(startedAt);
+    store.getState().pauseQuest(pausedAt);
+    setNow(pausedAt + 1_000);
+
+    expect(canCompleteQuest(store.getState().currentSession)).toBe(false);
+    expect(store.getState().completeQuest("Game")).toBeNull();
+    expect(store.getState().currentSession?.questId).toBe(questId);
+    expect(store.getState().completedSessions).toEqual([]);
+    expect(store.getState().profile.points).toBe(0);
+    expect(store.getState().stats).toEqual(DEFAULT_QUEST_STATS);
+  });
+
+  test("debug mode bypasses the minimum while preserving time-based points", () => {
+    const { store, setNow } = makeStore(() => 0);
+    store.getState().selectMood("relax");
+    const questId = store.getState().offeredQuestIds[0];
+    store.getState().revealQuest(questId);
+    store.getState().startQuest(1_100);
+    store.getState().pauseQuest(1_100);
+    setNow(1_100);
+
+    expect(canCompleteQuest(store.getState().currentSession)).toBe(false);
+    store.getState().setDebugMode(true);
+    expect(store.getState().profile.debugMode).toBe(true);
+    expect(
+      canCompleteQuest(store.getState().currentSession, 1_100, true),
+    ).toBe(true);
+
+    const completion = store.getState().completeQuest("Debug Game");
+    expect(completion).toMatchObject({
+      questId,
+      durationMs: 0,
+      pointsAwarded: 0,
+      gameTitle: "Debug Game",
+    });
+    expect(store.getState().profile.points).toBe(0);
+    expect(store.getState().stats.completedQuestCount).toBe(1);
+  });
+
+  test("caps completion points at 60 minutes while preserving full active time", () => {
+    const { store, setNow } = makeStore(() => 0);
+    store.getState().selectMood("challenge");
+    const questId = store.getState().offeredQuestIds[0];
+    const startedAt = 1_100;
+    const durationMs = POINTS_DURATION_CAP_MS + 15 * 60_000;
+    store.getState().revealQuest(questId);
+    store.getState().startQuest(startedAt);
+    store.getState().pauseQuest(startedAt + durationMs);
+    setNow(startedAt + durationMs + 500);
+
+    const completion = store.getState().completeQuest();
+    expect(completion?.durationMs).toBe(durationMs);
+    expect(completion?.pointsAwarded).toBe(MAX_COMPLETION_POINTS);
+    expect(store.getState().profile.points).toBe(MAX_COMPLETION_POINTS);
+    expect(store.getState().stats.totalPlayedMs).toBe(durationMs);
+  });
+
+  test("sanitizes and limits optional game titles", () => {
+    expect(sanitizeGameTitle("  \n \t  ")).toBe(undefined);
+    expect(sanitizeGameTitle("  A\n\tGame  Title  ")).toBe("A Game Title");
+    expect(sanitizeGameTitle("x".repeat(MAX_GAME_TITLE_LENGTH + 12))).toBe(
+      "x".repeat(MAX_GAME_TITLE_LENGTH),
+    );
+  });
+
+  test("spends one red rope, tracks cancellation, and rotates only the discarded slot", () => {
     const { store } = makeStore();
     store.getState().selectMood("connect");
     const offers = [...store.getState().offeredQuestIds];
@@ -238,7 +355,7 @@ describe("mood quest store", () => {
     });
     store.getState().revealQuest(discardedQuestId);
 
-    store.getState().discardCurrentSession();
+    expect(store.getState().discardCurrentSession()).toBe(true);
     const rotatedOffers = store.getState().offeredQuestIds;
     expect(store.getState().currentSession).toBeNull();
     expect(rotatedOffers).toHaveLength(QUEST_OFFER_COUNT);
@@ -248,13 +365,140 @@ describe("mood quest store", () => {
     expect(rotatedOffers[2]).toBe(offers[2]);
     expect(store.getState().offerSetsByMoodId.connect).toEqual(rotatedOffers);
     expect(store.getState().profile.points).toBe(SHUFFLE_COST);
+    expect(store.getState().profile.redRopes).toBe(INITIAL_RED_ROPES - 1);
+    expect(store.getState().stats.cancelledQuestCount).toBe(1);
+  });
+
+  test("refuses cancellation at zero red ropes without changing the session", () => {
+    const { store } = makeStore();
+    store.getState().selectMood("connect");
+    const questId = store.getState().offeredQuestIds[0];
+    store.getState().revealQuest(questId);
+    store.setState({
+      profile: { ...store.getState().profile, redRopes: 0 },
+    });
+    const offersBefore = [...store.getState().offeredQuestIds];
+
+    expect(store.getState().discardCurrentSession()).toBe(false);
+    expect(store.getState().currentSession?.questId).toBe(questId);
+    expect(store.getState().offeredQuestIds).toEqual(offersBefore);
+    expect(store.getState().stats.cancelledQuestCount).toBe(0);
+  });
+
+  test("debug mode allows cancellation at zero ropes without spending any", () => {
+    const { store } = makeStore();
+    store.getState().selectMood("connect");
+    const questId = store.getState().offeredQuestIds[0];
+    store.getState().revealQuest(questId);
+    store.setState({
+      profile: {
+        ...store.getState().profile,
+        redRopes: 0,
+        debugMode: true,
+      },
+    });
+
+    expect(store.getState().discardCurrentSession()).toBe(true);
+    expect(store.getState().currentSession).toBeNull();
+    expect(store.getState().profile.redRopes).toBe(0);
+    expect(store.getState().stats.cancelledQuestCount).toBe(1);
+  });
+
+  test("purchases three red ropes atomically for 50 points", () => {
+    const { store } = makeStore();
+
+    expect(RED_ROPE_BUNDLE_SIZE).toBe(3);
+    expect(RED_ROPE_BUNDLE_COST).toBe(50);
+
+    expect(store.getState().purchaseRedRopes()).toBe(false);
+    store.setState({
+      profile: {
+        ...store.getState().profile,
+        points: RED_ROPE_BUNDLE_COST,
+      },
+    });
+    expect(store.getState().purchaseRedRopes()).toBe(true);
+    expect(store.getState().profile).toMatchObject({
+      points: 0,
+      redRopes: INITIAL_RED_ROPES + RED_ROPE_BUNDLE_SIZE,
+    });
+  });
+
+  test("replays a known quest in ready state with exact-slot offer context", () => {
+    const { store } = makeStore(() => 0);
+    const quest = questsForMood("curious")[5];
+
+    expect(store.getState().replayQuest("missing-quest")).toBe(false);
+    expect(store.getState().replayQuest(quest.id)).toBe(true);
+    expect(store.getState().currentSession).toMatchObject({
+      moodId: "curious",
+      questId: quest.id,
+      revealedAt: 1_000,
+      startedAt: null,
+      pausedAt: null,
+    });
+    expect(store.getState().selectedMoodId).toBe("curious");
+    expect(store.getState().offeredQuestIds).toHaveLength(QUEST_OFFER_COUNT);
+    expect(store.getState().offeredQuestIds[0]).toBe(quest.id);
+    expect(store.getState().offerSetsByMoodId.curious).toEqual(
+      store.getState().offeredQuestIds,
+    );
+    expect(store.getState().replayQuest(questsForMood("relax")[0].id)).toBe(
+      false,
+    );
+
+    expect(store.getState().discardCurrentSession()).toBe(true);
+    expect(store.getState().offeredQuestIds).not.toContain(quest.id);
+  });
+
+  test("tracks unique quests, repeat completions, and favorite-mood ties by recency", () => {
+    const { store, setNow } = makeStore(() => 0);
+    const relaxQuest = questsForMood("relax")[0];
+    const challengeQuest = questsForMood("challenge")[0];
+
+    function completeReplay(quest: typeof relaxQuest) {
+      expect(store.getState().replayQuest(quest.id)).toBe(true);
+      const revealedAt = store.getState().currentSession!.revealedAt;
+      const startedAt = revealedAt + 1;
+      const pausedAt = startedAt + quest.minimumDurationMinutes * 60_000;
+      store.getState().startQuest(startedAt);
+      store.getState().pauseQuest(pausedAt);
+      setNow(pausedAt + 1);
+      expect(store.getState().completeQuest() === null).toBe(false);
+    }
+
+    completeReplay(relaxQuest);
+    completeReplay(relaxQuest);
+    completeReplay(challengeQuest);
+    expect(store.getState().stats.favoriteMoodId).toBe("relax");
+    completeReplay(challengeQuest);
+
+    expect(store.getState().stats).toMatchObject({
+      completedQuestCount: 4,
+      uniqueCompletedQuestCount: 2,
+      repeatedCompletionCount: 2,
+      completionCountsByQuestId: {
+        [relaxQuest.id]: 2,
+        [challengeQuest.id]: 2,
+      },
+      completionCountsByMoodId: {
+        relax: 2,
+        challenge: 2,
+      },
+      favoriteMoodId: "challenge",
+    });
   });
 
   test("resets an idle mood at exactly four hours without touching profile or history", () => {
     const { store, setNow } = makeStore();
     store.getState().selectMood("explore");
     store.setState({
-      profile: { avatarTheme: "wizard", points: 345 },
+      profile: {
+        avatarTheme: "wizard",
+        points: 345,
+        redRopes: INITIAL_RED_ROPES,
+        debugMode: true,
+      },
       legacyCompletionCount: 7,
     });
 
@@ -271,6 +515,8 @@ describe("mood quest store", () => {
     expect(store.getState().profile).toEqual({
       avatarTheme: "wizard",
       points: 345,
+      redRopes: INITIAL_RED_ROPES,
+      debugMode: true,
     });
     expect(store.getState().legacyCompletionCount).toBe(7);
   });
@@ -345,7 +591,10 @@ describe("mood quest persistence", () => {
       expect(migrated.profile).toEqual({
         avatarTheme: "wizard",
         points: 0,
+        redRopes: INITIAL_RED_ROPES,
+        debugMode: false,
       });
+      expect(migrated.stats).toEqual(DEFAULT_QUEST_STATS);
       expect(migrated.legacyCompletionCount).toBe(4);
       expect(migrated.selectedMoodId).toBeNull();
       expect(migrated.offerSetsByMoodId).toEqual({});
@@ -389,6 +638,8 @@ describe("mood quest persistence", () => {
     expect(sanitized.profile).toEqual({
       avatarTheme: "wizard",
       points: 0,
+      redRopes: INITIAL_RED_ROPES,
+      debugMode: false,
     });
     expect(sanitized.offeredQuestIds).toHaveLength(QUEST_OFFER_COUNT);
     expect(new Set(sanitized.offeredQuestIds).size).toBe(QUEST_OFFER_COUNT);
@@ -533,7 +784,12 @@ describe("mood quest persistence", () => {
       () => 0,
     );
 
-    expect(migrated.profile).toEqual({ avatarTheme: "wizard", points: 75 });
+    expect(migrated.profile).toEqual({
+      avatarTheme: "wizard",
+      points: 75,
+      redRopes: INITIAL_RED_ROPES,
+      debugMode: false,
+    });
     expect(migrated.selectedMoodId).toBeNull();
     expect(migrated.moodSelectedAt).toBeNull();
     expect(migrated.offeredQuestIds).toEqual([]);
@@ -579,6 +835,150 @@ describe("mood quest persistence", () => {
     );
   });
 
+  test("migrates v6 profiles with three ropes and derives exact completion stats", () => {
+    const relaxQuest = questsForMood("relax")[0];
+    const challengeQuest = questsForMood("challenge")[0];
+    const migrated = migratePersistedQuestState(
+      {
+        profile: { avatarTheme: "wizard", points: 125 },
+        selectedMoodId: null,
+        moodSelectedAt: null,
+        offeredQuestIds: [],
+        offerSetsByMoodId: {},
+        currentSession: null,
+        completedSessions: [
+          {
+            id: "relax-2",
+            moodId: "relax",
+            questId: relaxQuest.id,
+            durationMs: 2_000,
+            pointsAwarded: 10,
+            completedAt: 4_000,
+            gameTitle: "  Game   Two ",
+          },
+          {
+            id: "challenge-1",
+            moodId: "challenge",
+            questId: challengeQuest.id,
+            durationMs: 3_000,
+            pointsAwarded: 15,
+            completedAt: 3_000,
+          },
+          {
+            id: "relax-1",
+            moodId: "relax",
+            questId: relaxQuest.id,
+            durationMs: 1_000,
+            pointsAwarded: 5,
+            completedAt: 2_000,
+          },
+        ],
+        legacyCompletionCount: 7,
+      },
+      6,
+      5_000,
+      () => 0,
+    );
+
+    expect(migrated.profile).toEqual({
+      avatarTheme: "wizard",
+      points: 125,
+      redRopes: INITIAL_RED_ROPES,
+      debugMode: false,
+    });
+    expect(migrated.completedSessions[0].gameTitle).toBe("Game Two");
+    expect(migrated.stats).toMatchObject({
+      completedQuestCount: 3,
+      uniqueCompletedQuestCount: 2,
+      totalPlayedMs: 6_000,
+      cancelledQuestCount: 0,
+      repeatedCompletionCount: 1,
+      completionCountsByQuestId: {
+        [relaxQuest.id]: 2,
+        [challengeQuest.id]: 1,
+      },
+      completionCountsByMoodId: { relax: 2, challenge: 1 },
+      favoriteMoodId: "relax",
+    });
+    expect(migrated.legacyCompletionCount).toBe(7);
+  });
+
+  test("preserves the local debug preference when migrating v7", () => {
+    const migrated = migratePersistedQuestState(
+      {
+        profile: {
+          avatarTheme: "default",
+          points: 25,
+          redRopes: 0,
+          debugMode: true,
+        },
+      },
+      7,
+      5_000,
+      () => 0,
+    );
+
+    expect(migrated.profile).toEqual({
+      avatarTheme: "default",
+      points: 25,
+      redRopes: 0,
+      debugMode: true,
+    });
+  });
+
+  test("sanitizes persisted stats without letting the 500-entry history cap lower aggregates", () => {
+    const quest = questsForMood("relax")[0];
+    const storedCompletionCount = STORED_COMPLETION_LIMIT + 200;
+    const completedSessions = Array.from(
+      { length: STORED_COMPLETION_LIMIT + 1 },
+      (_, index) => ({
+        id: `completion-${index}`,
+        moodId: "relax",
+        questId: quest.id,
+        durationMs: 1_000,
+        pointsAwarded: 1,
+        completedAt: index + 1,
+      }),
+    );
+    const sanitized = sanitizePersistedQuestState(
+      {
+        profile: { avatarTheme: "default", points: 0, redRopes: 2 },
+        completedSessions,
+        stats: {
+          completedQuestCount: 1,
+          uniqueCompletedQuestCount: 99,
+          totalPlayedMs: 900_000,
+          cancelledQuestCount: 12,
+          repeatedCompletionCount: 0,
+          completionCountsByQuestId: {
+            [quest.id]: storedCompletionCount,
+            missing: 9_999,
+          },
+          completionCountsByMoodId: { challenge: 9_999 },
+          latestCompletionAtByMoodId: { relax: 900 },
+          favoriteMoodId: "challenge",
+        },
+      },
+      2_000,
+      () => 0,
+    );
+
+    expect(sanitized.completedSessions).toHaveLength(
+      STORED_COMPLETION_LIMIT,
+    );
+    expect(sanitized.stats).toMatchObject({
+      completedQuestCount: storedCompletionCount,
+      uniqueCompletedQuestCount: 1,
+      totalPlayedMs: 900_000,
+      cancelledQuestCount: 12,
+      repeatedCompletionCount: storedCompletionCount - 1,
+      completionCountsByQuestId: { [quest.id]: storedCompletionCount },
+      completionCountsByMoodId: { relax: storedCompletionCount },
+      latestCompletionAtByMoodId: { relax: 900 },
+      favoriteMoodId: "relax",
+    });
+  });
+
   test("hydrates offered, active, and completed quest views", () => {
     const quest = questsForMood("relax")[0];
     const completion = {
@@ -590,9 +990,9 @@ describe("mood quest persistence", () => {
       completedAt: 2_000,
     };
 
-    expect(hydrateQuest(quest.id, [completion])?.completionCount).toBe(1);
-    expect(hydrateQuest(quest.id, [completion])?.tips).toEqual(quest.tips);
-    expect(hydrateCompletedQuest(completion)).toMatchObject({
+    expect(hydrateQuest(quest.id, [completion], "en")?.completionCount).toBe(1);
+    expect(hydrateQuest(quest.id, [completion], "en")?.tips).toEqual(quest.tips);
+    expect(hydrateCompletedQuest(completion, "en")).toMatchObject({
       id: "completion-1",
       quest: { id: quest.id },
       mood: { id: "relax" },
@@ -610,6 +1010,7 @@ describe("mood quest persistence", () => {
       offerSetsByMoodId: {},
       currentSession: null,
       completedSessions: [],
+      stats: DEFAULT_QUEST_STATS,
       legacyCompletionCount: 0,
     });
   });

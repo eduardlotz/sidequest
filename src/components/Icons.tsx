@@ -48,6 +48,14 @@ export function CheckIcon(props: IconProps) {
   );
 }
 
+export function ChevronLeftIcon(props: IconProps) {
+  return (
+    <svg {...defaults} {...props}>
+      <path d="m14.5 5-7 7 7 7" />
+    </svg>
+  );
+}
+
 export function SettingsIcon(props: IconProps) {
   return (
     <svg {...defaults} {...props}>

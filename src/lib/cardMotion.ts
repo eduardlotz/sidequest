@@ -20,10 +20,3 @@ export function moodCardLayoutId(
 ) {
   return `mood-card-${sessionId}-${moodId}`;
 }
-
-export function moodOfferSlotLayoutId(
-  sessionId: number | string,
-  slotIndex: number,
-) {
-  return `mood-offer-slot-${sessionId}-${slotIndex}`;
-}

@@ -12,9 +12,13 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { MOODS, type MoodDefinition, type MoodId } from "../data/moods";
 import type { QuestDefinition } from "../data/quests";
+import { formatScore } from "../lib/format";
 import { playSound } from "../lib/sound";
+import { localizeMood } from "../localization/catalog";
+import { normalizeLanguage } from "../localization/i18n";
 import type { Quest, QuestSession } from "../stores/useQuestStore";
 import { ActiveTaskCard } from "./ActiveTaskCard";
 import { ArcDeck, type ArcDeckItem } from "./ArcDeck";
@@ -30,8 +34,8 @@ const NAV_ITEM_TRANSITION = {
 };
 
 const SELECTION_LAYER_EXIT_DURATION = 0.42;
-const SELECTION_RESET_FADE_OUT_DURATION = 0.26;
-const SELECTION_RESET_FADE_IN_DURATION = 0.32;
+const SELECTION_RESET_FADE_OUT_DURATION = 0.46;
+const SELECTION_RESET_FADE_IN_DURATION = 0.4;
 
 type SelectionLayerProps = {
   children: ReactNode | ((present: boolean) => ReactNode);
@@ -101,18 +105,21 @@ type Props = {
   selectedMood: MoodDefinition | null;
   offeredQuests: readonly QuestDefinition[];
   points: number;
+  redRopes: number;
+  debugMode: boolean;
   shuffleCost: number;
   animateEntrance: boolean;
   reduceMotion: boolean;
   onSelectMood: (moodId: MoodId) => boolean;
   onEditMood: () => void;
   onRevealQuest: (questId: string) => void;
+  onReturnToSelection: () => boolean;
   onShuffle: () => boolean;
-  onDiscard: () => void;
+  onDiscard: () => boolean;
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
-  onComplete: (durationMs: number) => void;
+  onComplete: (gameTitle: string) => void;
 };
 
 export function TaskScreen({
@@ -121,12 +128,15 @@ export function TaskScreen({
   selectedMood,
   offeredQuests,
   points,
+  redRopes,
+  debugMode,
   shuffleCost,
   animateEntrance,
   reduceMotion,
   onSelectMood,
   onEditMood,
   onRevealQuest,
+  onReturnToSelection,
   onShuffle,
   onDiscard,
   onStart,
@@ -134,17 +144,23 @@ export function TaskScreen({
   onResume,
   onComplete,
 }: Props) {
+  const { i18n, t } = useTranslation();
+  const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const isActive = Boolean(currentQuest && currentSession);
   const wasActiveRef = useRef(isActive);
   const returnedFromActive = wasActiveRef.current && !isActive;
   const lastActiveSessionIdRef = useRef(
     currentSession?.sessionId ?? "initial",
   );
+  const lastActiveQuestIdRef = useRef(currentQuest?.id);
   const layoutSessionIdRef = useRef(
     currentSession ? `active-${currentSession.sessionId}` : "initial",
   );
   if (currentSession?.sessionId) {
     lastActiveSessionIdRef.current = currentSession.sessionId;
+  }
+  if (currentQuest?.id) {
+    lastActiveQuestIdRef.current = currentQuest.id;
   }
   if (returnedFromActive) {
     layoutSessionIdRef.current =
@@ -171,12 +187,19 @@ export function TaskScreen({
   const editMoodFrameRef = useRef<number | null>(null);
   const moodItems = useMemo<ArcDeckItem[]>(
     () =>
-      MOODS.map((mood) => ({
-        id: mood.id,
-        title: mood.title,
-        subtitle: mood.subtitle,
-      })),
-    [],
+      MOODS.flatMap((mood) => {
+        const localizedMood = localizeMood(mood.id, language);
+        return localizedMood
+          ? [
+              {
+                id: localizedMood.id,
+                title: localizedMood.title,
+                subtitle: localizedMood.subtitle,
+              },
+            ]
+          : [];
+      }),
+    [language],
   );
 
   useEffect(() => {
@@ -244,10 +267,10 @@ export function TaskScreen({
     >
       <h1 className={styles.srOnly} id="task-screen-title">
         {isActive
-          ? "Current quest"
+          ? t("ui.task.currentQuest")
           : selectedMood
-            ? `Choose a ${selectedMood.title} quest`
-            : "Select your mood"}
+            ? t("ui.task.chooseMoodQuest", { mood: selectedMood.title })
+            : t("ui.task.selectMood")}
       </h1>
 
       <LayoutGroup id="quest-flow">
@@ -261,7 +284,10 @@ export function TaskScreen({
               key={`active-${currentSession.sessionId}`}
               initial={reduceMotion ? false : { opacity: 1 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={{
+                opacity: reduceMotion ? 0.999 : 0,
+                pointerEvents: "none",
+              }}
               transition={{
                 duration: reduceMotion ? 0 : 0.26,
                 ease: [0.42, 0, 1, 1],
@@ -271,8 +297,11 @@ export function TaskScreen({
                 quest={currentQuest}
                 session={currentSession}
                 layoutSessionId={layoutSessionIdRef.current}
+                redRopes={redRopes}
+                debugMode={debugMode}
                 reduceMotion={reduceMotion}
                 onDiscard={onDiscard}
+                onReturnToSelection={onReturnToSelection}
                 onStart={onStart}
                 onPause={onPause}
                 onResume={onResume}
@@ -338,7 +367,7 @@ export function TaskScreen({
                             reduceMotion ? { duration: 0 } : NAV_ITEM_TRANSITION
                           }
                         >
-                          <span>Choose a </span>
+                          <span>{t("ui.task.choosePrefix")}</span>
                           <span className={styles.moodEditControl}>
                             <button
                               type="button"
@@ -352,10 +381,10 @@ export function TaskScreen({
                               id="change-mood-tooltip"
                               role="tooltip"
                             >
-                              Change Mood
+                              {t("ui.task.changeMood")}
                             </span>
                           </span>
-                          <span> sidequest</span>
+                          <span>{t("ui.task.chooseSuffix")}</span>
                         </motion.p>
 
                         <motion.div
@@ -373,7 +402,10 @@ export function TaskScreen({
                             data-sound-click-skip
                             type="button"
                             disabled={points < shuffleCost}
-                            aria-label={`Shuffle quest cards for ${shuffleCost} points. ${points} points available.`}
+                            aria-label={t("ui.task.shuffleLabel", {
+                              cost: formatScore(shuffleCost, language),
+                              available: formatScore(points, language),
+                            })}
                             onClick={shuffleCards}
                             iconLeft={
                               <motion.span
@@ -392,9 +424,13 @@ export function TaskScreen({
                               </motion.span>
                             }
                           >
-                            Shuffle cards
+                            {t("ui.task.shuffleCards")}
                           </SolidButton>
-                          <span>costs {shuffleCost} points</span>
+                          <span>
+                            {t("ui.task.costsPoints", {
+                              points: formatScore(shuffleCost, language),
+                            })}
+                          </span>
                         </motion.div>
                       </header>
 
@@ -402,14 +438,13 @@ export function TaskScreen({
                         items={offeredQuests}
                         entryMotion={questEntryMotion}
                         layoutSessionId={layoutSessionIdRef.current}
-                        moodTransition={
-                          editingMood
-                            ? null
-                            : {
-                                layoutSessionId: selectionLayoutSessionId,
-                              }
-                        }
                         reduceMotion={reduceMotion}
+                        returningQuestId={
+                          returnedFromActive
+                            ? lastActiveQuestIdRef.current
+                            : undefined
+                        }
+                        returningToMoods={editingMood}
                         onSelectionStart={() =>
                           setQuestSelectionClosing(true)
                         }
@@ -434,16 +469,17 @@ export function TaskScreen({
                           animate={{ opacity: present ? 1 : 0 }}
                           transition={{ duration: reduceMotion ? 0 : 0.2 }}
                         >
-                          <p>Select your mood</p>
+                          <p>{t("ui.task.selectMood")}</p>
                         </motion.header>
 
                         <ArcDeck
                           items={moodItems}
                           initialItemId={lastSelectedMoodIdRef.current}
-                          label="Mood cards"
+                          label={t("ui.task.moodCards")}
                           layerPresent={present}
                           layoutSessionId={selectionLayoutSessionId}
                           reduceMotion={reduceMotion}
+                          returningFromQuests={editingMood}
                           onSelect={selectMood}
                         />
                       </>

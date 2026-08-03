@@ -11,8 +11,8 @@ export function formatRunningDuration(milliseconds: number) {
     : `${pad(totalMinutes)}:${pad(seconds)}`;
 }
 
-export function formatCompletedAt(timestamp: number) {
-  return new Intl.DateTimeFormat(undefined, {
+export function formatCompletedAt(timestamp: number, locale?: string) {
+  return new Intl.DateTimeFormat(locale, {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -21,6 +21,6 @@ export function formatCompletedAt(timestamp: number) {
   }).format(timestamp);
 }
 
-export function formatScore(score: number) {
-  return new Intl.NumberFormat().format(score);
+export function formatScore(score: number, locale?: string) {
+  return new Intl.NumberFormat(locale).format(score);
 }

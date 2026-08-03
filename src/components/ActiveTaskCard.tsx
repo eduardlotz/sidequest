@@ -14,8 +14,10 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import {
+  sanitizeGameTitle,
   type Quest,
   type QuestSession,
 } from "../stores/useQuestStore";
@@ -25,7 +27,10 @@ import { formatRunningDuration } from "../lib/format";
 import { playSound } from "../lib/sound";
 import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
 import { CompletionCheckIcon } from "./CompletionCheckIcon";
+import { ChevronLeftIcon } from "./Icons";
 import { QuestCardBack } from "./QuestCardBack";
+import { QuestCardMeta } from "./QuestCardMeta";
+import { QuestTips } from "./QuestTips";
 import {
   MOBILE_PAUSED_TIMER_TOP_RATIO,
   PAUSED_TIMER_TOP_RATIO,
@@ -45,15 +50,23 @@ type Props = {
   quest: Quest;
   session: QuestSession;
   layoutSessionId: string;
+  redRopes: number;
+  debugMode: boolean;
   reduceMotion: boolean;
-  onDiscard: () => void;
+  onDiscard: () => boolean;
+  onReturnToSelection: () => boolean;
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
-  onComplete: (durationMs: number) => void;
+  onComplete: (gameTitle: string) => void;
 };
 
-type Phase = "ready" | "running" | "paused" | "cutting" | "completed";
+type Phase =
+  | "ready"
+  | "running"
+  | "paused"
+  | "cutting"
+  | "completed";
 type Point = { x: number; y: number };
 
 const PAUSE_PULL_DISTANCE = 44;
@@ -62,6 +75,7 @@ const COMPLETION_FACE_REVEAL_MS = 340;
 const COMPLETION_HOLD_DURATION_MS = 1500;
 const CUT_TRAIL_CLEAR_DELAY_MS = 210;
 const CUT_TRAIL_FADE_DURATION_MS = 60;
+const CANCELLATION_BLOCKED_DURATION_MS = 3_000;
 const CUT_TRAIL_MAX_WIDTH_PX = 10;
 const CUT_TRAIL_WIDTH_PEAK = 0.75;
 const CARD_FOCUS_DISMISS_DISTANCE = 96;
@@ -106,13 +120,17 @@ export function ActiveTaskCard({
   quest,
   session,
   layoutSessionId,
+  redRopes,
+  debugMode,
   reduceMotion,
   onDiscard,
+  onReturnToSelection,
   onStart,
   onPause,
   onResume,
   onComplete,
 }: Props) {
+  const { t } = useTranslation();
   const task = quest;
   const assignment = session;
   const initiallyReady = assignment.startedAt === null;
@@ -147,6 +165,8 @@ export function ActiveTaskCard({
   const [elapsedMs, setElapsedMs] = useState(() =>
     elapsedForAssignment(assignment, Date.now()),
   );
+  const [gameTitle, setGameTitle] = useState("");
+  const [cancellationBlocked, setCancellationBlocked] = useState(false);
   const [animateReveal] = useState(
     () => !reduceMotion && Date.now() - assignment.revealedAt < 1_500,
   );
@@ -203,6 +223,7 @@ export function ActiveTaskCard({
   const exitStartedRef = useRef(false);
   const lastCutPointRef = useRef<Point | null>(null);
   const trailClearTimeoutRef = useRef<number | null>(null);
+  const cancellationBlockedTimeoutRef = useRef<number | null>(null);
   const exitTimeoutRef = useRef<number | null>(null);
   const completionRevealTimeoutRef = useRef<number | null>(null);
   const x = useMotionValue(initialTimerOffsetRef.current.x);
@@ -245,6 +266,15 @@ export function ActiveTaskCard({
     const interval = window.setInterval(update, 250);
     return () => window.clearInterval(interval);
   }, [phase, readElapsed]);
+
+  useEffect(() => {
+    if (redRopes < 1 && !debugMode) return;
+    setCancellationBlocked(false);
+    if (cancellationBlockedTimeoutRef.current !== null) {
+      window.clearTimeout(cancellationBlockedTimeoutRef.current);
+      cancellationBlockedTimeoutRef.current = null;
+    }
+  }, [debugMode, redRopes]);
 
   useEffect(() => {
     if (!cardFocused) return;
@@ -309,6 +339,9 @@ export function ActiveTaskCard({
     () => () => {
       if (trailClearTimeoutRef.current !== null) {
         window.clearTimeout(trailClearTimeoutRef.current);
+      }
+      if (cancellationBlockedTimeoutRef.current !== null) {
+        window.clearTimeout(cancellationBlockedTimeoutRef.current);
       }
       if (exitTimeoutRef.current !== null) {
         window.clearTimeout(exitTimeoutRef.current);
@@ -429,7 +462,19 @@ export function ActiveTaskCard({
     if (exitStartedRef.current || phase === "cutting" || phase === "completed")
       return;
     if (next === "cutting" && !ropeCut) return;
-    playSound(next === "completed" ? "formSubmit" : "cut");
+    if (next === "cutting" && startedAtRef.current === null) return;
+    if (next === "cutting" && redRopes < 1 && !debugMode) {
+      showCancellationBlocked();
+      return;
+    }
+    if (
+      next === "completed" &&
+      !debugMode &&
+      elapsedMs < task.minimumDurationMinutes * 60_000
+    ) {
+      return;
+    }
+    if (next === "cutting") playSound("cut");
     timerReturningRef.current = false;
     timerDraggingRef.current = false;
     setTimerSettling(false);
@@ -463,9 +508,8 @@ export function ActiveTaskCard({
     exitTimeoutRef.current = window.setTimeout(
       () => {
         if (next === "completed") {
-          onComplete(duration);
-        }
-        else onDiscard();
+          onComplete(gameTitle);
+        } else onDiscard();
       },
       next === "completed"
         ? reduceMotion
@@ -475,6 +519,26 @@ export function ActiveTaskCard({
           ? 80
           : 1200,
     );
+  }
+
+  function returnToSelection() {
+    if (phase !== "ready" || exitStartedRef.current) return;
+    exitStartedRef.current = true;
+    setCardFocused(false);
+    if (!onReturnToSelection()) {
+      exitStartedRef.current = false;
+    }
+  }
+
+  function showCancellationBlocked() {
+    setCancellationBlocked(true);
+    if (cancellationBlockedTimeoutRef.current !== null) {
+      window.clearTimeout(cancellationBlockedTimeoutRef.current);
+    }
+    cancellationBlockedTimeoutRef.current = window.setTimeout(() => {
+      setCancellationBlocked(false);
+      cancellationBlockedTimeoutRef.current = null;
+    }, CANCELLATION_BLOCKED_DURATION_MS);
   }
 
   function onTimerDrag(
@@ -551,6 +615,7 @@ export function ActiveTaskCard({
     const target = event.target as HTMLElement;
     if (
       exitStartedRef.current ||
+      phase === "ready" ||
       target.closest("button") ||
       target.closest("[data-cut-ignore]") ||
       target.closest("[data-timer-drag]")
@@ -612,8 +677,7 @@ export function ActiveTaskCard({
           -rigHeight * (RUNNING_TIMER_TOP_RATIO - READY_TIMER_TOP_RATIO);
         const distanceFromRest = Math.hypot(pose.x, pose.y - restingY);
         const speed = Math.hypot(pose.velocity.x, pose.velocity.y);
-        const settled =
-          elapsed > 480 && distanceFromRest < 22 && speed < 130;
+        const settled = elapsed > 480 && distanceFromRest < 22 && speed < 130;
         const timedOut = elapsed > 2_400;
 
         if (settled || timedOut) {
@@ -683,7 +747,14 @@ export function ActiveTaskCard({
 
   const exiting = phase === "cutting" || phase === "completed";
   const completed = phase === "completed";
+  const minimumDurationMs = task.minimumDurationMinutes * 60_000;
+  const canComplete = debugMode || elapsedMs >= minimumDurationMs;
+  const completionRemainingMs = Math.max(0, minimumDurationMs - elapsedMs);
+  const displayedGameTitle = sanitizeGameTitle(gameTitle);
   const cardFocusAvailable = isMobileViewport && revealFinished && !exiting;
+  const canCutRope =
+    (phase === "running" || phase === "paused") && (debugMode || redRopes > 0);
+  const returnTooltipId = `back-to-selection-tooltip-${assignment.sessionId}`;
 
   function closeCardFocus() {
     setCardFocused(false);
@@ -719,7 +790,7 @@ export function ActiveTaskCard({
           ref={cardFocusBackdropRef}
           className={styles.cardFocusBackdrop}
           type="button"
-          aria-label="Close focused quest card"
+          aria-label={t("ui.quest.closeFocusedCard")}
           onClick={closeCardFocus}
         />
       )}
@@ -795,9 +866,12 @@ export function ActiveTaskCard({
               aria-hidden="true"
             >
               <QuestCardBack
-                durationMinutes={task.durationMinutes}
+                minimumDurationMinutes={task.minimumDurationMinutes}
+                moodTitle={task.mood.title}
+                name={task.name}
+                suggestedDurationMinutes={task.suggestedDurationMinutes}
                 title={task.title}
-                revealTitle
+                variant="summary"
               />
             </div>
 
@@ -827,7 +901,10 @@ export function ActiveTaskCard({
                   onPointerOut={(event) => {
                     handleCardPointerLeave(event);
                   }}
-                  aria-label={`Active ${task.mood.title} quest: ${task.title}`}
+                  aria-label={t("ui.quest.activeLabel", {
+                    mood: task.mood.title,
+                    title: task.title,
+                  })}
                 >
                   <motion.div
                     className={styles.activeQuestCard}
@@ -839,26 +916,19 @@ export function ActiveTaskCard({
                     }}
                   >
                     <span className={styles.cardShimmer} aria-hidden="true" />
-                    <header className={styles.questCardHeader}>
-                      <h2 className={styles.activeTitle}>{task.title}</h2>
-                      <span className={styles.questHeaderMetaValue}>
-                        {task.durationMinutes} min
-                      </span>
-                    </header>
+                    <QuestCardMeta
+                      minimumDurationMinutes={task.minimumDurationMinutes}
+                      moodTitle={task.mood.title}
+                      name={task.name}
+                      suggestedDurationMinutes={task.suggestedDurationMinutes}
+                    />
 
                     <motion.div className={styles.questDetails} initial={false}>
-                      <p className={styles.questObjective}>{task.objective}</p>
-                      <p className={styles.questCompletion}>
-                        {task.completion}
+                      <h2 className={styles.questTitle}>{task.title}</h2>
+                      <p className={styles.questDescription}>
+                        {task.objective} {task.completion}
                       </p>
-                      <ul className={styles.questTips} aria-label="Quest tips">
-                        {task.tips.map((tip) => (
-                          <li key={tip.title}>
-                            <strong>{tip.title}</strong>
-                            <small>{tip.description}</small>
-                          </li>
-                        ))}
-                      </ul>
+                      <QuestTips tips={task.tips} />
                     </motion.div>
 
                     {!showFinishedFace && (
@@ -900,6 +970,9 @@ export function ActiveTaskCard({
                               <strong>
                                 {formatRunningDuration(elapsedMs)}
                               </strong>
+                              {displayedGameTitle && (
+                                <small>{displayedGameTitle}</small>
+                              )}
                             </span>
                           </motion.div>
                         </motion.div>
@@ -911,17 +984,21 @@ export function ActiveTaskCard({
                       ref={cardFocusTriggerRef}
                       className={styles.cardFocusTrigger}
                       type="button"
-                      aria-label={`Focus quest card: ${task.title}`}
+                      aria-label={t("ui.quest.focusCard", {
+                        title: task.title,
+                      })}
                       onClick={() => setCardFocused(true)}
                     />
                   )}
                 </article>
-                <div
-                  className={`${styles.activeQuestCard} ${styles.completionCardBack}`}
-                  aria-hidden="true"
-                >
-                  <QuestCardBack title={task.title} revealTitle />
-                </div>
+                {revealFinished && (
+                  <div
+                    className={`${styles.activeQuestCard} ${styles.completionCardBack}`}
+                    aria-hidden="true"
+                  >
+                    <QuestCardBack variant="pattern" />
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
@@ -935,7 +1012,7 @@ export function ActiveTaskCard({
         transition={{ duration: reduceMotion ? 0 : 0.16, ease: "easeOut" }}
         style={{
           pointerEvents:
-            completed || !revealFinished || timerEntranceSettling
+            exiting || !revealFinished || timerEntranceSettling
               ? "none"
               : "auto",
         }}
@@ -952,6 +1029,7 @@ export function ActiveTaskCard({
             isMobileViewport={isMobileViewport}
             mode={ropeMode}
             onTimerMove={syncTimerToPhysics}
+            red={phase === "cutting" || canCutRope}
             reduceMotion={reduceMotion}
             releaseRef={ropeReleaseRef}
             screenPointsRef={ropePointsRef}
@@ -990,20 +1068,27 @@ export function ActiveTaskCard({
           }
           aria-label={
             phase === "ready"
-              ? "Start quest timer"
+              ? t("ui.timer.start")
               : phase === "paused"
-                ? "Resume quest timer"
+                ? t("ui.timer.resume")
                 : phase === "running"
-                  ? "Pause quest timer"
-                  : "Quest timer unavailable"
+                  ? t("ui.timer.pause")
+                  : t("ui.timer.unavailable")
           }
           drag={
-            (phase === "ready" || phase === "running" || phase === "paused") &&
+            (phase === "ready" ||
+              phase === "running" ||
+              phase === "paused") &&
             ropeMode !== "resumePullback" &&
             !timerEntranceSettling &&
             !exiting
           }
-          dragConstraints={{ left: -190, right: 190, top: -130, bottom: 130 }}
+          dragConstraints={{
+            left: -190,
+            right: 190,
+            top: -130,
+            bottom: 130,
+          }}
           dragElastic={0.06}
           dragMomentum={false}
           style={{ x, y }}
@@ -1043,15 +1128,35 @@ export function ActiveTaskCard({
             />
           </motion.div>
           <AnimatePresence>
-            {(phase === "ready" || phase === "paused") && !timerSettling && (
+            {(phase === "ready" || phase === "paused") &&
+              !timerSettling &&
+              !cancellationBlocked && (
+                <motion.span
+                  className={styles.timerStatus}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.12 }}
+                >
+                  {phase === "ready"
+                    ? t("ui.quest.minimumMinutes", {
+                        count: task.minimumDurationMinutes,
+                      })
+                    : t("ui.timer.paused")}
+                </motion.span>
+              )}
+          </AnimatePresence>
+          <AnimatePresence>
+            {cancellationBlocked && !exiting && (
               <motion.span
-                className={styles.timerStatus}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: reduceMotion ? 0 : 0.12 }}
+                className={styles.cancellationBlockedInfo}
+                role="status"
+                initial={reduceMotion ? false : { opacity: 0, y: 3 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: reduceMotion ? 0 : -2 }}
+                transition={{ duration: reduceMotion ? 0 : 0.22 }}
               >
-                {phase === "ready" ? "Ready" : "Paused"}
+                {t("ui.timer.noRedRopes")}
               </motion.span>
             )}
           </AnimatePresence>
@@ -1064,6 +1169,7 @@ export function ActiveTaskCard({
               data-cut-ignore
               onSubmit={(event) => {
                 event.preventDefault();
+                if (!canComplete) return;
                 beginExit("completed");
               }}
               initial={reduceMotion ? false : "hidden"}
@@ -1071,14 +1177,39 @@ export function ActiveTaskCard({
               exit={reduceMotion ? { opacity: 0 } : "exit"}
               variants={pausePanelVariants}
             >
-              <motion.button
-                className={styles.saveAction}
-                data-sound-click-skip
-                type="submit"
+              <motion.input
+                className={styles.gameTitleInput}
+                data-has-value={gameTitle.trim() ? "true" : undefined}
+                type="text"
+                value={gameTitle}
+                maxLength={80}
+                aria-label={t("ui.timer.gameTitleLabel")}
+                placeholder={t("ui.timer.addGameTitle")}
+                onChange={(event) => setGameTitle(event.target.value)}
                 variants={pausePanelItemVariants}
-              >
-                Complete quest
-              </motion.button>
+              />
+              {canComplete ? (
+                <motion.button
+                  className={styles.saveAction}
+                  type="submit"
+                  variants={pausePanelItemVariants}
+                >
+                  {t("ui.timer.completeQuest")}
+                </motion.button>
+              ) : (
+                <motion.p
+                  className={styles.pauseMinimumInfo}
+                  role="status"
+                  variants={pausePanelItemVariants}
+                >
+                  <span>
+                    {t("ui.timer.completeAvailableIn", {
+                      time: formatRunningDuration(completionRemainingMs),
+                    })}
+                  </span>
+                  <span>{t("ui.timer.completeOrCancel")}</span>
+                </motion.p>
+              )}
             </motion.form>
           )}
         </AnimatePresence>
@@ -1098,16 +1229,37 @@ export function ActiveTaskCard({
             >
               <span>
                 {phase === "ready"
-                  ? "Pull the timer to start."
-                  : `Pull the timer to ${
-                      phase === "paused" ? "resume" : "pause"
-                    }.`}
+                  ? t("ui.timer.pullStart")
+                  : phase === "paused"
+                    ? t("ui.timer.pullResume")
+                    : t("ui.timer.pullPause")}
               </span>
-              <span>
-                {phase === "ready"
-                  ? "Cut the rope to choose another."
-                  : "Cut the rope to stop."}
-              </span>
+              {canCutRope && <span>{t("ui.timer.cutStop")}</span>}
+              {phase === "ready" && (
+                <span
+                  className={`${styles.moodEditControl} ${styles.timerReturnControl}`}
+                >
+                  <button
+                    type="button"
+                    aria-describedby={
+                      isMobileViewport ? undefined : returnTooltipId
+                    }
+                    onClick={returnToSelection}
+                  >
+                    {/* <ChevronLeftIcon className={styles.timerReturnChevron} /> */}
+                    <span>{t("ui.timer.backToSelection")}</span>
+                  </button>
+                  {!isMobileViewport && (
+                    <span
+                      className={styles.moodEditTooltip}
+                      id={returnTooltipId}
+                      role="tooltip"
+                    >
+                      {t("ui.timer.backToSelectionTooltip")}
+                    </span>
+                  )}
+                </span>
+              )}
             </motion.p>
           )}
         </AnimatePresence>
@@ -1268,8 +1420,8 @@ function initialTimerOffset(
   useFullMobileRig: boolean,
 ): RopePoint {
   const compactLayout = window.matchMedia("(max-width: 820px)").matches;
-  const rigHeight = window.innerHeight *
-    (compactLayout && !useFullMobileRig ? 0.52 : 1);
+  const rigHeight =
+    window.innerHeight * (compactLayout && !useFullMobileRig ? 0.52 : 1);
   if (!shouldDrop) {
     return {
       x: 0,

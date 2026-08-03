@@ -47,13 +47,14 @@ type Props = {
   isMobileViewport: boolean;
   mode: RopeMode;
   onTimerMove: (pose: TimerPose) => void;
+  red: boolean;
   reduceMotion: boolean;
   releaseRef: MutableRefObject<RopeRelease | null>;
   screenPointsRef: MutableRefObject<RopePoint[]>;
   targetRef: MutableRefObject<RopePoint>;
 };
 
-type SimulationProps = Props & {
+type SimulationProps = Omit<Props, "red"> & {
   initialOffset: RopePoint;
   lowerPathRef: RefObject<SVGPathElement | null>;
   upperPathRef: RefObject<SVGPathElement | null>;
@@ -76,6 +77,7 @@ export function PhysicsRope({
   isMobileViewport,
   mode,
   onTimerMove,
+  red,
   reduceMotion,
   releaseRef,
   screenPointsRef,
@@ -91,7 +93,11 @@ export function PhysicsRope({
     : targetRef.current;
 
   return (
-    <div className={styles.ropeCanvas} aria-hidden="true">
+    <div
+      className={styles.ropeCanvas}
+      data-rope-red={red ? "true" : "false"}
+      aria-hidden="true"
+    >
       <Canvas
         orthographic
         camera={{ position: [0, 0, 10], zoom: 100 }}

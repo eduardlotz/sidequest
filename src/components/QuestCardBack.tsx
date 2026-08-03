@@ -1,23 +1,28 @@
 import { markAssetUrl } from "../data/questMarks";
 import styles from "../App.module.css";
+import { QuestCardMeta } from "./QuestCardMeta";
 
-type Props = {
-  durationMinutes?: number;
-  title?: string;
-  revealTitle?: boolean;
-};
+type Props =
+  | {
+      minimumDurationMinutes: number;
+      moodTitle: string;
+      name: string;
+      suggestedDurationMinutes: number;
+      title: string;
+      variant: "summary";
+    }
+  | {
+      variant: "pattern";
+    };
 
-export function QuestCardBack({
-  durationMinutes,
-  title,
-  revealTitle = false,
-}: Props) {
+export function QuestCardBack(props: Props) {
   const mark = markAssetUrl("sidequest-mark.svg");
+  const summary = props.variant === "summary";
 
   return (
     <span
       className={styles.questCardBackContent}
-      data-summary={durationMinutes ? "true" : undefined}
+      data-summary={summary ? "true" : undefined}
       aria-hidden="true"
     >
       <span className={styles.questCardBackPattern}>
@@ -31,17 +36,24 @@ export function QuestCardBack({
           />
         ))}
       </span>
-      {revealTitle && title &&
-        (durationMinutes ? (
-          <span className={styles.questCardBackSummary}>
-            <strong className={styles.questCardBackTitle}>{title}</strong>
-            <span className={styles.questCardBackEstimate}>
-              ~{durationMinutes} min
+      {summary ? (
+        <span className={styles.questCardBackSummaryFace}>
+          <QuestCardMeta
+            durationFormat="long"
+            minimumDurationMinutes={props.minimumDurationMinutes}
+            moodTitle={props.moodTitle}
+            suggestedDurationMinutes={props.suggestedDurationMinutes}
+          />
+          <span className={styles.questCardBackSummaryCopy}>
+            <strong className={styles.questCardBackSummaryName}>
+              {props.name}
+            </strong>
+            <span className={styles.questCardBackSummaryTitle}>
+              {props.title}
             </span>
           </span>
-        ) : (
-          <strong className={styles.questCardBackTitle}>{title}</strong>
-        ))}
+        </span>
+      ) : null}
     </span>
   );
 }
