@@ -46,10 +46,18 @@ export const QUESTS_BY_ID = Object.fromEntries(
 ) as Record<string, MoodQuestDefinition>;
 
 export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
-  ({ id, moodId, durationMinutes, rewardPoints, tipIds }) => ({
+  ({
     id,
     moodId,
-    durationMinutes,
+    minimumDurationMinutes,
+    suggestedDurationMinutes,
+    rewardPoints,
+    tipIds,
+  }) => ({
+    id,
+    moodId,
+    minimumDurationMinutes,
+    suggestedDurationMinutes,
     rewardPoints,
     tipIds,
   }),

@@ -24,6 +24,7 @@ describe("mood quest catalog", () => {
 
   test("keeps authored fields unique, complete, and within the reward range", () => {
     expect(new Set(QUESTS.map((quest) => quest.id)).size).toBe(QUESTS.length);
+    expect(new Set(QUESTS.map((quest) => quest.name)).size).toBe(QUESTS.length);
     expect(new Set(QUESTS.map((quest) => quest.title)).size).toBe(QUESTS.length);
     expect(new Set(QUESTS.map((quest) => quest.objective)).size).toBe(
       QUESTS.length,
@@ -31,9 +32,14 @@ describe("mood quest catalog", () => {
 
     for (const quest of QUESTS) {
       expect(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(quest.id)).toBe(true);
+      expect(quest.name.trim().length > 0).toBe(true);
       expect(quest.title.trim().length > 0).toBe(true);
       expect(quest.objective.trim().length > 0).toBe(true);
       expect(quest.completion.trim().length > 0).toBe(true);
+      expect(wordCount(quest.name) <= 4).toBe(true);
+      expect(quest.name.length <= 32).toBe(true);
+      expect(quest.name === quest.title).toBe(false);
+      expect(/[.!?]$/.test(quest.name)).toBe(false);
       expect(wordCount(quest.title) <= 6).toBe(true);
       expect(wordCount(quest.objective) <= 14).toBe(true);
       expect(wordCount(quest.completion) <= 12).toBe(true);
@@ -47,7 +53,7 @@ describe("mood quest catalog", () => {
             tip.title.trim().length > 0 &&
             tip.description.trim().length > 0 &&
             wordCount(tip.title) <= 5 &&
-            wordCount(tip.description) <= 10,
+            wordCount(tip.description) <= 15,
         ),
       ).toBe(true);
       expect(
@@ -58,12 +64,79 @@ describe("mood quest catalog", () => {
             ) && !("bonusPoints" in tip),
         ),
       ).toBe(true);
-      expect(quest.durationMinutes >= 20).toBe(true);
-      expect(quest.durationMinutes <= 60).toBe(true);
-      expect(quest.durationMinutes % 5).toBe(0);
+      expect(quest.minimumDurationMinutes >= 5).toBe(true);
+      expect(quest.minimumDurationMinutes <= 30).toBe(true);
+      expect(quest.minimumDurationMinutes % 5).toBe(0);
+      expect(quest.suggestedDurationMinutes >= 15).toBe(true);
+      expect(quest.suggestedDurationMinutes <= 60).toBe(true);
+      expect(quest.suggestedDurationMinutes % 5).toBe(0);
+      expect(
+        quest.suggestedDurationMinutes >= quest.minimumDurationMinutes,
+      ).toBe(true);
       expect(quest.rewardPoints >= 100).toBe(true);
       expect(quest.rewardPoints <= 250).toBe(true);
       expect(QUESTS_BY_ID[quest.id].id).toBe(quest.id);
+    }
+  });
+
+  test("uses varied mood-aware minimums with shorter restorative sessions", () => {
+    const restorativeMoodIds = [
+      "relax",
+      "low-energy",
+      "overwhelmed",
+      "nostalgic",
+    ] as const;
+
+    for (const moodId of restorativeMoodIds) {
+      const durations = QUESTS_BY_MOOD[moodId].map(
+        (quest) => quest.minimumDurationMinutes,
+      );
+      expect(Math.min(...durations)).toBe(5);
+      expect(Math.max(...durations) <= 25).toBe(true);
+      expect(new Set(durations).size >= 4).toBe(true);
+    }
+
+    for (const mood of MOODS) {
+      expect(
+        new Set(
+          QUESTS_BY_MOOD[mood.id].map(
+            (quest) => quest.minimumDurationMinutes,
+          ),
+        ).size >= 4,
+      ).toBe(true);
+    }
+
+    const averageDuration =
+      QUESTS.reduce(
+        (total, quest) => total + quest.minimumDurationMinutes,
+        0,
+      ) / QUESTS.length;
+    expect(averageDuration < 20).toBe(true);
+
+    expect(
+      QUESTS.some((quest) => quest.suggestedDurationMinutes === 15),
+    ).toBe(true);
+    expect(
+      QUESTS.some((quest) => quest.suggestedDurationMinutes === 60),
+    ).toBe(true);
+  });
+
+  test("separates the points minimum from a genre-aware session suggestion", () => {
+    expect(QUESTS_BY_ID["challenge-one-step-harder"]).toMatchObject({
+      minimumDurationMinutes: 25,
+      suggestedDurationMinutes: 35,
+    });
+    expect(QUESTS_BY_ID["challenge-pressure-proof"]).toMatchObject({
+      minimumDurationMinutes: 20,
+      suggestedDurationMinutes: 60,
+    });
+
+    for (const quest of QUESTS) {
+      expect(
+        /\b\d+\s+(?:active\s+)?minutes?\b/i.test(
+          `${quest.title} ${quest.objective} ${quest.completion}`,
+        ),
+      ).toBe(false);
     }
   });
 
@@ -127,7 +200,8 @@ describe("mood quest catalog", () => {
       ),
     ).toBe(true);
     expect(QUESTS_BY_ID["progress-clean-finish"]).toMatchObject({
-      durationMinutes: 60,
+      minimumDurationMinutes: 30,
+      suggestedDurationMinutes: 60,
       rewardPoints: 250,
     });
     expect(

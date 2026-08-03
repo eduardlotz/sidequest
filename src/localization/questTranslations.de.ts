@@ -1,20 +1,21 @@
 import type { QuestTranslation } from "../data/quests";
+import { germanQuestNames } from "./questNames.de";
 
-export const germanQuestTranslations = {
+const germanQuestCopy = {
   "relax-soft-landing": {
-    "title": "Spiele ein Lieblingsspiel deiner Kindheit",
+    "title": "Spiele einen Kindheitsfavoriten",
     "objective": "Deine stärkste Spielerinnerung aus der Kindheit oder Jugend.",
-    "completion": "Schließe ein Level, ein Spiel, eine Mission oder 30 aktive Minuten ab."
+    "completion": "Beende ein Level, ein Match oder eine Mission – oder höre nach der Mindestzeit sicher auf."
   },
   "relax-scenic-route": {
-    "title": "Nutze dein Muskelgedächtnis-Spiel",
+    "title": "Spiele aus dem Muskelgedächtnis",
     "objective": "Ein bekanntes Spiel, dessen Steuerung sich immer noch automatisch anfühlt.",
     "completion": "Beende eine bekannte Aktivität, ohne das Spiel zu wechseln."
   },
   "relax-care-shift": {
     "title": "Folge einem bekannten Soundtrack",
     "objective": "Ein Spiel, das du an der Musik, den Stimmen oder der Atmosphäre erkennst.",
-    "completion": "Spiele bis zum Ende des nächsten Titels oder bis zu 20 aktiven Minuten."
+    "completion": "Spiele einen vollständigen Musiktitel und höre dann an einem ruhigen Ort auf."
   },
   "relax-one-good-loop": {
     "title": "Besuche einen Lieblingsort noch einmal",
@@ -22,9 +23,9 @@ export const germanQuestTranslations = {
     "completion": "Erreiche diesen Ort und beende dort eine Aktivität."
   },
   "relax-small-wonder": {
-    "title": "Öffne einen verlorenen Favoriten erneut",
+    "title": "Kehre zu einem vergessenen Lieblingsspiel zurück",
     "objective": "Ein ehemaliger Favorit, den du schon lange nicht mehr gespielt hast.",
-    "completion": "Schließe ein Level, eine Mission, eine Runde oder 30 aktive Minuten ab."
+    "completion": "Beende ein Level, eine Mission oder eine Runde – oder höre nach der Mindestzeit sicher auf."
   },
   "relax-three-loose-ends": {
     "title": "Kehre zu einer Lieblingsserie zurück",
@@ -32,19 +33,19 @@ export const germanQuestTranslations = {
     "completion": "Erreiche den nächsten Kontrollpunkt oder beende eine Runde."
   },
   "relax-next-save": {
-    "title": "Fahr mit dem einfachsten Speichern fort",
+    "title": "Setze deinen einfachsten Spielstand fort",
     "objective": "Ein laufendes Spiel, dessen nächste Aktion du bereits kennst.",
     "completion": "Erreiche den nächsten Speicherpunkt, Kontrollpunkt oder Ergebnisbildschirm."
   },
   "relax-gentlest-mode": {
     "title": "Senke den Druck",
     "objective": "Ein Spiel mit Vorlagen, Übung oder einem verzeihenden Modus.",
-    "completion": "Schließe ein Level, eine Runde, eine Szene oder 25 aktive Minuten ab."
+    "completion": "Beende ein Level, eine Runde oder eine Szene – oder höre nach der Mindestzeit sicher auf."
   },
   "relax-pause-anytime": {
     "title": "Spiele etwas Pausierbares",
     "objective": "Ein Solospiel, das du jederzeit pausieren oder unterbrechen kannst.",
-    "completion": "Beende eine Aktivität oder spiele 30 aktive Minuten lang."
+    "completion": "Beende eine Aktivität oder höre nach der Mindestzeit sicher auf."
   },
   "relax-turn-by-turn": {
     "title": "Plane einen rundenbasierten Kampf",
@@ -52,27 +53,27 @@ export const germanQuestTranslations = {
     "completion": "Schließe einen kompletten Kampf ab, ohne die Animationen zu beschleunigen."
   },
   "relax-easy-victory": {
-    "title": "Mache einen einfachen Sieg",
+    "title": "Hol dir einen einfachen Sieg",
     "objective": "Ein vertrauter Level, Modus oder Gegner, den du bequem besiegen kannst.",
     "completion": "Erziele einen klaren Sieg, ein Punkteziel oder ein erfolgreiches Ergebnis."
   },
   "relax-quietest-game": {
     "title": "Spiele dein leisestes Spiel",
     "objective": "Das Spiel erfordert die geringste Dringlichkeit, Präzision oder Verwaltung.",
-    "completion": "Beende eine ruhige Aktivität oder spiele 30 aktive Minuten lang."
+    "completion": "Beende eine ruhige Aktivität oder höre nach der Mindestzeit sicher auf."
   },
   "relax-tend-one-thing": {
-    "title": "Sich um etwas kümmern",
+    "title": "Kümmere dich um etwas",
     "objective": "Ein Lebenssimulations-, Bauernhof-, Haustier-, Garten- oder Wartungsspiel.",
     "completion": "Beende einen Akt der Pflege und hinterlasse etwas sichtbar Besseres."
   },
   "relax-put-things-right": {
-    "title": "Ordne ein Leerzeichen",
+    "title": "Bringe einen Bereich in Ordnung",
     "objective": "Ein Reinigungs-, Sortier-, Reparatur-, Inventar- oder Organisationsspiel.",
     "completion": "Beende einen Raum, ein Set, eine Route oder ein Arrangement."
   },
   "relax-slow-journey": {
-    "title": "Segeln oder fahr langsam",
+    "title": "Segle oder fahre langsam",
     "objective": "Ein Segel-, LKW-, Zug-, Flug- oder Geländespiel.",
     "completion": "Reise zwischen zwei Sehenswürdigkeiten ohne Rennen oder Schnellreisen."
   },
@@ -88,13 +89,13 @@ export const germanQuestTranslations = {
   },
   "relax-friendly-face": {
     "title": "Besuche einen freundlichen Charakter",
-    "objective": "Ein Spiel mit einem Begleiter, einer Kreatur oder einem Bewohner, das dir Spaß macht.",
-    "completion": "Finde sie und beende eine Aktivität oder ein Gespräch in der Nähe."
+    "objective": "Ein Spiel mit einem Begleiter, Wesen oder Bewohner, den du magst.",
+    "completion": "Finde diese Figur und beende eine Aktivität oder ein Gespräch in ihrer Nähe."
   },
   "relax-solo-room": {
     "title": "Spiele komplett alleine",
     "objective": "Ein Spiel ohne Matchmaking, Publikum oder Teamverpflichtung.",
-    "completion": "Beende ein privates Level, einen Lauf, eine Aktivität oder 30 aktive Minuten."
+    "completion": "Beende eine private Aktivität oder höre nach der Mindestzeit sicher auf."
   },
   "relax-forgiving-restart": {
     "title": "Versuche es mit einem verzeihenden Spiel",
@@ -102,7 +103,7 @@ export const germanQuestTranslations = {
     "completion": "Spiele einen Abschnitt bis zum nächsten Ergebnis durch."
   },
   "relax-soft-colors": {
-    "title": "Folge der Softest-Palette",
+    "title": "Folge der sanftesten Farbwelt",
     "objective": "Ein Spiel, dessen Cover oder Welt sanfte Farben hat.",
     "completion": "Erreiche diese visuelle Stimmung und beende dort eine Aktivität."
   },
@@ -117,14 +118,14 @@ export const germanQuestTranslations = {
     "completion": "Führe diese kurze Routine einmal von Anfang bis Ende durch."
   },
   "relax-watch-and-wander": {
-    "title": "Wandern und bemerken",
+    "title": "Streife umher und beobachte",
     "objective": "Ein Foto-, Erkundungs- oder Wanderspiel, das das Schauen belohnt.",
     "completion": "Finde drei neue Details und bleibe an einem sicheren Ort stehen."
   },
   "relax-one-button-deeper": {
     "title": "Spiele ein Ein-Knopf-Spiel",
     "objective": "Ein Rhythmus-, Arcade-, Mobil- oder Partyspiel, das auf einer Eingabe basiert.",
-    "completion": "Schließe ein Level, Lied, eine Runde oder 25 aktive Minuten ab."
+    "completion": "Beende ein Level, Lied oder eine Runde – oder höre nach der Mindestzeit sicher auf."
   },
   "relax-safe-home-base": {
     "title": "Bleibe in der Heimatbasis",
@@ -137,17 +138,17 @@ export const germanQuestTranslations = {
     "completion": "Beende eine abgeschlossene Aktivität, ohne die Lautstärke zu erhöhen."
   },
   "relax-kindest-save-file": {
-    "title": "Öffne deinen ruhigsten Speicher",
-    "objective": "Der aktive Sparer mit den wenigsten dringenden Problemen.",
-    "completion": "Nimm eine kleine Verbesserung vor und bewahre sie an einem sicheren Ort auf."
+    "title": "Öffne deinen ruhigsten Spielstand",
+    "objective": "Der aktive Spielstand mit den wenigsten dringenden Problemen.",
+    "completion": "Nimm eine kleine Verbesserung vor und speichere an einem sicheren Ort."
   },
   "relax-comforting-repetition": {
     "title": "Wiederhole eine Lieblingsaktivität",
     "objective": "Ein Rennen, ein Level, ein Lied, ein Spiel, ein Puzzle oder eine Route, die dir bereits Spaß macht.",
-    "completion": "Schließe es einmal ab, ohne einem Rekord nachzujagen oder ihn freizuschalten."
+    "completion": "Schließe diese Aktivität einmal ab, ohne einem Rekord oder einer Freischaltung nachzujagen."
   },
   "relax-clean-exit": {
-    "title": "Beende eine saubere Sitzung",
+    "title": "Beende eine klare Spielsession",
     "objective": "Ein Spiel mit einem klaren Kapitel, Tag, Lauf, Match oder Level.",
     "completion": "Beende genau eine Einheit und stoppe beim Schlussbildschirm."
   },
@@ -162,32 +163,32 @@ export const germanQuestTranslations = {
     "completion": "Fange drei Fische oder beende einen Angelausflug."
   },
   "relax-quiet-drive": {
-    "title": "Mache eine ruhige Fahrt",
+    "title": "Unternimm eine ruhige Fahrt",
     "objective": "Eine LKW-Simulation, ein Fahrspiel oder eine offene Welt mit langen Straßen.",
     "completion": "Erreiche eine Stadt oder ein Wahrzeichen, ohne Rennen zu fahren oder schnell zu reisen."
   },
   "relax-gentle-platformer": {
-    "title": "Spiele einen sanften Plattformer",
+    "title": "Spiele einen entspannten Plattformer",
     "objective": "Ein fehlerverzeihendes Plattform- oder Puzzle-Plattformspiel mit einfachen Wiederholungsversuchen.",
-    "completion": "Lösche eine Ebene, ein Kapitel oder eine Checkpoint-Sequenz."
+    "completion": "Schließe ein Level, Kapitel oder eine Folge von Checkpoints ab."
   },
   "relax-solo-tabletop": {
-    "title": "Spiele Digital Tabletop",
+    "title": "Spiele ein digitales Brettspiel",
     "objective": "Ein Solitär-, Brett-, Karten- oder rundenbasiertes Spiel, das du alleine spielen kannst.",
     "completion": "Beende ein Spiel, Szenario oder einen kurzen Lauf."
   },
   "relax-space-drift": {
-    "title": "Durch den Weltraum treiben",
+    "title": "Treibe durch den Weltraum",
     "objective": "Ein Weltraumerkundungs-, Handels- oder Flugspiel ohne dringende Kämpfe.",
     "completion": "Besuche einen Planeten, eine Station oder einen neuen Sektor und docke sicher an."
   },
   "explore-wrong-turn": {
     "title": "Spiele das dritte Spiel deiner Bibliothek",
     "objective": "Das dritte Spiel in der ersten sichtbaren installierten Reihe.",
-    "completion": "Beende die erste Aktivität oder spiele 25 aktive Minuten lang."
+    "completion": "Beende die erste Aktivität oder höre nach der Mindestzeit sicher auf."
   },
   "explore-follow-the-signal": {
-    "title": "Entdecke die Welt jenseits der Erde",
+    "title": "Erkunde eine Welt jenseits der Erde",
     "objective": "Ein Weltraumspiel, das auf einem anderen Planeten, einer anderen Station oder einer anderen Galaxie spielt.",
     "completion": "Erreiche einen neuen Ort und beende dort eine Aktivität."
   },
@@ -219,7 +220,7 @@ export const germanQuestTranslations = {
   "explore-world-underfoot": {
     "title": "Entdecke den Untergrund",
     "objective": "Ein Bergbau-, Höhlen-, Dungeon- oder Untergrund-Überlebensspiel.",
-    "completion": "Erreiche eine neue Kammer und verlasse einen sicheren Weg zurück."
+    "completion": "Erreiche eine neue Kammer und merke dir einen sicheren Rückweg."
   },
   "explore-borrowed-body": {
     "title": "Spiele als Tier",
@@ -239,15 +240,15 @@ export const germanQuestTranslations = {
   "explore-physical-rule": {
     "title": "Versuche es mit einer ungewöhnlichen Steuerung",
     "objective": "Ein Spiel, das auf Berührung, Bewegung, Stimme, Zeichnen oder Rhythmus basiert.",
-    "completion": "Beende eine Aktivität, die sich auf diesen körperlichen Einsatz konzentriert."
+    "completion": "Beende eine Aktivität, bei der dieser körperliche Einsatz im Mittelpunkt steht."
   },
   "explore-follow-clue": {
     "title": "Folge einem Hinweis",
     "objective": "Ein Detektiv-, Mystery-, Deduktions- oder Ermittlungsspiel.",
-    "completion": "Löse einen Hinweis oder gib eine evidenzbasierte Theorie an."
+    "completion": "Löse einen Hinweis oder formuliere eine durch Belege gestützte Theorie."
   },
   "explore-command-view": {
-    "title": "Kommandiere das gesamte Board",
+    "title": "Kommandiere das ganze Spielfeld",
     "objective": "Ein Taktik-, Management-, Strategie- oder Squad-Control-Spiel.",
     "completion": "Beende ein Szenario und leite dabei das gesamte verfügbare Team."
   },
@@ -262,24 +263,24 @@ export const germanQuestTranslations = {
     "completion": "Durchquere einen Bereich mit dem charakteristischen Bewegungssystem."
   },
   "explore-words-have-weight": {
-    "title": "Mit Worten etwas verändern",
+    "title": "Verändere etwas mit Worten",
     "objective": "Ein Dialog-, Rollen- oder Verhandlungsspiel mit Konsequenzen.",
     "completion": "Beende ein Gespräch mit einer klaren Entscheidung."
   },
   "explore-small-world-big-idea": {
     "title": "Probiere ein kleines seltsames Spiel aus",
     "objective": "Ein kurzes oder einfach aussehendes Spiel mit einer ungewöhnlichen Prämisse.",
-    "completion": "Erreiche die erste große Enthüllung oder spiele 30 aktive Minuten lang."
+    "completion": "Erreiche die erste große Enthüllung oder höre nach der Mindestzeit sicher auf."
   },
   "explore-never-same-twice": {
     "title": "Starte einen neuen Run",
-    "objective": "Ein Roguelike-, Strategie-, Sandbox- oder prozedurales Spiel.",
+    "objective": "Ein Roguelike, Strategie-, Sandbox- oder prozedural generiertes Spiel.",
     "completion": "Beende einen generierten Lauf, eine Karte, ein Szenario oder einen Zyklus."
   },
   "explore-one-word-door": {
     "title": "Öffne den kürzesten Titel",
     "objective": "Das installierte Spiel mit dem kürzesten sichtbaren Namen.",
-    "completion": "Beende die Eröffnungsaktivität oder spiele 30 aktive Minuten lang."
+    "completion": "Beende die Eröffnungsaktivität oder höre nach der Mindestzeit sicher auf."
   },
   "explore-color-beacon": {
     "title": "Folge einer Coverfarbe",
@@ -287,9 +288,9 @@ export const germanQuestTranslations = {
     "completion": "Erreiche eine Szene mit dieser Farbe und beende eine Aktivität."
   },
   "explore-earliest-release": {
-    "title": "Spiele ein frühes Design",
+    "title": "Spiele einen frühen Klassiker",
     "objective": "Eines der ältesten Spiele in deiner aktuellen Bibliothek.",
-    "completion": "Schließe ein Level, ein Spiel, eine Etappe oder 30 aktive Minuten ab."
+    "completion": "Beende ein Level, Match oder eine Etappe – oder höre nach der Mindestzeit sicher auf."
   },
   "explore-genre-collision": {
     "title": "Löse ein First-Person-Rätsel",
@@ -302,7 +303,7 @@ export const germanQuestTranslations = {
     "completion": "Erreiche ein Ziel über eine Route, die du noch nicht benutzt hast."
   },
   "explore-failure-teaches": {
-    "title": "Lerne aus einem Verlust",
+    "title": "Lerne aus einer Niederlage",
     "objective": "Ein Roguelike-, Puzzle-, Strategie- oder Storyspiel, bei dem Scheitern mehr offenbart.",
     "completion": "Beende einen fehlgeschlagenen Versuch und nutze die Lektion einmal."
   },
@@ -312,7 +313,7 @@ export const germanQuestTranslations = {
     "completion": "Beende eine Schicht, Lieferung, einen Fall, einen Service oder einen Arbeitstag."
   },
   "explore-without-combat": {
-    "title": "Fortschritt ohne Kämpfe",
+    "title": "Komme ohne Kämpfe voran",
     "objective": "Ein Stealth-, Dialog-, Puzzle- oder Erkundungsspiel mit friedlichen Routen.",
     "completion": "Erreiche ein Ziel, ohne einen optionalen Kampf zu beginnen."
   },
@@ -337,17 +338,17 @@ export const germanQuestTranslations = {
     "completion": "Erreiche ein Ziel über eine Route, die von der Markierung nicht vorgeschlagen wurde."
   },
   "explore-metroidvania-shortcut": {
-    "title": "Finde eine versteckte Verknüpfung",
+    "title": "Finde eine versteckte Abkürzung",
     "objective": "Ein Metroidvania, ein Plattformspiel, ein Dungeon oder eine vernetzte Welt.",
-    "completion": "Öffne eine Verknüpfung oder verbinde zwei zuvor getrennte Pfade."
+    "completion": "Öffne eine Abkürzung oder verbinde zwei zuvor getrennte Wege."
   },
   "explore-archaeology-trail": {
-    "title": "Verfolge einen antiken Ort",
+    "title": "Erkunde die Spuren eines alten Ortes",
     "objective": "Ein Archäologie-, Geschichts-, Fantasy- oder Erkundungsspiel mit Ruinen.",
     "completion": "Finde drei Details, die erklären, was dort passiert ist."
   },
   "explore-unfamiliar-cockpit": {
-    "title": "Lerne ein neues Cockpit",
+    "title": "Lerne ein unbekanntes Cockpit kennen",
     "objective": "Ein Flug-, Weltraum-, Zug-, LKW- oder Maschinensimulator.",
     "completion": "Führe eine sichere Fahrt mit einem unbekannten Fahrzeug durch."
   },
@@ -367,24 +368,24 @@ export const germanQuestTranslations = {
     "completion": "Erreiche den ersten Speicherpunkt, Kontrollpunkt oder Ergebnisbildschirm."
   },
   "progress-clean-finish": {
-    "title": "Gib ihm eine ehrliche Stunde",
+    "title": "Gib einem Spiel eine faire Chance",
     "objective": "Ein Spiel, das du abgetan hast, bevor du den eigentlichen Ablauf kennengelernt hast.",
-    "completion": "Spiele 60 aktive Minuten lang und unterbreche das Spiel nur, wenn du dich wirklich unwohl fühlst."
+    "completion": "Erreiche einen vollständigen Spielablauf oder höre nach der Mindestzeit sicher auf."
   },
   "progress-one-tier-better": {
-    "title": "Setze einen abgebrochenen Speichervorgang fort",
+    "title": "Setze einen aufgegebenen Spielstand fort",
     "objective": "Eine Kampagne, die du bereits nach wenigen Sitzungen verlassen hast.",
     "completion": "Erreiche den nächsten benannten Kontrollpunkt, das nächste Kapitel oder das nächste Missionsergebnis."
   },
   "progress-three-step-plan": {
     "title": "Schalte etwas in einem Shooter frei",
-    "objective": "Ein Einzelschütze mit freigeschalteter Waffe, Fertigkeit oder Ausrüstung in der Nähe.",
+    "objective": "Ein Solo-Shooter mit einer nahen Waffen-, Fähigkeits- oder Ausrüstungsfreischaltung.",
     "completion": "Verdiene dir eine Freischaltung durch Kampagne, Herausforderung oder Solo-Fortschritt."
   },
   "progress-recovery-run": {
-    "title": "Pushe die nächstgelegene Kampagne",
+    "title": "Bringe die nächste Kampagne voran",
     "objective": "Dein unvollendetes Spiel steht kurz vor seinem Ende.",
-    "completion": "Spiele 60 aktive Minuten gegen Ende und speichere dann."
+    "completion": "Erreiche einen Meilenstein der Geschichte oder höre nach der Mindestzeit sicher auf."
   },
   "progress-two-birds": {
     "title": "Gib einem installierten Spiel eine Chance",
@@ -392,27 +393,27 @@ export const germanQuestTranslations = {
     "completion": "Beende eine Mission, ein Kapitel, ein Spiel oder einen Lauf. Dann entscheide, ob es bleibt."
   },
   "progress-wake-the-sleeping-save": {
-    "title": "Wecke den ältesten Save",
+    "title": "Wecke deinen ältesten Spielstand",
     "objective": "Der aktive Spielstand, den du am längsten ignoriert hast.",
     "completion": "Finde deine Orientierung wieder und erreiche einen neuen Kontrollpunkt."
   },
   "progress-honor-the-oldest-promise": {
     "title": "Schließe die älteste Quest ab",
     "objective": "Die älteste erreichbare Aufgabe in einem Questprotokoll im Spiel.",
-    "completion": "Schließe es ab oder erreiche den nächsten benannten Meilenstein."
+    "completion": "Schließe diese Quest ab oder erreiche ihren nächsten benannten Meilenstein."
   },
   "progress-open-the-black-box": {
-    "title": "Lerne ein einschüchterndes System",
+    "title": "Verstehe ein schwieriges Spielsystem",
     "objective": "Ein gutes Spiel, das durch Handwerk, Kampf, Wirtschaft oder Kontrolle ins Stocken geraten ist.",
     "completion": "Nutze dieses System erfolgreich in einer realen Aktivität."
   },
   "progress-revisit-the-wall": {
-    "title": "Entsperre ein blockiertes Puzzle",
+    "title": "Löse ein festgefahrenes Rätsel",
     "objective": "Ein Rätsel, eine Route oder ein Systemproblem, das ein unvollendetes Spiel stoppt.",
     "completion": "Löse es oder teste drei wirklich unterschiedliche Ansätze."
   },
   "progress-clear-one-map-pocket": {
-    "title": "Eine Kartentasche freiräumen",
+    "title": "Schließe einen Kartenbereich ab",
     "objective": "Eine vertraute Karte mit einem kleinen unerforschten oder unvollendeten Gebiet.",
     "completion": "Decke diesen Bereich auf und führe eine Aktivität darin aus."
   },
@@ -422,12 +423,12 @@ export const germanQuestTranslations = {
     "completion": "Erreiche den ersten einzigartigen Ort, die erste Mission oder die erste große Begegnung."
   },
   "progress-let-the-other-hero-grow": {
-    "title": "Fördere einen vernachlässigten Charakter",
-    "objective": "Ein Rollenspiel, ein Kaderspiel oder ein Kämpfer mit einem unbenutzten Charakter.",
-    "completion": "Steige ein Level auf, schalte mit ihnen einen Rang frei oder schließe eine Aktivität ab."
+    "title": "Bringe eine vernachlässigte Figur voran",
+    "objective": "Ein Rollenspiel, Roster-Spiel oder Fighting Game mit einer kaum genutzten Figur.",
+    "completion": "Steige mit dieser Figur ein Level oder einen Rang auf oder beende eine Aktivität."
   },
   "progress-rebuild-muscle-memory": {
-    "title": "Vergessene Kontrollen wiederherstellen",
+    "title": "Lerne die vergessene Steuerung neu",
     "objective": "Ein Spiel, das du wieder regelmäßig spielen möchtest, an das du dich aber nicht mehr erinnerst.",
     "completion": "Beende das Tutorial oder eine bekannte Aktivität ohne Anleitung."
   },
@@ -437,19 +438,19 @@ export const germanQuestTranslations = {
     "completion": "Erreiche die nächste Antwort, Enthüllung oder den nächsten Kapitelumbruch."
   },
   "progress-shake-off-the-rust": {
-    "title": "Schüttele den Konkurrenzrost ab",
+    "title": "Schüttle den Wettkampfrost ab",
     "objective": "Ein Kampf-, Renn-, Sport- oder Shooter-Spiel, das du einmal gut gespielt hast.",
     "completion": "Beende drei Spiele oder Rennen, ohne deinen alten Rang zu bewerten."
   },
   "progress-claim-the-nearby-feat": {
-    "title": "Fordere einen Erfolg in der Nähe ein",
+    "title": "Hol dir einen nahen Erfolg",
     "objective": "Eine Errungenschaft, die bereits nahe oder sofort anstrebbar ist.",
     "completion": "Schalte es frei oder beende drei vollständige Versuche."
   },
   "progress-return-to-the-gift": {
-    "title": "Spiele das Spiel, das du erhalten hast",
+    "title": "Spiele ein geschenktes Spiel",
     "objective": "Ein begabtes Spiel, dem du keine faire Sitzung gegeben hast.",
-    "completion": "Beende die Eröffnungsaktivität oder spiele 45 aktive Minuten lang."
+    "completion": "Beende die Eröffnungsaktivität oder höre nach der Mindestzeit sicher auf."
   },
   "progress-choose-the-short-road": {
     "title": "Bringe die kürzeste Kampagne voran",
@@ -457,8 +458,8 @@ export const germanQuestTranslations = {
     "completion": "Beende ein Kapitel oder erreiche den nächsten großen Kontrollpunkt."
   },
   "progress-cross-the-middle": {
-    "title": "Bewege ein Mittelspiel vorwärts",
-    "objective": "Eine Kampagne, die weder Anfang noch Ende war.",
+    "title": "Bringe eine Kampagne im Mittelteil voran",
+    "objective": "Eine Kampagne, die weit von Anfang und Ende entfernt feststeckt.",
     "completion": "Schließe eine benannte Quest, ein Kapitel, einen Dungeon oder eine Operation ab."
   },
   "progress-unpack-and-move": {
@@ -477,29 +478,29 @@ export const germanQuestTranslations = {
     "completion": "Erreiche den ersten wichtigen Speicherpunkt oder Kapitelumbruch."
   },
   "progress-earn-the-specific-upgrade": {
-    "title": "Verdiene ein Upgrade in der Nähe",
-    "objective": "Eine Rettung mit einem nützlichen Upgrade, das bereits in Reichweite ist.",
-    "completion": "Verdienen, kaufen und nutze genau dieses Upgrade einmal."
+    "title": "Verdiene ein nahes Upgrade",
+    "objective": "Ein Spielstand mit einem nützlichen Upgrade in unmittelbarer Reichweite.",
+    "completion": "Verdiene oder kaufe genau dieses Upgrade und nutze es einmal."
   },
   "progress-remove-one-barrier": {
-    "title": "Entferne einen Reibungspunkt",
+    "title": "Entferne eine Spielhürde",
     "objective": "Ein gutes Spiel, das durch Schwierigkeit, Steuerung, Text oder Setup blockiert wird.",
     "completion": "Ändere eine relevante Einstellung und beende eine Aktivität."
   },
   "progress-finish-a-favorites-loose-end": {
-    "title": "Erledige das offene Ende eines Favoriten",
+    "title": "Erledige eine offene Aufgabe im Lieblingsspiel",
     "objective": "Ein Spiel, das du liebst, mit einer übersehenen Quest, einem Level oder einem Modus.",
-    "completion": "Beende das einzelne lose Ende und speichere es."
+    "completion": "Beende genau diese offene Aufgabe und speichere anschließend."
   },
   "progress-take-the-road-not-used": {
-    "title": "Bringe den anderen Zweig voran",
+    "title": "Bringe den anderen Handlungszweig voran",
     "objective": "Ein Story- oder Strategiespiel mit einer Route, die du übersprungen hast.",
     "completion": "Erreiche ein Ergebnis oder einen Kontrollpunkt, der für diesen Zweig einzigartig ist."
   },
   "progress-rescue-the-secondary-save": {
-    "title": "Rette einen sekundären Speicherstand",
+    "title": "Rette einen zweiten Spielstand",
     "objective": "Ein alternativer Charakter, eine alternative Route oder ein alternativer Build, den du nicht mehr verwendest.",
-    "completion": "Schließe einen Meilenstein ab, bei dem es sich lohnt, den Speicherstand aufzubewahren."
+    "completion": "Erreiche einen Meilenstein, für den du diesen Spielstand später noch einmal öffnen würdest."
   },
   "progress-transfer-a-strength": {
     "title": "Übertrage eine Fähigkeit",
@@ -507,9 +508,9 @@ export const germanQuestTranslations = {
     "completion": "Benutze diese bekannte Fähigkeit, um ein Level, ein Spiel oder eine Begegnung zu beenden."
   },
   "progress-spend-the-hoarded-resource": {
-    "title": "Gib die gehortete Ressource aus",
-    "objective": "Ein Speicher mit einem seltenen Gegenstand, einer Währung oder einer Fähigkeit, den du weiterhin speicherst.",
-    "completion": "Gib es für den Fortschritt aus und beende die resultierende Aktivität."
+    "title": "Nutze eine gehortete Ressource",
+    "objective": "Ein Spielstand mit einem seltenen Gegenstand, einer Währung oder Fähigkeit, die du aufbewahrst.",
+    "completion": "Setze diese Ressource für Fortschritt ein und beende die daraus entstehende Aktivität."
   },
   "progress-finish-the-tutorial": {
     "title": "Schließe ein verlassenes Tutorial ab",
@@ -517,32 +518,32 @@ export const germanQuestTranslations = {
     "completion": "Beende das Tutorial und verwende eine Lektion im normalen Spiel."
   },
   "progress-roguelike-meta-step": {
-    "title": "Mache einen schurkenhaften Rettungswurf",
-    "objective": "Ein schurkenhaftes oder laufbasiertes Spiel mit anhaltendem Fortschritt.",
+    "title": "Bringe einen Roguelike-Spielstand voran",
+    "objective": "Ein Roguelike oder runbasiertes Spiel mit dauerhaftem Fortschritt.",
     "completion": "Schließe einen Lauf ab und kaufe eine dauerhafte Freischaltung."
   },
   "progress-complete-a-season": {
     "title": "Schließe eine In-Game-Saison ab",
-    "objective": "Eine Sport-, Landwirtschafts-, Management- oder Lebenssimulationsrettung gegen Ende der Saison.",
+    "objective": "Ein Sport-, Landwirtschafts-, Management- oder Lebenssimulationsspielstand kurz vor Saisonende.",
     "completion": "Rufe die nächste Saisonzusammenfassung, Tabelle oder Kalenderänderung auf."
   },
   "progress-open-the-endgame": {
     "title": "Erreiche das Endspiel",
-    "objective": "Ein Rollenspiel, Plünderer oder Strategiespiel, einen Meilenstein vom Endspiel entfernt.",
+    "objective": "Ein Rollenspiel, Loot-Spiel oder Strategiespiel, dem nur ein Meilenstein bis zum Endgame fehlt.",
     "completion": "Schalte die letzte Region, Schwierigkeit, Aktivität oder Kampagnenphase frei."
   },
   "progress-master-one-recipe": {
-    "title": "Master-One-Rezept",
+    "title": "Meistere ein Rezept",
     "objective": "Ein Bastel-, Koch-, Alchemie- oder Produktionsspiel mit einem unvollendeten Rezept.",
-    "completion": "Sammele die Zutaten und stelle das fertige Produkt einmal her."
+    "completion": "Sammle die Zutaten und stelle das fertige Produkt einmal her."
   },
   "progress-fix-one-crisis": {
     "title": "Behebe eine Managementkrise",
-    "objective": "Eine Stadt, Kolonie, Firma oder ein Team mit einem offensichtlichen Problem.",
+    "objective": "Eine Stadt, Kolonie, ein Unternehmen oder ein Team mit einem offensichtlichen Problem.",
     "completion": "Behebe dieses Problem für einen vollständigen Spielzyklus."
   },
   "create-new-build-old-parts": {
-    "title": "Von Grund auf neu erstellen",
+    "title": "Baue etwas von Grund auf",
     "objective": "Ein Sandbox- oder Aufbauspiel mit einem leeren Grundstück oder einem neuen Spielstand.",
     "completion": "Stelle einen nutzbaren Raum, eine Maschine, ein Fahrzeug oder eine kleine Struktur fertig."
   },
@@ -567,7 +568,7 @@ export const germanQuestTranslations = {
     "completion": "Erstellen und teste eine kurze Route vom Anfang bis zum Ziel."
   },
   "create-before-and-after": {
-    "title": "Mache einen Fotospaziergang",
+    "title": "Mach einen Fotospaziergang",
     "objective": "Die Spielwelt, die du heute am liebsten fotografieren möchtest.",
     "completion": "Nimm drei unterschiedliche Bilder auf und behalte das stärkste."
   },
@@ -577,7 +578,7 @@ export const germanQuestTranslations = {
     "completion": "Verwende maximal sieben Objekte, um den Tagesablauf eines Bewohners darzustellen."
   },
   "create-make-the-useful-prototype": {
-    "title": "Prototyp einer nützlichen Sache",
+    "title": "Baue einen nützlichen Prototyp",
     "objective": "Ein Sandbox-, Ingenieurs-, Fabrik- oder Fahrzeugbauspiel.",
     "completion": "Erstelle die gröbste Version, die eine benannte Aufgabe ausführt."
   },
@@ -602,9 +603,9 @@ export const germanQuestTranslations = {
     "completion": "Erstelle einen Look, der von einem Nebencharakter oder einer Nebenfraktion inspiriert ist."
   },
   "create-take-an-honest-portrait": {
-    "title": "Mache ein Porträt außerhalb des Dienstes",
+    "title": "Fotografiere eine Figur in einem ruhigen Moment",
     "objective": "Ein Spiel mit Fotomodus und einem sehenswerten Charakter.",
-    "completion": "Halte sie in einem ruhigen, gewöhnlichen oder unbewachten Moment fest."
+    "completion": "Halte diese Figur in einem ruhigen, alltäglichen oder unbeobachteten Moment fest."
   },
   "create-chase-one-kind-of-light": {
     "title": "Fotografiere eine Art Licht",
@@ -617,22 +618,22 @@ export const germanQuestTranslations = {
     "completion": "Erfasse einen Anfang, eine Veränderung und ein Ende in drei Bildern."
   },
   "create-curate-the-odd-shelf": {
-    "title": "Kuratiere eine Odd-Sammlung",
+    "title": "Kuratiere eine ungewöhnliche Sammlung",
     "objective": "Ein Spiel mit Vitrinen, Regalen, Museen oder Wohnungen.",
     "completion": "Ordne fünf übersehene Objekte um eine gemeinsame Idee herum an."
   },
   "create-build-a-creatures-home": {
-    "title": "Baue einen Lebensraum für Lebewesen",
+    "title": "Baue einem Wesen ein Zuhause",
     "objective": "Ein Zoo-, Park-, Überlebens-, Kolonie- oder Aufbauspiel.",
     "completion": "Beende einen Lebensraum, der auf die Bedürfnisse einer einzelnen Kreatur zugeschnitten ist."
   },
   "create-embrace-one-sided-balance": {
-    "title": "Design mit Asymmetrie",
-    "objective": "Ein Baumeister, Dekorateur, Charakterersteller oder Fotomodus.",
+    "title": "Gestalte bewusst asymmetrisch",
+    "objective": "Ein Bau- oder Dekorationsspiel, Charaktereditor oder Fotomodus.",
     "completion": "Beende eine Komposition, deren zwei Seiten absichtlich ungleich sind."
   },
   "create-run-a-kind-economy": {
-    "title": "Baue eine Kinderökonomie auf",
+    "title": "Baue eine faire Wirtschaft",
     "objective": "Eine Stadt, eine Kolonie, eine Fabrik, ein Park oder ein Managementspiel.",
     "completion": "Beende einen Zyklus ohne dringende Warnung und mit einer freien Ressource."
   },
@@ -642,12 +643,12 @@ export const germanQuestTranslations = {
     "completion": "Baue um ein Verb herum auf und beende ein Spiel oder eine Mission."
   },
   "create-roleplay-a-local": {
-    "title": "Spiele einen gewöhnlichen Tag im Rollenspiel",
+    "title": "Spiele einen gewöhnlichen Alltag",
     "objective": "Ein Rollenspiel, eine Lebenssimulation oder eine offene Welt mit alltäglichen Räumen.",
     "completion": "Besuche die Arbeit, ruhe dich irgendwo aus und kehre ohne formelle Aufgaben nach Hause zurück."
   },
   "create-solve-it-sideways": {
-    "title": "Löse es seitwärts",
+    "title": "Finde eine ungewöhnliche Lösung",
     "objective": "Ein systemisches Puzzle-, Stealth-, Taktik- oder Actionspiel.",
     "completion": "Erreiche ein Ziel mit einem Werkzeug, das du normalerweise ignorierst."
   },
@@ -657,18 +658,18 @@ export const germanQuestTranslations = {
     "completion": "Reise in einer Endlosschleife, Spirale, Welle oder einem Buchstaben."
   },
   "create-compose-a-place-theme": {
-    "title": "Verfasse ein Ortsthema",
+    "title": "Komponiere ein Thema für einen Ort",
     "objective": "Ein Musikmacher, eine Rhythmus-Sandbox oder ein Spiel mit bearbeitbaren Instrumenten.",
     "completion": "Mache einen kurzen Ton oder eine Schleife für einen bestimmten Ort."
   },
   "create-sculpt-for-one-view": {
-    "title": "Erstelle für eine Ansicht",
+    "title": "Baue für einen Blickwinkel",
     "objective": "Ein Gelände-, Stadt-, Park- oder Weltbauspiel.",
-    "completion": "Gestalte eine Szene so, dass sie aus einem gewählten Blickwinkel vollständig aussieht."
+    "completion": "Gestalte eine Szene so, dass aus einem gewählten Blickwinkel ein vollständiges Bild entsteht."
   },
   "create-repair-with-a-new-idea": {
-    "title": "Repariere eine alte Schöpfung",
-    "objective": "Eine Sandbox oder ein Builder, der etwas enthält, das du zuvor erstellt hast.",
+    "title": "Repariere eine alte Kreation",
+    "objective": "Eine Sandbox oder ein Aufbauspiel mit etwas, das du früher erstellt hast.",
     "completion": "Baue den schwächsten Teil um eine neue Idee herum neu auf."
   },
   "create-stage-a-silent-scene": {
@@ -687,13 +688,13 @@ export const germanQuestTranslations = {
     "completion": "Erstellen und führe eine wiederholbare dreistufige Zeremonie durch."
   },
   "create-leave-a-kind-trace": {
-    "title": "Verlasse einen Ort besser",
-    "objective": "Eine gemeinsame Welt, ein Überlebensspiel, ein Builder oder eine offene Welt.",
+    "title": "Hinterlasse einen Ort besser",
+    "objective": "Eine gemeinsame Welt, ein Survival- oder Aufbauspiel oder eine offene Welt.",
     "completion": "Füge einen nützlichen Unterschlupf, Weg, Licht, Reparatur oder Vorrat hinzu."
   },
   "create-boss-arena": {
     "title": "Entwerfe eine Boss-Arena",
-    "objective": "Ein Level-Editor, eine Sandbox, ein Wrestling-Spiel oder ein Begegnungs-Builder.",
+    "objective": "Ein Leveleditor, eine Sandbox, ein Wrestling-Spiel oder ein Begegnungseditor.",
     "completion": "Bauen und teste eine Arena mit einer klaren Gefahrenquelle und einer sicheren Route."
   },
   "create-themed-deck": {
@@ -717,7 +718,7 @@ export const germanQuestTranslations = {
     "completion": "Erstelle ein kompaktes Modul, das du woanders kopieren kannst."
   },
   "create-character-backstory": {
-    "title": "Erstelle eine Charakter-Hintergrundgeschichte",
+    "title": "Entwirf eine Hintergrundgeschichte",
     "objective": "Ein Rollenspiel, eine Lebenssimulation, ein Sportspiel oder ein Charakterersteller.",
     "completion": "Wähle drei sichtbare Details aus und spiele eine Szene ab, die diese unterstützt."
   },
@@ -732,22 +733,22 @@ export const germanQuestTranslations = {
     "completion": "Schließe drei vollständige PvP-Spiele ab, ohne das Spiel zu wechseln."
   },
   "challenge-beat-your-ghost": {
-    "title": "Rennen um ein Ergebnis",
+    "title": "Fahre drei Rennen",
     "objective": "Ein Rennspiel mit einem Auto, einer Strecke oder einem Stil, der dir gefällt.",
     "completion": "Beende drei Rennen oder zeichne ein gültiges Zeitfahren auf."
   },
   "challenge-pressure-proof": {
-    "title": "Überdenke einen Gegner",
+    "title": "Sei einem Gegner voraus",
     "objective": "Ein Strategie-, Taktik- oder Kartenspiel mit kompetitivem Spiel.",
     "completion": "Schließe ein vollständiges Spiel oder Szenario ab."
   },
   "challenge-thin-margin": {
-    "title": "Spiele ein vollständiges Sportspiel",
+    "title": "Spiele ein vollständiges Sportmatch",
     "objective": "Die Sportart, das Team oder der Athlet, die oder den du am liebsten kontrollieren möchtest.",
     "completion": "Schließe ein komplettes Spiel, Event oder eine Turnierrunde ab."
   },
   "challenge-adapt-on-contact": {
-    "title": "Schlage eine persönliche Bestleistung",
+    "title": "Schlage deine persönliche Bestleistung",
     "objective": "Ein Spiel, das Zeiten, Ergebnisse, Ränge oder Streaks aufzeichnet.",
     "completion": "Schlage ein Ziel oder beende drei ehrliche Versuche."
   },
@@ -762,7 +763,7 @@ export const germanQuestTranslations = {
     "completion": "Beende eine Aktivität genau einen Schritt über deiner üblichen Einstellung."
   },
   "challenge-three-life-window": {
-    "title": "Verbringe nur drei Leben",
+    "title": "Nutze nur drei Leben",
     "objective": "Ein Arcade-, Plattform-, Action- oder Run-basiertes Spiel mit schnellen Wiederholungsversuchen.",
     "completion": "Notiere dein bestes Ergebnis nach genau drei Versuchen."
   },
@@ -772,12 +773,12 @@ export const germanQuestTranslations = {
     "completion": "Beende eine Aktivität, wobei eine vernachlässigte Option im Mittelpunkt steht."
   },
   "challenge-silent-route": {
-    "title": "Durchquere einen unsichtbaren Bereich",
+    "title": "Durchquere einen Bereich unentdeckt",
     "objective": "Ein Stealth-, Action- oder immersives Simulationsspiel mit bewachten Bereichen.",
     "completion": "Durchquere einen bewachten Bereich, ohne einen vollständigen Alarm auszulösen."
   },
   "challenge-rationed-run": {
-    "title": "Mit halben Vorräten abschließen",
+    "title": "Komme mit halben Vorräten aus",
     "objective": "Ein Survival-, Shooter-, RPG- oder Taktikspiel mit begrenzten Ressourcen.",
     "completion": "Beende eine Aktivität mit nicht mehr als der Hälfte deines normalen Vorrats."
   },
@@ -792,14 +793,14 @@ export const germanQuestTranslations = {
     "completion": "Schließe eine anspruchsvolle Sequenz ab oder beende fünf komplette Versuche."
   },
   "challenge-no-hint-hour": {
-    "title": "Ohne Hinweise lösen",
+    "title": "Löse es ohne Hinweise",
     "objective": "Ein Spiel mit einem ungelösten Rätsel, einer Route, einem Abzug oder einem System.",
-    "completion": "Löse es oder bilde nach 30 Minuten eine neue konkrete Theorie."
+    "completion": "Löse es oder halte vor dem Aufhören eine neue konkrete Theorie fest."
   },
   "challenge-weak-link-drill": {
     "title": "Trainiere deine schwächste Fähigkeit",
     "objective": "Ein Spiel, bei dem es um deine Verteidigung, dein Ziel, dein Timing, deine Wirtschaftlichkeit oder deine Navigation geht.",
-    "completion": "Übe diese Fähigkeit und wende sie dann in einer vollständigen Aktivität an."
+    "completion": "Übe diese Fähigkeit und setze das Gelernte danach in einer vollständigen Aktivität ein."
   },
   "challenge-daily-trial": {
     "title": "Schließe die heutige Herausforderung ab",
@@ -812,14 +813,14 @@ export const germanQuestTranslations = {
     "completion": "Beende drei kurze Runden oder eine Mission mit deiner schwächsten Option."
   },
   "challenge-no-restart-recovery": {
-    "title": "Wiederherstellen ohne Neustart",
+    "title": "Erhole dich ohne Neustart",
     "objective": "Ein Lauf-, Match-, Missions- oder Managementspiel, bei dem Fehler zählen.",
-    "completion": "Mache mit einem schweren Rückschlag weiter und erziele ein natürliches Ergebnis."
+    "completion": "Spiele nach einem schweren Rückschlag weiter und erreiche trotzdem das nächste Ziel."
   },
   "challenge-pattern-reader": {
-    "title": "Lies ein Muster",
+    "title": "Lerne ein Muster",
     "objective": "Ein Spiel mit sich wiederholenden Angriffen, Rhythmen, Routen oder Produktionszyklen.",
-    "completion": "Verwende ein sich wiederholendes Signal, um eine Begegnung oder einen Zyklus zu beenden."
+    "completion": "Nutze dieses Muster, um eine Begegnung oder einen Zyklus zu beenden."
   },
   "challenge-last-stand": {
     "title": "Halte drei Wellen",
@@ -832,7 +833,7 @@ export const germanQuestTranslations = {
     "completion": "Beende genau ein gewertetes Spiel, Rennen, Event oder eine Platzierung."
   },
   "challenge-nearby-achievement": {
-    "title": "Versuche eine schwere Leistung",
+    "title": "Versuche einen schwierigen Erfolg",
     "objective": "Eine fähigkeitsbasierte Errungenschaft, deren Versuch du bisher vermieden hast.",
     "completion": "Schalte es frei oder beende drei vollständige Versuche von Anfang an."
   },
@@ -842,7 +843,7 @@ export const germanQuestTranslations = {
     "completion": "Überlebe eine Nacht, eine Etage, eine Expedition, eine Schicht oder eine Evakuierung."
   },
   "challenge-one-mechanic-master": {
-    "title": "Lerne einen fortgeschrittenen Zug",
+    "title": "Lerne eine fortgeschrittene Technik",
     "objective": "Ein Spiel mit einem Parade-, Drift-, Abbruch-, Konter- oder komplexen Befehl.",
     "completion": "Führe diese Bewegung dreimal erfolgreich in einer Aktivität aus."
   },
@@ -857,9 +858,9 @@ export const germanQuestTranslations = {
     "completion": "Beende eine Begegnung, ohne mehr als ein Viertel zu verlieren."
   },
   "challenge-unknown-ruleset": {
-    "title": "Beende einen nicht gespielten Modus",
+    "title": "Beende einen neuen Modus",
     "objective": "Ein Spiel mit einer unberührten Variante, einem Szenario oder einem Regelsatz.",
-    "completion": "Lies die Regeln einmal durch und beende ein vollständiges Ergebnis."
+    "completion": "Lies die Regeln einmal durch und beende danach eine vollständige Runde oder ein Match."
   },
   "challenge-audacious-route": {
     "title": "Gehe den riskanten Weg",
@@ -869,30 +870,30 @@ export const germanQuestTranslations = {
   "challenge-tension-you-avoid": {
     "title": "Bleibe bei der Spannung",
     "objective": "Ein Horror- oder Spiel mit hohen Einsätzen, das du immer wieder meidest.",
-    "completion": "Erreiche den nächsten Speicherstand, Kontrollpunkt, abgeschlossenen Tag oder 25 aktive Minuten."
+    "completion": "Erreiche den nächsten sicheren Punkt oder höre nach der Mindestzeit sicher auf."
   },
   "challenge-platformer-no-fall": {
-    "title": "Schließe einen No-Fall-Abschnitt ab",
+    "title": "Schaffe einen Abschnitt ohne Sturz",
     "objective": "Ein Plattformer mit einer kurzen Route, die du bereits verstehst.",
     "completion": "Erreiche einmal den nächsten Kontrollpunkt, ohne zu fallen oder zu sterben."
   },
   "challenge-tactics-iron-plan": {
     "title": "Schließe eine Taktikmission sauber ab",
     "objective": "Ein rundenbasiertes Taktik- oder Strategiespiel mit einer enthaltenen Mission.",
-    "completion": "Schließe es ab, ohne eine Bewegung nachzuladen oder eine Einheit zu verlieren."
+    "completion": "Schließe die Mission ab, ohne einen Zug neu zu laden oder eine Einheit zu verlieren."
   },
   "challenge-rhythm-clean-song": {
-    "title": "Bereinige ein Lied",
+    "title": "Verbessere einen Song",
     "objective": "Ein Rhythmus- oder Musikspiel mit einem Lied nahe deiner Fähigkeitsgrenze.",
     "completion": "Verbessere seine Punktzahl oder Kombination in drei Versuchen."
   },
   "challenge-sports-comeback": {
-    "title": "Schließe ein Sport-Comeback ab",
+    "title": "Schaffe ein Sport-Comeback",
     "objective": "Ein Sportspiel mit benutzerdefinierten Spielen oder steuerbaren Punkteeinstellungen.",
     "completion": "Beginne hinten und gewinnen oder ziehe ein komplettes Spiel unentschieden."
   },
   "challenge-extraction-one-haul": {
-    "title": "Extrahiere eine nützliche Beute",
+    "title": "Bringe eine nützliche Beute in Sicherheit",
     "objective": "Ein Extraktions-, Überlebens- oder Beutespiel mit einem sicheren Ausgang.",
     "completion": "Einmal betreten, eine benötigte Ressource sichern und lebendig extrahieren."
   },
@@ -912,9 +913,9 @@ export const germanQuestTranslations = {
     "completion": "Bleibe über einen vollständigen Ergebnisbildschirm bei einem zufälligen Team."
   },
   "connect-share-the-upgrade": {
-    "title": "Probiere die Empfehlung eines Freundes aus",
+    "title": "Probiere die Empfehlung einer befreundeten Person",
     "objective": "Die Spielempfehlung eines Freundes ist dir am deutlichsten in Erinnerung.",
-    "completion": "Beende die Eröffnungsaktivität oder teste sie 30 aktive Minuten lang."
+    "completion": "Beende die Eröffnungsaktivität oder höre nach der Mindestzeit sicher auf."
   },
   "connect-rescue-route": {
     "title": "Kooperiere mit Fremden",
@@ -929,16 +930,16 @@ export const germanQuestTranslations = {
   "connect-trade-roles": {
     "title": "Lass eine Person wählen",
     "objective": "Das Spiel, das du am meisten mit einer bestimmten Person assoziierst.",
-    "completion": "Beende eine Aktivität, die sie sofort erkennen würden."
+    "completion": "Beende eine Aktivität, die diese Person sofort wiedererkennen würde."
   },
   "connect-global-ghost": {
     "title": "Verfolge den Geist eines anderen Spielers",
     "objective": "Ein Renn-, Plattform-, Rhythmus- oder Punktespiel mit aufgezeichneten Läufen.",
-    "completion": "Schließe drei Versuche gegen einen Geist ab oder spiele noch einmal."
+    "completion": "Fahre drei Versuche gegen den Geist oder unterbiete dessen Zeit."
   },
   "connect-daily-crowd": {
     "title": "Nimm an einem offenen Turnier teil",
-    "objective": "Ein Kampf-, Renn-, Sport-, Karten- oder Strategiespiel mit offenen Klammern.",
+    "objective": "Ein Kampf-, Renn-, Sport-, Karten- oder Strategiespiel mit offenen Turnieren.",
     "completion": "Schließe eine Turnierrunde oder ein Platzierungsspiel ab."
   },
   "connect-player-made-door": {
@@ -947,14 +948,14 @@ export const germanQuestTranslations = {
     "completion": "Beende eine kürzlich oder nur wenig gespielte Kreation."
   },
   "connect-leave-a-signal": {
-    "title": "Hilf einem unsichtbaren Spieler",
+    "title": "Hilf einem unbekannten Spieler",
     "objective": "Ein Spiel, in dem Botschaften, Geister, Geschenke oder Strukturen fortbestehen.",
     "completion": "Hinterlasse ein nützliches Signal oder eine nützliche Ressource für einen späteren Spieler."
   },
   "connect-shared-save-return": {
-    "title": "Kehre zu einem freigegebenen Speicher zurück",
+    "title": "Kehre zu einem gemeinsamen Spielstand zurück",
     "objective": "Eine Welt, ein Team oder einen Charakter, bei deren Gestaltung jemand anderes mitgeholfen hat.",
-    "completion": "Füge ein nützliches Stück hinzu, ohne ihre Arbeit rückgängig zu machen."
+    "completion": "Füge ein nützliches Element hinzu, ohne die bestehende Arbeit rückgängig zu machen."
   },
   "connect-watched-first": {
     "title": "Spiele, was du einmal gesehen hast",
@@ -962,13 +963,13 @@ export const germanQuestTranslations = {
     "completion": "Beende die Aktivität, an die du dich am meisten erinnerst."
   },
   "connect-creator-signature": {
-    "title": "Folge einem bekannten Schöpfer",
+    "title": "Folge einem bekannten Kreativen",
     "objective": "Ein ungespieltes Spiel eines Designers, Autors, Studios oder Komponisten, den du kennst.",
-    "completion": "Erreiche einen Moment, in dem ihr erkennbarer Stil zum Vorschein kommt."
+    "completion": "Erreiche einen Moment, in dem der erkennbare Stil dieser Person zum Vorschein kommt."
   },
   "connect-showpiece-session": {
     "title": "Spiele dein Vorzeigespiel",
-    "objective": "Das Spiel würde zunächst einem neugierigen Besucher zeigen.",
+    "objective": "Das Spiel, das du einer neugierigen Person als Erstes zeigen würdest.",
     "completion": "Beende eine Szene, ein Level, ein Spiel oder eine Aktivität, die erklärt, warum."
   },
   "connect-community-mod": {
@@ -977,39 +978,39 @@ export const germanQuestTranslations = {
     "completion": "Beende eine Aktivität, die die Veränderung in der Community deutlich zeigt."
   },
   "connect-same-seed": {
-    "title": "Spiele einen Shared Seed",
-    "objective": "Ein Roguelike-, Strategie-, Aufbau- oder Überlebensspiel mit Samen.",
+    "title": "Spiele mit einem geteilten Seed",
+    "objective": "Ein Roguelike-, Strategie-, Aufbau- oder Survival-Spiel mit teilbaren Seeds.",
     "completion": "Beende einen Lauf oder Meilenstein mit einem veröffentlichten Startwert."
   },
   "connect-common-language": {
-    "title": "Spiele den häufig diskutierten Modus",
+    "title": "Spiele den meistdiskutierten Modus",
     "objective": "Ein Spiel, über das die Leute wegen eines erkennbaren Modus oder einer erkennbaren Eröffnung diskutiert haben.",
     "completion": "Beende diese Eröffnung oder spiele einmal den prominenten Modus."
   },
   "connect-friends-leaderboard": {
-    "title": "Beantworte eine bekannte Punktzahl",
+    "title": "Fordere eine bekannte Punktzahl heraus",
     "objective": "Ein Spiel, dessen Bestenliste immer noch einen bekannten Namen enthält.",
     "completion": "Sende eine neue Punktzahl, Zeit, Distanz oder einen neuen Rang."
   },
   "connect-asynchronous-turn": {
     "title": "Mache einen asynchronen Zug",
     "objective": "Ein Brett-, Strategie-, Puzzle- oder Managementspiel mit verzögerten Runden.",
-    "completion": "Nutze jede Warteschleife und schicke das Spiel zurück."
+    "completion": "Nutze jede verfügbare Runde und schicke den Zug danach zurück."
   },
   "connect-community-build": {
-    "title": "Zu einem freigegebenen Build hinzufügen",
+    "title": "Ergänze ein gemeinsames Bauwerk",
     "objective": "Ein Spiel mit einem Community-Projekt, einem Serverziel oder einem dauerhaften Build.",
     "completion": "Trage einen sichtbaren und nützlichen Beitrag bei."
   },
   "connect-replay-company": {
-    "title": "Lerne neben einer Wiederholung",
+    "title": "Lerne von einer Wiederholung",
     "objective": "Ein Strategie-, Renn-, Kampf- oder Actionspiel mit vollständigen Wiederholungen.",
     "completion": "Kopiere in deinem eigenen Versuch eine Entscheidung aus einer Wiederholung."
   },
   "connect-pass-it-on": {
     "title": "Bereite eine Empfehlung vor",
     "objective": "Ein Spiel, das dem Geschmack einer Person entspricht, die du kennst.",
-    "completion": "Beende eine repräsentative Aktivität und nenne einen Grund, sie zu empfehlen."
+    "completion": "Beende eine typische Aktivität und nenne danach einen Grund für deine Empfehlung."
   },
   "connect-quiet-lobby": {
     "title": "Kooperiere ohne Voice-Chat",
@@ -1017,7 +1018,7 @@ export const germanQuestTranslations = {
     "completion": "Beende ein Teamergebnis ohne Mikrofon."
   },
   "connect-borrow-their-style": {
-    "title": "Leihe dich den Stil eines Spielers aus",
+    "title": "Übernimm den Stil eines anderen Spielers",
     "objective": "Ein Spiel, bei dem du dich an den Build, die Route oder den Rhythmus einer Person erinnerst.",
     "completion": "Beende eine Aktivität mit diesem Ansatz."
   },
@@ -1027,32 +1028,32 @@ export const germanQuestTranslations = {
     "completion": "Nutze diese Idee durch eine vollständige Begegnung oder ein Szenario."
   },
   "connect-fandom-doorway": {
-    "title": "Betrete ein gemeinsames Fandom",
+    "title": "Tauche in ein gemeinsames Fandom ein",
     "objective": "Ein Spiel, das mit einer Sportart, einer Geschichte, einem Hobby oder einem Universum verknüpft ist, das Menschen teilen.",
     "completion": "Beende ein erkennbares Kapitel, Ereignis, Spiel, Fall oder eine Reise."
   },
   "connect-small-kindness": {
-    "title": "Tu eine hilfreiche Sache",
+    "title": "Tu etwas Hilfreiches",
     "objective": "Ein Multiplayer-Spiel, bei dem Fremde sich gegenseitig helfen können.",
-    "completion": "Führe eine Rettung, Begleitung, Ressourcenfreigabe oder nützliche Übergabe durch."
+    "completion": "Rette oder begleite jemanden, teile Ressourcen oder übergib etwas Nützliches."
   },
   "connect-parallel-company": {
-    "title": "Spiele neben einer Stimme",
-    "objective": "Ein ruhiges Spiel, das Platz für einen Podcast oder eine aufgezeichnete Firma lässt.",
+    "title": "Spiele in Begleitung einer Stimme",
+    "objective": "Ein ruhiges Spiel, das nebenbei Platz für einen Podcast oder eine vertraute Aufnahme lässt.",
     "completion": "Beende eine Aktivität mit niedrigem Druck, während du zuhörst."
   },
   "connect-memory-reconstruction": {
-    "title": "Erstelle einen gemeinsamen Speicher neu",
+    "title": "Baue eine gemeinsame Erinnerung nach",
     "objective": "Ein Spiel, das einen Ort oder Moment enthält, den du mit jemandem geteilt hast.",
     "completion": "Erstelle ein sichtbares Detail aus dieser Erinnerung neu."
   },
   "connect-one-viewer-clip": {
-    "title": "Mache einen gemeinsamen Moment",
+    "title": "Erzeuge einen teilbaren Moment",
     "objective": "Ein Spiel, dessen nächste Szene, Spielzug oder Entdeckung jemanden interessieren könnte.",
     "completion": "Nimm einen kurzen Clip oder Screenshot auf, der es wert ist, verschickt zu werden."
   },
   "connect-couch-handoff": {
-    "title": "Teile einen Controller",
+    "title": "Teile dir einen Controller",
     "objective": "Ein Puzzle-, Jump'n'Run-, Story- oder Punktespiel, das sich zum Überholen von Runden eignet.",
     "completion": "Tausche den Controller nach jedem Fehler aus, bis ein Abschnitt gelöscht ist."
   },
@@ -1062,7 +1063,7 @@ export const germanQuestTranslations = {
     "completion": "Schließe ein vollständiges öffentliches oder privates Set ab."
   },
   "connect-public-event": {
-    "title": "Nimm an einer öffentlichen Veranstaltung teil",
+    "title": "Nimm an einem öffentlichen Event teil",
     "objective": "Ein MMO oder eine gemeinsame Welt mit sichtbaren offenen Ereignissen.",
     "completion": "Bleibe vom Start des Events über den Belohnungsbildschirm dabei."
   },
@@ -1077,24 +1078,24 @@ export const germanQuestTranslations = {
     "completion": "Löse gemeinsam einen kompletten Raum oder ein mehrstufiges Rätsel."
   },
   "connect-support-the-lowest": {
-    "title": "Unterstütze die niedrigste Punktzahl",
+    "title": "Unterstütze das schwächste Teammitglied",
     "objective": "Ein Teamspiel mit sichtbaren Ergebnissen, Rollen oder Leistungen.",
     "completion": "Hilf dem Teamkollegen mit der niedrigsten Punktzahl, einen erfolgreichen Spielzug abzuschließen."
   },
   "first-game-memory": {
     "title": "Erlebe deine erste Spielerinnerung erneut",
     "objective": "Das Spiel ist mit deiner frühesten klaren Erinnerung an das Spielen verknüpft.",
-    "completion": "Erreiche den Ort oder die Aktivität, an die du dich erinnerst, und beende sie einmal."
+    "completion": "Erreiche den Ort oder die Aktivität aus deiner Erinnerung und schließe dort ein Ziel ab."
   },
   "menu-music-door": {
     "title": "Folge der Menümusik",
-    "objective": "Ein Spiel, dessen Menüthema man noch aus dem Gedächtnis hören kann.",
+    "objective": "Ein Spiel, dessen Menümusik du noch aus der Erinnerung hören kannst.",
     "completion": "Bleibe im Menüthema und beende dann eine Aktivität."
   },
   "old-console-era": {
-    "title": "Spiele eine frühere Konsolenära",
+    "title": "Spiele einen Klassiker deiner früheren Konsole",
     "objective": "Ein Spiel mit Hardware, die du vor deinem aktuellen System verwendet hast.",
-    "completion": "Schließe ein Retro-Level, ein Spiel, eine Etappe oder 30 aktive Minuten ab."
+    "completion": "Beende ein Retro-Level, Match oder eine Etappe – oder höre nach der Mindestzeit auf."
   },
   "series-beginning": {
     "title": "Kehre zum ersten Kapitel zurück",
@@ -1102,54 +1103,54 @@ export const germanQuestTranslations = {
     "completion": "Erreiche den ersten wichtigen Speicherpunkt oder das Kapitelende."
   },
   "forgotten-save": {
-    "title": "Öffne einen Zeitkapselspeicher",
-    "objective": "Eine alte Speicherung, deren Charakter, Datum oder Ort persönlich wirken.",
+    "title": "Öffne einen Spielstand wie eine Zeitkapsel",
+    "objective": "Ein alter Spielstand, dessen Figur, Datum oder Ort sich persönlich anfühlt.",
     "completion": "Überprüfe, was du noch übrig hast, nimm dann eine Änderung vor und speichere erneut."
   },
   "childhood-coop-solo": {
-    "title": "Besuche das Second-Controller-Spiel noch einmal",
+    "title": "Spiele ein altes Koop-Spiel",
     "objective": "Ein Spiel, das du einmal lokal mit jemand anderem geteilt hast.",
     "completion": "Schließe eine bekannte Phase oder ein bekanntes Spiel allein oder mit einem Bot ab."
   },
   "first-hard-win": {
-    "title": "Spiele einen alten Triumph noch einmal ab",
+    "title": "Erlebe einen alten Triumph erneut",
     "objective": "Eine Herausforderung, ein Boss, ein Rennen oder ein Level, das du mit Stolz gemeistert hast.",
     "completion": "Schließe es erneut ab oder beende drei vollständige Versuche."
   },
   "rental-weekend": {
-    "title": "Besuche ein geliehenes Spiel noch einmal",
+    "title": "Kehre zu einem geliehenen Spiel zurück",
     "objective": "Ein Spiel, das du einmal gemietet, ausgeliehen oder bei jemand anderem zu Hause gespielt hast.",
     "completion": "Beende die erste Aktivität, an die du dich erinnerst."
   },
   "demo-memory": {
-    "title": "Spiele eine denkwürdige Eröffnung noch einmal ab",
+    "title": "Spiele einen vertrauten Anfang erneut",
     "objective": "Ein Spiel, dessen Demo oder erstes Level einst alles in sich trug, was es versprach.",
     "completion": "Beende den Eröffnungsabschnitt von Anfang bis Ende."
   },
   "old-avatar": {
     "title": "Besuche einen alten Charakter",
     "objective": "Ein Rollenspiel-, Lebenssimulations- oder Online-Charakter, den du vor Jahren erstellt hast.",
-    "completion": "Rüste nichts Neues aus; Beende eine Aktivität so, wie sie ist."
+    "completion": "Rüste nichts Neues aus und beende eine Aktivität mit deiner vorhandenen Ausrüstung."
   },
   "lost-mode": {
-    "title": "Spiele den Nachfolger eines Lost Mode",
+    "title": "Spiele den Nachfolger eines verlorenen Modus",
     "objective": "Ein aktuelles Spiel oder eine Fortsetzung mit einem ähnlichen Modus wie der, den du vermisst.",
     "completion": "Schließe ein komplettes Spiel, eine Runde oder ein Szenario in der entsprechenden Version ab."
   },
   "remembered-map": {
-    "title": "Navigiere durch die gespeicherte Karte",
-    "objective": "Eine Karte, ein Knotenpunkt oder ein Track, den du früher kanntest, ohne Wegbeschreibungen.",
+    "title": "Navigiere die Karte aus der Erinnerung",
+    "objective": "Eine Karte, ein Hub oder eine Strecke, die du früher ohne Wegbeschreibung kanntest.",
     "completion": "Erreiche drei gespeicherte Sehenswürdigkeiten, ohne die Karte zu öffnen."
   },
   "credits-memory": {
-    "title": "Besuche noch einmal ein denkwürdiges Ende",
+    "title": "Erlebe ein denkwürdiges Ende erneut",
     "objective": "Ein Spielende, das immer noch emotionales Gewicht hat.",
     "completion": "Spiele das letzte Kapitel oder die nächste verfügbare Schlussszene noch einmal ab."
   },
   "licensed-childhood": {
-    "title": "Spiele ein Samstagmorgenspiel",
+    "title": "Spiele einen Samstagmorgen-Klassiker",
     "objective": "Ein Spiel, das an einen Film, eine Show, ein Spielzeug, einen Comic oder eine Figur gebunden ist.",
-    "completion": "Schließe ein Level oder eine Mission ab, die sich wie ihr Ursprung anfühlt."
+    "completion": "Schließe ein Level oder eine Mission ab, die an den Ursprung der Serie erinnert."
   },
   "handheld-evening": {
     "title": "Kehre zu einem Handheld-Favoriten zurück",
@@ -1157,32 +1158,32 @@ export const germanQuestTranslations = {
     "completion": "Schließe eine kompakte Etappe, ein Rennen, ein Spiel oder einen Spieltag ab."
   },
   "seasonal-memory": {
-    "title": "Besuche ein Saisonspiel noch einmal",
+    "title": "Kehre zu einem saisonalen Spiel zurück",
     "objective": "Ein Spiel, das stark an Sommer, Winter, Feiertage oder eine Jahreszeit gebunden ist.",
     "completion": "Erreiche die erinnerte Atmosphäre und beende dort eine Aktivität."
   },
   "family-game": {
-    "title": "Spiele das Familienzimmer-Spiel noch einmal",
+    "title": "Spiele den Familienklassiker erneut",
     "objective": "Eine Party, ein Sport, ein Rennen, ein Puzzle oder ein Brettspiel, das deine Familie geteilt hat.",
     "completion": "Beende ein Spiel, eine Runde, einen Pokal oder ein Brett."
   },
   "old-friend-pick": {
-    "title": "Spiele den Favoriten eines alten Freundes",
-    "objective": "Das Spiel, das den Geschmack eines ehemaligen Freundes am besten widerspiegelt.",
-    "completion": "Beende eine Aktivität, die sie zuerst ausgewählt hätten."
+    "title": "Spiele den Favoriten eines Freundes",
+    "objective": "Wähle ein Spiel, das den Geschmack eines Freundes oder einer Freundin am besten widerspiegelt.",
+    "completion": "Beende eine Aktivität, die diese Person vermutlich auch gewählt hätte."
   },
   "retired-strategy": {
     "title": "Verwende deine alte Strategie wieder",
     "objective": "Ein Strategie-, Karten-, Sport- oder Wettkampfspiel, das du einmal gut kanntest.",
-    "completion": "Nutze deine bisherige Eröffnung durch ein vollständiges Ergebnis."
+    "completion": "Nutze deine frühere Eröffnung bis zum Ende eines vollständigen Matches oder Szenarios."
   },
   "classic-roster": {
-    "title": "Verwende einen gespeicherten Dienstplan",
+    "title": "Nutze eine vertraute Aufstellung",
     "objective": "Ein Sportspiel mit einer Mannschaft oder einem Athleten aus einer denkwürdigen Saison.",
     "completion": "Beende ein komplettes Spiel oder Event mit diesem Kader."
   },
   "old-racing-line": {
-    "title": "Fahr auf der Strecke, an die du dich erinnerst",
+    "title": "Fahr eine Strecke aus deiner Erinnerung",
     "objective": "Ein Rennspiel mit einer Strecke, die deine Hände einst kannten.",
     "completion": "Beende ein Rennen mit der Linie, die du dir merkst, ohne Zeit zu jagen."
   },
@@ -1194,20 +1195,20 @@ export const germanQuestTranslations = {
   "old-horror-courage": {
     "title": "Kehre zu einem alten Schrecken zurück",
     "objective": "Ein Horrorspiel, das du einmal gemieden, pausiert oder ertragen hast.",
-    "completion": "Erreiche den nächsten sicheren Raum, Kontrollpunkt oder 30 aktive Minuten."
+    "completion": "Erreiche den nächsten sicheren Raum oder höre nach der Mindestzeit sicher auf."
   },
   "dated-save-name": {
     "title": "Folge dem ältesten Zeitstempel",
     "objective": "Das älteste lesbare Speicherdatum in einem Spiel, das du noch starten kannst.",
-    "completion": "Öffne diesen Speicher, beende eine kleine Aktion und speichere erneut."
+    "completion": "Öffne diesen Spielstand, beende eine kleine Aktion und speichere erneut."
   },
   "dormant-achievement": {
-    "title": "Erledige einen alten Beinahe-Miss",
+    "title": "Beende einen alten Beinahe-Erfolg",
     "objective": "Eine Errungenschaft oder Herausforderung, die vor Jahren fast vollendet wurde.",
     "completion": "Schalte den alten Erfolg frei oder beende drei vollständige Versuche."
   },
   "original-vs-remaster": {
-    "title": "Besuche ein Remake oder Remaster noch einmal",
+    "title": "Kehre zu einem Remake oder Remaster zurück",
     "objective": "Eine neuere Version eines Spiels, das du zuvor gespielt hast.",
     "completion": "Beende einen bekannten Abschnitt und halte fest, wie er jetzt aussieht."
   },
@@ -1217,22 +1218,22 @@ export const germanQuestTranslations = {
     "completion": "Stelle dieses Setup wieder her und beende eine Aktivität damit."
   },
   "muscle-memory-mechanic": {
-    "title": "Verwende die Bewegung, an die du dich erinnerst",
+    "title": "Nutze die Bewegung aus der Erinnerung",
     "objective": "Ein Spiel mit einer Mechanik, die deine Hände vielleicht noch kennen.",
     "completion": "Setze diese Mechanik dreimal erfolgreich in einer Aktivität ein."
   },
   "legacy-character": {
-    "title": "Spiele dein ehemaliges Main",
+    "title": "Spiele deinen früheren Main",
     "objective": "Ein Kämpfer-, Helden-, Renn- oder Klassenspiel mit einem alten Favoriten.",
     "completion": "Schließe drei Runden oder eine Mission mit genau dieser Option ab."
   },
   "one-last-revisit": {
-    "title": "Gib einen ruhenden Favoriten zurück",
+    "title": "Kehre noch einmal zu einem alten Favoriten zurück",
     "objective": "Ein ehemaliger Favorit, den du seit Jahren nicht mehr geöffnet hast.",
     "completion": "Beende eine vollständige Aktivität und erfasse die Stelle, an der du aufgehört hast."
   },
   "nostalgic-arcade-credit": {
-    "title": "Gib ein Arcade-Guthaben aus",
+    "title": "Spiele mit einem Arcade-Credit",
     "objective": "Ein klassisches Arcade-, Score-Attack-, Shoot-'em-up- oder Beat-'em-up-Spiel.",
     "completion": "Spiele ein Guthaben, um das Spiel zu beenden, und notiere den Punktestand."
   },
@@ -1242,9 +1243,9 @@ export const germanQuestTranslations = {
     "completion": "Aktiviere es und beende ein Level oder kombiniere es mit dem Effekt."
   },
   "nostalgic-first-indie": {
-    "title": "Kehre zu einem frühen Indie zurück",
+    "title": "Kehre zu einem frühen Indie-Spiel zurück",
     "objective": "Eines der ersten Spiele für kleine Teams oder nur zum Herunterladen, das dir gefallen hat.",
-    "completion": "Beende das Eröffnungskapitel, die Eröffnungsphase oder 30 aktive Minuten."
+    "completion": "Beende das Eröffnungskapitel oder die Etappe – oder höre nach der Mindestzeit auf."
   },
   "nostalgic-old-customization": {
     "title": "Stelle einen alten Look wieder her",
@@ -1262,32 +1263,32 @@ export const germanQuestTranslations = {
     "completion": "Erreiche dieses Geheimnis, ohne es nachschlagen zu müssen."
   },
   "smallest-install": {
-    "title": "Spiele die kleinste Spielinstallation",
+    "title": "Spiele das kleinste installierte Spiel",
     "objective": "Das installierte Spiel, das am wenigsten Speicherplatz benötigt.",
-    "completion": "Beende eine kurze Aktivität oder spiele 20 aktive Minuten lang."
+    "completion": "Beende eine kurze Aktivität oder höre nach der Mindestzeit sicher auf."
   },
   "shortest-promised-time": {
-    "title": "Erledige etwas in zwanzig Minuten",
-    "objective": "Ein Spiel mit einem Level, einer Runde, einem Lied, einem Puzzle oder einem Lauf unter 20 Minuten.",
+    "title": "Schließe die kürzeste Aktivität ab",
+    "objective": "Ein Spiel mit einem kurzen Level, einer Runde, einem Lied, einem Puzzle oder einem Lauf.",
     "completion": "Schließe genau eine dieser Einheiten ab."
   },
   "no-setup-needed": {
     "title": "Spiele ohne Setup",
     "objective": "Das erste bekannte Spiel ohne Downloads, Tutorials oder Konfiguration.",
-    "completion": "Starte die nächstgelegene Aktivität und beende sie einmal."
+    "completion": "Starte die nächstgelegene Aktivität und schließe sie einmal ab."
   },
   "nearest-checkpoint": {
     "title": "Nimm den nächstgelegenen Kontrollpunkt",
-    "objective": "Ein aktiver Speichervorgang mit einer offensichtlichen nächsten Aktion.",
+    "objective": "Ein aktiver Spielstand mit einer offensichtlichen nächsten Aktion.",
     "completion": "Führe diese Aktion aus und halte am nächsten Kontrollpunkt an."
   },
   "fewest-buttons": {
     "title": "Benutze die wenigsten Tasten",
     "objective": "Ein Spiel oder Modus mit nur wenigen wesentlichen Steuerelementen.",
-    "completion": "Schließe ein Level, eine Runde, eine Szene oder 25 aktive Minuten mit geringem Aufwand ab."
+    "completion": "Beende eine einfache Einheit oder höre nach der Mindestzeit sicher auf."
   },
   "first-installed-row": {
-    "title": "Wähle „Aus der ersten Zeile“.",
+    "title": "Wähle aus der ersten Reihe",
     "objective": "Nur die erste sichtbare Zeile deiner installierten Bibliothek.",
     "completion": "Öffne das erste akzeptable Spiel und beende eine Aktivität."
   },
@@ -1302,7 +1303,7 @@ export const germanQuestTranslations = {
     "completion": "Öffne es sofort und beende eine Aktivität."
   },
   "safe-mode": {
-    "title": "Verwende den Modus mit den niedrigsten Einsätzen",
+    "title": "Nutze den entspanntesten Modus",
     "objective": "Ein bekanntes Spiel mit Assists, Übung, Sandbox oder einfachem Modus.",
     "completion": "Beende eine Aktivität mit unverändertem Modus."
   },
@@ -1313,26 +1314,26 @@ export const germanQuestTranslations = {
   },
   "one-marker-only": {
     "title": "Folge einer Markierung in der Nähe",
-    "objective": "Ein aktiver Rettungswurf mit deutlich sichtbarem Ziel in der Nähe.",
+    "objective": "Ein aktiver Spielstand mit einem deutlich sichtbaren Ziel in der Nähe.",
     "completion": "Erreiche diese Markierung, beende die Aufgabe und halte an."
   },
   "closest-completion": {
     "title": "Beende die kürzeste offene Aufgabe",
-    "objective": "Eine aktive Speicherung mit einer klar begrenzten Aufgabe unter 40 Minuten.",
+    "objective": "Ein aktiver Spielstand mit einer klar begrenzten Aufgabe, die du heute abschließen kannst.",
     "completion": "Beende diese Aufgabe und bleibe beim Ergebnis stehen."
   },
   "tutorial-free": {
-    "title": "Verwende Steuerelemente, die du kennst",
+    "title": "Nutze eine vertraute Steuerung",
     "objective": "Ein vertrautes Spiel, das kein Tutorial oder Umlernen erfordert.",
     "completion": "Beende eine bekannte Aktivität mit dem aktuellen Setup."
   },
   "single-screen-game": {
-    "title": "Behalte es auf einem Bildschirm",
+    "title": "Bleibe auf einem Bildschirm",
     "objective": "Ein Puzzle-, Brett-, Arcade- oder Taktikspiel mit einem enthaltenen Brett.",
     "completion": "Räume einen Bildschirm, ein Brett, ein Puzzle oder eine Runde ab."
   },
   "pause-guaranteed": {
-    "title": "Vertraue dem Next Autosave",
+    "title": "Vertraue dem nächsten Autosave",
     "objective": "Ein bekanntes Spiel mit häufigen automatischen Kontrollpunkten.",
     "completion": "Beende die aktuelle Aktivität und stoppe beim nächsten automatischen Speichern."
   },
@@ -1342,12 +1343,12 @@ export const germanQuestTranslations = {
     "completion": "Erreiche das Ende einer Szene oder eines Kapitels."
   },
   "one-match-contract": {
-    "title": "Spiele genau ein Spiel",
+    "title": "Spiele genau ein Match",
     "objective": "Ein Sport-, Kampf-, Renn-, Shooter- oder Kartenspiel mit klaren Übereinstimmungen.",
     "completion": "Beende ein komplettes Spiel und gehe zum Ergebnisbildschirm."
   },
   "one-room-boundary": {
-    "title": "Bleibe in einem Zimmer",
+    "title": "Bleibe in einem Raum",
     "objective": "Ein Builder, eine Simulation, ein Puzzle oder ein Rollenspiel mit nützlicher Arbeit in einem Raum.",
     "completion": "Schließe eine sichtbare Änderung ab, ohne diesen Bereich zu verlassen."
   },
@@ -1358,7 +1359,7 @@ export const germanQuestTranslations = {
   },
   "visible-timer": {
     "title": "Lege den Stopp vor dem Start fest",
-    "objective": "Jedes bekannte Spiel könne nach 25 Minuten verlassen.",
+    "objective": "Ein vertrautes Spiel mit einem offensichtlichen sicheren Haltepunkt.",
     "completion": "Spiele, bis der Timer abgelaufen ist, speichere dann und stoppe."
   },
   "platform-recent": {
@@ -1382,9 +1383,9 @@ export const germanQuestTranslations = {
     "completion": "Erreiche ein Ergebnis, ohne unbekannte Menüs durchsuchen zu müssen."
   },
   "one-save-only": {
-    "title": "Verwende einen vorhandenen Speicher",
-    "objective": "Der erste aktuelle Speicherstand mit einer eindeutigen Aktivität in der Nähe.",
-    "completion": "Beende diese Aktivität, ohne einen weiteren Speicher zu öffnen."
+    "title": "Nutze einen bestehenden Spielstand",
+    "objective": "Der erste aktuelle Spielstand mit einer eindeutigen Aktivität in der Nähe.",
+    "completion": "Beende diese Aktivität, ohne einen weiteren Spielstand zu öffnen."
   },
   "finite-run": {
     "title": "Schließe ein Puzzle-Set ab",
@@ -1402,44 +1403,44 @@ export const germanQuestTranslations = {
     "completion": "Beende eine Aktivität, ohne diese Einstellung zu ändern."
   },
   "fewest-open-threads": {
-    "title": "Öffne den leisesten Speicher",
-    "objective": "Der Speicher mit den wenigsten sichtbaren Quests, Warnungen oder Problemen.",
-    "completion": "Beende die nächste kleine Aufgabe und speichere sie erneut."
+    "title": "Öffne den ruhigsten Spielstand",
+    "objective": "Der Spielstand mit den wenigsten sichtbaren Quests, Warnungen oder Problemen.",
+    "completion": "Beende die nächste kleine Aufgabe und speichere danach erneut."
   },
   "stop-rule-first": {
-    "title": "Schreibe zuerst den Exit",
+    "title": "Lege zuerst den Ausstieg fest",
     "objective": "Ein Spiel mit einem klaren Kapitel, Spiel, Tag oder Kontrollpunkt.",
     "completion": "Nenne einen Haltepunkt, erreiche ihn und halte sofort an."
   },
   "overwhelmed-quick-resume": {
-    "title": "Nimm wieder auf, was bereits geöffnet ist",
+    "title": "Setze das bereits geöffnete Spiel fort",
     "objective": "Das unterbrochene oder schnell wiederaufgenommene Spiel, das einer Fortsetzung am nächsten kommt.",
     "completion": "Beende die aktuelle Aktivität, ohne die Bibliothek zu öffnen."
   },
   "overwhelmed-saved-preset": {
     "title": "Verwende eine gespeicherte Voreinstellung",
     "objective": "Ein Spiel mit einer vorhandenen Deck-, Ausrüstungs-, Team- oder Fahrzeugvoreinstellung.",
-    "completion": "Beende ein Ergebnis mit der ersten gespeicherten Voreinstellung."
+    "completion": "Erreiche mit der ersten gespeicherten Voreinstellung ein vollständiges Ergebnis."
   },
   "overwhelmed-last-level": {
-    "title": "Spiele das letzte abgeschlossene Level noch einmal ab",
+    "title": "Wiederhole das zuletzt abgeschlossene Level",
     "objective": "Die letzte Kampagnenebene oder das letzte Kapitel, das du abgeschlossen hast.",
     "completion": "Spiele es noch einmal ab und stoppe am Ende."
   },
   "overwhelmed-first-tutorial": {
     "title": "Spiele ein Tutorial",
-    "objective": "Ein Spiel mit einem kurzen Tutorial, einer Übungsstunde oder einem Schulungskurs.",
+    "objective": "Ein Spiel mit einem kurzen Tutorial, einer Übungslektion oder einem Trainingskurs.",
     "completion": "Beende genau eine Lektion und höre auf."
   },
   "overwhelmed-shortest-description": {
-    "title": "Spiele das Mittelbibliotheksspiel",
-    "objective": "Das Mittelspiel in der ersten sichtbaren installierten Reihe.",
+    "title": "Spiele das Spiel in der Mitte",
+    "objective": "Das Spiel in der Mitte der ersten sichtbaren Reihe deiner installierten Bibliothek.",
     "completion": "Öffne es und beende eine Aktivität, ohne Alternativen zu vergleichen."
   },
   "overwhelmed-featured-daily": {
-    "title": "Akzeptiere die empfohlene Tageszeitung",
+    "title": "Nimm die hervorgehobene Tagesaufgabe an",
     "objective": "Ein bekanntes Spiel, das eine bestimmte tägliche Aktivität zeigt.",
-    "completion": "Beende diese Aktivität einmal mit ihren Standardregeln."
+    "completion": "Beende diese Aktivität einmal mit den vorgegebenen Standardregeln."
   },
   "instant-movement": {
     "title": "Bewege dich, bevor du nachdenkst",
@@ -1447,17 +1448,17 @@ export const germanQuestTranslations = {
     "completion": "Beginne innerhalb von 60 Sekunden mit der Bewegung und erreiche einen Kontrollpunkt."
   },
   "speed-line": {
-    "title": "Race One Fast Line",
+    "title": "Fahre eine schnelle Linie",
     "objective": "Ein Rennspiel mit einer kurzen bekannten Strecke.",
     "completion": "Fahr drei Runden und halte die schnellste Runde sauber."
   },
   "destruction-break": {
-    "title": "Etwas Großes kaputt machen",
+    "title": "Zerstöre etwas Großes",
     "objective": "Ein Zerstörungs-, Physik-, Action- oder Sandbox-Spiel mit reaktiven Objekten.",
     "completion": "Zerstöre eine Struktur, ein Fahrzeug, einen Raum oder ein großes Ziel."
   },
   "rhythm-release": {
-    "title": "Spiele drei Rhythmus-Tracks",
+    "title": "Spiele drei Rhythmus-Songs",
     "objective": "Ein Rhythmus-, Tanz-, Trommel- oder Musikspiel.",
     "completion": "Beende drei Songs oder ein vollständiges Set auf einem Schwierigkeitsgrad."
   },
@@ -1467,7 +1468,7 @@ export const germanQuestTranslations = {
     "completion": "Spiele einen Lauf vom unmittelbaren Start bis zum natürlichen Ende."
   },
   "parkour-route": {
-    "title": "Führe eine Parkour-Route",
+    "title": "Laufe eine Parkour-Route",
     "objective": "Ein Plattform- oder Actionspiel mit ausdrucksstarkem Durchqueren.",
     "completion": "Durchquere einen Bereich mit drei verschiedenen Bewegungstechniken."
   },
@@ -1487,52 +1488,52 @@ export const germanQuestTranslations = {
     "completion": "Erreiche die Sicherheit oder fange das Ziel einmal."
   },
   "boss-now": {
-    "title": "Gehe direkt zu einem Chef",
+    "title": "Gehe direkt zu einem Boss",
     "objective": "Ein Spiel mit einem nahegelegenen Boss, einer Arena oder einer wiederholbaren Begegnung.",
     "completion": "Besiege es oder beende drei komplette Versuche."
   },
   "sports-quarter": {
-    "title": "Spiele eine Sportperiode",
+    "title": "Spiele einen Spielabschnitt",
     "objective": "Ein Sportspiel mit kurzen Vierteln, Perioden, Sätzen oder Innings.",
     "completion": "Beende eine Periode oder das kürzeste komplette Spiel."
   },
   "flight-loop": {
-    "title": "Verlasse den Boden",
+    "title": "Heb ab",
     "objective": "Ein Flug-, Weltraum-, Superhelden-, Segelflug- oder Luftkampfspiel.",
     "completion": "Starte, beende eine Route oder Begegnung und lande."
   },
   "vehicle-switch-off": {
     "title": "Bleibe in einem Fahrzeug",
-    "objective": "Eine offene Welt zum Fahren, Trucken, Rennen, Fliegen oder mit vielen Fahrzeugen.",
+    "objective": "Eine offene Welt zum Fahren, Rennen oder Fliegen mit mehreren Fahrzeugen.",
     "completion": "Beende eine komplette Fahrt, ohne das Fahrzeug zu verlassen."
   },
   "swarm-clear": {
-    "title": "Schließe einen Schwarm ab",
+    "title": "Räume einen Schwarm aus dem Weg",
     "objective": "Ein Horde-, Action-, Shooter-, Tower-Defense- oder Survival-Spiel.",
     "completion": "Schließe eine komplette Welle, einen Raum, einen Bildschirm oder eine Begegnung ab."
   },
   "timed-objective": {
-    "title": "Schließe einen Countdown ab",
+    "title": "Schlage einen Countdown",
     "objective": "Ein Renn-, Puzzle-, Action- oder Herausforderungsspiel mit sichtbarem Timer.",
     "completion": "Erreiche ein zeitgesteuertes Ziel oder beende drei Versuche."
   },
   "movement-only-win": {
     "title": "Gewinne mit der Positionierung",
     "objective": "Ein Taktik-, Sport-, Stealth- oder Actionspiel, bei dem es auf Bewegung ankommt.",
-    "completion": "Beende ein Ergebnis mit der Position anstelle des neuen Gangs."
+    "completion": "Erreiche ein Ergebnis durch gute Positionierung statt durch höhere Geschwindigkeit."
   },
   "loudest-game": {
-    "title": "Drehe den körperlichsten Soundtrack auf",
+    "title": "Dreh den energiegeladensten Soundtrack auf",
     "objective": "Ein Rhythmus-, Renn-, Action- oder Sportspiel mit energiegeladener Musik.",
     "completion": "Beende einen Song, ein Rennen, ein Spiel oder eine Mission mit der Musikzentrale."
   },
   "quick-reaction": {
-    "title": "Spiele auf Reflex",
+    "title": "Spiele nach Reflex",
     "objective": "Ein Arcade-, Shooter-, Rhythmus-, Kampf- oder Actionspiel mit schnellem Start.",
     "completion": "Beende eine komplette Runde, Etappe oder einen Lauf ohne Aufwärmen."
   },
   "vertical-climb": {
-    "title": "Steige, bis sich die Aussicht ändert",
+    "title": "Klettere, bis sich die Aussicht ändert",
     "objective": "Ein Kletter-, Plattform-, Open-World- oder Traversal-Spiel.",
     "completion": "Erreiche einen deutlich höheren Orientierungspunkt ohne Schnellfahrt."
   },
@@ -1542,17 +1543,17 @@ export const germanQuestTranslations = {
     "completion": "Lande einen unbekannten Trick dreimal sauber."
   },
   "rapid-puzzle": {
-    "title": "Unter Bewegung lösen",
+    "title": "Löse ein Rätsel in Bewegung",
     "objective": "Ein Spiel mit fallenden Blöcken, Rhythmus-Puzzles, Action-Puzzles oder zeitgesteuerten Taktiken.",
     "completion": "Löse ein komplettes Brett, eine Stufe oder ein zeitgesteuertes Rätsel."
   },
   "aggressive-route": {
     "title": "Nimm den direkten Weg",
     "objective": "Ein Action-, Shooter-, Renn- oder Strategiespiel, das Druck belohnt.",
-    "completion": "Erreiche ein Ziel, ohne sich auf eine Nebenaktivität zurückzuziehen."
+    "completion": "Erreiche ein Ziel, ohne dich auf eine Nebenaktivität zurückzuziehen."
   },
   "mech-weight": {
-    "title": "Pilot schwerer Maschinen",
+    "title": "Steuere eine schwere Maschine",
     "objective": "Ein Mech-, Panzer-, LKW-, Bau- oder Industriesimulationsspiel.",
     "completion": "Beende eine Mission oder einen Auftrag, ohne die Maschine zu wechseln."
   },
@@ -1562,37 +1563,37 @@ export const germanQuestTranslations = {
     "completion": "Durchquere ein überfülltes Gebiet, ohne zusammenzustoßen oder in den Kampf zu geraten."
   },
   "streak-attempt": {
-    "title": "Baue eine Serie mit drei Ergebnissen auf",
+    "title": "Erziele drei Ergebnisse in Folge",
     "objective": "Ein Sport-, Kampf-, Renn-, Karten- oder Arcade-Spiel mit kurzen Ergebnissen.",
     "completion": "Gewinne oder räume drei Ergebnisse hintereinander ab."
   },
   "escape-the-hub": {
     "title": "Verlasse jetzt den Hub",
-    "objective": "Ein Open-World-, RPG-, Survival- oder Abenteuer-Save an einer sicheren Basis.",
+    "objective": "Ein Open-World-, RPG-, Survival- oder Abenteuerspielstand an einer sicheren Basis.",
     "completion": "Verlasse die Straße sofort und erreiche den ersten ungeplanten Orientierungspunkt."
   },
   "one-life-motion": {
     "title": "Bleibe in Bewegung, bis es zu Ende ist",
     "objective": "Ein endloses Läufer-, Überlebens-, Arcade- oder Verfolgungsspiel.",
-    "completion": "Beende einen Lauf, ohne anzuhalten oder sich in Sicherheit zu verstecken."
+    "completion": "Beende einen Lauf, ohne anzuhalten oder dich in Sicherheit zu verstecken."
   },
   "role-with-tempo": {
     "title": "Gib das Tempo des Teams vor",
     "objective": "Ein Squad-, Sport-, Renn- oder Multiplayer-Spiel mit Momentum-Rollen.",
-    "completion": "Schließe ein Ergebnis als Initiator, Scout, Fahrer oder Support ab."
+    "completion": "Schließe eine Runde oder Mission als Initiator, Scout, Fahrer oder Support ab."
   },
   "physical-finish": {
     "title": "Spiele etwas Körperliches",
     "objective": "Ein Tanz-, Fitness-, Bewegungssteuerungs-, Rhythmus- oder aktives Partyspiel.",
-    "completion": "Beende ein Lied, eine Routine, eine Runde oder 20 aktive Minuten."
+    "completion": "Beende ein Lied, eine Routine oder eine Runde – oder höre nach der Mindestzeit auf."
   },
   "restless-landing": {
-    "title": "Verbringe den letzten Funken",
+    "title": "Nutze den letzten Energieschub",
     "objective": "Ein schnelles Spiel, das an einem ruhigen Hub oder Ergebnisbildschirm enden kann.",
     "completion": "Beende eine intensive Aktivität und kehre an einen sicheren Ort zurück."
   },
   "restless-twin-stick": {
-    "title": "Schließe eine Twin-Stick-Arena ab",
+    "title": "Räume eine Twin-Stick-Arena",
     "objective": "Ein Twin-Stick-Shooter, Survivor-like oder Arena-Actionspiel.",
     "completion": "Schließe eine Arena, ein Wellenset oder einen kompletten Lauf ab."
   },
@@ -1602,12 +1603,12 @@ export const germanQuestTranslations = {
     "completion": "Schließe einen Kampfraum oder eine Mission ab, ohne die Waffen zu wechseln."
   },
   "restless-pinball-table": {
-    "title": "Spiele einen Flippertisch",
+    "title": "Spiele an einem Flipper",
     "objective": "Ein Flipper- oder Punktejagdspiel mit kurzen Versuchen.",
     "completion": "Spiele drei Bälle oder Versuche und notiere das beste Ergebnis."
   },
   "restless-skate-line": {
-    "title": "Baue eine Skateline",
+    "title": "Baue eine Skate-Line",
     "objective": "Ein Spiel zum Skaten, Radfahren, Snowboarden oder Tricks.",
     "completion": "Verknüpfe drei Orientierungspunkte oder Tricks in einer klaren Linie."
   },
@@ -1617,29 +1618,29 @@ export const germanQuestTranslations = {
     "completion": "Schließe eine komplette Stufe ab, ohne den Charakter zu wechseln."
   },
   "restless-rts-rush": {
-    "title": "Starte einen Strategie-Ansturm",
+    "title": "Starte einen Rush im Strategiespiel",
     "objective": "Ein Echtzeit-Strategiespiel mit Gefechts- oder Schnellspielmodus.",
     "completion": "Beende ein Spiel, das auf frühen Druck aufgebaut ist."
   },
   "single-campaign-thread": {
-    "title": "Folge einem Story-Thread",
+    "title": "Folge einem Handlungsstrang",
     "objective": "Eine Kampagne mit einer aktiven Haupt- oder Charakterquest.",
     "completion": "Schließe das nächste Kapitel, die nächste Mission oder den nächsten benannten Schritt ab."
   },
   "deep-puzzle": {
     "title": "Bleibe bei einem schwierigen Rätsel",
     "objective": "Ein Puzzle- oder Erkundungsspiel mit einem ungelösten Problem.",
-    "completion": "Löse es oder schreibe nach 45 Minuten eine konkrete neue Theorie."
+    "completion": "Löse es oder halte vor dem Aufhören eine neue konkrete Theorie fest."
   },
   "boss-study": {
     "title": "Studiere einen Boss",
     "objective": "Ein Action-, RPG- oder Plattformspiel mit einem harten Boss in der Nähe.",
-    "completion": "Lösche es oder identifizieren und beantworte drei Angriffsmuster."
+    "completion": "Besiege den Boss oder erkenne und beantworte drei Angriffsmuster."
   },
   "build-one-function": {
     "title": "Erstelle ein funktionierendes System",
     "objective": "Ein Fabrik-, Ingenieurs-, Sandbox- oder Automatisierungsspiel.",
-    "completion": "Beende ein Input-to-Output-System und führe einen stabilen Zyklus durch."
+    "completion": "Baue ein vollständiges Produktionssystem und lass einen stabilen Zyklus durchlaufen."
   },
   "achievement-line": {
     "title": "Verfolge einen Erfolg",
@@ -1652,7 +1653,7 @@ export const germanQuestTranslations = {
     "completion": "Beende ein ganzes Kapitel, ohne den Dialog zu überspringen."
   },
   "one-deck-session": {
-    "title": "Ein Deck unverändert lassen",
+    "title": "Behalte ein Deck unverändert",
     "objective": "Ein Kartenspiel oder Deckbuilder mit einem fertigen Deck.",
     "completion": "Beende drei Spiele oder einen Lauf, ohne ihn zu bearbeiten."
   },
@@ -1669,7 +1670,7 @@ export const germanQuestTranslations = {
   "route-mastery": {
     "title": "Lerne eine Route",
     "objective": "Ein Renn-, Plattform-, Stealth- oder Geschwindigkeitsspiel mit wiederholbaren Routen.",
-    "completion": "Lauf die gleiche Strecke dreimal und verbessere einen Abschnitt."
+    "completion": "Durchlaufe dieselbe Strecke dreimal und verbessere dabei einen Abschnitt."
   },
   "skill-lab": {
     "title": "Übe einen Zug",
@@ -1682,19 +1683,19 @@ export const germanQuestTranslations = {
     "completion": "Vervollständige einen begrenzten Block, ohne über seinen Rand hinaus zu expandieren."
   },
   "questline-only": {
-    "title": "Folge der One Named Questline",
+    "title": "Folge einer benannten Questreihe",
     "objective": "Ein Rollenspiel oder Abenteuer mit einem benannten Charakter oder einer Fraktionsquestreihe.",
     "completion": "Schließe die nächsten beiden Schritte ab, ohne nicht damit zusammenhängende Quests anzunehmen."
   },
   "ranked-set": {
-    "title": "Spiele ein absichtliches Wettkampfset",
+    "title": "Spiele ein bewusstes Wettkampfset",
     "objective": "Ein Kampf-, Shooter-, Karten-, Sport- oder Strategiespiel.",
-    "completion": "Vervollständige drei Ergebnisse und verfolge gleichzeitig ein Lernziel."
+    "completion": "Spiele drei vollständige Runden und verfolge dabei ein einziges Lernziel."
   },
   "craft-one-object": {
     "title": "Stelle ein vollständiges Objekt her",
     "objective": "Ein Überlebens-, Bastel-, Rollenspiel-, Koch- oder Ingenieursspiel.",
-    "completion": "Sammele alle Teile, stelle den Gegenstand her und verwende ihn einmal."
+    "completion": "Sammle alle Teile, stelle den Gegenstand her und verwende ihn einmal."
   },
   "photo-one-subject": {
     "title": "Fotografiere ein Motiv",
@@ -1704,7 +1705,7 @@ export const germanQuestTranslations = {
   "strategy-one-plan": {
     "title": "Verpflichte dich zu einer Strategie",
     "objective": "Ein Taktik-, Karten-, Sport- oder Strategiespiel mit vollständigen Spielen.",
-    "completion": "Deklariere einen Plan und verfolge ihn bis zu einem vollständigen Ergebnis."
+    "completion": "Lege einen Plan fest und verfolge ihn bis zum Ende eines Matches oder Szenarios."
   },
   "language-immersion": {
     "title": "Höre auf jeden Hinweis",
@@ -1712,34 +1713,34 @@ export const germanQuestTranslations = {
     "completion": "Beende einen Fall oder ein Kapitel, ohne gesprochene oder geschriebene Hinweise zu überspringen."
   },
   "save-rescue": {
-    "title": "Verstehe einen abgebrochenen Speichervorgang",
+    "title": "Verstehe einen aufgegebenen Spielstand",
     "objective": "Ein komplexes Rollenspiel, eine Strategie oder eine Simulation, die du vergessen hast.",
-    "completion": "Identifiziere deinen Status, erledige eine Aufgabe und speichere sie mit einem nächsten Schritt."
+    "completion": "Verschaffe dir einen Überblick, erledige eine Aufgabe und speichere mit einem klaren nächsten Schritt."
   },
   "economy-balance": {
-    "title": "Eine Wirtschaft stabilisieren",
+    "title": "Stabilisiere eine Wirtschaft",
     "objective": "Ein Stadt-, Kolonie-, Fabrik- oder Managementspiel mit Ressourcenfluss.",
-    "completion": "Führe einen vollständigen Zyklus durch, wobei jede kritische Ressource nicht negativ ist."
+    "completion": "Führe einen vollständigen Zyklus durch, ohne bei einer wichtigen Ressource ins Minus zu geraten."
   },
   "one-dungeon": {
     "title": "Schließe einen Dungeon ab",
     "objective": "Ein RPG-, Roguelike-, Action- oder Taktikspiel mit begrenzten Expeditionen.",
-    "completion": "Betrete einen Dungeon und erreiche dessen Ausgang oder Boss-Ergebnis."
+    "completion": "Betrete einen Dungeon und erreiche den Ausgang oder besiege den Boss."
   },
   "single-soundscape": {
-    "title": "Höre über einen Ort",
+    "title": "Höre dich durch einen Ort",
     "objective": "Ein Horror-, Erkundungs-, Stealth- oder Atmosphärenspiel.",
     "completion": "Überquere einen Ort und folge dabei den Umgebungsgeräuschen."
   },
   "one-conversation-tree": {
     "title": "Studiere einen Charakter",
     "objective": "Ein Rollenspiel oder Erzählspiel mit vielen Hintergrundgeschichten und Charakteraufzeichnungen.",
-    "completion": "Lies ihre aktuellen Einträge und beende dann ein Gespräch mit ihnen."
+    "completion": "Lies die aktuellen Einträge über diese Figur und führe danach ein Gespräch mit ihr zu Ende."
   },
   "precision-score": {
     "title": "Verbessere eine Zahl",
     "objective": "Ein Spiel, bei dem Punkte, Zeit, Genauigkeit, Combo, Rang oder Effizienz gemessen werden.",
-    "completion": "Mache drei Versuche und verbessere nur diese Zahl."
+    "completion": "Mache drei Versuche und konzentriere dich nur auf die Verbesserung dieser Zahl."
   },
   "map-pocket": {
     "title": "Lerne eine kleine Region",
@@ -1758,21 +1759,21 @@ export const germanQuestTranslations = {
   },
   "credits-push": {
     "title": "Erreiche den Abschlussbildschirm",
-    "objective": "Eine Kampagne bereits eine Stunde nach ihrem Ende.",
+    "objective": "Eine Kampagne, die höchstens noch eine Spielstunde vom Ende entfernt ist.",
     "completion": "Rufe den Bildschirm „Credits“ oder „Endergebnis“ auf."
   },
   "manual-mastery": {
-    "title": "Lies dann ein System",
+    "title": "Lies über ein System und nutze es",
     "objective": "Ein Strategie-, Simulations-, Kampf- oder RPG-System, das im Spiel erklärt wird.",
     "completion": "Lies das Tutorial und verwende es einmal erfolgreich."
   },
   "focus-cooldown": {
-    "title": "Schließe die Sitzung ordnungsgemäß",
-    "objective": "Eine Kampagne, einen Builder oder eine Strategie mit einer benannten Aufgabe speichern.",
-    "completion": "Beende diese Aufgabe, speichere sie sicher und schreibe die nächste Aktion."
+    "title": "Beende die Spielsession sauber",
+    "objective": "Eine Kampagne, ein Aufbauspiel oder ein Strategiespiel mit einer klar benannten Aufgabe.",
+    "completion": "Beende diese Aufgabe, speichere an einem sicheren Punkt und notiere den nächsten Schritt."
   },
   "focused-grand-strategy-turn": {
-    "title": "Plane eine große Strategierunde",
+    "title": "Plane einen Zug im Grand-Strategy-Spiel",
     "objective": "Ein Grand-Strategy- oder 4X-Spiel mit einer komplexen aktuellen Stellung.",
     "completion": "Löse eine Runde um ein einzelnes diplomatisches oder wirtschaftliches Ziel."
   },
@@ -1782,7 +1783,7 @@ export const germanQuestTranslations = {
     "completion": "Sorge dafür, dass diese Linie einen ganzen Zyklus lang ununterbrochen läuft."
   },
   "focused-flight-procedure": {
-    "title": "Führe einen Flugvorgang durch",
+    "title": "Führe einen vollständigen Flug durch",
     "objective": "Ein Flug-, Zug-, LKW-, Schiffs- oder Maschinensimulator.",
     "completion": "Führe eine vollständige Abfahrt, Route und sichere Ankunft durch."
   },
@@ -1794,7 +1795,7 @@ export const germanQuestTranslations = {
   "focused-rhythm-set": {
     "title": "Beende ein Rhythmus-Set",
     "objective": "Ein Rhythmus- oder Musikspiel mit gruppierten Liedern oder einem Kampagnenset.",
-    "completion": "Beende den gesamten Satz mit einem unveränderten Schwierigkeitsgrad."
+    "completion": "Beende das gesamte Set mit einem unveränderten Schwierigkeitsgrad."
   },
   "focused-speedrun-segment": {
     "title": "Lerne ein Speedrun-Segment",
@@ -1804,10 +1805,10 @@ export const germanQuestTranslations = {
   "strangest-installed": {
     "title": "Öffne das seltsamste Cover",
     "objective": "Das installierte Spiel, dessen Cover dir am wenigsten verrät.",
-    "completion": "Erreiche sein erstes klares Ziel oder spiele 30 aktive Minuten."
+    "completion": "Erreiche das erste klare Ziel oder höre nach der Mindestzeit sicher auf."
   },
   "untried-mechanic": {
-    "title": "Versuche es mit einem unbekannten Verb",
+    "title": "Probiere eine ungewohnte Aktion",
     "objective": "Ein Spiel, das um eine Aktion herum aufgebaut ist, die du selten genutzt hast.",
     "completion": "Verwende diese Aktion, um eine vollständige Aktivität abzuschließen."
   },
@@ -1819,17 +1820,17 @@ export const germanQuestTranslations = {
   "unknown-developer": {
     "title": "Versuche es mit einem unbekannten Entwickler",
     "objective": "Ein Spiel von einem Studio oder Entwickler, das du noch nie gespielt hast.",
-    "completion": "Beende die Eröffnungsaktivität oder spiele 35 aktive Minuten lang."
+    "completion": "Beende die Eröffnungsaktivität oder höre nach der Mindestzeit sicher auf."
   },
   "physics-question": {
     "title": "Stelle der Physik eine Frage",
     "objective": "Ein Sandbox-, Puzzle-, Immersive-Sim- oder Konstruktionsspiel mit interagierenden Systemen.",
-    "completion": "Teste eine „Was wäre wenn“-Idee und beobachte ein wiederholbares Ergebnis."
+    "completion": "Teste eine Was-wäre-wenn-Idee und beobachte ein wiederholbares Ergebnis."
   },
   "unread-lore-object": {
     "title": "Lies ein übersehenes Objekt",
     "objective": "Ein Spiel mit Gegenstandsbeschreibungen, Archiven, Museen oder Umweltgeschichten.",
-    "completion": "Verfolge ein Objekt einer Person, einem Ort oder einem Ereignis."
+    "completion": "Ordne das Objekt einer Person, einem Ort oder einem Ereignis zu."
   },
   "npc-routine": {
     "title": "Befolge die Routine eines NPCs",
@@ -1837,7 +1838,7 @@ export const germanQuestTranslations = {
     "completion": "Folge einem NPC, bis sich seine Route wiederholt oder eindeutig endet."
   },
   "alternate-camera": {
-    "title": "Verschiebe die Ansicht",
+    "title": "Wechsle die Perspektive",
     "objective": "Ein bekanntes Spiel mit einer anderen Kamera, einem anderen Charakter oder einer anderen Steuerungsperspektive.",
     "completion": "Beende eine Aktivität aus dieser ungewohnten Perspektive."
   },
@@ -1847,12 +1848,12 @@ export const germanQuestTranslations = {
     "completion": "Beende einen Run oder erreiche einen für den Seed einzigartigen Meilenstein."
   },
   "community-mod": {
-    "title": "Probiere eine vom Spieler erstellte Variante aus",
+    "title": "Probiere eine Spielervariante",
     "objective": "Ein bekanntes Spiel mit Mods, benutzerdefinierten Karten oder Community-Regelsätzen.",
     "completion": "Beende eine Aktivität, die sich anders anfühlt als das Basisspiel."
   },
   "accessibility-transform": {
-    "title": "Ändere die Art und Weise, wie das Spiel kommuniziert",
+    "title": "Verändere die Spielausgabe",
     "objective": "Ein bekanntes Spiel mit guten Zugänglichkeits- oder Schnittstellenoptionen.",
     "completion": "Verwende eine Audio-, Bild-, Steuerungs- oder Navigationsoption während einer Aktivität."
   },
@@ -1862,9 +1863,9 @@ export const germanQuestTranslations = {
     "completion": "Beende eine bekannte Szene mit aktivierter Sprache."
   },
   "oldest-untouched": {
-    "title": "Öffne das älteste unberührte Spiel",
+    "title": "Öffne dein ältestes ungespieltes Spiel",
     "objective": "Das am längsten im Besitz befindliche Spiel zeigt immer noch null Spielzeit an.",
-    "completion": "Erreiche den ersten Speicherpunkt oder spiele 30 aktive Minuten lang."
+    "completion": "Erreiche den ersten Speicherpunkt oder höre nach der Mindestzeit sicher auf."
   },
   "one-star-review-question": {
     "title": "Hinterfrage einen schlechten ersten Eindruck",
@@ -1874,30 +1875,30 @@ export const germanQuestTranslations = {
   "unusual-protagonist": {
     "title": "Spiele einen ungewöhnlichen Protagonisten",
     "objective": "Ein Spiel, das von jemandem geleitet wird, der anders ist als die üblichen Helden.",
-    "completion": "Beende eine Aktivität mit dem, was ihre Perspektive unterscheidet."
+    "completion": "Beende eine Aktivität und nutze dabei gezielt die besondere Perspektive dieser Figur."
   },
   "side-system": {
-    "title": "Entdecke das Spiel neben dem Spiel",
-    "objective": "Ein Spiel mit Angeln, Kochen, Wohnen, Karten, Fotos oder einem anderen Deep-Side-System.",
-    "completion": "Beende eine vollständige Schleife innerhalb dieses ignorierten Systems."
+    "title": "Erkunde ein übersehenes Nebensystem",
+    "objective": "Ein Spiel mit Angeln, Kochen, Wohnen, Karten, Fotos oder einem anderen umfangreichen Nebensystem.",
+    "completion": "Schließe einen vollständigen Ablauf innerhalb dieses bisher übersehenen Systems ab."
   },
   "soundtrack-before-cover": {
-    "title": "Wähle mit deinen Ohren",
+    "title": "Wähle nach Gehör",
     "objective": "Drei installierte Spiele, deren Musik oder Ambiente du in der Vorschau ansehen kannst.",
-    "completion": "Öffne den ersten Ton, der dich überrascht, und beende eine Aktivität."
+    "completion": "Öffne das erste Spiel, dessen Klang dich überrascht, und beende eine Aktivität."
   },
   "forgotten-demo": {
-    "title": "Kehre zu einer früheren Prüfung zurück",
+    "title": "Kehre zu einem früheren Testspiel zurück",
     "objective": "Ein vollständiges Spiel, das du früher nur aus einer Demo oder einem Gratiswochenende kanntest.",
-    "completion": "Spiele über das ursprünglich gesampelte Material hinaus."
+    "completion": "Spiele über den Abschnitt hinaus, den du aus der Demo kanntest."
   },
   "mechanic-without-tutorial": {
-    "title": "Berühre zuerst die Regel",
+    "title": "Probiere die Regel zuerst aus",
     "objective": "Ein System-, Puzzle-, Strategie- oder Simulationsspiel mit erkennbaren Regeln.",
     "completion": "Lerne eine Regel durch Interaktion, bevor du die Erklärung liest."
   },
   "map-edge": {
-    "title": "Entdecke jenseits der Route",
+    "title": "Erkunde abseits der Route",
     "objective": "Ein Open-World-Spiel mit einem erreichbaren Ort außerhalb des hervorgehobenen Pfades.",
     "completion": "Erreiche diesen Ort und bringe einen Screenshot zurück."
   },
@@ -1909,11 +1910,11 @@ export const germanQuestTranslations = {
   "ruleset-random": {
     "title": "Tritt ein, bevor du die Regeln beherrschst",
     "objective": "Ein Spiel mit einem unbekannten Modus, Szenario oder Regelsatz.",
-    "completion": "Vervollständige ein Ergebnis und erkläre dann die Regel, die am wichtigsten war."
+    "completion": "Beende eine Runde oder ein Szenario und erkläre danach die wichtigste Regel."
   },
   "opposite-dialogue": {
     "title": "Sage, was du sonst nie sagst",
-    "objective": "Ein dialoglastiges Spiel mit Entscheidungen, die man normalerweise meidet.",
+    "objective": "Ein dialoglastiges Spiel mit Entscheidungen, die du normalerweise meidest.",
     "completion": "Triff eine aufrichtige Gegenentscheidung und akzeptiere deren Ergebnis."
   },
   "small-studio": {
@@ -1922,7 +1923,7 @@ export const germanQuestTranslations = {
     "completion": "Schließe fünf Mikrospiele oder ein komplettes Sammlungsset ab."
   },
   "historical-setting": {
-    "title": "Gib einen unbekannten Zeitraum ein",
+    "title": "Betritt eine unbekannte Epoche",
     "objective": "Ein historisches Spiel, das in einer Zeit spielt, über die du wenig weißt.",
     "completion": "Beende ein Szenario und identifiziere ein zeitraumspezifisches Detail."
   },
@@ -1932,19 +1933,19 @@ export const germanQuestTranslations = {
     "completion": "Nutze diese Technologie, um ein vollständiges Problem zu lösen."
   },
   "hidden-ending-door": {
-    "title": "Öffne ein alternatives Ergebnis",
+    "title": "Öffne einen alternativen Ausgang",
     "objective": "Ein abgeschlossenes Spiel mit einem erreichbaren Ende oder Zweig, der unsichtbar bleibt.",
     "completion": "Erreiche eine Szene oder ein Ergebnis, das für diesen Pfad einzigartig ist."
   },
   "player-made-level": {
-    "title": "Versuche es mit dem Entwicklerkommentar",
+    "title": "Probiere einen Entwicklerkommentar",
     "objective": "Ein bekanntes Spiel mit Kommentarspur, Museum oder Blick hinter die Kulissen.",
     "completion": "Beende einen Abschnitt, während du dir jeden verfügbaren Hinweis ansiehst."
   },
   "one-system-collision": {
     "title": "Lass zwei Systeme kollidieren",
     "objective": "Ein Sandbox-, immersives Simulations-, Strategie- oder Physikspiel.",
-    "completion": "Erstelle eine nützliche Interaktion, die das Spiel nie direkt angefordert hat."
+    "completion": "Erzeuge eine nützliche Interaktion, die das Spiel nie ausdrücklich von dir verlangt hat."
   },
   "curiosity-souvenir": {
     "title": "Erreiche ein sichtbares Wahrzeichen",
@@ -1952,7 +1953,7 @@ export const germanQuestTranslations = {
     "completion": "Erreiche es und erfasse die Route oder die endgültige Ansicht."
   },
   "curious-non-euclidean": {
-    "title": "Gib die unmögliche Geometrie ein",
+    "title": "Betritt unmögliche Geometrie",
     "objective": "Ein Puzzle- oder Erkundungsspiel mit Falten, Schleifen oder Verschieben von Räumen.",
     "completion": "Löse einen Raum, in dem die gewöhnliche Geometrie versagt."
   },
@@ -1962,9 +1963,9 @@ export const germanQuestTranslations = {
     "completion": "Ändere eine Bedingung und beobachte einen vollständigen Reaktionszyklus."
   },
   "curious-programming-game": {
-    "title": "Programm Eine Lösung",
+    "title": "Programmiere eine Lösung",
     "objective": "Ein Programmier-, Automatisierungs-, Logik- oder Schaltungsbauspiel.",
-    "completion": "Erstelle eine funktionierende Lösung und führe sie ohne manuelle Korrektur aus."
+    "completion": "Erstelle eine funktionierende Lösung und lass das Programm ohne manuelle Korrektur durchlaufen."
   },
   "curious-fmv-game": {
     "title": "Versuche es mit einem interaktiven Film",
@@ -1989,7 +1990,7 @@ export const germanQuestTranslations = {
   "turns-wait": {
     "title": "Lass jede Runde warten",
     "objective": "Ein rundenbasiertes Taktik-, Karten-, Brett-, Puzzle- oder RPG-Spiel.",
-    "completion": "Schließe eine Begegnung, ein Spiel, ein Rätsel oder 30 aktive Minuten ab."
+    "completion": "Beende eine Begegnung, ein Match oder ein Rätsel – oder höre nach der Mindestzeit auf."
   },
   "story-mode": {
     "title": "Lass die Geschichte wirken",
@@ -2002,9 +2003,9 @@ export const germanQuestTranslations = {
     "completion": "Beende eine Aktivität mit aktivierter hilfreicher Option."
   },
   "one-hand-loop": {
-    "title": "Spiele ein Spiel mit minimalem Eingabeaufwand",
+    "title": "Spiele mit minimaler Eingabe",
     "objective": "Ein Spiel, das bequem mit einer Hand oder wenigen Eingaben gesteuert werden kann.",
-    "completion": "Beende eine Runde, Etappe, einen Tag oder 25 aktive Minuten."
+    "completion": "Beende eine Runde, Etappe oder einen Tag – oder höre nach der Mindestzeit auf."
   },
   "visual-novel-scene": {
     "title": "Lies eine Visual-Novel-Szene",
@@ -2022,14 +2023,14 @@ export const germanQuestTranslations = {
     "completion": "Beende eine ruhige Routine, ohne den Vorgang zu verlängern."
   },
   "walking-only": {
-    "title": "Gehe die gesamte Sitzung entlang",
+    "title": "Gehe die ganze Session zu Fuß",
     "objective": "Ein Erkundungs- oder Open-World-Spiel mit sicherer, entspannter Reise.",
     "completion": "Gehe zwischen zwei Orientierungspunkten hin und her, ohne zu sprinten oder schnell zu reisen."
   },
   "familiar-save": {
-    "title": "Öffne „Save That Knows You“.",
+    "title": "Öffne deinen vertrautesten Spielstand",
     "objective": "Dein bequemster aktueller Spielstand und Charakter.",
-    "completion": "Beende eine bekannte Aufgabe und bewahre sie an einem ruhigen Ort auf."
+    "completion": "Beende eine bekannte Aufgabe und speichere an einem ruhigen Ort."
   },
   "photo-stroll": {
     "title": "Mache ein ruhiges Foto",
@@ -2044,7 +2045,7 @@ export const germanQuestTranslations = {
   "no-failure-mode": {
     "title": "Spiele, ohne etwas zu verlieren",
     "objective": "Ein Kreativ-, Erkundungs-, Übungs- oder Gelegenheitsmodus mit geringen Fehlerkosten.",
-    "completion": "Beende eine Aktivität, ohne es noch einmal zu versuchen, um ein besseres Ergebnis zu erzielen."
+    "completion": "Beende eine Aktivität und akzeptiere das erste Ergebnis, ohne es direkt verbessern zu wollen."
   },
   "one-day-sim": {
     "title": "Spiele einen Tag im Spiel",
@@ -2059,16 +2060,16 @@ export const germanQuestTranslations = {
   "cozy-craft": {
     "title": "Mache eine nützliche Sache",
     "objective": "Ein Bastel-, Koch-, Landwirtschafts- oder Dekorationsspiel mit einfachen Rezepten.",
-    "completion": "Sammele Materialien in der Nähe, stelle einen Gegenstand her und verwenden oder platziere ihn."
+    "completion": "Sammle Materialien in der Nähe, stelle einen Gegenstand her und verwende oder platziere ihn."
   },
   "home-base-only": {
     "title": "Führe eine reine Menüaufgabe aus",
-    "objective": "Ein RPG- oder Strategie-Speicher mit einer klaren Dienstplan-, Upgrade- oder Codex-Aufgabe.",
-    "completion": "Beende diese Aufgabe, ohne eine Mission einzugeben."
+    "objective": "Ein RPG- oder Strategiespielstand mit einer klaren Aufgabe für Team, Upgrades oder Kodex.",
+    "completion": "Beende diese Aufgabe, ohne eine Mission zu starten."
   },
   "ambient-company": {
     "title": "Lass dich von einer Welt begleiten",
-    "objective": "Ein ruhiges Simulations-, Leerlauf-, Fahr- oder Open-World-Spiel.",
+    "objective": "Ein ruhiges Simulations-, Idle-, Fahr- oder Open-World-Spiel.",
     "completion": "Beende eine sanfte Aktivität, während du die Welt um dich herum weiterlaufen lässt."
   },
   "one-conversation": {
@@ -2087,13 +2088,13 @@ export const germanQuestTranslations = {
     "completion": "Löse ein Brett, einen Raum, ein Gitter oder ein kurzes Set."
   },
   "supportive-role": {
-    "title": "Helfen ohne zu führen",
+    "title": "Hilf, ohne zu führen",
     "objective": "Ein Koop- oder Multiplayer-Spiel mit einer klaren Unterstützungsrolle.",
-    "completion": "Schließe ein Ergebnis als Heiler, Baumeister, Transporter oder Verteidiger ab."
+    "completion": "Schließe eine Runde oder Mission als Heiler, Baumeister, Transporter oder Verteidiger ab."
   },
   "collect-nearby": {
-    "title": "Sammele nur, was in der Nähe ist",
-    "objective": "Ein aktiver Speicherstand mit einigen Sammlerstücken rund um deinen aktuellen Standort.",
+    "title": "Sammle nur, was in der Nähe ist",
+    "objective": "Ein aktiver Spielstand mit einigen Sammelobjekten rund um deinen aktuellen Standort.",
     "completion": "Sammle drei Gegenstände in der Nähe, ohne in eine andere Region zu gelangen."
   },
   "default-everything": {
@@ -2103,21 +2104,21 @@ export const germanQuestTranslations = {
   },
   "replay-favorite-level": {
     "title": "Wiederhole ein einfaches Level",
-    "objective": "Eine vertraute Ebene oder Bühne, an deren Form du dich erinnerst.",
-    "completion": "Schließe es einmal ab, ohne Geheimnissen nachzujagen oder eine bessere Punktzahl zu erzielen."
+    "objective": "Ein vertrautes Level oder ein Abschnitt, dessen Aufbau du noch kennst.",
+    "completion": "Schließe es einmal ab, ohne Geheimnissen oder einer besseren Punktzahl nachzujagen."
   },
   "gentle-weather": {
-    "title": "Sitze an einem malerischen Ort",
+    "title": "Setz dich an einen schönen Ort",
     "objective": "Eine vertraute Welt mit einem sicheren Aussichtspunkt, Ufer, Garten oder Lager.",
     "completion": "Erreiche es und bleibe durch einen kompletten Musik- oder Wetterwechsel hindurch."
   },
   "watch-systems": {
-    "title": "„One System Run“ ansehen",
+    "title": "Beobachte einen vollständigen Systemzyklus",
     "objective": "Ein Automatisierungs-, Simulations-, Kolonie- oder Managementspiel.",
     "completion": "Beobachte einen vollständigen Zyklus und nimm nur eine Einstellung vor."
   },
   "old-tutorial-area": {
-    "title": "Kehre in einen sicheren Öffnungsbereich zurück",
+    "title": "Kehre in ein vertrautes Startgebiet zurück",
     "objective": "Ein bekanntes Spiel, dessen Lernzone oder erste Stadt sich sicher anfühlt.",
     "completion": "Beende eine Aktivität in der Nähe, ohne diesen Bereich zu verlassen."
   },
@@ -2127,14 +2128,14 @@ export const germanQuestTranslations = {
     "completion": "Beende ein Level oder eine Szene mithilfe von visuellen und Bewegungshinweisen."
   },
   "energy-honest-exit": {
-    "title": "Lass genug das Ende sein",
-    "objective": "Jedes bekannte Spiel mit einem sicheren Haltepunkt innerhalb von 25 Minuten.",
+    "title": "Lass genug auch genug sein",
+    "objective": "Ein vertrautes Spiel mit einem nahen sicheren Haltepunkt.",
     "completion": "Spiele bis zu diesem Punkt, speichere und höre auf, ohne das Ziel zu verlängern."
   },
   "low-energy-idle-check-in": {
-    "title": "Checke bei einem Leerlaufspiel ein",
-    "objective": "Eine Leerlauf-, inkrementelle, Aquarium-, Garten- oder Hintergrundsimulation.",
-    "completion": "Sammele den Fortschritt, führe ein Upgrade durch und lass es laufen oder speichern."
+    "title": "Schau kurz in ein Idle Game",
+    "objective": "Ein Idle Game, inkrementelles Spiel oder eine Aquarium-, Garten- oder Hintergrundsimulation.",
+    "completion": "Sammle den Fortschritt ein, führe ein Upgrade durch und lass das Spiel weiterlaufen oder speichere."
   },
   "low-energy-hidden-object": {
     "title": "Schließe eine Wimmelbildszene ab",
@@ -2142,14 +2143,14 @@ export const germanQuestTranslations = {
     "completion": "Finde jedes benötigte Objekt in einer Szene."
   },
   "low-energy-solitaire": {
-    "title": "Spiele eine Solitaire-Hand",
+    "title": "Spiele eine Runde Solitaire",
     "objective": "Ein Solitär-, Mahjong-, Kachel-, Karten- oder digitales Tischspiel.",
-    "completion": "Beende eine Hand, ein Board oder ein Match unabhängig vom Ergebnis."
+    "completion": "Beende eine Runde, ein Brett oder ein Match unabhängig vom Ergebnis."
   },
   "low-energy-auto-battler": {
     "title": "Sieh einem Auto-Battle zu",
     "objective": "Ein Autobattler-, Taktik-, Management- oder Teambuilding-Spiel.",
-    "completion": "Lege eine Aufstellung fest und beende dann eine Runde, ohne sie mitten im Kampf zu ändern."
+    "completion": "Lege eine Aufstellung fest und beende damit eine Runde, ohne mitten im Kampf etwas zu ändern."
   },
   "low-energy-walking-story": {
     "title": "Schließe ein Walking-Story-Kapitel ab",
@@ -2158,7 +2159,15 @@ export const germanQuestTranslations = {
   },
   "low-energy-jrpg-turns": {
     "title": "Schließe eine rundenbasierte Begegnung ab",
-    "objective": "Ein rundenbasierter JRPG- oder RPG-Speicher mit einer Begegnung in der Nähe.",
+    "objective": "Ein rundenbasierter JRPG- oder RPG-Spielstand mit einer Begegnung in der Nähe.",
     "completion": "Beende einen Kampf und speichere am nächsten sicheren Punkt."
   }
-} as const satisfies Record<string, QuestTranslation>;
+} as const satisfies Record<string, Omit<QuestTranslation, "name">>;
+
+export const germanQuestTranslations = Object.fromEntries(
+  Object.entries(germanQuestCopy).map(([id, copy]) => {
+    const name = germanQuestNames[id as keyof typeof germanQuestNames];
+    if (!name) throw new Error(`Missing German quest name: ${id}`);
+    return [id, { name, ...copy }];
+  }),
+) as Record<string, QuestTranslation>;

@@ -1,10 +1,11 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { useShallow } from "zustand/react/shallow";
 import styles from "./App.module.css";
 import { CheckIcon } from "./components/Icons";
+import { HistoryScreen } from "./components/HistoryScreen";
 import { InteractiveDotBackground } from "./components/InteractiveDotBackground";
 import { ProfileDrawer } from "./components/ProfileDrawer";
 import { SolidButton } from "./components/SolidButton";
@@ -44,13 +45,17 @@ export function App() {
     offeredQuestIds,
     pauseQuest,
     profile,
+    purchaseRedRopes,
     refreshMoodWindow,
+    replayQuest,
     revealQuest,
     resumeQuest,
     selectMood,
     selectedMoodId,
+    setDebugMode,
     shuffleOffers,
     startQuest,
+    stats,
   } = useQuestStore(
     useShallow((state) => ({
       completeQuest: state.completeQuest,
@@ -63,21 +68,27 @@ export function App() {
       offeredQuestIds: state.offeredQuestIds,
       pauseQuest: state.pauseQuest,
       profile: state.profile,
+      purchaseRedRopes: state.purchaseRedRopes,
       refreshMoodWindow: state.refreshMoodWindow,
+      replayQuest: state.replayQuest,
       revealQuest: state.revealQuest,
       resumeQuest: state.resumeQuest,
       selectMood: state.selectMood,
       selectedMoodId: state.selectedMoodId,
+      setDebugMode: state.setDebugMode,
       shuffleOffers: state.shuffleOffers,
       startQuest: state.startQuest,
+      stats: state.stats,
     })),
   );
   const reduceMotion = Boolean(useReducedMotion());
   const [toast, setToast] = useState<Toast | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [introComplete, setIntroComplete] = useState(reduceMotion);
   const [brandRotation, setBrandRotation] = useState(0);
+  const profileTriggerRef = useRef<HTMLButtonElement>(null);
   const desktop = useDesktopSheet();
   const currentQuest = currentSession
     ? hydrateQuest(currentSession.questId, completedSessions, language)
@@ -148,13 +159,28 @@ export function App() {
     };
   }, [currentSession, moodSelectedAt, refreshMoodWindow]);
 
-  function handleComplete(durationMs: number) {
+  function handleComplete(gameTitle: string) {
     if (!currentQuest || !currentSession) return;
     const nextToast = {
       id: currentSession.sessionId,
       questId: currentSession.questId,
     };
-    if (completeQuest(durationMs)) setToast(nextToast);
+    if (completeQuest(gameTitle)) setToast(nextToast);
+  }
+
+  function handleOpenHistory() {
+    handleProfileOpenChange(false);
+    setHistoryOpen(true);
+  }
+
+  function handleCloseHistory() {
+    setHistoryOpen(false);
+    window.requestAnimationFrame(() => profileTriggerRef.current?.focus());
+  }
+
+  function handleReplayQuest(questId: string) {
+    if (!replayQuest(questId)) return;
+    setHistoryOpen(false);
   }
 
   function handleAboutOpenChange(open: boolean) {
@@ -248,30 +274,32 @@ export function App() {
           </div>
         </motion.div>
 
-        <button
-          className={styles.brandMark}
-          data-sound-click-skip
-          type="button"
-          aria-label={t("ui.nav.spinLogo")}
-          title={t("ui.nav.spinLogo")}
-          onClick={() => setBrandRotation((rotation) => rotation + 360)}
-        >
-          <motion.img
-            src={markAssetUrl(AVATAR_MARK_BY_THEME[profile.avatarTheme])}
-            alt=""
-            animate={{ rotate: brandRotation }}
-            transition={
-              reduceMotion
-                ? { duration: 0 }
-                : {
-                    type: "spring",
-                    stiffness: 190,
-                    damping: 18,
-                    mass: 0.72,
-                  }
-            }
-          />
-        </button>
+        {!historyOpen && (
+          <button
+            className={styles.brandMark}
+            data-sound-click-skip
+            type="button"
+            aria-label={t("ui.nav.spinLogo")}
+            title={t("ui.nav.spinLogo")}
+            onClick={() => setBrandRotation((rotation) => rotation + 360)}
+          >
+            <motion.img
+              src={markAssetUrl(AVATAR_MARK_BY_THEME[profile.avatarTheme])}
+              alt=""
+              animate={{ rotate: brandRotation }}
+              transition={
+                reduceMotion
+                  ? { duration: 0 }
+                  : {
+                      type: "spring",
+                      stiffness: 190,
+                      damping: 18,
+                      mass: 0.72,
+                    }
+              }
+            />
+          </button>
+        )}
 
         <motion.div
           className={styles.navActionSlot}
@@ -298,6 +326,7 @@ export function App() {
             >
               <Drawer.Trigger asChild>
                 <SolidButton
+                  ref={profileTriggerRef}
                   data-active={profileOpen || undefined}
                   data-sound-click-skip
                   type="button"
@@ -318,11 +347,13 @@ export function App() {
                     <div className={styles.drawerHandle} aria-hidden="true" />
                   )}
                   <ProfileDrawer
-                    completedQuests={completedQuests}
-                    legacyCompletionCount={legacyCompletionCount}
+                    onDebugModeChange={setDebugMode}
+                    onOpenHistory={handleOpenHistory}
+                    onPurchaseRedRopes={purchaseRedRopes}
                     open={profileOpen}
                     profile={profile}
                     reduceMotion={reduceMotion}
+                    stats={stats}
                   />
                 </Drawer.Content>
               </Drawer.Portal>
@@ -332,25 +363,50 @@ export function App() {
       </header>
 
       <main className={styles.main} id="main-content">
-        <TaskScreen
-          currentQuest={currentQuest}
-          currentSession={currentSession}
-          selectedMood={selectedMood}
-          offeredQuests={offeredQuests}
-          points={profile.points}
-          shuffleCost={SHUFFLE_COST}
-          animateEntrance={!introComplete}
-          reduceMotion={reduceMotion}
-          onSelectMood={selectMood}
-          onEditMood={editMood}
-          onRevealQuest={revealQuest}
-          onShuffle={shuffleOffers}
-          onDiscard={discardCurrentSession}
-          onStart={startQuest}
-          onPause={pauseQuest}
-          onResume={resumeQuest}
-          onComplete={handleComplete}
-        />
+        <AnimatePresence mode="wait" initial={false}>
+          {historyOpen ? (
+            <HistoryScreen
+              completedQuests={completedQuests}
+              directStartDisabled={Boolean(currentSession)}
+              key="history"
+              legacyCompletionCount={legacyCompletionCount}
+              reduceMotion={reduceMotion}
+              onClose={handleCloseHistory}
+              onStartQuest={handleReplayQuest}
+            />
+          ) : (
+            <motion.div
+              className={styles.taskMainView}
+              key="tasks"
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reduceMotion ? 0 : 0.18 }}
+            >
+              <TaskScreen
+                currentQuest={currentQuest}
+                currentSession={currentSession}
+                selectedMood={selectedMood}
+                offeredQuests={offeredQuests}
+                points={profile.points}
+                redRopes={profile.redRopes}
+                debugMode={profile.debugMode}
+                shuffleCost={SHUFFLE_COST}
+                animateEntrance={!introComplete}
+                reduceMotion={reduceMotion}
+                onSelectMood={selectMood}
+                onEditMood={editMood}
+                onRevealQuest={revealQuest}
+                onShuffle={shuffleOffers}
+                onDiscard={discardCurrentSession}
+                onStart={startQuest}
+                onPause={pauseQuest}
+                onResume={resumeQuest}
+                onComplete={handleComplete}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
 
       <div className={styles.toastRegion} aria-live="polite" aria-atomic="true">

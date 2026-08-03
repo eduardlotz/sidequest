@@ -105,6 +105,8 @@ type Props = {
   selectedMood: MoodDefinition | null;
   offeredQuests: readonly QuestDefinition[];
   points: number;
+  redRopes: number;
+  debugMode: boolean;
   shuffleCost: number;
   animateEntrance: boolean;
   reduceMotion: boolean;
@@ -112,11 +114,11 @@ type Props = {
   onEditMood: () => void;
   onRevealQuest: (questId: string) => void;
   onShuffle: () => boolean;
-  onDiscard: () => void;
+  onDiscard: () => boolean;
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
-  onComplete: (durationMs: number) => void;
+  onComplete: (gameTitle: string) => void;
 };
 
 export function TaskScreen({
@@ -125,6 +127,8 @@ export function TaskScreen({
   selectedMood,
   offeredQuests,
   points,
+  redRopes,
+  debugMode,
   shuffleCost,
   animateEntrance,
   reduceMotion,
@@ -284,6 +288,8 @@ export function TaskScreen({
                 quest={currentQuest}
                 session={currentSession}
                 layoutSessionId={layoutSessionIdRef.current}
+                redRopes={redRopes}
+                debugMode={debugMode}
                 reduceMotion={reduceMotion}
                 onDiscard={onDiscard}
                 onStart={onStart}

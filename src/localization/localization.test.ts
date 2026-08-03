@@ -25,15 +25,31 @@ function flattenedKeys(value: object, prefix = ""): string[] {
   });
 }
 
+function flattenedValues(value: object): string[] {
+  return Object.values(value).flatMap((child) =>
+    typeof child === "string"
+      ? [child]
+      : flattenedValues(child as object),
+  );
+}
+
 describe("localization resources", () => {
   test("keeps locale-independent quest data separate from authored copy", () => {
     expect(QUEST_CORES).toHaveLength(QUESTS.length);
     for (const quest of QUEST_CORES) {
       expect(Object.keys(quest).sort()).toEqual(
-        ["durationMinutes", "id", "moodId", "rewardPoints", "tipIds"].sort(),
+        [
+          "id",
+          "minimumDurationMinutes",
+          "moodId",
+          "rewardPoints",
+          "suggestedDurationMinutes",
+          "tipIds",
+        ].sort(),
       );
       expect(quest.tipIds).toHaveLength(2);
       expect("title" in quest).toBe(false);
+      expect("name" in quest).toBe(false);
       expect("objective" in quest).toBe(false);
       expect("completion" in quest).toBe(false);
     }
@@ -48,7 +64,12 @@ describe("localization resources", () => {
       const translation = germanQuestTranslations[
         quest.id as keyof typeof germanQuestTranslations
       ] as QuestTranslation;
-      for (const field of ["title", "objective", "completion"] as const) {
+      for (const field of [
+        "name",
+        "title",
+        "objective",
+        "completion",
+      ] as const) {
         expect(translation[field].trim().length > 0).toBe(true);
         expect(translation[field]).not.toContain("__SIDEQUEST_FIELD__");
         expect(
@@ -59,7 +80,7 @@ describe("localization resources", () => {
         if (translation[field] !== quest[field]) changedFields += 1;
       }
     }
-    expect(changedFields > 1_200).toBe(true);
+    expect(changedFields > 1_600).toBe(true);
   });
 
   test("keeps German mood, tip, and UI resources in exact parity", () => {
@@ -72,6 +93,47 @@ describe("localization resources", () => {
     expect(flattenedKeys(germanUi).sort()).toEqual(
       flattenedKeys(englishUi).sort(),
     );
+  });
+
+  test("keeps all German copy in direct du language", () => {
+    const germanCopy = [
+      ...flattenedValues(germanQuestTranslations),
+      ...flattenedValues(germanMoods),
+      ...flattenedValues(germanTips),
+      ...flattenedValues(germanUi),
+    ];
+
+    for (const value of germanCopy) {
+      expect(
+        /\b(?:Sie|Ihnen|Ihr|Ihre|Ihren|Ihrem|Ihrer|Ihres)\b/.test(value),
+      ).toBe(false);
+      expect(/\bman\b/i.test(value)).toBe(false);
+    }
+  });
+
+  test("keeps German quest titles short and free of description copy", () => {
+    expect(
+      new Set(
+        Object.values(germanQuestTranslations).map(
+          (translation) => translation.name,
+        ),
+      ).size,
+    ).toBe(QUESTS.length);
+
+    for (const translation of Object.values(germanQuestTranslations)) {
+      expect(translation.name.trim().split(/\s+/).length <= 4).toBe(true);
+      expect(translation.name.length <= 32).toBe(true);
+      expect(translation.name === translation.title).toBe(false);
+      expect(/[.!?]$/.test(translation.name)).toBe(false);
+      expect(/[.!?]$/.test(translation.title)).toBe(false);
+      expect(translation.title.trim().split(/\s+/).length <= 8).toBe(true);
+      expect(translation.title.length <= 50).toBe(true);
+      expect(
+        /Speichervorgang|Rettungswurf|Tageszeitung|Mittelbibliothek|One Named|One System|Programm Eine/.test(
+          translation.title,
+        ),
+      ).toBe(false);
+    }
   });
 
   test("resolves the same quest and mood ids into either language", () => {
@@ -87,7 +149,8 @@ describe("localization resources", () => {
     });
     expect(germanQuest).toMatchObject({
       id: questId,
-      title: "Spiele ein Lieblingsspiel deiner Kindheit",
+      name: "Kindheitsgefühl",
+      title: "Spiele einen Kindheitsfavoriten",
     });
     expect(germanQuest?.rewardPoints).toBe(englishQuest?.rewardPoints);
     expect(germanQuest?.tips[0].title).not.toBe(englishQuest?.tips[0].title);

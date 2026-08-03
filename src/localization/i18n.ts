@@ -20,9 +20,9 @@ const englishMoods = Object.fromEntries(
   MOODS.map(({ id, title, subtitle }) => [id, { title, subtitle }]),
 );
 const englishQuests = Object.fromEntries(
-  QUESTS.map(({ id, title, objective, completion }) => [
+  QUESTS.map(({ id, name, title, objective, completion }) => [
     id,
-    { title, objective, completion },
+    { name, title, objective, completion },
   ]),
 );
 

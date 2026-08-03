@@ -170,6 +170,8 @@ export function QuestOfferDeck({
           ? t("ui.offers.cardStatus", {
               current: activeCardIndex + 1,
               total: items.length,
+              name: items[activeCardIndex].name,
+              title: items[activeCardIndex].title,
             })
           : selectedId
             ? t("ui.offers.opening", {
@@ -355,7 +357,10 @@ function QuestOfferCard({
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
         onPointerOut={handlePointerLeave}
-        aria-label={t("ui.offers.revealCard", { number: index + 1 })}
+        aria-label={t("ui.offers.selectQuest", {
+          name: item.name,
+          title: item.title,
+        })}
         aria-pressed={selected}
       >
         <motion.span
@@ -372,7 +377,10 @@ function QuestOfferCard({
           >
             <span className={styles.cardShimmer} aria-hidden="true" />
             <QuestCardBack
-              durationMinutes={item.durationMinutes}
+              minimumDurationMinutes={item.minimumDurationMinutes}
+              moodTitle={t(`moods.${item.moodId}.title`)}
+              name={item.name}
+              suggestedDurationMinutes={item.suggestedDurationMinutes}
               title={item.title}
               variant="summary"
             />

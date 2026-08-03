@@ -41,6 +41,7 @@ export type RopeRelease = {
 };
 
 type Props = {
+  cutAvailable: boolean;
   cut: RopeCut | null;
   dragVelocityRef: MutableRefObject<RopePoint>;
   draggingRef: MutableRefObject<boolean>;
@@ -53,7 +54,7 @@ type Props = {
   targetRef: MutableRefObject<RopePoint>;
 };
 
-type SimulationProps = Props & {
+type SimulationProps = Omit<Props, "cutAvailable"> & {
   initialOffset: RopePoint;
   lowerPathRef: RefObject<SVGPathElement | null>;
   upperPathRef: RefObject<SVGPathElement | null>;
@@ -70,6 +71,7 @@ export const READY_TIMER_TOP_RATIO = 0.17;
 export const RESUME_PULLBACK_TIMER_TOP_RATIO = 0.11;
 
 export function PhysicsRope({
+  cutAvailable,
   cut,
   dragVelocityRef,
   draggingRef,
@@ -91,7 +93,11 @@ export function PhysicsRope({
     : targetRef.current;
 
   return (
-    <div className={styles.ropeCanvas} aria-hidden="true">
+    <div
+      className={styles.ropeCanvas}
+      data-cut-available={cutAvailable ? "true" : "false"}
+      aria-hidden="true"
+    >
       <Canvas
         orthographic
         camera={{ position: [0, 0, 10], zoom: 100 }}

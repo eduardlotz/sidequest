@@ -1,23 +1,21 @@
 import { markAssetUrl } from "../data/questMarks";
-import { useTranslation } from "react-i18next";
 import styles from "../App.module.css";
+import { QuestCardMeta } from "./QuestCardMeta";
 
 type Props =
   | {
-      durationMinutes: number;
+      minimumDurationMinutes: number;
+      moodTitle: string;
+      name: string;
+      suggestedDurationMinutes: number;
       title: string;
       variant: "summary";
     }
   | {
-      title: string;
-      variant: "completion";
+      variant: "pattern";
     };
 
-export function QuestCardBack({
-  title,
-  ...props
-}: Props) {
-  const { t } = useTranslation();
+export function QuestCardBack(props: Props) {
   const mark = markAssetUrl("sidequest-mark.svg");
   const summary = props.variant === "summary";
 
@@ -39,17 +37,23 @@ export function QuestCardBack({
         ))}
       </span>
       {summary ? (
-        <span className={styles.questCardBackSummary}>
-          <strong className={styles.questCardBackTitle}>{title}</strong>
-          <span className={styles.questCardBackEstimate}>
-            {t("ui.quest.estimateMinutes", {
-              count: props.durationMinutes,
-            })}
+        <span className={styles.questCardBackSummaryFace}>
+          <QuestCardMeta
+            durationFormat="long"
+            minimumDurationMinutes={props.minimumDurationMinutes}
+            moodTitle={props.moodTitle}
+            suggestedDurationMinutes={props.suggestedDurationMinutes}
+          />
+          <span className={styles.questCardBackSummaryCopy}>
+            <strong className={styles.questCardBackSummaryName}>
+              {props.name}
+            </strong>
+            <span className={styles.questCardBackSummaryTitle}>
+              {props.title}
+            </span>
           </span>
         </span>
-      ) : (
-        <strong className={styles.questCardBackTitle}>{title}</strong>
-      )}
+      ) : null}
     </span>
   );
 }

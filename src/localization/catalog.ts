@@ -34,6 +34,7 @@ export function localizeQuest(
   const t = translator(language);
   return {
     ...quest,
+    name: t(`quests.${quest.id}.name`, { defaultValue: quest.name }),
     title: t(`quests.${quest.id}.title`, { defaultValue: quest.title }),
     objective: t(`quests.${quest.id}.objective`, {
       defaultValue: quest.objective,
