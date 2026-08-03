@@ -78,7 +78,6 @@ export const englishUi = {
     resume: "Resume quest timer",
     pause: "Pause quest timer",
     unavailable: "Quest timer unavailable",
-    ready: "Ready",
     paused: "Paused",
     gameTitleLabel: "Game title",
     addGameTitle: "Add game title",
@@ -90,12 +89,9 @@ export const englishUi = {
     pullStart: "Pull the timer to start.",
     pullResume: "Pull the timer to resume.",
     pullPause: "Pull the timer to pause.",
-    cutChooseAnother: "Cut the rope to choose another.",
+    backToSelection: "Back to selection screen",
+    backToSelectionTooltip: "This quest stays open.",
     cutStop: "Cut the rope to stop.",
-    ropesLeftPrefix: "You have",
-    ropeCount_one: "{{count}} rope",
-    ropeCount_other: "{{count}} ropes",
-    ropesLeftSuffix: "left.",
   },
   profile: {
     title: "Your profile",
@@ -105,8 +101,11 @@ export const englishUi = {
     redRopes: "Red ropes",
     redRopesAvailable_one: "{{count}} red rope available",
     redRopesAvailable_other: "{{count}} red ropes available",
-    buyRopes: "Buy {{count}} more",
-    buyRopesLabel:
+    buyRopes_one: "Buy {{count}} red rope",
+    buyRopes_other: "Buy {{count}} red ropes",
+    buyRopesLabel_one:
+      "Buy {{count}} red rope for {{points}} points. {{available}} points available.",
+    buyRopesLabel_other:
       "Buy {{count}} red ropes for {{points}} points. {{available}} points available.",
     completedQuests: "Completed quests",
     timePlayed: "Time played",
@@ -237,7 +236,6 @@ export const germanUi = {
     resume: "Quest-Timer fortsetzen",
     pause: "Quest-Timer pausieren",
     unavailable: "Quest-Timer nicht verfügbar",
-    ready: "Bereit",
     paused: "Pausiert",
     gameTitleLabel: "Spieltitel",
     addGameTitle: "Spieltitel hinzufügen",
@@ -249,12 +247,9 @@ export const germanUi = {
     pullStart: "Ziehe den Timer, um zu starten.",
     pullResume: "Ziehe den Timer, um fortzufahren.",
     pullPause: "Ziehe den Timer, um zu pausieren.",
-    cutChooseAnother: "Durchtrenne das Seil für eine andere Quest.",
+    backToSelection: "Zurück zur Auswahl",
+    backToSelectionTooltip: "Die Quest bleibt offen.",
     cutStop: "Durchtrenne das Seil zum Stoppen.",
-    ropesLeftPrefix: "Du hast",
-    ropeCount_one: "{{count}} Seil",
-    ropeCount_other: "{{count}} Seile",
-    ropesLeftSuffix: "übrig.",
   },
   profile: {
     title: "Dein Profil",
@@ -264,8 +259,11 @@ export const germanUi = {
     redRopes: "Rote Seile",
     redRopesAvailable_one: "{{count}} rotes Seil verfügbar",
     redRopesAvailable_other: "{{count}} rote Seile verfügbar",
-    buyRopes: "{{count}} weitere kaufen",
-    buyRopesLabel:
+    buyRopes_one: "{{count}} Seil kaufen",
+    buyRopes_other: "{{count}} Seile kaufen",
+    buyRopesLabel_one:
+      "{{count}} rotes Seil für {{points}} Punkte kaufen. {{available}} Punkte verfügbar.",
+    buyRopesLabel_other:
       "{{count}} rote Seile für {{points}} Punkte kaufen. {{available}} Punkte verfügbar.",
     completedQuests: "Abgeschlossene Quests",
     timePlayed: "Spielzeit",
@@ -315,50 +313,54 @@ export const germanUi = {
 } as const satisfies TranslationShape<typeof englishUi>;
 
 export const germanMoods = {
-  relax: { title: "Entspannung", subtitle: "Vertrautes, ruhiges Spielen" },
+  relax: {
+    title: "Entspannung",
+    subtitle: "Ich möchte bei etwas Vertrautem abschalten und zur Ruhe kommen",
+  },
   explore: {
     title: "Entdeckung",
-    subtitle: "Eine neue Welt oder Spielweise",
+    subtitle: "Ich möchte ein Spiel entdecken, das mich noch überraschen kann",
   },
   progress: {
     title: "Fortschritt",
-    subtitle: "Ein offenes Spiel voranbringen",
+    subtitle: "Ich möchte endlich ein liegen gelassenes Spiel voranbringen",
   },
   create: {
     title: "Kreativität",
-    subtitle: "Bauen, anpassen oder komponieren",
+    subtitle: "Ich möchte etwas Eigenes erschaffen, das sich nach mir anfühlt",
   },
   challenge: {
     title: "Herausforderung",
-    subtitle: "Eine Fähigkeit auf die Probe stellen",
+    subtitle: "Ich möchte Widerstand spüren und sehen, was ich schaffen kann",
   },
   connect: {
     title: "Gemeinschaft",
-    subtitle: "Mit oder neben anderen spielen",
+    subtitle: "Ich möchte mich beim Spielen anderen Menschen verbunden fühlen",
   },
   nostalgic: {
     title: "Nostalgie",
-    subtitle: "Zu einem alten Lieblingsspiel zurückkehren",
+    subtitle:
+      "Ich möchte zu einem Spiel mit einer guten Erinnerung zurückkehren",
   },
   overwhelmed: {
     title: "Überforderung",
-    subtitle: "Eine Regel trifft die Entscheidung",
+    subtitle: "Ich möchte spielen, kann aber gerade keine Auswahl vertragen",
   },
   restless: {
     title: "Unruhe",
-    subtitle: "Die Energie in Bewegung bringen",
+    subtitle: "Ich habe zu viel Energie und muss sie in Bewegung bringen",
   },
   focused: {
     title: "Fokus",
-    subtitle: "Bei einem klaren Ziel bleiben",
+    subtitle: "Ich möchte ganz in ein klares Ziel eintauchen",
   },
   curious: {
     title: "Neugier",
-    subtitle: "Eine unbekannte Idee ausprobieren",
+    subtitle: "Ich möchte etwas Unbekanntes ausprobieren und verstehen",
   },
   "low-energy": {
     title: "Wenig Energie",
-    subtitle: "Einfach anzufangen, einfach aufzuhören",
+    subtitle: "Ich möchte ohne viel Aufmerksamkeit oder Anstrengung spielen",
   },
 } as const satisfies Record<string, Omit<MoodDefinition, "id">>;
 

@@ -34,8 +34,8 @@ const NAV_ITEM_TRANSITION = {
 };
 
 const SELECTION_LAYER_EXIT_DURATION = 0.42;
-const SELECTION_RESET_FADE_OUT_DURATION = 0.26;
-const SELECTION_RESET_FADE_IN_DURATION = 0.32;
+const SELECTION_RESET_FADE_OUT_DURATION = 0.46;
+const SELECTION_RESET_FADE_IN_DURATION = 0.4;
 
 type SelectionLayerProps = {
   children: ReactNode | ((present: boolean) => ReactNode);
@@ -113,6 +113,7 @@ type Props = {
   onSelectMood: (moodId: MoodId) => boolean;
   onEditMood: () => void;
   onRevealQuest: (questId: string) => void;
+  onReturnToSelection: () => boolean;
   onShuffle: () => boolean;
   onDiscard: () => boolean;
   onStart: (startedAt: number) => void;
@@ -135,6 +136,7 @@ export function TaskScreen({
   onSelectMood,
   onEditMood,
   onRevealQuest,
+  onReturnToSelection,
   onShuffle,
   onDiscard,
   onStart,
@@ -150,11 +152,15 @@ export function TaskScreen({
   const lastActiveSessionIdRef = useRef(
     currentSession?.sessionId ?? "initial",
   );
+  const lastActiveQuestIdRef = useRef(currentQuest?.id);
   const layoutSessionIdRef = useRef(
     currentSession ? `active-${currentSession.sessionId}` : "initial",
   );
   if (currentSession?.sessionId) {
     lastActiveSessionIdRef.current = currentSession.sessionId;
+  }
+  if (currentQuest?.id) {
+    lastActiveQuestIdRef.current = currentQuest.id;
   }
   if (returnedFromActive) {
     layoutSessionIdRef.current =
@@ -278,7 +284,10 @@ export function TaskScreen({
               key={`active-${currentSession.sessionId}`}
               initial={reduceMotion ? false : { opacity: 1 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={{
+                opacity: reduceMotion ? 0.999 : 0,
+                pointerEvents: "none",
+              }}
               transition={{
                 duration: reduceMotion ? 0 : 0.26,
                 ease: [0.42, 0, 1, 1],
@@ -292,6 +301,7 @@ export function TaskScreen({
                 debugMode={debugMode}
                 reduceMotion={reduceMotion}
                 onDiscard={onDiscard}
+                onReturnToSelection={onReturnToSelection}
                 onStart={onStart}
                 onPause={onPause}
                 onResume={onResume}
@@ -428,14 +438,13 @@ export function TaskScreen({
                         items={offeredQuests}
                         entryMotion={questEntryMotion}
                         layoutSessionId={layoutSessionIdRef.current}
-                        moodTransition={
-                          editingMood
-                            ? null
-                            : {
-                                layoutSessionId: selectionLayoutSessionId,
-                              }
-                        }
                         reduceMotion={reduceMotion}
+                        returningQuestId={
+                          returnedFromActive
+                            ? lastActiveQuestIdRef.current
+                            : undefined
+                        }
+                        returningToMoods={editingMood}
                         onSelectionStart={() =>
                           setQuestSelectionClosing(true)
                         }
@@ -470,6 +479,7 @@ export function TaskScreen({
                           layerPresent={present}
                           layoutSessionId={selectionLayoutSessionId}
                           reduceMotion={reduceMotion}
+                          returningFromQuests={editingMood}
                           onSelect={selectMood}
                         />
                       </>

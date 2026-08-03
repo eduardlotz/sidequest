@@ -4,8 +4,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "single-campaign-thread",
     title: "Follow One Story Thread",
-    objective: "A campaign with one active main or character quest.",
-    completion: "Finish its next chapter, mission, or named step.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -14,8 +12,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "deep-puzzle",
     title: "Stay With One Hard Puzzle",
-    objective: "A puzzle or exploration game with one unresolved problem.",
-    completion: "Solve it or leave one concrete new theory before stopping.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -24,8 +20,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "boss-study",
     title: "Study One Boss",
-    objective: "An action, RPG, or platform game with a nearby hard boss.",
-    completion: "Clear it or identify and answer three attack patterns.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 250,
@@ -34,8 +28,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "build-one-function",
     title: "Build One Working System",
-    objective: "A factory, engineering, sandbox, or automation game.",
-    completion: "Finish one input-to-output system and run one stable cycle.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -44,8 +36,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "achievement-line",
     title: "Follow One Achievement",
-    objective: "A game with one nearby achievement requiring several clear steps.",
-    completion: "Unlock it or finish every currently reachable step.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 250,
@@ -54,8 +44,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "chapter-with-notes",
     title: "Read One Story Chapter",
-    objective: "A visual novel, RPG, adventure, or narrative game.",
-    completion: "Finish one full chapter without skipping dialogue.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 240,
@@ -64,8 +52,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "one-deck-session",
     title: "Keep One Deck Unchanged",
-    objective: "A card game or deckbuilder with a ready deck.",
-    completion: "Finish three matches or one run without editing it.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 240,
@@ -74,8 +60,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "one-character-session",
     title: "Stay With One Character",
-    objective: "A fighting, hero, RPG, or roster game with character choice.",
-    completion: "Finish three rounds or one mission without switching.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 240,
@@ -84,8 +68,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "collectible-set",
     title: "Complete One Collectible Set",
-    objective: "A game with one small named set already partly found.",
-    completion: "Find every remaining item in that set.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -94,8 +76,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "route-mastery",
     title: "Learn One Route",
-    objective: "A racing, platform, stealth, or speed game with repeatable routes.",
-    completion: "Run the same route three times and improve one section.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 230,
@@ -104,8 +84,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "skill-lab",
     title: "Practice One Move",
-    objective: "A game with a mechanic you can isolate in training or safe play.",
-    completion: "Perform it correctly ten times, then use it once in context.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 230,
@@ -114,8 +92,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "one-city-block",
     title: "Finish One City Block",
-    objective: "A city, colony, park, or settlement builder.",
-    completion: "Complete one bounded block without expanding past its edge.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 250,
@@ -124,8 +100,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "questline-only",
     title: "Follow One Named Questline",
-    objective: "An RPG or adventure with a named character or faction questline.",
-    completion: "Finish its next two steps without taking unrelated quests.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -134,8 +108,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "ranked-set",
     title: "Play a Deliberate Competitive Set",
-    objective: "A fighting, shooter, card, sports, or strategy game.",
-    completion: "Finish three results while tracking one learning goal.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 250,
@@ -144,8 +116,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "craft-one-object",
     title: "Craft One Complete Object",
-    objective: "A survival, crafting, RPG, cooking, or engineering game.",
-    completion: "Gather every part, craft the item, and use it once.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 240,
@@ -154,8 +124,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "photo-one-subject",
     title: "Photograph One Subject",
-    objective: "A game with photo mode and one strong visual subject.",
-    completion: "Capture five views and keep one final image.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -164,8 +132,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "strategy-one-plan",
     title: "Commit to One Strategy",
-    objective: "A tactics, card, sports, or strategy game with complete matches.",
-    completion: "Declare one plan and follow it through one full result.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 250,
@@ -174,8 +140,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "language-immersion",
     title: "Listen for Every Clue",
-    objective: "A dialogue, mystery, deduction, or narrative game.",
-    completion: "Finish one case or chapter without skipping spoken or written clues.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -184,8 +148,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "save-rescue",
     title: "Understand One Abandoned Save",
-    objective: "A complex RPG, strategy, or simulation save you forgot.",
-    completion: "Identify your state, finish one task, and save with a next step.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -194,8 +156,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "economy-balance",
     title: "Stabilize One Economy",
-    objective: "A city, colony, factory, or management game with resource flow.",
-    completion: "Run one full cycle with every critical resource nonnegative.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 250,
@@ -204,8 +164,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "one-dungeon",
     title: "Finish One Dungeon",
-    objective: "An RPG, roguelike, action, or tactics game with bounded expeditions.",
-    completion: "Enter one dungeon and reach its exit or boss result.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 250,
@@ -214,8 +172,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "single-soundscape",
     title: "Listen Through One Location",
-    objective: "A horror, exploration, stealth, or atmospheric game.",
-    completion: "Cross one location while following environmental sound.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -224,8 +180,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "one-conversation-tree",
     title: "Study One Character",
-    objective: "A lore-rich RPG or narrative game with character records.",
-    completion: "Read their current entries, then finish one conversation with them.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -234,8 +188,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "precision-score",
     title: "Improve One Number",
-    objective: "A game measuring score, time, accuracy, combo, rank, or efficiency.",
-    completion: "Make three attempts and improve only that number.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -244,8 +196,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "map-pocket",
     title: "Learn One Small Region",
-    objective: "An open-world or exploration game with a bounded unfamiliar area.",
-    completion: "Find its entrances, one landmark, and one safe exit.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 240,
@@ -254,8 +204,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "system-experiment",
     title: "Change One Variable",
-    objective: "A simulation, strategy, sandbox, or build game with visible systems.",
-    completion: "Change one input and observe the result through a full cycle.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 240,
@@ -264,8 +212,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "one-room-makeover",
     title: "Complete One Room",
-    objective: "A building, decorating, life-simulation, or renovation game.",
-    completion: "Finish one room without starting another space.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -274,8 +220,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "credits-push",
     title: "Reach the Closing Screen",
-    objective: "A campaign already within one hour of its ending.",
-    completion: "Reach the credits or final result screen.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 250,
@@ -284,8 +228,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "manual-mastery",
     title: "Read Then Use One System",
-    objective: "A strategy, simulation, fighting, or RPG system explained in-game.",
-    completion: "Read its tutorial and use it successfully once.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 230,
@@ -294,8 +236,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "focus-cooldown",
     title: "Close the Session Properly",
-    objective: "A campaign, builder, or strategy save with one named task.",
-    completion: "Finish that task, save safely, and write the next action.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -303,9 +243,7 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   },
   {
     id: "focused-grand-strategy-turn",
-    title: "Plan One Grand-Strategy Turn",
-    objective: "A grand-strategy or 4X game with a complex current position.",
-    completion: "Resolve one turn around a single diplomatic or economic goal.",
+    title: "Commit to One Strategy Turn",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 240,
@@ -314,8 +252,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "focused-factory-bottleneck",
     title: "Fix One Factory Bottleneck",
-    objective: "An automation or production game with one stalled resource line.",
-    completion: "Make that line run continuously for one full cycle.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 230,
@@ -324,8 +260,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "focused-flight-procedure",
     title: "Complete One Flight Procedure",
-    objective: "A flight, train, truck, ship, or machine simulator.",
-    completion: "Perform one full departure, route, and safe arrival.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 240,
@@ -334,8 +268,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "focused-detective-case",
     title: "Close One Detective Case",
-    objective: "A detective, deduction, mystery, or investigation game.",
-    completion: "Resolve one case or submit one complete accusation.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 240,
@@ -344,8 +276,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "focused-rhythm-set",
     title: "Finish One Rhythm Set",
-    objective: "A rhythm or music game with grouped songs or a campaign set.",
-    completion: "Finish the full set at one unchanged difficulty.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -354,8 +284,6 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
   {
     id: "focused-speedrun-segment",
     title: "Learn One Speedrun Segment",
-    objective: "A familiar platformer or action game with a short repeatable route.",
-    completion: "Practice one segment until three runs finish without a route mistake.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 230,

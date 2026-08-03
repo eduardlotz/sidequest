@@ -4,8 +4,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "bed-friendly",
     title: "Play From Where You Are",
-    objective: "A game comfortable with your current screen, controller, and position.",
-    completion: "Finish one short activity without changing your setup.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 150,
@@ -14,8 +12,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "turns-wait",
     title: "Let Every Turn Wait",
-    objective: "A turn-based tactics, card, board, puzzle, or RPG game.",
-    completion: "Finish one encounter, match, or puzzle; otherwise, stop after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -24,8 +20,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "story-mode",
     title: "Let the Story Work",
-    objective: "A narrative game with low execution pressure or a story mode.",
-    completion: "Reach one complete scene, conversation, or chapter break.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 170,
@@ -34,8 +28,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "auto-support",
     title: "Use the Assists",
-    objective: "A game with automation, assists, auto-battle, or simplified controls.",
-    completion: "Finish one activity with one helpful option enabled.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 160,
@@ -44,8 +36,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "one-hand-loop",
     title: "Play a Minimal-Input Game",
-    objective: "A game comfortably controlled with one hand or a few inputs.",
-    completion: "Finish one round, stage, or day; otherwise, stop after the minimum.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 150,
@@ -54,8 +44,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "visual-novel-scene",
     title: "Read One Visual-Novel Scene",
-    objective: "A visual novel, interactive story, or dialogue-heavy adventure.",
-    completion: "Finish one scene without skipping text or voices.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 170,
@@ -64,8 +52,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "easy-puzzle",
     title: "Solve One Unhurried Puzzle",
-    objective: "A puzzle game with no clock, enemies, or execution pressure.",
-    completion: "Solve one complete puzzle or board.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 170,
@@ -74,8 +60,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "gentle-management",
     title: "Tend One Small System",
-    objective: "A farming, life, park, shop, or management game.",
-    completion: "Finish one calm routine without expanding the operation.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 170,
@@ -84,8 +68,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "walking-only",
     title: "Walk the Whole Session",
-    objective: "An exploration or open-world game with safe unhurried travel.",
-    completion: "Walk between two landmarks without sprinting or fast travel.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -94,8 +76,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "familiar-save",
     title: "Open the Save That Knows You",
-    objective: "Your most comfortable current save and character.",
-    completion: "Finish one familiar task and save somewhere calm.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 170,
@@ -104,8 +84,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "photo-stroll",
     title: "Take One Quiet Photograph",
-    objective: "A game where walking and looking can be the whole activity.",
-    completion: "Find one pleasing view and keep one screenshot.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 160,
@@ -114,8 +92,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "music-and-menu",
     title: "Stay for the Soundtrack",
-    objective: "A familiar game whose music can carry a short session.",
-    completion: "Finish one activity while listening from beginning to end.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 160,
@@ -124,8 +100,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "no-failure-mode",
     title: "Play With Nothing to Lose",
-    objective: "A creative, exploration, practice, or casual mode with low failure cost.",
-    completion: "Finish one activity without retrying for a better result.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 150,
@@ -134,8 +108,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "one-day-sim",
     title: "Play One In-Game Day",
-    objective: "A farming, life, shop, or social simulation with daily cycles.",
-    completion: "Finish exactly one in-game day and save at bedtime.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 170,
@@ -144,8 +116,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "short-episode",
     title: "Finish One Story Episode",
-    objective: "A game divided into short episodes, cases, chapters, or scenes.",
-    completion: "Finish exactly one complete story unit.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 200,
@@ -154,8 +124,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "cozy-craft",
     title: "Make One Useful Thing",
-    objective: "A crafting, cooking, farming, or decorating game with simple recipes.",
-    completion: "Gather nearby materials, make one item, and use or place it.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 160,
@@ -164,8 +132,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "home-base-only",
     title: "Do One Menu-Only Task",
-    objective: "An RPG or strategy save with a clear roster, upgrade, or codex task.",
-    completion: "Finish that task without entering a mission.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 170,
@@ -174,8 +140,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "ambient-company",
     title: "Let a World Keep You Company",
-    objective: "A calm simulation, idle, driving, or open-world game.",
-    completion: "Finish one gentle activity while letting the world run around you.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 160,
@@ -184,8 +148,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "one-conversation",
     title: "Talk to One Person",
-    objective: "A narrative, role-playing, or life-simulation game with familiar characters.",
-    completion: "Stay with one character until their current conversation closes.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 160,
@@ -194,8 +156,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "slow-vehicle",
     title: "Let a Vehicle Carry You",
-    objective: "A truck, train, ship, flight, or relaxed driving game.",
-    completion: "Finish one route without speeding, racing, or fast travel.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 170,
@@ -204,8 +164,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "known-puzzle-type",
     title: "Use a Familiar Puzzle Language",
-    objective: "A puzzle game whose rules you already understand.",
-    completion: "Solve one board, room, grid, or short set.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 160,
@@ -214,8 +172,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "supportive-role",
     title: "Help Without Leading",
-    objective: "A co-op or multiplayer game with a clear support role.",
-    completion: "Finish one result as healer, builder, transporter, or defender.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 190,
@@ -224,8 +180,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "collect-nearby",
     title: "Collect Only What Is Close",
-    objective: "An active save with a few collectibles around your current location.",
-    completion: "Collect three nearby items without crossing into another region.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 160,
@@ -234,8 +188,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "default-everything",
     title: "Keep Every Current Setting",
-    objective: "A familiar game already configured and ready.",
-    completion: "Finish the nearest activity without changing settings, gear, or character.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 160,
@@ -244,8 +196,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "replay-favorite-level",
     title: "Replay an Easy Level",
-    objective: "A familiar level or stage whose shape you remember.",
-    completion: "Finish it once without chasing secrets or a better score.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 160,
@@ -254,8 +204,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "gentle-weather",
     title: "Sit Somewhere Scenic",
-    objective: "A familiar world with a safe overlook, shore, garden, or camp.",
-    completion: "Reach it and stay through one full music or weather change.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 170,
@@ -264,8 +212,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "watch-systems",
     title: "Watch One System Run",
-    objective: "An automation, simulation, colony, or management game.",
-    completion: "Observe one complete cycle and make only one adjustment.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 170,
@@ -274,8 +220,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "old-tutorial-area",
     title: "Return to a Safe Opening Area",
-    objective: "A familiar game whose tutorial zone or first town feels safe.",
-    completion: "Finish one nearby activity without leaving that area.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 150,
@@ -284,8 +228,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "low-reading",
     title: "Follow Shapes Instead of Text",
-    objective: "A platformer, rhythm, puzzle, or exploration game with little reading.",
-    completion: "Finish one level or scene using visual and movement cues.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 160,
@@ -294,8 +236,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "energy-honest-exit",
     title: "Let Enough Be the Finish",
-    objective: "Any familiar game with a nearby safe stopping point.",
-    completion: "Play until that point, save, and stop without extending the goal.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 170,
@@ -304,8 +244,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "low-energy-idle-check-in",
     title: "Check In on an Idle Game",
-    objective: "An idle, incremental, aquarium, garden, or background simulation.",
-    completion: "Collect progress, make one upgrade, and leave it running or saved.",
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 15,
     rewardPoints: 150,
@@ -314,8 +252,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "low-energy-hidden-object",
     title: "Clear One Hidden-Object Scene",
-    objective: "A hidden-object, spot-the-difference, or quiet observation game.",
-    completion: "Find every required object in one scene.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 160,
@@ -324,8 +260,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "low-energy-solitaire",
     title: "Play One Solitaire Hand",
-    objective: "A solitaire, mahjong, tile, card, or digital tabletop game.",
-    completion: "Finish one hand, board, or match regardless of result.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 160,
@@ -334,8 +268,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "low-energy-auto-battler",
     title: "Watch One Auto-Battle Resolve",
-    objective: "An auto-battler, tactics, management, or team-building game.",
-    completion: "Set one lineup, then finish a round without changing it mid-fight.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 170,
@@ -344,8 +276,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "low-energy-walking-story",
     title: "Finish a Walking-Story Chapter",
-    objective: "A walking simulator or narrative exploration game with little danger.",
-    completion: "Reach the next chapter, location change, or closing scene.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 190,
@@ -354,8 +284,6 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
   {
     id: "low-energy-jrpg-turns",
     title: "Finish One Turn-Based Encounter",
-    objective: "A turn-based JRPG or RPG save with a nearby encounter.",
-    completion: "Finish one battle and save at the next safe point.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,

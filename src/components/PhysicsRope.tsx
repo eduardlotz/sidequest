@@ -41,20 +41,20 @@ export type RopeRelease = {
 };
 
 type Props = {
-  cutAvailable: boolean;
   cut: RopeCut | null;
   dragVelocityRef: MutableRefObject<RopePoint>;
   draggingRef: MutableRefObject<boolean>;
   isMobileViewport: boolean;
   mode: RopeMode;
   onTimerMove: (pose: TimerPose) => void;
+  red: boolean;
   reduceMotion: boolean;
   releaseRef: MutableRefObject<RopeRelease | null>;
   screenPointsRef: MutableRefObject<RopePoint[]>;
   targetRef: MutableRefObject<RopePoint>;
 };
 
-type SimulationProps = Omit<Props, "cutAvailable"> & {
+type SimulationProps = Omit<Props, "red"> & {
   initialOffset: RopePoint;
   lowerPathRef: RefObject<SVGPathElement | null>;
   upperPathRef: RefObject<SVGPathElement | null>;
@@ -71,13 +71,13 @@ export const READY_TIMER_TOP_RATIO = 0.17;
 export const RESUME_PULLBACK_TIMER_TOP_RATIO = 0.11;
 
 export function PhysicsRope({
-  cutAvailable,
   cut,
   dragVelocityRef,
   draggingRef,
   isMobileViewport,
   mode,
   onTimerMove,
+  red,
   reduceMotion,
   releaseRef,
   screenPointsRef,
@@ -95,7 +95,7 @@ export function PhysicsRope({
   return (
     <div
       className={styles.ropeCanvas}
-      data-cut-available={cutAvailable ? "true" : "false"}
+      data-rope-red={red ? "true" : "false"}
       aria-hidden="true"
     >
       <Canvas

@@ -4,8 +4,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-new-build-old-parts",
     title: "Build From Scratch",
-    objective: "A sandbox or building game with an empty plot or fresh save.",
-    completion: "Finish one usable room, machine, vehicle, or small structure.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -14,8 +12,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-function-first",
     title: "Customize One Character",
-    objective: "A game with a character, outfit, vehicle, weapon, or room editor.",
-    completion: "Finish one look built around a single clear theme.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -24,8 +20,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-rule-of-three",
     title: "Build One Working Machine",
-    objective: "An automation, engineering, factory, or redstone-style game.",
-    completion: "Make one machine that turns an input into a useful output.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 250,
@@ -34,8 +28,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-strategy-remix",
     title: "Invent a New Build",
-    objective: "An RPG, deckbuilder, tactics game, or shooter with loadouts.",
-    completion: "Finish one activity with a build you have never used.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -44,8 +36,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-make-a-landmark",
     title: "Design a Playable Level",
-    objective: "A game with a level, track, park, dungeon, or scenario editor.",
-    completion: "Build and test one short route from start to finish.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 250,
@@ -54,8 +44,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-before-and-after",
     title: "Take a Photo Walk",
-    objective: "The game world you most want to photograph today.",
-    completion: "Capture three distinct images and keep the strongest one.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -64,8 +52,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-tell-a-room-sized-story",
     title: "Tell a Story in One Room",
-    objective: "A building, decorating, or life-simulation game.",
-    completion: "Use seven objects or fewer to show one resident's routine.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 220,
@@ -74,8 +60,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-make-the-useful-prototype",
     title: "Prototype One Useful Thing",
-    objective: "A sandbox, engineering, factory, or vehicle-building game.",
-    completion: "Make the roughest version that performs one named job.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 190,
@@ -84,8 +68,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-build-around-the-flaw",
     title: "Build Around the Obstacle",
-    objective: "A builder with any occupied, uneven, or constrained space.",
-    completion: "Make that awkward feature the center of one finished design.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 230,
@@ -94,8 +76,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-design-one-livable-block",
     title: "Build One Livable Block",
-    objective: "A city, colony, settlement, or neighborhood builder.",
-    completion: "Connect one home, one service, and one path inside a compact block.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 230,
@@ -104,8 +84,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-shape-a-seasonal-garden",
     title: "Plant a Seasonal Garden",
-    objective: "A farming, landscaping, decorating, or life-simulation game.",
-    completion: "Finish one small garden inspired by today's season or weather.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 200,
@@ -114,8 +92,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-dress-for-an-npc",
     title: "Dress Like an NPC",
-    objective: "A game with clothing, armor, vehicle, or character customization.",
-    completion: "Build one look inspired by a minor character or faction.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 190,
@@ -124,8 +100,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-take-an-honest-portrait",
     title: "Take an Off-Duty Portrait",
-    objective: "A game with photo mode and a character worth observing.",
-    completion: "Capture them during one quiet, ordinary, or unguarded moment.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 170,
@@ -134,8 +108,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-chase-one-kind-of-light",
     title: "Photograph One Kind of Light",
-    objective: "An open world with strong sunlight, neon, fog, or shadows.",
-    completion: "Keep one image where that light defines the scene.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 170,
@@ -144,8 +116,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-stage-a-three-frame-story",
     title: "Tell a Three-Frame Story",
-    objective: "A game with photo mode, replays, poses, or staged scenes.",
-    completion: "Capture a beginning, change, and ending in three images.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 190,
@@ -154,8 +124,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-curate-the-odd-shelf",
     title: "Curate an Odd Collection",
-    objective: "A game with display cases, shelves, museums, or housing.",
-    completion: "Arrange five overlooked objects around one shared idea.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 190,
@@ -164,8 +132,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-build-a-creatures-home",
     title: "Build a Creature Habitat",
-    objective: "A zoo, park, survival, colony, or building game.",
-    completion: "Finish one habitat designed around a single creature's needs.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 220,
@@ -174,8 +140,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-embrace-one-sided-balance",
     title: "Design With Asymmetry",
-    objective: "A builder, decorator, character creator, or photo mode.",
-    completion: "Finish one composition whose two sides are deliberately unequal.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 200,
@@ -184,8 +148,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-run-a-kind-economy",
     title: "Build a Kinder Economy",
-    objective: "A city, colony, factory, park, or management game.",
-    completion: "Finish one cycle with no urgent warning and one spare resource.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 230,
@@ -194,8 +156,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-invent-a-team-identity",
     title: "Give a Team One Identity",
-    objective: "A sports, tactics, party, or squad-building game.",
-    completion: "Build around one verb and finish one match or mission.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 220,
@@ -204,8 +164,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-roleplay-a-local",
     title: "Role-Play an Ordinary Day",
-    objective: "An RPG, life sim, or open world with everyday spaces.",
-    completion: "Visit work, rest somewhere, and return home without formal quests.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 200,
@@ -214,8 +172,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-solve-it-sideways",
     title: "Solve It Sideways",
-    objective: "A systemic puzzle, stealth, tactics, or action game.",
-    completion: "Clear one objective using a tool you normally ignore.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 210,
@@ -224,8 +180,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-draw-with-a-route",
     title: "Draw With Your Route",
-    objective: "A driving, flying, skating, walking, or map-based game.",
-    completion: "Travel one continuous loop, spiral, wave, or letter.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 190,
@@ -234,8 +188,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-compose-a-place-theme",
     title: "Compose a Place Theme",
-    objective: "A music maker, rhythm sandbox, or game with editable instruments.",
-    completion: "Make a short sound or loop for one specific place.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -244,8 +196,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-sculpt-for-one-view",
     title: "Build for One View",
-    objective: "A terrain, city, park, or world-building game.",
-    completion: "Shape one scene to look complete from a chosen viewpoint.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 220,
@@ -254,8 +204,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-repair-with-a-new-idea",
     title: "Repair an Old Creation",
-    objective: "A sandbox or builder containing something you made before.",
-    completion: "Rebuild its weakest part around one new idea.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 220,
@@ -264,8 +212,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-stage-a-silent-scene",
     title: "Stage a Silent Scene",
-    objective: "A game with posing, decorating, replays, or photo mode.",
-    completion: "Arrange one moment whose action is clear without dialogue.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -274,8 +220,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-design-for-the-smallest-user",
     title: "Build for the Slowest Traveler",
-    objective: "A city, park, transport, or base-building game with paths.",
-    completion: "Connect two services using the safest or flattest route available.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 220,
@@ -284,8 +228,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-invent-a-personal-ritual",
     title: "Invent a Game Ritual",
-    objective: "A familiar game with a world you already understand.",
-    completion: "Create and perform one repeatable three-step ceremony.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 190,
@@ -294,8 +236,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-leave-a-kind-trace",
     title: "Leave One Place Better",
-    objective: "A shared world, survival game, builder, or open world.",
-    completion: "Add one useful shelter, path, light, repair, or supply.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 210,
@@ -304,8 +244,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-boss-arena",
     title: "Design a Boss Arena",
-    objective: "A level editor, sandbox, wrestling game, or encounter builder.",
-    completion: "Build and test one arena with a clear hazard and safe route.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 240,
@@ -314,8 +252,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-themed-deck",
     title: "Build a Themed Deck",
-    objective: "A card game or deckbuilder with flexible construction.",
-    completion: "Build around one theme and finish one match or run.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -324,8 +260,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-accessible-route",
     title: "Build an Accessible Route",
-    objective: "A city, park, transit, factory, or base-building game.",
-    completion: "Connect two key places without stairs, hazards, or bottlenecks.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 230,
@@ -334,8 +268,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-racing-livery",
     title: "Design a Racing Livery",
-    objective: "A racing or vehicle game with paint and decal tools.",
-    completion: "Finish one two-color livery and race it once.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -344,8 +276,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-factory-blueprint",
     title: "Make a Reusable Blueprint",
-    objective: "An automation, factory, colony, or engineering game.",
-    completion: "Build one compact module you can copy elsewhere.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 230,
@@ -354,8 +284,6 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
   {
     id: "create-character-backstory",
     title: "Create a Character Backstory",
-    objective: "An RPG, life sim, sports game, or character creator.",
-    completion: "Choose three visible details and play one scene that supports them.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,

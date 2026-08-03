@@ -4,8 +4,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "first-game-memory",
     title: "Replay Your First Game Memory",
-    objective: "The game tied to your earliest clear memory of playing.",
-    completion: "Reach the place or activity you remember and finish it once.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -14,8 +12,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "menu-music-door",
     title: "Follow the Menu Music",
-    objective: "A game whose menu theme you can still hear from memory.",
-    completion: "Stay through the menu theme, then finish one activity.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -24,8 +20,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "old-console-era",
     title: "Play an Earlier Console Era",
-    objective: "A game from hardware you used before your current system.",
-    completion: "Finish one retro level, match, or stage; otherwise, stop after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -34,8 +28,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "series-beginning",
     title: "Return to Chapter One",
-    objective: "The first entry in a series you followed for years.",
-    completion: "Reach its first major save point or chapter ending.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -44,8 +36,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "forgotten-save",
     title: "Open a Time-Capsule Save",
-    objective: "An old save whose character, date, or place feels personal.",
-    completion: "Inspect what you left, then make one change and save again.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -54,8 +44,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "childhood-coop-solo",
     title: "Revisit the Second-Controller Game",
-    objective: "A game you once shared locally with someone else.",
-    completion: "Finish one familiar stage or match alone or with a bot.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -64,8 +52,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "first-hard-win",
     title: "Replay an Old Triumph",
-    objective: "A challenge, boss, race, or level you were proud to beat.",
-    completion: "Clear it again or finish three full attempts.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -74,8 +60,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "rental-weekend",
     title: "Revisit a Borrowed Game",
-    objective: "A game you once rented, borrowed, or played at someone else's home.",
-    completion: "Finish the first activity you remember from it.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -84,8 +68,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "demo-memory",
     title: "Replay a Memorable Opening",
-    objective: "A game whose demo or first level once carried its whole promise.",
-    completion: "Finish that opening section from start to end.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -94,8 +76,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "old-avatar",
     title: "Visit an Old Character",
-    objective: "A role-playing, life-sim, or online character you made years ago.",
-    completion: "Equip nothing new; finish one activity as they are.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -104,8 +84,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "lost-mode",
     title: "Play a Lost Mode's Successor",
-    objective: "A current game or sequel with a mode similar to one you miss.",
-    completion: "Finish one full match, round, or scenario in its version.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -114,8 +92,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "remembered-map",
     title: "Navigate the Remembered Map",
-    objective: "A map, hub, or track you once knew without directions.",
-    completion: "Reach three remembered landmarks without opening the map.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -124,8 +100,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "credits-memory",
     title: "Revisit a Memorable Ending",
-    objective: "A game ending that still carries emotional weight.",
-    completion: "Replay its final chapter or nearest available closing scene.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 250,
@@ -134,8 +108,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "licensed-childhood",
     title: "Play a Saturday-Morning Game",
-    objective: "A game tied to a film, show, toy, comic, or character.",
-    completion: "Finish one level or mission that feels like its source.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -144,8 +116,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "handheld-evening",
     title: "Return to a Handheld Favorite",
-    objective: "A game you first played on a portable system.",
-    completion: "Finish one compact stage, race, match, or in-game day.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -154,8 +124,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "seasonal-memory",
     title: "Revisit a Seasonal Game",
-    objective: "A game strongly tied to summer, winter, holidays, or one season.",
-    completion: "Reach the remembered atmosphere and finish one activity there.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -164,8 +132,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "family-game",
     title: "Replay the Family-Room Game",
-    objective: "A party, sports, racing, puzzle, or board game your family shared.",
-    completion: "Finish one match, round, cup, or board.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -174,8 +140,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "old-friend-pick",
     title: "Play a Friend's Favorite",
-    objective: "Choose the game that best reflects a friend's taste.",
-    completion: "Finish one activity that friend would likely have chosen.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -184,8 +148,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "retired-strategy",
     title: "Reuse Your Old Strategy",
-    objective: "A strategy, card, sports, or competitive game you once knew well.",
-    completion: "Use your former opening through one complete result.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -194,8 +156,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "classic-roster",
     title: "Use a Remembered Roster",
-    objective: "A sports game with a team or athlete from a memorable season.",
-    completion: "Finish one full match or event with that roster.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -204,8 +164,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "old-racing-line",
     title: "Cruise the Track You Remember",
-    objective: "A racing game with a course your hands once knew.",
-    completion: "Finish one race using the line you remember, without chasing time.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -214,8 +172,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "first-rpg-town",
     title: "Visit Your First RPG Town",
-    objective: "An early role-playing hub that once felt like home.",
-    completion: "Walk its main route and speak to three residents.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -224,8 +180,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "old-horror-courage",
     title: "Return to an Old Scare",
-    objective: "A horror game you once avoided, paused, or endured.",
-    completion: "Reach the next safe room; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -234,8 +188,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "dated-save-name",
     title: "Follow the Oldest Timestamp",
-    objective: "The oldest readable save date in a game you can still launch.",
-    completion: "Open that save, finish one small action, and save again.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -243,9 +195,7 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   },
   {
     id: "dormant-achievement",
-    title: "Finish an Old Near-Miss",
-    objective: "An achievement or challenge left almost complete years ago.",
-    completion: "Unlock the old achievement or finish three complete attempts.",
+    title: "Unlock an Old Achievement",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 250,
@@ -254,8 +204,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "original-vs-remaster",
     title: "Revisit a Remake or Remaster",
-    objective: "A newer version of a game you played before.",
-    completion: "Finish one familiar section and capture how it looks now.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -264,8 +212,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "original-settings",
     title: "Restore Your Old Settings",
-    objective: "A familiar game with a control or camera setup you once preferred.",
-    completion: "Restore that setup and finish one activity with it.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -274,8 +220,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "muscle-memory-mechanic",
     title: "Use the Move You Remember",
-    objective: "A game with one mechanic your hands may still know.",
-    completion: "Use that mechanic successfully three times in one activity.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 200,
@@ -284,8 +228,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "legacy-character",
     title: "Play Your Former Main",
-    objective: "A fighter, hero game, racer, or class game with an old favorite.",
-    completion: "Finish three rounds or one mission with that exact option.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -294,8 +236,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "one-last-revisit",
     title: "Give a Dormant Favorite One Return",
-    objective: "A former favorite you have not opened in years.",
-    completion: "Finish one complete activity and capture where you stopped.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -303,9 +243,7 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   },
   {
     id: "nostalgic-arcade-credit",
-    title: "Spend One Arcade Credit",
-    objective: "A classic arcade, score-attack, shoot-'em-up, or beat-'em-up game.",
-    completion: "Play one credit to game over and record the score.",
+    title: "Play One Arcade Credit",
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 15,
     rewardPoints: 170,
@@ -314,8 +252,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "nostalgic-cheat-code",
     title: "Use a Known Cheat Code",
-    objective: "An older game with a code or secret mode you already know.",
-    completion: "Activate it and finish one level or match with the effect.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -324,8 +260,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "nostalgic-first-indie",
     title: "Return to an Early Indie",
-    objective: "One of the first small-team or download-only games you loved.",
-    completion: "Finish its opening chapter or stage; otherwise, stop after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -334,8 +268,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "nostalgic-old-customization",
     title: "Rebuild an Old Look",
-    objective: "A game where you remember a character, car, room, or emblem you made.",
-    completion: "Recreate three defining details from memory.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -344,8 +276,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "nostalgic-startup-sounds",
     title: "Follow a Startup Sound",
-    objective: "A game tied to a console, launcher, or studio sound you remember.",
-    completion: "Open the first matching game and finish one activity.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -354,8 +284,6 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
   {
     id: "nostalgic-old-guide-memory",
     title: "Find a Secret From Memory",
-    objective: "An older game whose hidden room, shortcut, or code you once knew.",
-    completion: "Reach that secret without looking it up.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,

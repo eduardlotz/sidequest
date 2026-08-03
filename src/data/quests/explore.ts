@@ -4,8 +4,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-wrong-turn",
     title: "Play the Third Library Game",
-    objective: "The third game in the first visible installed row.",
-    completion: "Finish its opening activity; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -14,8 +12,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-follow-the-signal",
     title: "Explore Beyond Earth",
-    objective: "A space game set on another planet, station, or galaxy.",
-    completion: "Reach one new location and finish an activity there.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -24,8 +20,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-edge-of-known",
     title: "Enter a Fantasy World",
-    objective: "An RPG, adventure, or strategy game with mythic places.",
-    completion: "Reach one named settlement, ruin, or landmark.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 250,
@@ -34,8 +28,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-mechanic-safari",
     title: "Visit a Neon City",
-    objective: "A cyberpunk, sci-fi, or urban game with a vivid city.",
-    completion: "Cross one city district and finish one street-level activity.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -44,8 +36,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-landmark-navigation",
     title: "Enter the Wilderness",
-    objective: "A survival, exploration, or open-world game with wild terrain.",
-    completion: "Travel from shelter to one natural landmark and return safely.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 250,
@@ -54,8 +44,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-behind-the-obvious",
     title: "Cross a Desert World",
-    objective: "An exploration, survival, racing, or adventure game with a desert.",
-    completion: "Travel between two landmarks and reach shelter.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 250,
@@ -64,8 +52,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-below-surface",
     title: "Go Underwater",
-    objective: "An ocean, diving, submarine, or underwater exploration game.",
-    completion: "Reach one submerged landmark and return to air or safety.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -74,8 +60,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-world-underfoot",
     title: "Explore Underground",
-    objective: "A mining, cave, dungeon, or underground survival game.",
-    completion: "Reach one new chamber and leave a safe route back.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 230,
@@ -84,8 +68,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-borrowed-body",
     title: "Play as an Animal",
-    objective: "A game starring a bird, cat, fox, fish, insect, or other animal.",
-    completion: "Finish one activity using that animal's distinctive movement.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -94,8 +76,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-other-camera",
     title: "Play From Above",
-    objective: "An isometric, overhead, tactics, management, or strategy game.",
-    completion: "Finish one activity while directing the whole visible space.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -104,8 +84,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-genre-detour",
     title: "Try a Neglected Genre",
-    objective: "The genre row in your library you usually skip.",
-    completion: "Finish one complete activity without returning to a favorite genre.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -114,8 +92,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-physical-rule",
     title: "Try an Unusual Control",
-    objective: "A game built around touch, motion, voice, drawing, or rhythm.",
-    completion: "Finish one activity centered on that physical input.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -124,8 +100,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-follow-clue",
     title: "Follow One Clue",
-    objective: "A detective, mystery, deduction, or investigation game.",
-    completion: "Resolve one clue or state one evidence-backed theory.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -134,8 +108,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-command-view",
     title: "Command the Whole Board",
-    objective: "A tactics, management, strategy, or squad-control game.",
-    completion: "Finish one scenario while directing the whole available team.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 230,
@@ -144,8 +116,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-play-by-ear",
     title: "Play by Ear",
-    objective: "A rhythm, horror, stealth, or audio-led game.",
-    completion: "Use sound to clear one song, room, route, or encounter.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 190,
@@ -154,8 +124,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-movement-language",
     title: "Try New Movement",
-    objective: "A game with climbing, gliding, swinging, drifting, or teleporting.",
-    completion: "Cross one area using its signature movement system.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -164,8 +132,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-words-have-weight",
     title: "Change Something With Words",
-    objective: "A dialogue, role-playing, or negotiation game with consequences.",
-    completion: "Finish one conversation containing a clear decision.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -174,8 +140,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-small-world-big-idea",
     title: "Try a Small Strange Game",
-    objective: "A short or simple-looking game with an unusual premise.",
-    completion: "Reach its first major reveal; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -184,8 +148,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-never-same-twice",
     title: "Enter a Fresh Run",
-    objective: "A roguelike, strategy, sandbox, or procedural game.",
-    completion: "Finish one generated run, map, scenario, or cycle.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -194,8 +156,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-one-word-door",
     title: "Open the Shortest Title",
-    objective: "The installed game with the shortest visible name.",
-    completion: "Finish its opening activity; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 190,
@@ -204,8 +164,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-color-beacon",
     title: "Follow One Cover Color",
-    objective: "The game cover with the color that catches you first.",
-    completion: "Reach a scene using that color and finish one activity.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 190,
@@ -214,8 +172,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-earliest-release",
     title: "Play an Early Design",
-    objective: "One of the oldest-designed games in your current library.",
-    completion: "Finish one level, match, or stage; otherwise, stop after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -224,8 +180,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-genre-collision",
     title: "Solve a First-Person Puzzle",
-    objective: "A first-person puzzle or exploration game with spatial problems.",
-    completion: "Solve one complete room or mechanism.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 230,
@@ -234,8 +188,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-no-straight-line",
     title: "Choose Your Own Route",
-    objective: "An open-world, exploration, or strategy game with several paths.",
-    completion: "Reach one objective by a route you have not used.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 230,
@@ -244,8 +196,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-failure-teaches",
     title: "Learn From One Loss",
-    objective: "A roguelike, puzzle, strategy, or story game where failure reveals more.",
-    completion: "Finish one failed attempt and use its lesson once.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -254,8 +204,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-unusual-job",
     title: "Work an Unusual Shift",
-    objective: "A simulation or role-playing game with an unfamiliar job.",
-    completion: "Finish one shift, delivery, case, service, or workday.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -264,8 +212,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-without-combat",
     title: "Progress Without Fighting",
-    objective: "A stealth, dialogue, puzzle, or exploration game with peaceful routes.",
-    completion: "Reach one objective without starting optional combat.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -274,8 +220,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-scale-shift",
     title: "Change Your Scale",
-    objective: "A game that makes you feel tiny, giant, microscopic, or cosmic.",
-    completion: "Reach one scene that makes the scale unmistakable.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -284,8 +228,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-rule-you-doubt",
     title: "Test the Core Premise",
-    objective: "The game concept in your library that sounds least believable.",
-    completion: "Finish the tutorial or first activity built around its core mechanic.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -294,8 +236,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-opposite-choice",
     title: "Follow the Other Instinct",
-    objective: "A role-playing or strategy game with meaningful choices.",
-    completion: "Take one choice opposite to your habit and accept its result.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 230,
@@ -304,8 +244,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-immersive-sim",
     title: "Try an Immersive Sim",
-    objective: "A systemic stealth or action game with several valid solutions.",
-    completion: "Reach one objective using a route the marker did not suggest.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 230,
@@ -314,8 +252,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-metroidvania-shortcut",
     title: "Find a Hidden Shortcut",
-    objective: "A metroidvania, platformer, dungeon, or interconnected world.",
-    completion: "Open one shortcut or connect two previously separate paths.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -324,8 +260,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-archaeology-trail",
     title: "Trace an Ancient Place",
-    objective: "An archaeology, history, fantasy, or exploration game with ruins.",
-    completion: "Find three details that explain what happened there.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -334,8 +268,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-unfamiliar-cockpit",
     title: "Learn a New Cockpit",
-    objective: "A flight, space, train, truck, or machine simulator.",
-    completion: "Complete one safe trip using an unfamiliar vehicle.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -344,8 +276,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-tiny-world",
     title: "Explore a Tiny World",
-    objective: "A miniature, diorama, toy-scale, or single-room game.",
-    completion: "Inspect every edge of one small area and find one secret.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -354,8 +284,6 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
   {
     id: "explore-wordless-world",
     title: "Try a Wordless Game",
-    objective: "A game led by shape, motion, sound, or environment instead of text.",
-    completion: "Reach one clear transition without consulting outside explanations.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,

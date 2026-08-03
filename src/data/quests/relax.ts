@@ -4,8 +4,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-soft-landing",
     title: "Play a Childhood Favorite",
-    objective: "Your strongest game memory from childhood or your teenage years.",
-    completion: "Finish one level, match, or mission; otherwise, stop after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -14,8 +12,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-scenic-route",
     title: "Use Your Muscle-Memory Game",
-    objective: "A familiar game whose controls still feel automatic.",
-    completion: "Finish one familiar activity without switching games.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -24,8 +20,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-care-shift",
     title: "Follow a Familiar Soundtrack",
-    objective: "A game you recognize from its music, voices, or ambience.",
-    completion: "Play one full track, then stop somewhere calm.",
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 15,
     rewardPoints: 150,
@@ -34,8 +28,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-one-good-loop",
     title: "Revisit a Favorite Place",
-    objective: "A game with a hub, town, track, or map that feels like home.",
-    completion: "Reach that place and finish one activity there.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -44,8 +36,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-small-wonder",
     title: "Reopen a Lost Favorite",
-    objective: "A former favorite you have not played in a long time.",
-    completion: "Finish one level, mission, or round; otherwise, stop after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -54,8 +44,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-three-loose-ends",
     title: "Return to a Favorite Series",
-    objective: "The least-revisited entry in a series you already love.",
-    completion: "Reach its next checkpoint or finish one round.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -64,8 +52,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-next-save",
     title: "Resume the Easiest Save",
-    objective: "An in-progress game whose next action you already know.",
-    completion: "Reach the next save point, checkpoint, or result screen.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -74,8 +60,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-gentlest-mode",
     title: "Lower the Pressure",
-    objective: "A game with assists, practice, or a forgiving mode.",
-    completion: "Finish one level, round, or scene; otherwise, stop after the minimum.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 150,
@@ -84,8 +68,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-pause-anytime",
     title: "Play Something Pausable",
-    objective: "A solo game you can safely pause or suspend anytime.",
-    completion: "Finish one activity; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -94,8 +76,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-turn-by-turn",
     title: "Plan One Turn-Based Battle",
-    objective: "A tactics or role-playing game where nothing moves until you act.",
-    completion: "Finish one complete battle without speeding up animations.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -104,8 +84,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-easy-victory",
     title: "Take an Easy Win",
-    objective: "A familiar stage, mode, or opponent you can comfortably beat.",
-    completion: "Earn one clear win, score target, or successful result.",
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 15,
     rewardPoints: 150,
@@ -114,8 +92,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-quietest-game",
     title: "Play Your Quietest Game",
-    objective: "The game asking for the least urgency, precision, or management.",
-    completion: "Finish one calm activity; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -124,8 +100,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-tend-one-thing",
     title: "Care for Something",
-    objective: "A life sim, farm, pet, garden, or maintenance game.",
-    completion: "Finish one act of care and leave something visibly better.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -134,8 +108,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-put-things-right",
     title: "Put One Space in Order",
-    objective: "A cleaning, sorting, repair, inventory, or organization game.",
-    completion: "Finish one room, set, route, or arrangement.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -144,8 +116,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-slow-journey",
     title: "Sail or Drive Slowly",
-    objective: "A sailing, trucking, train, flight, or open-road game.",
-    completion: "Travel between two landmarks without racing or fast travel.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -154,8 +124,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-story-carries-you",
     title: "Play a Gentle Adventure",
-    objective: "A point-and-click, walking, or narrative adventure with low pressure.",
-    completion: "Finish one scene, puzzle, conversation, or chapter.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -164,8 +132,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-one-puzzle",
     title: "Solve One Calm Puzzle",
-    objective: "A puzzler, builder, or exploration game without a strict timer.",
-    completion: "Solve one complete problem or make one working solution.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -174,8 +140,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-friendly-face",
     title: "Visit a Friendly Character",
-    objective: "A game with a companion, creature, or resident you enjoy.",
-    completion: "Find them and finish one activity or conversation nearby.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -184,8 +148,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-solo-room",
     title: "Play Completely Solo",
-    objective: "A game with no matchmaking, audience, or team obligation.",
-    completion: "Finish one private activity; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -194,8 +156,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-forgiving-restart",
     title: "Try a Forgiving Game",
-    objective: "A game with quick retries, good checkpoints, or low failure cost.",
-    completion: "Play one section through to its next result.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -204,8 +164,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-soft-colors",
     title: "Follow the Softest Palette",
-    objective: "A game whose cover or world has gentle colors.",
-    completion: "Reach that visual mood and finish one activity there.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 150,
@@ -214,8 +172,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-good-weather",
     title: "Find Better Weather",
-    objective: "A world with sunlight, rain, snow, fog, or a clear night.",
-    completion: "Reach the weather you want and finish one activity there.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -224,8 +180,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-small-routine",
     title: "Repeat a Calming Routine",
-    objective: "A game with a daily visit, harvest, delivery, or preparation loop.",
-    completion: "Perform that short routine once from start to finish.",
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 15,
     rewardPoints: 150,
@@ -234,8 +188,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-watch-and-wander",
     title: "Wander and Notice",
-    objective: "A photography, exploration, or walking game that rewards looking.",
-    completion: "Find three new details and stop somewhere safe.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -244,8 +196,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-one-button-deeper",
     title: "Play a One-Button Game",
-    objective: "A rhythm, arcade, mobile, or party game built around one input.",
-    completion: "Finish one level, song, or round; otherwise, stop after the minimum.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 150,
@@ -254,8 +204,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-safe-home-base",
     title: "Stay at Home Base",
-    objective: "An RPG, survival game, or sim with a useful safe hub.",
-    completion: "Finish one preparation, repair, conversation, or organization task there.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -264,8 +212,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-low-volume",
     title: "Play at Low Volume",
-    objective: "A game you can follow quietly, with captions, or without sound.",
-    completion: "Finish one contained activity without raising the volume.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 150,
@@ -274,8 +220,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-kindest-save-file",
     title: "Open Your Calmest Save",
-    objective: "The active save with the fewest urgent problems.",
-    completion: "Make one modest improvement and save somewhere safe.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -284,8 +228,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-comforting-repetition",
     title: "Replay a Favorite Activity",
-    objective: "A race, level, song, match, puzzle, or route you already enjoy.",
-    completion: "Finish it once without chasing a record or unlock.",
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 15,
     rewardPoints: 150,
@@ -294,8 +236,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-clean-exit",
     title: "Finish One Clean Session",
-    objective: "A game with a clear chapter, day, run, match, or level.",
-    completion: "Finish exactly one unit and stop at its closing screen.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 220,
@@ -304,8 +244,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-cozy-corner",
     title: "Build a Cozy Corner",
-    objective: "A building, decorating, farming, or life-simulation game.",
-    completion: "Finish one small, comfortable, and usable space.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -314,8 +252,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-fishing-break",
     title: "Go Fishing",
-    objective: "A fishing game, life sim, RPG, or open world with fishing.",
-    completion: "Catch three fish or finish one fishing trip.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -324,8 +260,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-quiet-drive",
     title: "Take a Quiet Drive",
-    objective: "A truck sim, driving game, or open world with long roads.",
-    completion: "Reach one town or landmark without racing or fast travel.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -334,8 +268,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-gentle-platformer",
     title: "Play a Gentle Platformer",
-    objective: "A forgiving platformer or puzzle-platform game with easy retries.",
-    completion: "Clear one level, chapter, or checkpoint sequence.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -344,8 +276,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-solo-tabletop",
     title: "Play Digital Tabletop",
-    objective: "A solitaire, board, card, or turn-based game you can play alone.",
-    completion: "Finish one match, scenario, or short run.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -354,8 +284,6 @@ export const RELAX_QUESTS = defineMoodDeck("relax", [
   {
     id: "relax-space-drift",
     title: "Drift Through Space",
-    objective: "A space exploration, trading, or flight game without urgent combat.",
-    completion: "Visit one planet, station, or new sector and dock safely.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,

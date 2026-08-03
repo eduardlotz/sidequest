@@ -4,8 +4,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "strangest-installed",
     title: "Open the Strangest Cover",
-    objective: "The installed game whose cover tells you the least.",
-    completion: "Reach its first clear goal; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -14,8 +12,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "untried-mechanic",
     title: "Try an Unfamiliar Verb",
-    objective: "A game built around an action you have rarely used.",
-    completion: "Use that action to finish one complete activity.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -24,8 +20,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "genre-hybrid",
     title: "Test a Genre Collision",
-    objective: "A game mixing two categories that seem incompatible.",
-    completion: "Reach one activity where both genres matter.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -34,8 +28,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "unknown-developer",
     title: "Try an Unknown Developer",
-    objective: "A game from a studio or creator you have never played.",
-    completion: "Finish its opening activity; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -44,8 +36,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "physics-question",
     title: "Ask the Physics a Question",
-    objective: "A sandbox, puzzle, immersive-sim, or construction game with interacting systems.",
-    completion: "Test one 'what if' idea and observe a repeatable result.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 230,
@@ -54,8 +44,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "unread-lore-object",
     title: "Read One Overlooked Object",
-    objective: "A game with item descriptions, archives, museums, or environmental lore.",
-    completion: "Trace one object to a person, place, or event.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -64,8 +52,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "npc-routine",
     title: "Follow an NPC's Routine",
-    objective: "An open-world, simulation, stealth, or role-playing game with scheduled characters.",
-    completion: "Follow one NPC until their route repeats or clearly ends.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -74,8 +60,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "alternate-camera",
     title: "Shift the View",
-    objective: "A familiar game with another camera, character, or control perspective.",
-    completion: "Finish one activity from that unfamiliar viewpoint.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -84,8 +68,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "procedural-surprise",
     title: "Generate a New World",
-    objective: "A roguelike, strategy, survival, or sandbox game with random generation.",
-    completion: "Finish one run or reach one landmark unique to the seed.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 230,
@@ -94,8 +76,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "community-mod",
     title: "Try a Player-Made Variation",
-    objective: "A familiar game with mods, custom maps, or community rulesets.",
-    completion: "Finish one activity that feels different from the base game.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -104,8 +84,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "accessibility-transform",
     title: "Change How the Game Communicates",
-    objective: "A familiar game with strong accessibility or interface options.",
-    completion: "Use one audio, visual, control, or navigation option through an activity.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -114,8 +92,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "language-switch",
     title: "Hear It in Another Language",
-    objective: "A familiar story game with another spoken or written language available.",
-    completion: "Finish one known scene with that language enabled.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -124,8 +100,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "oldest-untouched",
     title: "Open the Oldest Untouched Game",
-    objective: "The longest-owned game still showing zero playtime.",
-    completion: "Reach its first save point; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -134,8 +108,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "one-star-review-question",
     title: "Question a Bad First Impression",
-    objective: "A game you stopped after a confusing or frustrating opening.",
-    completion: "Reach one mechanic or scene beyond where you stopped.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -144,8 +116,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "unusual-protagonist",
     title: "Play an Unusual Protagonist",
-    objective: "A game led by someone unlike your usual heroes.",
-    completion: "Finish one activity using what makes their perspective different.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -154,8 +124,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "side-system",
     title: "Explore the Game Beside the Game",
-    objective: "A game with fishing, cooking, housing, cards, photos, or another deep side system.",
-    completion: "Finish one complete loop inside that ignored system.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -164,8 +132,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "soundtrack-before-cover",
     title: "Choose With Your Ears",
-    objective: "Three installed games whose music or ambience you can preview.",
-    completion: "Open the first sound that surprises you and finish one activity.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -174,8 +140,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "forgotten-demo",
     title: "Return to a Former Trial",
-    objective: "A full game you once knew only through a demo or free weekend.",
-    completion: "Play beyond the material you originally sampled.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -184,8 +148,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "mechanic-without-tutorial",
     title: "Touch the Rule First",
-    objective: "A systems, puzzle, strategy, or simulation game with discoverable rules.",
-    completion: "Learn one rule through interaction before reading its explanation.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 230,
@@ -194,8 +156,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "map-edge",
     title: "Explore Beyond the Route",
-    objective: "An open-world game with a reachable place outside the emphasized path.",
-    completion: "Reach that place and bring back one screenshot.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -204,8 +164,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "object-history",
     title: "Ask Who Put This Here",
-    objective: "A detailed game world with one unexplained object or structure.",
-    completion: "Find three nearby clues to its purpose or history.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -214,8 +172,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "ruleset-random",
     title: "Enter Before Mastering the Rules",
-    objective: "A game with an unfamiliar mode, scenario, or ruleset.",
-    completion: "Finish one result, then explain the rule that mattered most.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -224,8 +180,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "opposite-dialogue",
     title: "Say What You Never Say",
-    objective: "A dialogue-heavy game with choices you usually avoid.",
-    completion: "Take one sincere opposite choice and accept its outcome.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 230,
@@ -234,8 +188,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "small-studio",
     title: "Try a Microgame Collection",
-    objective: "A game built from short minigames, sketches, or experiments.",
-    completion: "Finish five microgames or one complete collection set.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -244,8 +196,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "historical-setting",
     title: "Enter an Unfamiliar Period",
-    objective: "A historical game set in a time you know little about.",
-    completion: "Finish one scenario and identify one period-specific detail.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 40,
     rewardPoints: 230,
@@ -254,8 +204,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "future-rule",
     title: "Test One Impossible Technology",
-    objective: "A science-fiction game built around a speculative technology.",
-    completion: "Use that technology to solve one complete problem.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 40,
     rewardPoints: 230,
@@ -264,8 +212,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "hidden-ending-door",
     title: "Open an Alternate Outcome",
-    objective: "A completed game with one reachable ending or branch left unseen.",
-    completion: "Reach one scene or result unique to that path.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -274,8 +220,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "player-made-level",
     title: "Try Developer Commentary",
-    objective: "A familiar game with a commentary track, museum, or behind-the-scenes mode.",
-    completion: "Finish one section while listening to every available note.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -284,8 +228,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "one-system-collision",
     title: "Make Two Systems Collide",
-    objective: "A sandbox, immersive sim, strategy, or physics game.",
-    completion: "Create one useful interaction the game never directly requested.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 230,
@@ -294,8 +236,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "curiosity-souvenir",
     title: "Reach a Visible Landmark",
-    objective: "An exploration game with one visible but unreached place.",
-    completion: "Reach it and capture the route or final view.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 230,
@@ -304,8 +244,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "curious-non-euclidean",
     title: "Enter Impossible Geometry",
-    objective: "A puzzle or exploration game with folding, looping, or shifting space.",
-    completion: "Solve one room where ordinary geometry fails.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 230,
@@ -314,8 +252,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "curious-ecology-sim",
     title: "Observe a Living System",
-    objective: "An ecology, colony, evolution, aquarium, or wildlife simulation.",
-    completion: "Change one condition and observe a full response cycle.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -324,8 +260,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "curious-programming-game",
     title: "Program One Solution",
-    objective: "A programming, automation, logic, or circuit-building game.",
-    completion: "Build one working solution and run it without manual correction.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 40,
     rewardPoints: 240,
@@ -334,8 +268,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "curious-fmv-game",
     title: "Try an Interactive Film",
-    objective: "An FMV, live-action, or cinematic choice-driven game.",
-    completion: "Finish one episode or reach one irreversible choice.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 40,
     rewardPoints: 220,
@@ -344,8 +276,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "curious-text-experiment",
     title: "Play With Only Words",
-    objective: "A text adventure, parser game, interactive fiction, or word puzzle.",
-    completion: "Resolve one scene, room, or complete puzzle.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -354,8 +284,6 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
   {
     id: "curious-obscure-sport",
     title: "Learn an Unfamiliar Sport",
-    objective: "A sports game featuring rules or an event you barely know.",
-    completion: "Finish one event and explain one rule you learned.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,

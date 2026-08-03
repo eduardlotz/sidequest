@@ -16,10 +16,7 @@ import {
 import { useTranslation } from "react-i18next";
 import type { MoodId } from "../data/moods";
 import { useTiltEffect } from "../hooks/useTiltEffect";
-import {
-  moodCardLayoutId,
-  moodOfferSlotLayoutId,
-} from "../lib/cardMotion";
+import { moodCardLayoutId } from "../lib/cardMotion";
 import { playSound } from "../lib/sound";
 import styles from "../App.module.css";
 import { MoodIllustration } from "./MoodIllustration";
@@ -38,6 +35,7 @@ type Props = {
   layerPresent: boolean;
   layoutSessionId: number | string;
   reduceMotion: boolean;
+  returningFromQuests: boolean;
   onSelect: (id: MoodId) => boolean;
 };
 
@@ -62,6 +60,7 @@ type CardProps = {
   position: MotionValue<number>;
   reduceMotion: boolean;
   revealCards: boolean;
+  returningFromQuests: boolean;
   selectedId: MoodId | null;
   onCenter: (index: number, focus?: boolean) => void;
   onSelect: (id: MoodId, focusNext?: boolean) => void;
@@ -69,20 +68,18 @@ type CardProps = {
 
 const WHEEL_SETTLE_MS = 90;
 const CAROUSEL_REVEAL_DELAY_MS = 240;
+const CARD_CENTER_STAGGER_SECONDS = 0.07;
 const MOOD_FADE_EASE = [0.22, 0.8, 0.24, 1] as const;
 const MOOD_POSITION_TRANSITION = {
   type: "spring" as const,
-  stiffness: 230,
-  damping: 25,
-  mass: 0.9,
+  stiffness: 175,
+  damping: 16.5,
+  mass: 0.95,
   restDelta: 0.001,
   restSpeed: 0.001,
 };
-const FAKE_CARD_POSES = [
-  { x: -8, y: 9, rotate: -4.2 },
-  { x: 8, y: 7, rotate: 3.1 },
-  { x: -2, y: 12, rotate: -1.2 },
-] as const;
+const MOBILE_CARD_GAP = 330;
+const DESKTOP_CARD_GAP = 520;
 
 export function ArcDeck({
   items,
@@ -91,6 +88,7 @@ export function ArcDeck({
   layerPresent,
   layoutSessionId,
   reduceMotion,
+  returningFromQuests,
   onSelect,
 }: Props) {
   const { t } = useTranslation();
@@ -115,7 +113,7 @@ export function ArcDeck({
     reduceMotion || !initialItemId,
   );
   const itemKey = items.map((item) => item.id).join("|");
-  const cardGap = mobile ? 282 : 360;
+  const cardGap = mobile ? MOBILE_CARD_GAP : DESKTOP_CARD_GAP;
 
   useEffect(() => {
     animationRef.current?.stop();
@@ -313,26 +311,6 @@ export function ArcDeck({
       onPointerCancel={finishPointer}
     >
       <div className={styles.arcDeckTrack}>
-        <span className={styles.moodCardStack} aria-hidden="true">
-          {FAKE_CARD_POSES.map((pose, index) => (
-            <motion.span
-              className={styles.moodFakeCardSlot}
-              key={index}
-              style={{
-                rotate: pose.rotate,
-                x: pose.x,
-                y: pose.y,
-                zIndex: index,
-              }}
-            >
-              <SelectionCardBody
-                layoutId={moodOfferSlotLayoutId(layoutSessionId, index)}
-                reduceMotion={reduceMotion}
-              />
-            </motion.span>
-          ))}
-        </span>
-
         {items.map((item, index) => (
           <ArcCard
             activeIndex={activeIndex}
@@ -346,6 +324,7 @@ export function ArcDeck({
             position={position}
             reduceMotion={reduceMotion}
             revealCards={revealCards}
+            returningFromQuests={returningFromQuests}
             selectedId={selectedId}
             onCenter={centerIndex}
             onSelect={select}
@@ -389,6 +368,7 @@ function ArcCard({
   position,
   reduceMotion,
   revealCards,
+  returningFromQuests,
   selectedId,
   onCenter,
   onSelect,
@@ -397,7 +377,10 @@ function ArcCard({
   const distance = useTransform(position, (latest) =>
     loopDistance(index - latest, itemCount),
   );
-  const x = useTransform(distance, (value) => value * (mobile ? 282 : 360));
+  const x = useTransform(
+    distance,
+    (value) => value * (mobile ? MOBILE_CARD_GAP : DESKTOP_CARD_GAP),
+  );
   const y = useTransform(distance, (value) => -42 + Math.abs(value) * 92);
   const rotate = useTransform(distance, (value) => value * 11);
   const scale = useTransform(distance, (value) =>
@@ -416,6 +399,20 @@ function ArcCard({
   const selected = selectedId === item.id;
   const foregroundExiting = Boolean(selectedId) || !layerPresent;
   const primaryExit = selected || (!selectedId && center);
+  const absoluteDistance = Math.min(2, Math.abs(discreteDistance));
+  const centerStaggerDelay = absoluteDistance * CARD_CENTER_STAGGER_SECONDS;
+  const direction = discreteDistance < 0 ? -1 : 1;
+  const returningOffsetX = center ? 0 : direction * (62 + absoluteDistance * 14);
+  const returningOffsetY = center ? 92 : 68;
+  const moodExitX = primaryExit
+    ? 0
+    : direction * (92 + absoluteDistance * 20);
+  const moodExitY = primaryExit ? 210 : 150;
+  const positionDelay = foregroundExiting
+    ? centerStaggerDelay
+    : revealCards
+      ? centerStaggerDelay
+      : 0;
   const {
     handlePointerEnter,
     handlePointerLeave,
@@ -427,6 +424,8 @@ function ArcCard({
     maxTilt: 14,
     reduceMotion: reduceMotion || !center,
   });
+  const illustrationX = useTransform(rotateY, (value) => value * -1.7);
+  const illustrationY = useTransform(rotateX, (value) => value * 1.35);
 
   useEffect(() => {
     if (!center || selectedId) resetTilt();
@@ -455,79 +454,73 @@ function ArcCard({
           reduceMotion
             ? false
             : {
-                filter: "blur(0px)",
+                filter: "none",
                 opacity: 0,
-                scale: 0.94,
-                x: 0,
-                y: 56,
+                scale: returningFromQuests ? 0.96 : 0.94,
+                x: returningFromQuests ? returningOffsetX : 0,
+                y: returningFromQuests ? returningOffsetY : 56,
               }
         }
         animate={
           foregroundExiting
-            ? primaryExit
-              ? {
-                  filter: "blur(0px)",
-                  opacity: 0,
-                  scale: 0.95,
-                  x: 0,
-                  y: 24,
-                }
-              : {
-                  filter: "blur(0px)",
-                  opacity: 0,
-                  scale: 0.95,
-                  x: discreteDistance < 0 ? -46 : 46,
-                  y: 24,
-                }
+            ? {
+                filter: "none",
+                opacity: 0,
+                scale: primaryExit ? 0.96 : 0.94,
+                x: moodExitX,
+                y: moodExitY,
+              }
             : {
                 filter:
-                  visible && !revealCards && !center
+                  returningFromQuests
+                    ? "none"
+                    : visible && !revealCards && !center
                     ? "blur(5px)"
                     : "blur(0px)",
                 opacity: visible && (revealCards || center) ? 1 : 0,
                 scale: revealCards || center ? 1 : 0.92,
-                x: 0,
-                y: revealCards || center ? 0 : 72,
+                x:
+                  revealCards || center
+                    ? 0
+                    : returningFromQuests
+                      ? returningOffsetX
+                      : 0,
+                y:
+                  revealCards || center
+                    ? 0
+                    : returningFromQuests
+                      ? returningOffsetY
+                      : 72,
               }
         }
         transition={
           reduceMotion
             ? { duration: 0 }
-            : foregroundExiting
-              ? primaryExit
-                ? {
-                    opacity: {
-                      duration: 0.42,
-                      ease: MOOD_FADE_EASE,
-                    },
-                    filter: { duration: 0 },
-                    scale: MOOD_POSITION_TRANSITION,
-                    x: { duration: 0 },
-                    y: MOOD_POSITION_TRANSITION,
-                  }
-                : {
-                    opacity: {
-                      duration: 0.42,
-                      ease: MOOD_FADE_EASE,
-                    },
-                    filter: { duration: 0 },
-                    scale: MOOD_POSITION_TRANSITION,
-                    x: MOOD_POSITION_TRANSITION,
-                    y: MOOD_POSITION_TRANSITION,
-                  }
-              : {
-                  x: MOOD_POSITION_TRANSITION,
-                  y: MOOD_POSITION_TRANSITION,
-                  scale: MOOD_POSITION_TRANSITION,
-                  opacity: {
-                    duration: 0.32,
-                    ease: MOOD_FADE_EASE,
-                  },
-                  filter: {
-                    duration: 0.3,
-                    ease: MOOD_FADE_EASE,
-                  },
-                }
+            : {
+                x: {
+                  ...MOOD_POSITION_TRANSITION,
+                  delay: positionDelay,
+                },
+                y: {
+                  ...MOOD_POSITION_TRANSITION,
+                  delay: positionDelay,
+                },
+                scale: {
+                  ...MOOD_POSITION_TRANSITION,
+                  delay: positionDelay,
+                },
+                opacity: {
+                  duration: foregroundExiting ? 0.42 : 0.32,
+                  ease: MOOD_FADE_EASE,
+                  delay: positionDelay,
+                },
+                filter: {
+                  duration:
+                    foregroundExiting || returningFromQuests ? 0 : 0.3,
+                  ease: MOOD_FADE_EASE,
+                  delay: positionDelay,
+                },
+              }
         }
       >
         <motion.button
@@ -579,7 +572,9 @@ function ArcCard({
           onPointerOut={handlePointerLeave}
         >
           <SelectionCardBody
+            className={styles.moodSelectionCardBody}
             contentKey={`mood-${item.id}`}
+            contentClassName={styles.moodSelectionCardContent}
             contentVisible={!foregroundExiting || primaryExit}
             layoutId={moodCardLayoutId(layoutSessionId, item.id)}
             reduceMotion={reduceMotion}
@@ -594,10 +589,18 @@ function ArcCard({
                   {item.subtitle}
                 </span>
               </span>
-              <MoodIllustration
-                className={styles.moodIllustration}
-                moodId={item.id}
-              />
+              <motion.span
+                className={styles.moodIllustrationLayer}
+                style={{
+                  x: illustrationX,
+                  y: illustrationY,
+                }}
+              >
+                <MoodIllustration
+                  className={styles.moodIllustration}
+                  moodId={item.id}
+                />
+              </motion.span>
             </motion.span>
           </SelectionCardBody>
         </motion.button>

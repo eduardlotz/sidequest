@@ -42,7 +42,7 @@ export function SelectionCardBody({
       className={joinClassNames(styles.selectionCardBody, className)}
       layoutId={layoutId}
       layoutCrossfade={false}
-      style={{ visibility: visible ? "visible" : "hidden" }}
+      style={{ visibility: visible ? undefined : "hidden" }}
       transition={{
         layout: reduceMotion ? { duration: 0 } : CARD_LAYOUT_TRANSITION,
       }}

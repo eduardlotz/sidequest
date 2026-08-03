@@ -4,8 +4,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "smallest-install",
     title: "Play the Smallest Install",
-    objective: "The installed game using the least storage space.",
-    completion: "Finish one short activity; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 15,
     rewardPoints: 150,
@@ -14,8 +12,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "shortest-promised-time",
     title: "Finish the Shortest Activity",
-    objective: "A game with one short level, round, song, puzzle, or run.",
-    completion: "Finish exactly one of those units.",
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 20,
     rewardPoints: 150,
@@ -24,8 +20,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "no-setup-needed",
     title: "Play With No Setup",
-    objective: "The first familiar game ready without downloads, tutorials, or configuration.",
-    completion: "Start the nearest activity and finish it once.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -34,8 +28,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "nearest-checkpoint",
     title: "Take the Nearest Checkpoint",
-    objective: "An active save with one obvious next action.",
-    completion: "Do that action and stop at the next checkpoint.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -44,8 +36,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "fewest-buttons",
     title: "Use the Fewest Buttons",
-    objective: "A game or mode with only a few essential controls.",
-    completion: "Finish one low-input unit; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -54,8 +44,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "first-installed-row",
     title: "Choose From the First Row",
-    objective: "Only the first visible row of your installed library.",
-    completion: "Open the first acceptable game and finish one activity.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -64,8 +52,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "one-letter-shelf",
     title: "Choose One Letter",
-    objective: "Games beginning with the first letter that enters your mind.",
-    completion: "Open the first acceptable match and finish one activity.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -74,8 +60,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "single-cover-pull",
     title: "Pick the First Blue Cover",
-    objective: "The first installed game whose cover visibly contains blue.",
-    completion: "Open it immediately and finish one activity.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -84,8 +68,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "safe-mode",
     title: "Use the Lowest-Stakes Mode",
-    objective: "A familiar game with assists, practice, sandbox, or easy mode.",
-    completion: "Finish one activity with that mode unchanged.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 150,
@@ -94,8 +76,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "no-inventory-session",
     title: "Ignore the Inventory",
-    objective: "A game you can play with your current gear or no gear at all.",
-    completion: "Finish one activity without opening an inventory screen.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -104,8 +84,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "one-marker-only",
     title: "Follow One Nearby Marker",
-    objective: "An active save with a clearly visible nearby objective.",
-    completion: "Reach that marker, finish its task, and stop.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -114,8 +92,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "closest-completion",
     title: "Finish the Shortest Open Task",
-    objective: "An active save with one clearly bounded task you can finish today.",
-    completion: "Finish that task and stop at its result.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 220,
@@ -124,8 +100,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "tutorial-free",
     title: "Use Controls You Know",
-    objective: "A familiar game requiring no tutorial or relearning.",
-    completion: "Finish one familiar activity with the current setup.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -134,8 +108,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "single-screen-game",
     title: "Keep It on One Screen",
-    objective: "A puzzle, board, arcade, or tactics game with a contained board.",
-    completion: "Clear one screen, board, puzzle, or round.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -144,8 +116,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "pause-guaranteed",
     title: "Trust the Next Autosave",
-    objective: "A familiar game with frequent automatic checkpoints.",
-    completion: "Finish the current activity and stop at the next autosave.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -154,8 +124,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "no-dialogue-choice",
     title: "Let the Story Decide",
-    objective: "A linear story game with few choices or build decisions.",
-    completion: "Reach the end of one scene or chapter.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -164,8 +132,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "one-match-contract",
     title: "Play Exactly One Match",
-    objective: "A sports, fighting, racing, shooter, or card game with clear matches.",
-    completion: "Finish one full match and leave at the result screen.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -174,8 +140,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "one-room-boundary",
     title: "Stay in One Room",
-    objective: "A builder, sim, puzzle, or RPG with useful work in one space.",
-    completion: "Finish one visible change without leaving that space.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -184,8 +148,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "single-verb",
     title: "Choose One Easy Verb",
-    objective: "A game centered on driving, building, talking, sorting, or walking.",
-    completion: "Repeat that action until one activity ends.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -194,8 +156,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "visible-timer",
     title: "Set the Stop Before Starting",
-    objective: "Any familiar game with an obvious safe place to stop.",
-    completion: "Play until the timer ends, then save and stop.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -204,8 +164,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "platform-recent",
     title: "Use Recent-Play History",
-    objective: "Only the three most recently played games on your system.",
-    completion: "Open the first suitable one and finish one activity.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -214,8 +172,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "controller-ready",
     title: "Play From Where You Sit",
-    objective: "A game fully playable with the controller or device already in hand.",
-    completion: "Finish one activity without changing your setup.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -224,8 +180,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "no-update-door",
     title: "Skip Every Download",
-    objective: "The first suitable installed game ready right now.",
-    completion: "Finish one activity without waiting for another game.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -234,8 +188,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "familiar-interface",
     title: "Use Menus You Know",
-    objective: "A game whose interface and save structure feel automatic.",
-    completion: "Reach one result without browsing unfamiliar menus.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -244,8 +196,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "one-save-only",
     title: "Use One Existing Save",
-    objective: "The first current save with a clear nearby activity.",
-    completion: "Finish that activity without opening another save.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -254,8 +204,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "finite-run",
     title: "Finish One Puzzle Set",
-    objective: "A puzzle, word, number, or tile game with grouped stages.",
-    completion: "Finish one visible set or five short puzzles.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -264,8 +212,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "default-build",
     title: "Use the Default Loadout",
-    objective: "A game with characters, decks, classes, vehicles, or gear presets.",
-    completion: "Finish one activity with the first default option.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -274,8 +220,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "default-difficulty",
     title: "Accept Recommended Difficulty",
-    objective: "A game that offers a recommended or standard setting.",
-    completion: "Finish one activity without changing that setting.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -284,8 +228,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "fewest-open-threads",
     title: "Open the Quietest Save",
-    objective: "The save with the fewest visible quests, alerts, or problems.",
-    completion: "Finish its nearest small task and save again.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -294,8 +236,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "stop-rule-first",
     title: "Write the Exit First",
-    objective: "A game with a clear chapter, match, day, or checkpoint.",
-    completion: "Name one stopping point, reach it, and stop immediately.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -304,8 +244,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "overwhelmed-quick-resume",
     title: "Resume What Is Already Open",
-    objective: "The suspended or quick-resume game nearest to continuing.",
-    completion: "Finish its current activity without opening the library.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -314,8 +252,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "overwhelmed-saved-preset",
     title: "Use a Saved Preset",
-    objective: "A game with an existing deck, loadout, team, or vehicle preset.",
-    completion: "Finish one result with the first saved preset.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -324,8 +260,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "overwhelmed-last-level",
     title: "Replay the Last Finished Level",
-    objective: "The most recent campaign level or chapter you completed.",
-    completion: "Replay it once and stop at its ending.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 190,
@@ -334,8 +268,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "overwhelmed-first-tutorial",
     title: "Play One Tutorial",
-    objective: "A game with a short tutorial, practice lesson, or training course.",
-    completion: "Finish exactly one lesson and stop.",
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 15,
     rewardPoints: 160,
@@ -344,8 +276,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "overwhelmed-shortest-description",
     title: "Play the Middle Library Game",
-    objective: "The center game in the first visible installed row.",
-    completion: "Open it and finish one activity without comparing alternatives.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -354,8 +284,6 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
   {
     id: "overwhelmed-featured-daily",
     title: "Accept the Featured Daily",
-    objective: "A familiar game showing one featured daily activity.",
-    completion: "Finish that activity once with its default rules.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,

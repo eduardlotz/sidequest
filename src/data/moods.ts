@@ -1,37 +1,65 @@
 import type { MoodDefinition, MoodId } from "./questTypes";
 
 export const MOODS = [
-  { id: "relax", title: "Relax", subtitle: "Familiar, gentle play" },
-  { id: "explore", title: "Explore", subtitle: "A new world or way to play" },
+  {
+    id: "relax",
+    title: "Relax",
+    subtitle: "I want to unwind with something familiar and gentle",
+  },
+  {
+    id: "explore",
+    title: "Explore",
+    subtitle: "I want a game that can still surprise me",
+  },
   {
     id: "progress",
     title: "Progress",
-    subtitle: "Move an unfinished game forward",
+    subtitle: "I want to move a game forward that I left unfinished",
   },
-  { id: "create", title: "Create", subtitle: "Build, customize, or compose" },
-  { id: "challenge", title: "Challenge", subtitle: "Test one skill" },
-  { id: "connect", title: "Connect", subtitle: "Play with or around others" },
+  {
+    id: "create",
+    title: "Create",
+    subtitle: "I want to make something that feels like mine",
+  },
+  {
+    id: "challenge",
+    title: "Challenge",
+    subtitle: "I want a game to push back and test me",
+  },
+  {
+    id: "connect",
+    title: "Connect",
+    subtitle: "I want to feel connected to other people while playing",
+  },
   {
     id: "nostalgic",
     title: "Nostalgic",
-    subtitle: "Return to an old favorite",
+    subtitle: "I want to revisit a game tied to a good memory",
   },
   {
     id: "overwhelmed",
     title: "Overwhelmed",
-    subtitle: "Let one rule make the choice",
+    subtitle: "I want to play but cannot handle choosing right now",
   },
-  { id: "restless", title: "Restless", subtitle: "Put the energy into motion" },
-  { id: "focused", title: "Focused", subtitle: "Stay with one clear goal" },
+  {
+    id: "restless",
+    title: "Restless",
+    subtitle: "I have too much energy and need to move",
+  },
+  {
+    id: "focused",
+    title: "Focused",
+    subtitle: "I want one clear goal I can sink into",
+  },
   {
     id: "curious",
     title: "Curious",
-    subtitle: "Try an unfamiliar idea",
+    subtitle: "I want to try something unfamiliar and understand it",
   },
   {
     id: "low-energy",
     title: "Low Energy",
-    subtitle: "Easy to start, easy to stop",
+    subtitle: "I want to play without much attention or effort",
   },
 ] as const satisfies readonly MoodDefinition[];
 

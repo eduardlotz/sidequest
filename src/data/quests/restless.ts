@@ -4,8 +4,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "instant-movement",
     title: "Move Before Thinking",
-    objective: "An action, platform, racing, or open-world game with immediate movement.",
-    completion: "Start moving within 60 seconds and reach one checkpoint.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -14,8 +12,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "speed-line",
     title: "Race One Fast Line",
-    objective: "A racing game with a short familiar track.",
-    completion: "Drive three laps and keep the fastest clean one.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 200,
@@ -24,8 +20,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "destruction-break",
     title: "Break Something Big",
-    objective: "A destruction, physics, action, or sandbox game with reactive objects.",
-    completion: "Destroy one structure, vehicle, room, or large target.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -34,8 +28,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "rhythm-release",
     title: "Play Three Rhythm Tracks",
-    objective: "A rhythm, dance, drumming, or music game.",
-    completion: "Finish three songs or one full set at one difficulty.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -44,8 +36,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "short-rogue-run",
     title: "Burn One Roguelike Run",
-    objective: "A roguelike, arcade, survival, or score game with clean resets.",
-    completion: "Play one run from immediate start to natural end.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -54,8 +44,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "parkour-route",
     title: "Run a Parkour Route",
-    objective: "A platformer or action game with expressive traversal.",
-    completion: "Cross one area using three different movement techniques.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -64,8 +52,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "arena-sprint",
     title: "Enter the Fastest Arena",
-    objective: "A fighting, shooter, sports, or arena game with quick matchmaking.",
-    completion: "Finish one full competitive result.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 200,
@@ -74,8 +60,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "combo-chase",
     title: "Keep One Combo Alive",
-    objective: "An action, fighting, rhythm, skating, or score game with combos.",
-    completion: "Beat your first combo count across three attempts.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 200,
@@ -84,8 +68,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "chase-sequence",
     title: "Finish One Chase",
-    objective: "A racing, horror, action, or stealth game built around pursuit.",
-    completion: "Reach safety or catch the target once.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 200,
@@ -94,8 +76,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "boss-now",
     title: "Go Straight to a Boss",
-    objective: "A game with a nearby boss, arena, or replayable encounter.",
-    completion: "Defeat it or finish three complete attempts.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -104,8 +84,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "sports-quarter",
     title: "Play One Sports Period",
-    objective: "A sports game with short quarters, periods, sets, or innings.",
-    completion: "Finish one period or the shortest complete match.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -114,8 +92,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "flight-loop",
     title: "Leave the Ground",
-    objective: "A flight, space, superhero, gliding, or aerial combat game.",
-    completion: "Take off, finish one route or encounter, and land.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -124,8 +100,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "vehicle-switch-off",
     title: "Stay in One Vehicle",
-    objective: "A driving, trucking, racing, flight, or vehicle-heavy open world.",
-    completion: "Finish one complete journey without leaving the vehicle.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -134,8 +108,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "swarm-clear",
     title: "Clear One Swarm",
-    objective: "A horde, action, shooter, tower-defense, or survival game.",
-    completion: "Clear one full wave, room, screen, or encounter.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -144,8 +116,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "timed-objective",
     title: "Beat One Countdown",
-    objective: "A racing, puzzle, action, or challenge game with a visible timer.",
-    completion: "Clear one timed objective or finish three attempts.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 200,
@@ -154,8 +124,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "movement-only-win",
     title: "Win With Positioning",
-    objective: "A tactics, sports, stealth, or action game where movement matters.",
-    completion: "Finish one result using position instead of new gear.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -164,8 +132,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "loudest-game",
     title: "Turn Up the Most Physical Soundtrack",
-    objective: "A rhythm, racing, action, or sports game with energetic music.",
-    completion: "Finish one song, race, match, or mission with music central.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -174,8 +140,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "quick-reaction",
     title: "Play on Reflex",
-    objective: "An arcade, shooter, rhythm, fighting, or action game with fast starts.",
-    completion: "Finish one full round, stage, or run without a warm-up.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 200,
@@ -184,8 +148,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "vertical-climb",
     title: "Climb Until the View Changes",
-    objective: "A climbing, platform, open-world, or traversal game.",
-    completion: "Reach one clearly higher landmark without fast travel.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -194,8 +156,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "trick-session",
     title: "Land One New Trick",
-    objective: "A skating, snowboarding, biking, driving, or movement game.",
-    completion: "Land one unfamiliar trick cleanly three times.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -204,8 +164,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "rapid-puzzle",
     title: "Solve Under Motion",
-    objective: "A falling-block, rhythm-puzzle, action-puzzle, or timed tactics game.",
-    completion: "Clear one complete board, stage, or timed puzzle.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -214,8 +172,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "aggressive-route",
     title: "Take the Direct Route",
-    objective: "An action, shooter, racing, or strategy game rewarding pressure.",
-    completion: "Reach one objective without retreating to a side activity.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -224,8 +180,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "mech-weight",
     title: "Pilot Heavy Machinery",
-    objective: "A mech, tank, truck, construction, or industrial simulation game.",
-    completion: "Finish one mission or job without changing machines.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -234,8 +188,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "crowd-route",
     title: "Move Through a Crowd",
-    objective: "A sports, stealth, action, or social game with many moving bodies.",
-    completion: "Cross one crowded area without colliding or entering combat.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -244,8 +196,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "streak-attempt",
     title: "Build a Three-Result Streak",
-    objective: "A sports, fighting, racing, card, or arcade game with short results.",
-    completion: "Win or clear three results in a row.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -254,8 +204,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "escape-the-hub",
     title: "Leave the Hub Now",
-    objective: "An open-world, RPG, survival, or adventure save at a safe base.",
-    completion: "Exit immediately and reach the first unplanned landmark.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -264,8 +212,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "one-life-motion",
     title: "Keep Moving Until It Ends",
-    objective: "An endless runner, survival, arcade, or chase game.",
-    completion: "Finish one run without pausing or hiding in safety.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 200,
@@ -274,8 +220,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "role-with-tempo",
     title: "Set the Team's Pace",
-    objective: "A squad, sports, racing, or multiplayer game with momentum roles.",
-    completion: "Finish one result as initiator, scout, driver, or support.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -284,8 +228,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "physical-finish",
     title: "Play Something Physical",
-    objective: "A dance, fitness, motion-control, rhythm, or active party game.",
-    completion: "Finish one song, routine, or round; otherwise, stop after the minimum.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 20,
     rewardPoints: 180,
@@ -294,8 +236,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "restless-landing",
     title: "Spend the Last Spark",
-    objective: "A fast game that can end at a calm hub or result screen.",
-    completion: "Finish one intense activity and return somewhere safe.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -304,8 +244,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "restless-twin-stick",
     title: "Clear a Twin-Stick Arena",
-    objective: "A twin-stick shooter, survivor-like, or arena action game.",
-    completion: "Clear one arena, wave set, or complete run.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -314,8 +252,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "restless-hack-and-slash",
     title: "Clear a Hack-and-Slash Room",
-    objective: "A character-action, action-RPG, or musou-style game.",
-    completion: "Clear one combat room or mission without changing weapons.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 220,
@@ -324,8 +260,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "restless-pinball-table",
     title: "Play One Pinball Table",
-    objective: "A pinball or score-chasing game with short attempts.",
-    completion: "Play three balls or attempts and record the best score.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 20,
     rewardPoints: 170,
@@ -334,8 +268,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "restless-skate-line",
     title: "Build a Skate Line",
-    objective: "A skating, biking, snowboarding, or trick-driven game.",
-    completion: "Link three landmarks or tricks in one clean line.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -344,8 +276,6 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   {
     id: "restless-beat-em-up",
     title: "Finish a Beat-'Em-Up Stage",
-    objective: "A brawler, beat-'em-up, or crowd-action game.",
-    completion: "Clear one full stage without switching characters.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -353,9 +283,7 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
   },
   {
     id: "restless-rts-rush",
-    title: "Launch a Strategy Rush",
-    objective: "A real-time strategy game with a skirmish or quick-match mode.",
-    completion: "Finish one match built around early pressure.",
+    title: "Launch an Early RTS Attack",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 60,
     rewardPoints: 220,

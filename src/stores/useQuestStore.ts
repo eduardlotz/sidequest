@@ -24,8 +24,8 @@ export const SHUFFLE_COST = 25;
 export const QUEST_OFFER_COUNT = 3;
 export const STORED_COMPLETION_LIMIT = 500;
 export const INITIAL_RED_ROPES = 3;
-export const RED_ROPE_BUNDLE_SIZE = 3;
-export const RED_ROPE_BUNDLE_COST = 50;
+export const RED_ROPE_BUNDLE_SIZE = 1;
+export const RED_ROPE_BUNDLE_COST = 10;
 export const POINTS_PER_MINUTE = 5;
 export const POINTS_DURATION_CAP_MS = 60 * 60 * 1_000;
 export const MAX_COMPLETION_POINTS = 300;
@@ -107,6 +107,7 @@ type QuestActions = {
   startQuest: (startedAt: number) => void;
   pauseQuest: (pausedAt: number) => void;
   resumeQuest: (resumedAt: number) => void;
+  returnCurrentSessionToSelection: () => boolean;
   discardCurrentSession: () => boolean;
   purchaseRedRopes: () => boolean;
   setDebugMode: (enabled: boolean) => void;
@@ -356,11 +357,26 @@ function createQuestState(
         };
       });
     },
+    returnCurrentSessionToSelection: () => {
+      const state = get();
+      const session = state.currentSession;
+      if (!session || session.startedAt !== null) return false;
+
+      const now = options.now();
+      set({
+        currentSession: null,
+        moodSelectedAt: moodSelectionExpired(state.moodSelectedAt, now)
+          ? now
+          : state.moodSelectedAt,
+      });
+      return true;
+    },
     discardCurrentSession: () => {
       const state = get();
       const session = state.currentSession;
       if (
         !session ||
+        session.startedAt === null ||
         (!state.profile.debugMode && state.profile.redRopes < 1)
       ) {
         return false;

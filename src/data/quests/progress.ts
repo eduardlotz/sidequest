@@ -4,8 +4,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-break-the-blocker",
     title: "Start an Unplayed Game",
-    objective: "A game you bought but never started.",
-    completion: "Reach its first save point, checkpoint, or result screen.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -14,8 +12,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-clean-finish",
     title: "Give a Game a Fair Chance",
-    objective: "A game you dismissed before learning its real loop.",
-    completion: "Reach one complete gameplay loop; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 250,
@@ -24,8 +20,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-one-tier-better",
     title: "Resume an Abandoned Save",
-    objective: "A campaign you left after only a few sessions.",
-    completion: "Reach the next named checkpoint, chapter, or mission result.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -34,8 +28,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-three-step-plan",
     title: "Unlock Something in a Shooter",
-    objective: "A solo shooter with a nearby weapon, skill, or gear unlock.",
-    completion: "Earn one unlock through campaign, challenge, or solo progression.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -44,8 +36,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-recovery-run",
     title: "Push the Nearest Campaign",
-    objective: "Your unfinished game closest to its ending.",
-    completion: "Reach one story milestone; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 250,
@@ -54,8 +44,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-two-birds",
     title: "Justify One Install",
-    objective: "A game you keep installed but repeatedly skip.",
-    completion: "Finish one mission, chapter, match, or run; then decide if it stays.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 250,
@@ -64,8 +52,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-wake-the-sleeping-save",
     title: "Wake the Oldest Save",
-    objective: "The active save you have ignored the longest.",
-    completion: "Recover your bearings and reach one new checkpoint.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 220,
@@ -74,8 +60,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-honor-the-oldest-promise",
     title: "Clear the Oldest Quest",
-    objective: "The oldest reachable task in an in-game quest log.",
-    completion: "Finish it or reach its next named milestone.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 230,
@@ -84,8 +68,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-open-the-black-box",
     title: "Learn One Intimidating System",
-    objective: "A good game stalled by crafting, combat, economy, or controls.",
-    completion: "Use that system successfully in one real activity.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 230,
@@ -94,8 +76,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-revisit-the-wall",
     title: "Unblock a Stalled Puzzle",
-    objective: "A puzzle, route, or system problem stopping an unfinished game.",
-    completion: "Solve it or test three genuinely different approaches.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 210,
@@ -104,8 +84,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-clear-one-map-pocket",
     title: "Clear One Map Pocket",
-    objective: "A familiar map with one small unexplored or unfinished area.",
-    completion: "Reveal that area and resolve one activity inside it.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -114,8 +92,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-open-the-expansion-door",
     title: "Start an Unplayed Expansion",
-    objective: "An owned expansion or DLC chapter you never entered.",
-    completion: "Reach its first unique location, mission, or major encounter.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 50,
     rewardPoints: 240,
@@ -124,8 +100,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-let-the-other-hero-grow",
     title: "Advance a Neglected Character",
-    objective: "An RPG, roster game, or fighter with an unused character.",
-    completion: "Gain one level, unlock, rank, or completed activity with them.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 200,
@@ -134,8 +108,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-rebuild-muscle-memory",
     title: "Recover Forgotten Controls",
-    objective: "A game you want back in rotation but no longer remember.",
-    completion: "Finish its tutorial or one familiar activity without a guide.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 170,
@@ -144,8 +116,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-follow-the-remembered-thread",
     title: "Continue the Remembered Story",
-    objective: "An unfinished story game with one question still in your mind.",
-    completion: "Reach the next answer, reveal, or chapter break.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 50,
     rewardPoints: 240,
@@ -154,8 +124,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-shake-off-the-rust",
     title: "Shake Off Competitive Rust",
-    objective: "A fighting, racing, sports, or shooter game you once played well.",
-    completion: "Finish three matches or races without judging your old rank.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 190,
@@ -163,9 +131,7 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   },
   {
     id: "progress-claim-the-nearby-feat",
-    title: "Claim a Nearby Achievement",
-    objective: "An achievement already close or immediately attemptable.",
-    completion: "Unlock it or finish three complete attempts.",
+    title: "Unlock One Nearby Achievement",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 200,
@@ -174,8 +140,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-return-to-the-gift",
     title: "Play the Game You Received",
-    objective: "A gifted game you have not given a fair session.",
-    completion: "Finish its opening activity; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 220,
@@ -184,8 +148,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-choose-the-short-road",
     title: "Advance the Shortest Campaign",
-    objective: "The briefest unfinished campaign in your library.",
-    completion: "Finish one chapter or reach its next major checkpoint.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 50,
     rewardPoints: 230,
@@ -194,8 +156,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-cross-the-middle",
     title: "Move a Midgame Forward",
-    objective: "A campaign stranded far from both beginning and end.",
-    completion: "Finish one named quest, chapter, dungeon, or operation.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 240,
@@ -204,8 +164,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-unpack-and-move",
     title: "Fix an Overloaded Inventory",
-    objective: "An RPG or survival save blocked by inventory clutter.",
-    completion: "Equip one usable kit, clear space, and leave the menu.",
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -214,8 +172,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-prove-one-technique",
     title: "Make One Technique Reliable",
-    objective: "A game with a half-learned combo, route, tool, or tactic.",
-    completion: "Use the technique successfully three times in real play.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 190,
@@ -224,8 +180,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-play-the-missing-link",
     title: "Start the Missing Sequel",
-    objective: "An unplayed entry filling a gap in a series you know.",
-    completion: "Reach its first major save point or chapter break.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 50,
     rewardPoints: 240,
@@ -234,8 +188,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-earn-the-specific-upgrade",
     title: "Earn One Nearby Upgrade",
-    objective: "A save with one useful upgrade already within reach.",
-    completion: "Earn, buy, and use that exact upgrade once.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 220,
@@ -244,8 +196,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-remove-one-barrier",
     title: "Remove One Friction Point",
-    objective: "A good game blocked by difficulty, controls, text, or setup.",
-    completion: "Change one relevant setting and finish one activity.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 30,
     rewardPoints: 180,
@@ -254,8 +204,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-finish-a-favorites-loose-end",
     title: "Finish a Favorite's Loose End",
-    objective: "A game you love with one overlooked quest, level, or mode.",
-    completion: "Finish that single loose end and save.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 220,
@@ -264,8 +212,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-take-the-road-not-used",
     title: "Advance the Other Branch",
-    objective: "A story or strategy game with a route you skipped.",
-    completion: "Reach one outcome or checkpoint unique to that branch.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 220,
@@ -274,8 +220,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-rescue-the-secondary-save",
     title: "Rescue a Secondary Save",
-    objective: "An alternate character, route, or build you stopped using.",
-    completion: "Finish one milestone that makes the save worth keeping.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 210,
@@ -284,8 +228,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-transfer-a-strength",
     title: "Transfer One Skill",
-    objective: "A game that shares aiming, timing, planning, or movement with another.",
-    completion: "Use that familiar skill to finish one level, match, or encounter.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 200,
@@ -294,8 +236,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-spend-the-hoarded-resource",
     title: "Spend the Hoarded Resource",
-    objective: "A save holding a rare item, currency, or ability you keep saving.",
-    completion: "Spend it on progress and finish the resulting activity.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 200,
@@ -304,8 +244,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-finish-the-tutorial",
     title: "Finish an Abandoned Tutorial",
-    objective: "A strategy, fighting, simulation, or systems game you never learned.",
-    completion: "Finish the tutorial and use one lesson in normal play.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 200,
@@ -314,8 +252,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-roguelike-meta-step",
     title: "Advance a Roguelike Save",
-    objective: "A roguelike or run-based game with persistent progression.",
-    completion: "Finish one run and buy one lasting unlock.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 220,
@@ -324,8 +260,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-complete-a-season",
     title: "Finish One In-Game Season",
-    objective: "A sports, farming, management, or life-simulation save near season's end.",
-    completion: "Reach the next season summary, table, or calendar change.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 45,
     rewardPoints: 230,
@@ -334,8 +268,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-open-the-endgame",
     title: "Reach the Endgame",
-    objective: "An RPG, looter, or strategy game one milestone from endgame.",
-    completion: "Unlock its final region, difficulty, activity, or campaign phase.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 50,
     rewardPoints: 250,
@@ -344,8 +276,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-master-one-recipe",
     title: "Master One Recipe",
-    objective: "A crafting, cooking, alchemy, or production game with an unfinished recipe.",
-    completion: "Gather its ingredients and produce the finished item once.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 35,
     rewardPoints: 210,
@@ -354,8 +284,6 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
   {
     id: "progress-fix-one-crisis",
     title: "Fix One Management Crisis",
-    objective: "A city, colony, business, or team save with one obvious problem.",
-    completion: "Stabilize that problem for one full in-game cycle.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 40,
     rewardPoints: 230,

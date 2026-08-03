@@ -27,6 +27,7 @@ import { formatRunningDuration } from "../lib/format";
 import { playSound } from "../lib/sound";
 import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
 import { CompletionCheckIcon } from "./CompletionCheckIcon";
+import { ChevronLeftIcon } from "./Icons";
 import { QuestCardBack } from "./QuestCardBack";
 import { QuestCardMeta } from "./QuestCardMeta";
 import { QuestTips } from "./QuestTips";
@@ -53,13 +54,19 @@ type Props = {
   debugMode: boolean;
   reduceMotion: boolean;
   onDiscard: () => boolean;
+  onReturnToSelection: () => boolean;
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
   onComplete: (gameTitle: string) => void;
 };
 
-type Phase = "ready" | "running" | "paused" | "cutting" | "completed";
+type Phase =
+  | "ready"
+  | "running"
+  | "paused"
+  | "cutting"
+  | "completed";
 type Point = { x: number; y: number };
 
 const PAUSE_PULL_DISTANCE = 44;
@@ -117,6 +124,7 @@ export function ActiveTaskCard({
   debugMode,
   reduceMotion,
   onDiscard,
+  onReturnToSelection,
   onStart,
   onPause,
   onResume,
@@ -454,6 +462,7 @@ export function ActiveTaskCard({
     if (exitStartedRef.current || phase === "cutting" || phase === "completed")
       return;
     if (next === "cutting" && !ropeCut) return;
+    if (next === "cutting" && startedAtRef.current === null) return;
     if (next === "cutting" && redRopes < 1 && !debugMode) {
       showCancellationBlocked();
       return;
@@ -500,8 +509,7 @@ export function ActiveTaskCard({
       () => {
         if (next === "completed") {
           onComplete(gameTitle);
-        }
-        else onDiscard();
+        } else onDiscard();
       },
       next === "completed"
         ? reduceMotion
@@ -511,6 +519,15 @@ export function ActiveTaskCard({
           ? 80
           : 1200,
     );
+  }
+
+  function returnToSelection() {
+    if (phase !== "ready" || exitStartedRef.current) return;
+    exitStartedRef.current = true;
+    setCardFocused(false);
+    if (!onReturnToSelection()) {
+      exitStartedRef.current = false;
+    }
   }
 
   function showCancellationBlocked() {
@@ -598,6 +615,7 @@ export function ActiveTaskCard({
     const target = event.target as HTMLElement;
     if (
       exitStartedRef.current ||
+      phase === "ready" ||
       target.closest("button") ||
       target.closest("[data-cut-ignore]") ||
       target.closest("[data-timer-drag]")
@@ -659,8 +677,7 @@ export function ActiveTaskCard({
           -rigHeight * (RUNNING_TIMER_TOP_RATIO - READY_TIMER_TOP_RATIO);
         const distanceFromRest = Math.hypot(pose.x, pose.y - restingY);
         const speed = Math.hypot(pose.velocity.x, pose.velocity.y);
-        const settled =
-          elapsed > 480 && distanceFromRest < 22 && speed < 130;
+        const settled = elapsed > 480 && distanceFromRest < 22 && speed < 130;
         const timedOut = elapsed > 2_400;
 
         if (settled || timedOut) {
@@ -735,6 +752,9 @@ export function ActiveTaskCard({
   const completionRemainingMs = Math.max(0, minimumDurationMs - elapsedMs);
   const displayedGameTitle = sanitizeGameTitle(gameTitle);
   const cardFocusAvailable = isMobileViewport && revealFinished && !exiting;
+  const canCutRope =
+    (phase === "running" || phase === "paused") && (debugMode || redRopes > 0);
+  const returnTooltipId = `back-to-selection-tooltip-${assignment.sessionId}`;
 
   function closeCardFocus() {
     setCardFocused(false);
@@ -992,7 +1012,7 @@ export function ActiveTaskCard({
         transition={{ duration: reduceMotion ? 0 : 0.16, ease: "easeOut" }}
         style={{
           pointerEvents:
-            completed || !revealFinished || timerEntranceSettling
+            exiting || !revealFinished || timerEntranceSettling
               ? "none"
               : "auto",
         }}
@@ -1003,13 +1023,13 @@ export function ActiveTaskCard({
       >
         {revealFinished && (
           <PhysicsRope
-            cutAvailable={debugMode || redRopes > 0}
             cut={phase === "cutting" ? cut : null}
             dragVelocityRef={timerDragVelocityRef}
             draggingRef={timerDraggingRef}
             isMobileViewport={isMobileViewport}
             mode={ropeMode}
             onTimerMove={syncTimerToPhysics}
+            red={phase === "cutting" || canCutRope}
             reduceMotion={reduceMotion}
             releaseRef={ropeReleaseRef}
             screenPointsRef={ropePointsRef}
@@ -1056,12 +1076,19 @@ export function ActiveTaskCard({
                   : t("ui.timer.unavailable")
           }
           drag={
-            (phase === "ready" || phase === "running" || phase === "paused") &&
+            (phase === "ready" ||
+              phase === "running" ||
+              phase === "paused") &&
             ropeMode !== "resumePullback" &&
             !timerEntranceSettling &&
             !exiting
           }
-          dragConstraints={{ left: -190, right: 190, top: -130, bottom: 130 }}
+          dragConstraints={{
+            left: -190,
+            right: 190,
+            top: -130,
+            bottom: 130,
+          }}
           dragElastic={0.06}
           dragMomentum={false}
           style={{ x, y }}
@@ -1104,18 +1131,20 @@ export function ActiveTaskCard({
             {(phase === "ready" || phase === "paused") &&
               !timerSettling &&
               !cancellationBlocked && (
-              <motion.span
-                className={styles.timerStatus}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: reduceMotion ? 0 : 0.12 }}
-              >
-                {phase === "ready"
-                  ? t("ui.timer.ready")
-                  : t("ui.timer.paused")}
-              </motion.span>
-            )}
+                <motion.span
+                  className={styles.timerStatus}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.12 }}
+                >
+                  {phase === "ready"
+                    ? t("ui.quest.minimumMinutes", {
+                        count: task.minimumDurationMinutes,
+                      })
+                    : t("ui.timer.paused")}
+                </motion.span>
+              )}
           </AnimatePresence>
           <AnimatePresence>
             {cancellationBlocked && !exiting && (
@@ -1205,18 +1234,32 @@ export function ActiveTaskCard({
                     ? t("ui.timer.pullResume")
                     : t("ui.timer.pullPause")}
               </span>
-              <span>
-                {phase === "ready"
-                  ? t("ui.timer.cutChooseAnother")
-                  : t("ui.timer.cutStop")}
-                <span className={styles.timerRopeCount}>
-                  {t("ui.timer.ropesLeftPrefix")}{" "}
-                  <strong>
-                    {t("ui.timer.ropeCount", { count: redRopes })}
-                  </strong>{" "}
-                  {t("ui.timer.ropesLeftSuffix")}
+              {canCutRope && <span>{t("ui.timer.cutStop")}</span>}
+              {phase === "ready" && (
+                <span
+                  className={`${styles.moodEditControl} ${styles.timerReturnControl}`}
+                >
+                  <button
+                    type="button"
+                    aria-describedby={
+                      isMobileViewport ? undefined : returnTooltipId
+                    }
+                    onClick={returnToSelection}
+                  >
+                    {/* <ChevronLeftIcon className={styles.timerReturnChevron} /> */}
+                    <span>{t("ui.timer.backToSelection")}</span>
+                  </button>
+                  {!isMobileViewport && (
+                    <span
+                      className={styles.moodEditTooltip}
+                      id={returnTooltipId}
+                      role="tooltip"
+                    >
+                      {t("ui.timer.backToSelectionTooltip")}
+                    </span>
+                  )}
                 </span>
-              </span>
+              )}
             </motion.p>
           )}
         </AnimatePresence>
@@ -1377,8 +1420,8 @@ function initialTimerOffset(
   useFullMobileRig: boolean,
 ): RopePoint {
   const compactLayout = window.matchMedia("(max-width: 820px)").matches;
-  const rigHeight = window.innerHeight *
-    (compactLayout && !useFullMobileRig ? 0.52 : 1);
+  const rigHeight =
+    window.innerHeight * (compactLayout && !useFullMobileRig ? 0.52 : 1);
   if (!shouldDrop) {
     return {
       x: 0,

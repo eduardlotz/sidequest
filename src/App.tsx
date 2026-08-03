@@ -49,6 +49,7 @@ export function App() {
     refreshMoodWindow,
     replayQuest,
     revealQuest,
+    returnCurrentSessionToSelection,
     resumeQuest,
     selectMood,
     selectedMoodId,
@@ -72,6 +73,7 @@ export function App() {
       refreshMoodWindow: state.refreshMoodWindow,
       replayQuest: state.replayQuest,
       revealQuest: state.revealQuest,
+      returnCurrentSessionToSelection: state.returnCurrentSessionToSelection,
       resumeQuest: state.resumeQuest,
       selectMood: state.selectMood,
       selectedMoodId: state.selectedMoodId,
@@ -397,6 +399,7 @@ export function App() {
                 onSelectMood={selectMood}
                 onEditMood={editMood}
                 onRevealQuest={revealQuest}
+                onReturnToSelection={returnCurrentSessionToSelection}
                 onShuffle={shuffleOffers}
                 onDiscard={discardCurrentSession}
                 onStart={startQuest}

@@ -4,8 +4,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-first-try-counts",
     title: "Play a Fighting Set",
-    objective: "A fighting game and any character you want to learn.",
-    completion: "Finish a best-of-five set or one arcade run.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -14,8 +12,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-one-step-harder",
     title: "Play Three Shooter Matches",
-    objective: "The competitive shooter whose movement or weapons tempt you most.",
-    completion: "Finish three full PvP matches without switching games.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -24,8 +20,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-beat-your-ghost",
     title: "Race for One Result",
-    objective: "A racing game with a car, track, or style you enjoy.",
-    completion: "Finish three races or record one valid time trial.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -34,8 +28,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-pressure-proof",
     title: "Outthink One Opponent",
-    objective: "A strategy, tactics, or card game with competitive play.",
-    completion: "Finish one full match or scenario.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 60,
     rewardPoints: 200,
@@ -44,8 +36,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-thin-margin",
     title: "Play a Full Sports Match",
-    objective: "The sport, team, or athlete you most want to control.",
-    completion: "Finish one full match, event, or tournament round.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -54,8 +44,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-adapt-on-contact",
     title: "Beat a Personal Best",
-    objective: "A game that records times, scores, ranks, or streaks.",
-    completion: "Beat one target or finish three honest attempts.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -64,8 +52,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-return-to-the-wall",
     title: "Retry the Hard Encounter",
-    objective: "A boss, race, puzzle, mission, or rank barrier that stopped you.",
-    completion: "Clear it or finish three deliberate attempts.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -74,8 +60,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-one-notch-higher",
     title: "Raise the Difficulty Once",
-    objective: "A familiar game with an adjustable difficulty setting.",
-    completion: "Finish one activity exactly one step above your usual setting.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -84,8 +68,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-three-life-window",
     title: "Spend Only Three Lives",
-    objective: "An arcade, platform, action, or run-based game with quick retries.",
-    completion: "Record your best result after exactly three attempts.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -94,8 +76,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-neglected-tool",
     title: "Use the Neglected Tool",
-    objective: "A game with weapons, classes, cards, or abilities you ignore.",
-    completion: "Finish one activity with one neglected option kept central.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -104,8 +84,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-silent-route",
     title: "Cross One Area Unseen",
-    objective: "A stealth, action, or immersive-sim game with guarded spaces.",
-    completion: "Cross one guarded area without triggering a full alarm.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -114,8 +92,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-rationed-run",
     title: "Finish With Half Supplies",
-    objective: "A survival, shooter, RPG, or tactics game with limited resources.",
-    completion: "Finish one activity using no more than half your normal supply.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -124,8 +100,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-boss-rematch",
     title: "Beat a Boss With Basic Gear",
-    objective: "A game with a memorable replayable boss or arena.",
-    completion: "Defeat it with ordinary gear or finish three focused attempts.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -134,8 +108,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-precision-passage",
     title: "Clear a Precision Passage",
-    objective: "A platformer, rhythm, action, puzzle, or simulation game.",
-    completion: "Clear one demanding sequence or finish five complete attempts.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -144,8 +116,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-no-hint-hour",
     title: "Solve Without Hints",
-    objective: "A game with one unresolved puzzle, route, deduction, or system.",
-    completion: "Solve it or leave one concrete new theory before stopping.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -154,8 +124,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-weak-link-drill",
     title: "Train Your Weakest Skill",
-    objective: "A game exposing your defense, aim, timing, economy, or navigation.",
-    completion: "Practice that skill, then use it in one complete activity.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -164,8 +132,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-daily-trial",
     title: "Finish Today's Challenge",
-    objective: "A game with a playable daily or weekly challenge.",
-    completion: "Complete that challenge or submit one valid result.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -174,8 +140,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-underdog-kit",
     title: "Use the Underdog Option",
-    objective: "A game with teams, decks, characters, vehicles, or builds.",
-    completion: "Finish three short rounds or one mission with your weakest viable option.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -184,8 +148,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-no-restart-recovery",
     title: "Recover Without Restarting",
-    objective: "A run, match, mission, or management game where mistakes matter.",
-    completion: "Continue through one serious setback and reach a natural result.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -194,8 +156,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-pattern-reader",
     title: "Read One Pattern",
-    objective: "A game with repeating attacks, rhythms, routes, or production cycles.",
-    completion: "Use one repeating signal to clear an encounter or cycle.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -204,8 +164,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-last-stand",
     title: "Hold Three Waves",
-    objective: "A defense, horde, siege, tower-defense, or survival mode.",
-    completion: "Hold one position or plan through three complete waves.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -214,8 +172,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-ranked-nerves",
     title: "Finish One Ranked Match",
-    objective: "A competitive game whose ranked queue makes you hesitate.",
-    completion: "Finish exactly one rated match, race, event, or placement.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -224,8 +180,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-nearby-achievement",
     title: "Attempt a Hard Achievement",
-    objective: "A skill-based achievement you have avoided attempting.",
-    completion: "Unlock it or finish three full attempts from its start.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -234,8 +188,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-survival-shift",
     title: "Survive One Full Shift",
-    objective: "A survival, horror, extraction, management, or action game.",
-    completion: "Survive one night, floor, expedition, shift, or evacuation.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 40,
     rewardPoints: 250,
@@ -244,8 +196,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-one-mechanic-master",
     title: "Learn One Advanced Move",
-    objective: "A game with a parry, drift, cancel, counter, or complex command.",
-    completion: "Use that move successfully three times in one activity.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -254,8 +204,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-clean-combo",
     title: "Land One Clean Sequence",
-    objective: "A fighter, rhythm, tactics, or production game with chained actions.",
-    completion: "Execute one planned sequence cleanly three times.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -264,8 +212,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-damage-budget",
     title: "Stay Under a Damage Budget",
-    objective: "A game with visible health, casualties, integrity, or defensive errors.",
-    completion: "Finish one encounter while losing no more than one quarter.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -274,8 +220,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-unknown-ruleset",
     title: "Finish an Unplayed Mode",
-    objective: "A game with an untouched variant, scenario, or ruleset.",
-    completion: "Read its rules once and finish one full result.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 200,
@@ -284,8 +228,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-audacious-route",
     title: "Take the Risky Route",
-    objective: "A game with branching danger, contested goals, or high-risk rewards.",
-    completion: "Reach the harder route's endpoint or finish one attempt.",
     minimumDurationMinutes: 25,
     suggestedDurationMinutes: 35,
     rewardPoints: 220,
@@ -294,8 +236,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-tension-you-avoid",
     title: "Stay With the Tension",
-    objective: "A horror or high-stakes game you keep avoiding.",
-    completion: "Reach the next safe point; otherwise, stop safely after the minimum.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 180,
@@ -304,8 +244,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-platformer-no-fall",
     title: "Clear a No-Fall Section",
-    objective: "A platformer with a short route you already understand.",
-    completion: "Reach the next checkpoint once without falling or dying.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 190,
@@ -314,8 +252,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-tactics-iron-plan",
     title: "Finish a Tactics Mission Cleanly",
-    objective: "A turn-based tactics or strategy game with a contained mission.",
-    completion: "Finish it without reloading a move or losing a unit.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 60,
     rewardPoints: 240,
@@ -324,8 +260,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-rhythm-clean-song",
     title: "Clean Up One Song",
-    objective: "A rhythm or music game with a song near your skill ceiling.",
-    completion: "Improve its score or combo across three attempts.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 190,
@@ -334,8 +268,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-sports-comeback",
     title: "Complete a Sports Comeback",
-    objective: "A sports game with custom matches or controllable score settings.",
-    completion: "Start behind and win or draw one full match.",
     minimumDurationMinutes: 20,
     suggestedDurationMinutes: 30,
     rewardPoints: 210,
@@ -344,8 +276,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-extraction-one-haul",
     title: "Extract One Useful Haul",
-    objective: "An extraction, survival, or loot-driven game with a safe exit.",
-    completion: "Enter once, secure one needed resource, and extract alive.",
     minimumDurationMinutes: 30,
     suggestedDurationMinutes: 40,
     rewardPoints: 240,
@@ -354,8 +284,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
   {
     id: "challenge-speedrun-one-split",
     title: "Race One Speedrun Split",
-    objective: "A familiar action or platform game with a repeatable short section.",
-    completion: "Time the section three times and keep your fastest clean run.",
     minimumDurationMinutes: 15,
     suggestedDurationMinutes: 25,
     rewardPoints: 200,
