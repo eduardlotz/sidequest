@@ -68,15 +68,15 @@ type CardProps = {
 
 const WHEEL_SETTLE_MS = 90;
 const CAROUSEL_REVEAL_DELAY_MS = 240;
-const CARD_CENTER_STAGGER_SECONDS = 0.07;
+const CARD_CENTER_STAGGER_SECONDS = 0.035;
 const MOOD_FADE_EASE = [0.22, 0.8, 0.24, 1] as const;
 const MOOD_POSITION_TRANSITION = {
   type: "spring" as const,
-  stiffness: 175,
-  damping: 16.5,
-  mass: 0.95,
-  restDelta: 0.001,
-  restSpeed: 0.001,
+  stiffness: 260,
+  damping: 30,
+  mass: 0.82,
+  restDelta: 0.01,
+  restSpeed: 0.01,
 };
 const MOBILE_CARD_GAP = 330;
 const DESKTOP_CARD_GAP = 520;
@@ -402,12 +402,12 @@ function ArcCard({
   const absoluteDistance = Math.min(2, Math.abs(discreteDistance));
   const centerStaggerDelay = absoluteDistance * CARD_CENTER_STAGGER_SECONDS;
   const direction = discreteDistance < 0 ? -1 : 1;
-  const returningOffsetX = center ? 0 : direction * (62 + absoluteDistance * 14);
-  const returningOffsetY = center ? 92 : 68;
+  const returningOffsetX = center ? 0 : direction * (32 + absoluteDistance * 10);
+  const returningOffsetY = center ? 36 : 28;
   const moodExitX = primaryExit
     ? 0
-    : direction * (92 + absoluteDistance * 20);
-  const moodExitY = primaryExit ? 210 : 150;
+    : direction * (42 + absoluteDistance * 12);
+  const moodExitY = primaryExit ? 32 : 44;
   const positionDelay = foregroundExiting
     ? centerStaggerDelay
     : revealCards
@@ -510,7 +510,7 @@ function ArcCard({
                   delay: positionDelay,
                 },
                 opacity: {
-                  duration: foregroundExiting ? 0.42 : 0.32,
+                  duration: foregroundExiting ? 0.26 : 0.28,
                   ease: MOOD_FADE_EASE,
                   delay: positionDelay,
                 },

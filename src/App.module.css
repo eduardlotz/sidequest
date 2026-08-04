@@ -3905,8 +3905,10 @@ button.arcCard {
 }
 
 .selectionScreen {
+  height: 100svh;
+  min-height: 0;
+  overflow: hidden;
   overflow-x: clip;
-  overflow-y: visible;
   padding-top: 92px;
 }
 
@@ -3921,11 +3923,14 @@ button.arcCard {
 }
 
 .arcDeck {
+  --arc-track-top: clamp(72px, calc(37svh - 235px), 98px);
+  --mood-card-height: clamp(288px, 29.6cqw, 380px);
+  --mood-card-width: clamp(360px, 37cqw, 475px);
   height: calc(100svh - 170px);
-  min-height: 510px;
+  min-height: 0;
   overscroll-behavior-y: none;
   overflow-x: clip;
-  overflow-y: visible;
+  overflow-y: hidden;
   touch-action: none;
 }
 
@@ -3935,14 +3940,44 @@ button.arcCard {
 }
 
 .arcDeckTrack {
-  top: 98px;
+  top: var(--arc-track-top);
+}
+
+.moodDeckControls {
+  top: calc(
+    var(--arc-track-top) - 42px + var(--mood-card-height) + 18px
+  );
+  bottom: auto;
 }
 
 .arcCardSlot {
-  width: clamp(360px, 37cqw, 475px);
+  width: var(--mood-card-width);
   aspect-ratio: 5 / 4;
-  margin-left: calc(clamp(360px, 37cqw, 475px) / -2);
+  margin-left: calc(var(--mood-card-width) / -2);
   opacity: 1;
+  will-change: auto;
+}
+
+.arcCardSlot[data-visible] {
+  will-change: transform;
+}
+
+.moodCardExit {
+  backface-visibility: hidden;
+  will-change: auto;
+  -webkit-backface-visibility: hidden;
+}
+
+.arcCardSlot[data-visible] .moodCardExit {
+  will-change: opacity, transform;
+}
+
+.moodIllustrationLayer {
+  will-change: auto;
+}
+
+.arcCardSlot[data-center] .moodIllustrationLayer {
+  will-change: transform;
 }
 
 .arcCard {
@@ -4030,17 +4065,20 @@ button.arcCard {
   }
 
   .arcDeck {
+    --arc-track-top: clamp(74px, calc(43svh - 236px), 128px);
+    --mood-card-height: min(70.4vw, 336px);
+    --mood-card-width: min(88vw, 420px);
     height: calc(100svh - 164px);
-    min-height: 450px;
+    min-height: 0;
   }
 
   .arcDeckTrack {
-    top: 90px;
+    top: var(--arc-track-top);
   }
 
   .arcCardSlot {
-    width: min(88vw, 420px);
-    margin-left: calc(min(88vw, 420px) / -2);
+    width: var(--mood-card-width);
+    margin-left: calc(var(--mood-card-width) / -2);
   }
 
   .arcCard {
@@ -4071,8 +4109,15 @@ button.arcCard {
 .deckWrap > .selectionScreen,
 .deckWrap > .questSelectionScreen {
   position: absolute;
+  height: 100svh;
+  min-height: 0;
   inset: 0;
   width: 100%;
+}
+
+.questSelectionScreen {
+  overflow-x: clip;
+  overflow-y: hidden;
 }
 
 .selectionHeader > p {
@@ -4098,6 +4143,8 @@ button.arcCard {
   inset: 0;
   pointer-events: none;
   transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .moodSelectionCardBody {
@@ -4137,6 +4184,8 @@ button.arcCard {
   border-radius: 30px;
   inset: 0;
   pointer-events: none;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .moodSelectionCardContent {
@@ -4182,13 +4231,15 @@ button.arcCard {
   display: block;
   inset: 0;
   transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   transition:
     filter 180ms ease,
     scale 400ms cubic-bezier(0.03, 0.98, 0.52, 0.99);
 }
 
 .previewCardProjection[data-mood-handoff] {
-  filter: none !important;
+  filter: blur(0) !important;
 }
 
 .questSelectionCardContent {
@@ -4271,6 +4322,8 @@ button.arcCard {
 .previewCardProjection {
   position: absolute;
   inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .questSelectionPrompt {
@@ -4354,17 +4407,20 @@ button.arcCard {
   }
 
   .arcDeck {
+    --arc-track-top: clamp(64px, 10svh, 92px);
+    --mood-card-height: clamp(256px, 25.6cqw, 336px);
+    --mood-card-width: clamp(320px, 32cqw, 420px);
     height: calc(100svh - 110px);
-    min-height: 340px;
+    min-height: 0;
   }
 
   .arcDeckTrack {
-    top: 48px;
+    top: var(--arc-track-top);
   }
 
   .arcCardSlot {
-    width: clamp(320px, 32cqw, 420px);
-    margin-left: calc(clamp(320px, 32cqw, 420px) / -2);
+    width: var(--mood-card-width);
+    margin-left: calc(var(--mood-card-width) / -2);
   }
 
   .questSelectionScreen {
@@ -4393,9 +4449,15 @@ button.arcCard {
 }
 
 @media (max-width: 820px) and (max-height: 700px) {
+  .arcDeck {
+    --arc-track-top: clamp(82px, 14svh, 96px);
+    --mood-card-height: min(70.4vw, 304px);
+    --mood-card-width: min(88vw, 380px);
+  }
+
   .arcCardSlot {
-    width: min(88vw, 380px);
-    margin-left: calc(min(88vw, 380px) / -2);
+    width: var(--mood-card-width);
+    margin-left: calc(var(--mood-card-width) / -2);
   }
 
   .previewCardSlot {
@@ -4407,5 +4469,12 @@ button.arcCard {
   .moodSelectionCardBody::before,
   .arcCardHitArea {
     transition: none;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  .moodCardExit,
+  .previewCardProjection {
+    filter: none !important;
   }
 }
