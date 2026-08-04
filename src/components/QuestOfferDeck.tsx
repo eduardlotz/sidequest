@@ -53,14 +53,14 @@ const CARD_POSITION_TRANSITION = {
 };
 const MOOD_HANDOFF_TRANSITION = {
   type: "spring" as const,
-  stiffness: 125,
-  damping: 14,
-  mass: 0.9,
-  restDelta: 0.001,
-  restSpeed: 0.001,
+  stiffness: 250,
+  damping: 29,
+  mass: 0.82,
+  restDelta: 0.01,
+  restSpeed: 0.01,
 };
-const CARD_CENTER_STAGGER_SECONDS = 0.08;
-const MOOD_HANDOFF_OFFSET_Y = -280;
+const CARD_CENTER_STAGGER_SECONDS = 0.04;
+const MOOD_HANDOFF_OFFSET_Y = -48;
 
 export function QuestOfferDeck({
   items,
@@ -301,7 +301,7 @@ function QuestOfferCard({
           ? false
           : entryMotion === "shared"
             ? {
-                filter: "none",
+                filter: "blur(0px)",
                 opacity: 0,
                 x: centerOffsetX,
                 y: MOOD_HANDOFF_OFFSET_Y,
@@ -316,7 +316,7 @@ function QuestOfferCard({
       }
       animate={{
         filter: moodHandoffActive
-          ? "none"
+          ? "blur(0px)"
           : selectionStarted && !selected
             ? "blur(5px)"
             : "blur(0px)",
@@ -350,7 +350,7 @@ function QuestOfferCard({
       exit={
         returningToMoods
           ? {
-              filter: "none",
+              filter: "blur(0px)",
               opacity: 0,
               x: centerOffsetX,
               y: MOOD_HANDOFF_OFFSET_Y,
@@ -397,7 +397,7 @@ function QuestOfferCard({
                 delay: positionDelay,
               },
               opacity: {
-                duration: moodHandoffActive ? 0.4 : 0.26,
+                duration: moodHandoffActive ? 0.28 : 0.26,
                 ease: CARD_FADE_EASE,
                 delay: positionDelay,
               },

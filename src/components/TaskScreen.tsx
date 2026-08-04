@@ -33,9 +33,9 @@ const NAV_ITEM_TRANSITION = {
   mass: 0.75,
 };
 
-const SELECTION_LAYER_EXIT_DURATION = 0.42;
-const SELECTION_RESET_FADE_OUT_DURATION = 0.46;
-const SELECTION_RESET_FADE_IN_DURATION = 0.4;
+const SELECTION_LAYER_EXIT_DURATION = 0.28;
+const SELECTION_RESET_FADE_OUT_DURATION = 0.22;
+const SELECTION_RESET_FADE_IN_DURATION = 0.28;
 
 type SelectionLayerProps = {
   children: ReactNode | ((present: boolean) => ReactNode);
@@ -57,7 +57,7 @@ const SelectionLayer = forwardRef<HTMLDivElement, SelectionLayerProps>(
       enterFromOpacity,
       enterDuration = SELECTION_LAYER_EXIT_DURATION,
       exitDuration = SELECTION_LAYER_EXIT_DURATION,
-      exitOpacity = 0.999,
+      exitOpacity = 0,
       hidden = false,
       reduceMotion,
       zIndex,
@@ -317,11 +317,11 @@ export function TaskScreen({
               }
               animate={{ opacity: 1, scale: 1 }}
               exit={{
-                opacity: reduceMotion ? 1 : 0.999,
+                opacity: reduceMotion ? 1 : 0,
                 scale: 1,
                 pointerEvents: "none",
                 transition: {
-                  duration: reduceMotion ? 0 : 0.34,
+                  duration: reduceMotion ? 0 : 0.22,
                   ease: [0.22, 0.8, 0.24, 1],
                 },
               }}
@@ -334,7 +334,8 @@ export function TaskScreen({
               <AnimatePresence
                 initial={false}
                 key={`selection-presence-${selectionPresenceGeneration}`}
-                mode={editingMood ? "sync" : "popLayout"}
+                mode="sync"
+                presenceAffectsLayout={false}
               >
                 {selectedMood ? (
                   <SelectionLayer
@@ -344,7 +345,7 @@ export function TaskScreen({
                         ? SELECTION_RESET_FADE_OUT_DURATION
                         : SELECTION_LAYER_EXIT_DURATION
                     }
-                    exitOpacity={editingMood ? 0 : 0.999}
+                    exitOpacity={0}
                     key="quests"
                     hidden={selectionControlsExiting}
                     reduceMotion={reduceMotion}
