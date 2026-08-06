@@ -4,7 +4,6 @@ import {
   type PanInfo,
   type Variants,
   useMotionValue,
-  useMotionValueEvent,
   useSpring,
 } from "motion/react";
 import {
@@ -14,10 +13,12 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import {
+  calculateCompletionPoints,
   sanitizeGameTitle,
+  type CompletedSession,
   type Quest,
   type QuestSession,
 } from "../stores/useQuestStore";
@@ -25,14 +26,18 @@ import { getQuestCardAccentStyle } from "../data/questColors";
 import { CARD_LAYOUT_TRANSITION } from "../lib/cardMotion";
 import { formatRunningDuration } from "../lib/format";
 import { playSound } from "../lib/sound";
+import { isDownwardActivationPull } from "../lib/timerRopeMechanics";
 import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
 import { CompletionCheckIcon } from "./CompletionCheckIcon";
-import { ChevronLeftIcon } from "./Icons";
+import { CoinIcon, InfoIcon } from "./Icons";
 import { QuestCardBack } from "./QuestCardBack";
 import { QuestCardMeta } from "./QuestCardMeta";
 import { QuestTips } from "./QuestTips";
+import { RopePurchaseRow } from "./RopePurchaseRow";
 import {
   MOBILE_PAUSED_TIMER_TOP_RATIO,
+  MOBILE_READY_TIMER_TOP_RATIO,
+  MOBILE_RUNNING_TIMER_TOP_RATIO,
   PAUSED_TIMER_TOP_RATIO,
   PhysicsRope,
   READY_TIMER_TOP_RATIO,
@@ -49,7 +54,9 @@ import styles from "../App.module.css";
 type Props = {
   quest: Quest;
   session: QuestSession;
+  previousCompletions: readonly CompletedSession[];
   layoutSessionId: string;
+  coins: number;
   redRopes: number;
   debugMode: boolean;
   reduceMotion: boolean;
@@ -59,20 +66,25 @@ type Props = {
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
   onComplete: (gameTitle: string) => void;
+  onCoinFlightStart: (pointsAwarded: number) => void;
+  onCoinHit: (pointsReceived: number) => void;
+  onPurchaseRedRopes: () => boolean;
 };
 
 type Phase =
   | "ready"
   | "running"
   | "paused"
+  | "completion-preview"
   | "cutting"
   | "completed";
 type Point = { x: number; y: number };
 
 const PAUSE_PULL_DISTANCE = 44;
-const COMPLETION_FLIP_DURATION_MS = 740;
-const COMPLETION_FACE_REVEAL_MS = 340;
-const COMPLETION_HOLD_DURATION_MS = 1500;
+const COMPLETION_FLIP_DURATION_MS = 900;
+const COMPLETION_FACE_REVEAL_MS = 225;
+const COMPLETION_HOLD_DURATION_MS = 850;
+const COIN_FLIGHT_COUNT = 6;
 const CUT_TRAIL_CLEAR_DELAY_MS = 210;
 const CUT_TRAIL_FADE_DURATION_MS = 60;
 const CANCELLATION_BLOCKED_DURATION_MS = 3_000;
@@ -119,7 +131,9 @@ const pausePanelItemVariants: Variants = {
 export function ActiveTaskCard({
   quest,
   session,
+  previousCompletions,
   layoutSessionId,
+  coins,
   redRopes,
   debugMode,
   reduceMotion,
@@ -129,6 +143,9 @@ export function ActiveTaskCard({
   onPause,
   onResume,
   onComplete,
+  onCoinFlightStart,
+  onCoinHit,
+  onPurchaseRedRopes,
 }: Props) {
   const { t } = useTranslation();
   const task = quest;
@@ -153,11 +170,17 @@ export function ActiveTaskCard({
   const [timerSettling, setTimerSettling] = useState(
     readyEntranceDropRef.current,
   );
+  const [timerDragging, setTimerDragging] = useState(false);
   const [timerEntranceSettling, setTimerEntranceSettling] = useState(
     readyEntranceDropRef.current,
   );
   const [cut, setCut] = useState<RopeCut | null>(null);
   const [showFinishedFace, setShowFinishedFace] = useState(false);
+  const [coinFlight, setCoinFlight] = useState<{
+    award: number;
+    end: Point;
+    start: Point;
+  } | null>(null);
   const [completionOffset, setCompletionOffset] = useState<Point>({
     x: 0,
     y: 0,
@@ -184,13 +207,17 @@ export function ActiveTaskCard({
     initialTimerOffset(
       dropOnStartRef.current,
       initiallyReady
-        ? READY_TIMER_TOP_RATIO
+        ? isMobileViewport
+          ? MOBILE_READY_TIMER_TOP_RATIO
+          : READY_TIMER_TOP_RATIO
         : initiallyPaused
           ? isMobileViewport
             ? MOBILE_PAUSED_TIMER_TOP_RATIO
             : PAUSED_TIMER_TOP_RATIO
-          : RUNNING_TIMER_TOP_RATIO,
-      initiallyPaused,
+          : isMobileViewport
+            ? MOBILE_RUNNING_TIMER_TOP_RATIO
+            : RUNNING_TIMER_TOP_RATIO,
+      initiallyReady || initiallyPaused,
     ),
   );
   const rigRef = useRef<HTMLDivElement>(null);
@@ -201,7 +228,6 @@ export function ActiveTaskCard({
   const ropePointsRef = useRef<RopePoint[]>([]);
   const ropeTargetRef = useRef<RopePoint>(initialTimerOffsetRef.current);
   const timerDraggingRef = useRef(false);
-  const timerDragVelocityRef = useRef<RopePoint>({ x: 0, y: 0 });
   const ropeReleaseRef = useRef<RopeRelease | null>(null);
   const ropeReleaseSequenceRef = useRef(0);
   const dragOriginRef = useRef<RopePoint>(initialTimerOffsetRef.current);
@@ -211,8 +237,6 @@ export function ActiveTaskCard({
     initiallyReady ? "ready" : initiallyPaused ? "paused" : "running",
   );
   const timerReturnStartedAtRef = useRef(0);
-  const timerReturnLastAtRef = useRef(0);
-  const timerReturnVelocityRef = useRef<RopePoint>({ x: 0, y: 0 });
   const timerEntranceStartedAtRef = useRef(0);
   const resumePendingRef = useRef(false);
   const startPendingRef = useRef(false);
@@ -226,13 +250,15 @@ export function ActiveTaskCard({
   const cancellationBlockedTimeoutRef = useRef<number | null>(null);
   const exitTimeoutRef = useRef<number | null>(null);
   const completionRevealTimeoutRef = useRef<number | null>(null);
+  const completionFinalizeTimeoutRef = useRef<number | null>(null);
+  const coinFlightFinishedRef = useRef(false);
   const x = useMotionValue(initialTimerOffsetRef.current.x);
   const y = useMotionValue(initialTimerOffsetRef.current.y);
   const timerRotationTarget = useMotionValue(0);
   const timerRotation = useSpring(timerRotationTarget, {
-    stiffness: 260,
-    damping: 26,
-    mass: 0.58,
+    stiffness: 230,
+    damping: 17,
+    mass: 0.72,
   });
   const {
     handlePointerEnter: handleCardPointerEnter,
@@ -282,6 +308,7 @@ export function ActiveTaskCard({
     if (
       !isMobileViewport ||
       phase === "paused" ||
+      phase === "completion-preview" ||
       phase === "cutting" ||
       phase === "completed"
     ) {
@@ -324,17 +351,6 @@ export function ActiveTaskCard({
     return () => window.removeEventListener("pointermove", armHoverOutsideCard);
   }, [cardHoverArmed]);
 
-  const updateRope = useCallback(() => {
-    ropeTargetRef.current = { x: x.get(), y: y.get() };
-  }, [x, y]);
-
-  useMotionValueEvent(x, "change", updateRope);
-  useMotionValueEvent(y, "change", updateRope);
-
-  useEffect(() => {
-    updateRope();
-  }, [updateRope]);
-
   useEffect(
     () => () => {
       if (trailClearTimeoutRef.current !== null) {
@@ -349,42 +365,30 @@ export function ActiveTaskCard({
       if (completionRevealTimeoutRef.current !== null) {
         window.clearTimeout(completionRevealTimeoutRef.current);
       }
+      if (completionFinalizeTimeoutRef.current !== null) {
+        window.clearTimeout(completionFinalizeTimeoutRef.current);
+      }
     },
     [],
   );
 
-  function queueRopeRelease(
-    mode: RopeMode,
-    offset: RopePoint,
-    velocity: RopePoint,
-    preserveOffset = false,
-  ) {
+  function queueRopeRelease(mode: RopeMode, velocity: RopePoint) {
     ropeReleaseSequenceRef.current += 1;
     ropeReleaseRef.current = {
       mode,
-      offset,
-      preserveOffset,
       sequence: ropeReleaseSequenceRef.current,
       velocity,
     };
   }
 
-  function beginPhysicalReturn(
-    mode: RopeMode,
-    offset: RopePoint,
-    velocity: RopePoint,
-  ) {
+  function beginPhysicalReturn(mode: RopeMode, velocity: RopePoint) {
     const now = performance.now();
     timerReturningRef.current = true;
     timerReturnModeRef.current = mode;
     timerReturnStartedAtRef.current = now;
-    timerReturnLastAtRef.current = now;
-    timerReturnVelocityRef.current = {
-      x: Math.max(-900, Math.min(900, velocity.x)) * 0.14,
-      y: Math.max(-900, Math.min(900, velocity.y)) * 0.14,
-    };
+    timerDraggingRef.current = false;
     setTimerSettling(true);
-    queueRopeRelease(mode, offset, velocity);
+    queueRopeRelease(mode, velocity);
   }
 
   function pause() {
@@ -413,6 +417,7 @@ export function ActiveTaskCard({
     if (
       timerSettling ||
       timerEntranceSettling ||
+      phase === "completion-preview" ||
       phase === "cutting" ||
       phase === "completed" ||
       ropeMode === "resumePullback"
@@ -445,20 +450,20 @@ export function ActiveTaskCard({
     resumePendingRef.current = false;
     startPendingRef.current = false;
     if (starting) playSound("toggleOn");
-    const offset = { x: pose.x, y: pose.y };
-    x.set(offset.x);
-    y.set(offset.y);
-    ropeTargetRef.current = offset;
+    ropeTargetRef.current = { x: pose.x, y: pose.y };
     timerDraggingRef.current = false;
-    timerReturningRef.current = false;
-    setTimerSettling(false);
-    queueRopeRelease("running", offset, pose.velocity, true);
+    setTimerDragging(false);
+    timerReturningRef.current = true;
+    timerReturnModeRef.current = "running";
+    timerReturnStartedAtRef.current = performance.now();
+    setTimerSettling(true);
+    queueRopeRelease("running", pose.velocity);
     setRopeMode("running");
     setPhase("running");
     if (capturedStartedAt !== null) onStart(capturedStartedAt);
   }
 
-  function beginExit(next: "cutting" | "completed", ropeCut?: RopeCut) {
+  function beginExit(next: "cutting", ropeCut?: RopeCut) {
     if (exitStartedRef.current || phase === "cutting" || phase === "completed")
       return;
     if (next === "cutting" && !ropeCut) return;
@@ -467,16 +472,10 @@ export function ActiveTaskCard({
       showCancellationBlocked();
       return;
     }
-    if (
-      next === "completed" &&
-      !debugMode &&
-      elapsedMs < task.minimumDurationMinutes * 60_000
-    ) {
-      return;
-    }
     if (next === "cutting") playSound("cut");
     timerReturningRef.current = false;
     timerDraggingRef.current = false;
+    setTimerDragging(false);
     setTimerSettling(false);
     exitStartedRef.current = true;
     if (pausedAtRef.current === null) pausedAtRef.current = Date.now();
@@ -485,40 +484,96 @@ export function ActiveTaskCard({
       setCut(ropeCut ?? null);
     }
     setElapsedMs(duration);
-    if (next === "completed") {
-      const cardRect = cardProjectionRef.current?.getBoundingClientRect();
-      if (cardRect) {
-        setCompletionOffset({
-          x: window.innerWidth / 2 - (cardRect.left + cardRect.width / 2),
-          y: window.innerHeight / 2 - (cardRect.top + cardRect.height / 2),
-        });
-      }
-      setShowFinishedFace(reduceMotion);
-      if (reduceMotion) {
-        playSound("completion");
-      } else {
-        completionRevealTimeoutRef.current = window.setTimeout(() => {
-          setShowFinishedFace(true);
-          playSound("completion");
-          completionRevealTimeoutRef.current = null;
-        }, COMPLETION_FACE_REVEAL_MS);
-      }
-    }
     setPhase(next);
     exitTimeoutRef.current = window.setTimeout(
       () => {
-        if (next === "completed") {
-          onComplete(gameTitle);
-        } else onDiscard();
+        onDiscard();
       },
-      next === "completed"
-        ? reduceMotion
-          ? COMPLETION_HOLD_DURATION_MS
-          : COMPLETION_FLIP_DURATION_MS + COMPLETION_HOLD_DURATION_MS
-        : reduceMotion
-          ? 80
-          : 1200,
+      reduceMotion ? 80 : 1200,
     );
+  }
+
+  function beginCompletionPreview() {
+    if (
+      exitStartedRef.current ||
+      phase !== "paused" ||
+      (!debugMode && elapsedMs < task.minimumDurationMinutes * 60_000)
+    ) {
+      return;
+    }
+    exitStartedRef.current = true;
+    timerReturningRef.current = false;
+    timerDraggingRef.current = false;
+    setTimerDragging(false);
+    setTimerSettling(false);
+    setCardFocused(false);
+    const duration = readElapsed();
+    setElapsedMs(duration);
+    const cardRect = cardProjectionRef.current?.getBoundingClientRect();
+    if (cardRect) {
+      setCompletionOffset({
+        x: window.innerWidth / 2 - (cardRect.left + cardRect.width / 2),
+        y: window.innerHeight / 2 + 40 - (cardRect.top + cardRect.height / 2),
+      });
+    }
+    setPhase("completion-preview");
+  }
+
+  function saveCompletionPreview() {
+    if (phase !== "completion-preview") return;
+    const award = calculateCompletionPoints(elapsedMs);
+    const cardRect = cardProjectionRef.current?.getBoundingClientRect();
+    const triggerRect = document
+      .querySelector<HTMLElement>("[data-profile-trigger]")
+      ?.getBoundingClientRect();
+    const start = cardRect
+      ? {
+          x: cardRect.left + cardRect.width / 2,
+          y: cardRect.top + cardRect.height * 0.58,
+        }
+      : { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const end = triggerRect
+      ? {
+          x: triggerRect.left + triggerRect.width / 2,
+          y: triggerRect.top + triggerRect.height / 2,
+        }
+      : { x: window.innerWidth - 52, y: 50 };
+
+    coinFlightFinishedRef.current = false;
+    onCoinFlightStart(award);
+    setCompletionOffset((offset) => ({ ...offset, y: offset.y - 13 }));
+    setPhase("completed");
+    if (reduceMotion) {
+      setShowFinishedFace(true);
+      playSound("completion");
+      onCoinHit(award);
+      completionFinalizeTimeoutRef.current = window.setTimeout(() => {
+        onComplete(gameTitle);
+        completionFinalizeTimeoutRef.current = null;
+      }, COMPLETION_HOLD_DURATION_MS);
+      return;
+    }
+
+    setCoinFlight({ award, start, end });
+    completionRevealTimeoutRef.current = window.setTimeout(() => {
+      setShowFinishedFace(true);
+      playSound("completion");
+      completionRevealTimeoutRef.current = null;
+    }, COMPLETION_FACE_REVEAL_MS);
+  }
+
+  function finishCoinFlight(index: number) {
+    if (!coinFlight || coinFlightFinishedRef.current) return;
+    const pointsReceived = Math.round(
+      (coinFlight.award * (index + 1)) / COIN_FLIGHT_COUNT,
+    );
+    onCoinHit(pointsReceived);
+    if (index !== COIN_FLIGHT_COUNT - 1) return;
+    coinFlightFinishedRef.current = true;
+    completionFinalizeTimeoutRef.current = window.setTimeout(() => {
+      onComplete(gameTitle);
+      completionFinalizeTimeoutRef.current = null;
+    }, COMPLETION_HOLD_DURATION_MS);
   }
 
   function returnToSelection() {
@@ -545,7 +600,7 @@ export function ActiveTaskCard({
     _: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo,
   ) {
-    timerDragVelocityRef.current = info.velocity;
+    if (!timerDraggingRef.current) return;
     const requestedX = dragOriginRef.current.x + info.offset.x;
     const requestedY = dragOriginRef.current.y + info.offset.y;
     const constrained = constrainTimerOffset(
@@ -555,14 +610,36 @@ export function ActiveTaskCard({
       dragOriginRef.current,
     );
     dragTargetRef.current = constrained;
-    x.set(constrained.x);
-    y.set(constrained.y);
+    ropeTargetRef.current = constrained;
+  }
+
+  function startTimerDrag() {
+    if (
+      timerEntranceSettling ||
+      phase === "completion-preview" ||
+      phase === "cutting" ||
+      phase === "completed" ||
+      ropeMode === "resumePullback"
+    ) {
+      return;
+    }
+    playSound("timerGrab");
+    timerReturningRef.current = false;
+    setTimerSettling(true);
+    timerDraggingRef.current = true;
+    setTimerDragging(true);
+    ropeReleaseRef.current = null;
+    dragOriginRef.current = { x: x.get(), y: y.get() };
+    dragTargetRef.current = dragOriginRef.current;
+    ropeTargetRef.current = dragOriginRef.current;
   }
 
   function settleTimerPull(
     _: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo,
   ) {
+    if (!timerDraggingRef.current) return;
+    setTimerDragging(false);
     const rigHeight = rigRef.current?.clientHeight ?? window.innerHeight;
     const requested = dragTargetRef.current;
     const pullDistance = timerPullExtension(
@@ -570,26 +647,25 @@ export function ActiveTaskCard({
       requested,
       rigHeight,
     );
-    const readyPullDistance = Math.max(pullDistance, info.offset.y);
+    const inActivationSector = isDownwardActivationPull(info.offset);
     const shouldPause =
-      phase === "running" && pullDistance >= PAUSE_PULL_DISTANCE;
+      phase === "running" &&
+      inActivationSector &&
+      pullDistance >= PAUSE_PULL_DISTANCE;
     const shouldResume =
-      phase === "paused" && pullDistance >= PAUSE_PULL_DISTANCE;
+      phase === "paused" &&
+      inActivationSector &&
+      pullDistance >= PAUSE_PULL_DISTANCE;
     const shouldStart =
-      phase === "ready" && readyPullDistance >= PAUSE_PULL_DISTANCE;
+      phase === "ready" &&
+      inActivationSector &&
+      pullDistance >= PAUSE_PULL_DISTANCE;
     const destinationMode: RopeMode =
       shouldResume || shouldStart
         ? "resumePullback"
         : shouldPause
           ? "paused"
           : ropeMode;
-    const retracted = projectTimerToRope(
-      requested,
-      destinationMode,
-      rigHeight,
-      isMobileViewport,
-    );
-
     if (shouldPause) pause();
     if (shouldResume && resume()) {
       resumePendingRef.current = true;
@@ -602,8 +678,8 @@ export function ActiveTaskCard({
       setRopeMode("resumePullback");
     }
 
-    timerDragVelocityRef.current = info.velocity;
-    beginPhysicalReturn(destinationMode, retracted, info.velocity);
+    timerDraggingRef.current = false;
+    beginPhysicalReturn(destinationMode, info.velocity);
   }
 
   function pointerInRig(event: ReactPointerEvent<HTMLDivElement>): Point {
@@ -665,6 +741,8 @@ export function ActiveTaskCard({
   const syncTimerToPhysics = useCallback(
     (pose: TimerPose) => {
       timerRotationTarget.set(reduceMotion ? 0 : pose.rotation);
+      x.set(pose.x);
+      y.set(pose.y);
 
       if (timerEntranceSettling && pose.mode === "ready") {
         const now = performance.now();
@@ -673,8 +751,10 @@ export function ActiveTaskCard({
         }
         const elapsed = now - timerEntranceStartedAtRef.current;
         const rigHeight = rigRef.current?.clientHeight ?? window.innerHeight;
-        const restingY =
-          -rigHeight * (RUNNING_TIMER_TOP_RATIO - READY_TIMER_TOP_RATIO);
+        const readyTopRatio = isMobileViewport
+          ? MOBILE_READY_TIMER_TOP_RATIO
+          : READY_TIMER_TOP_RATIO;
+        const restingY = -rigHeight * (RUNNING_TIMER_TOP_RATIO - readyTopRatio);
         const distanceFromRest = Math.hypot(pose.x, pose.y - restingY);
         const speed = Math.hypot(pose.velocity.x, pose.velocity.y);
         const settled = elapsed > 480 && distanceFromRest < 22 && speed < 130;
@@ -691,70 +771,61 @@ export function ActiveTaskCard({
         timerReturningRef.current &&
         pose.mode === timerReturnModeRef.current
       ) {
-        const now = performance.now();
-        const elapsed = now - timerReturnStartedAtRef.current;
-        if (reduceMotion) {
-          x.set(pose.x);
-          y.set(pose.y);
-          timerReturningRef.current = false;
-          timerDraggingRef.current = false;
-          setTimerSettling(false);
-          finishPullback(pose);
-          return;
-        }
-
-        const delta = Math.min(
-          1 / 30,
-          Math.max(1 / 240, (now - timerReturnLastAtRef.current) / 1000),
-        );
-        timerReturnLastAtRef.current = now;
-        const velocity = timerReturnVelocityRef.current;
-        const stiffness = 125;
-        const damping = 16;
-        const nextVelocity = {
-          x:
-            velocity.x +
-            ((pose.x - x.get()) * stiffness - velocity.x * damping) * delta,
-          y:
-            velocity.y +
-            ((pose.y - y.get()) * stiffness - velocity.y * damping) * delta,
-        };
-        const nextX = x.get() + nextVelocity.x * delta;
-        const nextY = y.get() + nextVelocity.y * delta;
-        timerReturnVelocityRef.current = nextVelocity;
-        x.set(nextX);
-        y.set(nextY);
-
-        const remainingDistance = Math.hypot(pose.x - nextX, pose.y - nextY);
-        if ((elapsed > 280 && remainingDistance < 4.5) || elapsed > 620) {
-          x.set(pose.x);
-          y.set(pose.y);
-          timerReturningRef.current = false;
-          timerDraggingRef.current = false;
-          setTimerSettling(false);
-          finishPullback(pose);
+        const elapsed = performance.now() - timerReturnStartedAtRef.current;
+        const activating = resumePendingRef.current || startPendingRef.current;
+        const rigHeight = rigRef.current?.clientHeight ?? window.innerHeight;
+        const pullbackY =
+          -rigHeight *
+          (RUNNING_TIMER_TOP_RATIO - RESUME_PULLBACK_TIMER_TOP_RATIO);
+        const reachedActivationApex =
+          activating &&
+          elapsed > 120 &&
+          pose.y <= pullbackY + Math.max(14, rigHeight * 0.02);
+        const readyToAdvance =
+          reachedActivationApex || (pose.settled && elapsed > 180);
+        const timedOut = elapsed > (activating ? 700 : 2_400);
+        if (readyToAdvance || timedOut) {
+          if (resumePendingRef.current || startPendingRef.current) {
+            finishPullback(pose);
+          } else {
+            timerReturningRef.current = false;
+            timerDraggingRef.current = false;
+            setTimerSettling(false);
+          }
         }
         return;
       }
-
-      if (!timerDraggingRef.current) {
-        x.set(pose.x);
-        y.set(pose.y);
-      }
     },
-    [reduceMotion, timerEntranceSettling, timerRotationTarget, x, y],
+    [
+      isMobileViewport,
+      reduceMotion,
+      timerEntranceSettling,
+      timerRotationTarget,
+      x,
+      y,
+    ],
   );
 
-  const exiting = phase === "cutting" || phase === "completed";
+  const exiting =
+    phase === "completion-preview" ||
+    phase === "cutting" ||
+    phase === "completed";
+  const previewingCompletion = phase === "completion-preview";
   const completed = phase === "completed";
   const minimumDurationMs = task.minimumDurationMinutes * 60_000;
   const canComplete = debugMode || elapsedMs >= minimumDurationMs;
   const completionRemainingMs = Math.max(0, minimumDurationMs - elapsedMs);
+  const completionRemainingMinutes = Math.floor(completionRemainingMs / 60_000);
+  const completionAward = calculateCompletionPoints(elapsedMs);
   const displayedGameTitle = sanitizeGameTitle(gameTitle);
   const cardFocusAvailable = isMobileViewport && revealFinished && !exiting;
+  const hasNoRopes = redRopes <= 0;
+  const readyUiVisible =
+    phase === "ready" && ropeMode !== "resumePullback" && !timerDragging;
   const canCutRope =
     (phase === "running" || phase === "paused") && (debugMode || redRopes > 0);
   const returnTooltipId = `back-to-selection-tooltip-${assignment.sessionId}`;
+  const priorCompletionRows = previousCompletions.slice(0, 3);
 
   function closeCardFocus() {
     setCardFocused(false);
@@ -779,12 +850,51 @@ export function ActiveTaskCard({
   return (
     <div
       className={styles.activeExperience}
+      style={getQuestCardAccentStyle(task.id, task.moodId)}
       data-card-focused={cardFocused ? "true" : undefined}
+      data-no-ropes={hasNoRopes ? "true" : undefined}
       data-phase={phase}
       data-reveal-complete={revealFinished ? "true" : undefined}
       data-timer-entrance={timerEntranceSettling ? "dropping" : "settled"}
       data-rope-mode={ropeMode}
     >
+      {completed && (
+        <motion.div
+          className={styles.completionCelebration}
+          aria-hidden="true"
+          initial={reduceMotion ? false : { opacity: 0, scale: 0.86 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: reduceMotion ? 0 : 0.5, ease: "easeOut" }}
+        />
+      )}
+      <AnimatePresence>
+        {previewingCompletion && (
+          <motion.p
+            className={styles.completionPrompt}
+            initial={reduceMotion ? false : { opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+          >
+            <Trans
+              i18nKey="ui.timer.completionPreviewPrompt"
+              components={{ strong: <strong /> }}
+            />
+          </motion.p>
+        )}
+      </AnimatePresence>
+      {completed && coinFlight
+        ? Array.from({ length: COIN_FLIGHT_COUNT }, (_, index) => (
+            <FlyingCoin
+              end={coinFlight.end}
+              index={index}
+              isMobileViewport={isMobileViewport}
+              key={`coin-flight-${index}`}
+              reduceMotion={reduceMotion}
+              start={coinFlight.start}
+              onComplete={() => finishCoinFlight(index)}
+            />
+          ))
+        : null}
       {cardFocused && (
         <button
           ref={cardFocusBackdropRef}
@@ -836,10 +946,20 @@ export function ActiveTaskCard({
           }
           initial={false}
           animate={{
-            scale: completed ? 1.025 : 1,
-            x: completed ? completionOffset.x : 0,
-            y: completed ? completionOffset.y : 0,
-            rotate: cardFocused ? 0 : completed ? -2 : -3.5,
+            scale:
+              previewingCompletion || completed
+                ? isMobileViewport
+                  ? 1.1
+                  : 0.95
+                : 1,
+            x: previewingCompletion || completed ? completionOffset.x : 0,
+            y: previewingCompletion || completed ? completionOffset.y : 0,
+            rotate:
+              cardFocused || previewingCompletion || completed
+                ? 0
+                : phase === "paused"
+                  ? -1
+                  : -3.5,
           }}
         >
           <motion.div
@@ -876,9 +996,24 @@ export function ActiveTaskCard({
             </div>
 
             <div className={styles.revealFront}>
-              <div
+              <motion.div
                 className={styles.completionFlip}
-                data-flipping={completed && !reduceMotion ? "true" : undefined}
+                initial={false}
+                animate={{
+                  rotateY: completed ? 540 : previewingCompletion ? 180 : 0,
+                }}
+                transition={
+                  reduceMotion
+                    ? { duration: 0 }
+                    : {
+                        duration: completed
+                          ? COMPLETION_FLIP_DURATION_MS / 1000
+                          : previewingCompletion
+                            ? 0.74
+                            : 0,
+                        ease: [0.55, 0.06, 0.15, 0.86],
+                      }
+                }
               >
                 <article
                   ref={cardHitAreaRef}
@@ -931,53 +1066,14 @@ export function ActiveTaskCard({
                       <QuestTips tips={task.tips} />
                     </motion.div>
 
-                    {!showFinishedFace && (
-                      <span className={styles.cardBrand} aria-hidden="true">
-                        <img
-                          src={`${import.meta.env.BASE_URL}sidequest-wordmark.svg`}
-                          alt=""
-                          width="837"
-                          height="550"
-                        />
-                      </span>
-                    )}
-
-                    <AnimatePresence>
-                      {showFinishedFace && (
-                        <motion.div
-                          className={styles.completionOverlay}
-                          role="status"
-                          aria-live="polite"
-                          initial={reduceMotion ? false : { opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: reduceMotion ? 0 : 0.24 }}
-                        >
-                          <motion.div
-                            className={styles.completionMark}
-                            initial={
-                              reduceMotion ? false : { opacity: 0, y: 16 }
-                            }
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 24,
-                            }}
-                          >
-                            <CompletionCheckIcon />
-                            <span className={styles.completionTime}>
-                              <strong>
-                                {formatRunningDuration(elapsedMs)}
-                              </strong>
-                              {displayedGameTitle && (
-                                <small>{displayedGameTitle}</small>
-                              )}
-                            </span>
-                          </motion.div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    <span className={styles.cardBrand} aria-hidden="true">
+                      <img
+                        src={`${import.meta.env.BASE_URL}sidequest-wordmark.svg`}
+                        alt=""
+                        width="837"
+                        height="550"
+                      />
+                    </span>
                   </motion.div>
                   {cardFocusAvailable && !cardFocused && (
                     <button
@@ -992,14 +1088,91 @@ export function ActiveTaskCard({
                   )}
                 </article>
                 {revealFinished && (
-                  <div
+                  <section
                     className={`${styles.activeQuestCard} ${styles.completionCardBack}`}
-                    aria-hidden="true"
+                    aria-hidden={
+                      previewingCompletion || completed ? undefined : "true"
+                    }
                   >
                     <QuestCardBack variant="pattern" />
-                  </div>
+                    {(previewingCompletion || completed) && (
+                      <div
+                        className={styles.completionBackContent}
+                        data-finished={showFinishedFace || undefined}
+                      >
+                        <QuestCardMeta
+                          minimumDurationMinutes={task.minimumDurationMinutes}
+                          moodTitle={task.mood.title}
+                          suggestedDurationMinutes={
+                            task.suggestedDurationMinutes
+                          }
+                        />
+                        <div className={styles.completionBackSummary}>
+                          <h2>{task.name}</h2>
+                          <p>{task.title}</p>
+                        </div>
+                        <AnimatePresence mode="wait" initial={false}>
+                          {showFinishedFace ? (
+                            <motion.div
+                              className={styles.completedCardResult}
+                              key="completed-card-result"
+                              role="status"
+                              aria-live="polite"
+                              initial={reduceMotion ? false : { opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: reduceMotion ? 0 : 0.2 }}
+                            >
+                              <CompletionCheckIcon />
+                              <span>{t("ui.timer.yourTime")}</span>
+                              <strong>
+                                {formatRunningDuration(elapsedMs)}
+                              </strong>
+                              {displayedGameTitle && (
+                                <b>{displayedGameTitle}</b>
+                              )}
+                            </motion.div>
+                          ) : (
+                            <motion.form
+                              className={styles.completionTitleForm}
+                              key="completion-title-form"
+                              onSubmit={(event) => {
+                                event.preventDefault();
+                                saveCompletionPreview();
+                              }}
+                              initial={reduceMotion ? false : { opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                            >
+                              <span>{t("ui.timer.yourTime")}</span>
+                              <strong>
+                                {formatRunningDuration(elapsedMs)}
+                              </strong>
+                              <input
+                                autoFocus
+                                className={styles.completionGameTitleInput}
+                                type="text"
+                                value={gameTitle}
+                                maxLength={80}
+                                aria-label={t("ui.timer.gameTitleLabel")}
+                                placeholder={t("ui.timer.addGameTitle")}
+                                onChange={(event) =>
+                                  setGameTitle(event.target.value)
+                                }
+                              />
+                              <button
+                                className={`${styles.drawerActionButton} ${styles.completionSaveAction}`}
+                                data-variant="white"
+                                type="submit"
+                              >
+                                {t("ui.timer.saveCompletion")}
+                              </button>
+                            </motion.form>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    )}
+                  </section>
                 )}
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         </motion.div>
@@ -1008,7 +1181,9 @@ export function ActiveTaskCard({
       <motion.div
         className={styles.timerRig}
         ref={rigRef}
-        animate={{ opacity: completed || !revealFinished ? 0 : 1 }}
+        animate={{
+          opacity: previewingCompletion || completed || !revealFinished ? 0 : 1,
+        }}
         transition={{ duration: reduceMotion ? 0 : 0.16, ease: "easeOut" }}
         style={{
           pointerEvents:
@@ -1024,7 +1199,6 @@ export function ActiveTaskCard({
         {revealFinished && (
           <PhysicsRope
             cut={phase === "cutting" ? cut : null}
-            dragVelocityRef={timerDragVelocityRef}
             draggingRef={timerDraggingRef}
             isMobileViewport={isMobileViewport}
             mode={ropeMode}
@@ -1075,41 +1249,16 @@ export function ActiveTaskCard({
                   ? t("ui.timer.pause")
                   : t("ui.timer.unavailable")
           }
-          drag={
-            (phase === "ready" ||
-              phase === "running" ||
-              phase === "paused") &&
-            ropeMode !== "resumePullback" &&
-            !timerEntranceSettling &&
-            !exiting
-          }
-          dragConstraints={{
-            left: -190,
-            right: 190,
-            top: -130,
-            bottom: 130,
-          }}
-          dragElastic={0.06}
-          dragMomentum={false}
           style={{ x, y }}
-          onDragStart={() => {
-            playSound("timerGrab");
-            timerReturningRef.current = false;
-            setTimerSettling(true);
-            timerDraggingRef.current = true;
-            timerDragVelocityRef.current = { x: 0, y: 0 };
-            ropeReleaseRef.current = null;
-            dragOriginRef.current = { x: x.get(), y: y.get() };
-            dragTargetRef.current = dragOriginRef.current;
-          }}
-          onDrag={onTimerDrag}
-          onDragEnd={settleTimerPull}
+          onPanStart={startTimerDrag}
+          onPan={onTimerDrag}
+          onPanEnd={settleTimerPull}
           onKeyDown={(event) => {
             if (event.key !== "Enter" && event.key !== " ") return;
             event.preventDefault();
             toggleTimerFromKeyboard();
           }}
-          whileDrag={{ scale: 1.035, cursor: "grabbing" }}
+          whileTap={{ scale: 1.025, cursor: "grabbing" }}
         >
           <motion.div
             className={styles.timerCapsule}
@@ -1128,8 +1277,7 @@ export function ActiveTaskCard({
             />
           </motion.div>
           <AnimatePresence>
-            {(phase === "ready" || phase === "paused") &&
-              !timerSettling &&
+            {(readyUiVisible || (phase === "paused" && !timerDragging)) &&
               !cancellationBlocked && (
                 <motion.span
                   className={styles.timerStatus}
@@ -1139,9 +1287,7 @@ export function ActiveTaskCard({
                   transition={{ duration: reduceMotion ? 0 : 0.12 }}
                 >
                   {phase === "ready"
-                    ? t("ui.quest.minimumMinutes", {
-                        count: task.minimumDurationMinutes,
-                      })
+                    ? t("ui.timer.ready")
                     : t("ui.timer.paused")}
                 </motion.span>
               )}
@@ -1163,108 +1309,258 @@ export function ActiveTaskCard({
         </motion.div>
 
         <AnimatePresence>
-          {phase === "paused" && !timerSettling && (
+          {phase === "paused" && !timerDragging && (
             <motion.form
               className={styles.pausePanel}
               data-cut-ignore
               onSubmit={(event) => {
                 event.preventDefault();
                 if (!canComplete) return;
-                beginExit("completed");
+                beginCompletionPreview();
               }}
               initial={reduceMotion ? false : "hidden"}
               animate="visible"
               exit={reduceMotion ? { opacity: 0 } : "exit"}
               variants={pausePanelVariants}
             >
-              <motion.input
-                className={styles.gameTitleInput}
-                data-has-value={gameTitle.trim() ? "true" : undefined}
-                type="text"
-                value={gameTitle}
-                maxLength={80}
-                aria-label={t("ui.timer.gameTitleLabel")}
-                placeholder={t("ui.timer.addGameTitle")}
-                onChange={(event) => setGameTitle(event.target.value)}
-                variants={pausePanelItemVariants}
-              />
               {canComplete ? (
-                <motion.button
-                  className={styles.saveAction}
-                  type="submit"
-                  variants={pausePanelItemVariants}
-                >
-                  {t("ui.timer.completeQuest")}
-                </motion.button>
+                <>
+                  <motion.p
+                    className={styles.completionReward}
+                    aria-label={t("ui.timer.coinsEarnedLabel", {
+                      points: completionAward,
+                    })}
+                    variants={pausePanelItemVariants}
+                  >
+                    <span>{t("ui.timer.coinsEarned")}</span>
+                    <strong>{completionAward}</strong>
+                    <CoinIcon />
+                  </motion.p>
+                  <motion.button
+                    className={styles.saveAction}
+                    type="submit"
+                    variants={pausePanelItemVariants}
+                  >
+                    {t("ui.timer.completeQuest")}
+                  </motion.button>
+                </>
               ) : (
-                <motion.p
-                  className={styles.pauseMinimumInfo}
+                <motion.div
+                  className={styles.pauseMinimumCard}
                   role="status"
                   variants={pausePanelItemVariants}
                 >
-                  <span>
-                    {t("ui.timer.completeAvailableIn", {
-                      time: formatRunningDuration(completionRemainingMs),
-                    })}
+                  <span className={styles.pauseInfoIcon} aria-hidden="true">
+                    <InfoIcon />
                   </span>
-                  <span>{t("ui.timer.completeOrCancel")}</span>
-                </motion.p>
+                  <p>
+                    <Trans
+                      i18nKey="ui.timer.completeAvailableIn"
+                      values={{
+                        time: t("ui.quest.durationSingleLong", {
+                          count: completionRemainingMinutes,
+                        }),
+                      }}
+                      components={{ strong: <strong /> }}
+                    />
+                  </p>
+                  <p>{t("ui.timer.pullContinue")}</p>
+                  <p>
+                    {hasNoRopes
+                      ? t("ui.timer.noRopesRemaining")
+                      : t("ui.timer.redRopesRemaining", {
+                          count: redRopes,
+                        })}
+                  </p>
+                  {hasNoRopes && (
+                    <RopePurchaseRow
+                      coins={coins}
+                      onPurchase={onPurchaseRedRopes}
+                      variant="black"
+                    />
+                  )}
+                </motion.div>
               )}
             </motion.form>
           )}
         </AnimatePresence>
 
-        <AnimatePresence mode="wait">
-          {!exiting && !timerSettling && (
-            <motion.p
-              className={styles.timerHint}
-              key={phase}
+        <AnimatePresence>
+          {readyUiVisible && !exiting && (
+            <motion.span
+              className={`${styles.moodEditControl} ${styles.timerReturnControl}`}
               initial={reduceMotion ? false : { opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
-              transition={{
-                duration: reduceMotion ? 0 : 0.16,
-                ease: "easeOut",
-              }}
+              transition={{ duration: reduceMotion ? 0 : 0.16 }}
             >
-              <span>
-                {phase === "ready"
-                  ? t("ui.timer.pullStart")
-                  : phase === "paused"
-                    ? t("ui.timer.pullResume")
-                    : t("ui.timer.pullPause")}
-              </span>
-              {canCutRope && <span>{t("ui.timer.cutStop")}</span>}
-              {phase === "ready" && (
+              <button
+                type="button"
+                aria-describedby={
+                  isMobileViewport ? undefined : returnTooltipId
+                }
+                onClick={returnToSelection}
+              >
+                <span>{t("ui.timer.backToSelection")}</span>
+              </button>
+              {!isMobileViewport && (
                 <span
-                  className={`${styles.moodEditControl} ${styles.timerReturnControl}`}
+                  className={styles.moodEditTooltip}
+                  id={returnTooltipId}
+                  role="tooltip"
                 >
-                  <button
-                    type="button"
-                    aria-describedby={
-                      isMobileViewport ? undefined : returnTooltipId
-                    }
-                    onClick={returnToSelection}
-                  >
-                    {/* <ChevronLeftIcon className={styles.timerReturnChevron} /> */}
-                    <span>{t("ui.timer.backToSelection")}</span>
-                  </button>
-                  {!isMobileViewport && (
-                    <span
-                      className={styles.moodEditTooltip}
-                      id={returnTooltipId}
-                      role="tooltip"
-                    >
-                      {t("ui.timer.backToSelectionTooltip")}
-                    </span>
-                  )}
+                  {t("ui.timer.backToSelectionTooltip")}
                 </span>
               )}
-            </motion.p>
+            </motion.span>
           )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {!exiting &&
+            !timerDragging &&
+            (phase !== "ready" || readyUiVisible) &&
+            (phase !== "paused" || canComplete) &&
+            !(
+              phase === "running" &&
+              priorCompletionRows.length > 0 &&
+              !hasNoRopes
+            ) && (
+              <motion.div
+                className={styles.timerHint}
+                data-cut-ignore
+                key={phase}
+                initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.16,
+                  ease: "easeOut",
+                }}
+              >
+                {phase === "ready" ? (
+                  <span className={styles.readyTimerInstructions}>
+                    <Trans
+                      i18nKey="ui.timer.readyInstructions"
+                      values={{
+                        time: t("ui.quest.durationSingleLong", {
+                          count: task.minimumDurationMinutes,
+                        }),
+                      }}
+                      components={{ br: <br />, strong: <strong /> }}
+                    />
+                  </span>
+                ) : (
+                  <span>
+                    {phase === "paused"
+                      ? t("ui.timer.pullResume")
+                      : t("ui.timer.pullPause")}
+                  </span>
+                )}
+                {phase === "ready" && hasNoRopes && (
+                  <span>{t("ui.timer.noRopesRemaining")}</span>
+                )}
+                {(phase === "running" || phase === "paused") && (
+                  <span>
+                    {hasNoRopes
+                      ? t("ui.timer.noRopesRemaining")
+                      : t("ui.timer.cutStop")}
+                  </span>
+                )}
+                {hasNoRopes && (
+                  <RopePurchaseRow
+                    coins={coins}
+                    onPurchase={onPurchaseRedRopes}
+                    variant="black"
+                  />
+                )}
+              </motion.div>
+            )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {phase === "running" &&
+            !timerDragging &&
+            !hasNoRopes &&
+            priorCompletionRows.length > 0 && (
+              <motion.section
+                className={styles.previousCompletionPanel}
+                aria-label={t("ui.timer.previousCompletions")}
+                initial={reduceMotion ? false : { opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -3 }}
+              >
+                <p>{t("ui.timer.previousCompletions")}</p>
+                <ol>
+                  {priorCompletionRows.map((completion) => (
+                    <li key={completion.id}>
+                      <strong>
+                        {completion.gameTitle ?? t("ui.history.noGameTitle")}
+                      </strong>
+                      <time>
+                        {formatRunningDuration(completion.durationMs)}
+                      </time>
+                    </li>
+                  ))}
+                </ol>
+              </motion.section>
+            )}
         </AnimatePresence>
       </motion.div>
     </div>
+  );
+}
+
+function FlyingCoin({
+  end,
+  index,
+  isMobileViewport,
+  onComplete,
+  reduceMotion,
+  start,
+}: {
+  end: Point;
+  index: number;
+  isMobileViewport: boolean;
+  onComplete: () => void;
+  reduceMotion: boolean;
+  start: Point;
+}) {
+  const rotationDirection = isMobileViewport ? 1 : -1;
+  const arcX =
+    start.x + (end.x - start.x) * 0.43 + rotationDirection * (54 + index * 9);
+  const arcY = Math.min(start.y, end.y) - 105 - index * 10;
+
+  return (
+    <motion.span
+      className={styles.flyingCoin}
+      aria-hidden="true"
+      initial={{
+        left: start.x,
+        opacity: 0,
+        scale: 0.55,
+        top: start.y,
+      }}
+      animate={
+        reduceMotion
+          ? { left: end.x, opacity: 0, scale: 1, top: end.y }
+          : {
+              left: [start.x, arcX, end.x],
+              opacity: [0, 1, 1, 0],
+              rotate: [0, rotationDirection * 180, rotationDirection * 420],
+              scale: [0.55, 2, 1.6, 0.3],
+              top: [start.y, arcY, end.y],
+            }
+      }
+      transition={{
+        delay: reduceMotion ? 0 : 0.34 + index * 0.11,
+        duration: reduceMotion ? 0 : 0.78,
+        ease: [0.35, 0.02, 0.16, 1],
+      }}
+      onAnimationComplete={onComplete}
+    >
+      <CoinIcon />
+    </motion.span>
   );
 }
 
@@ -1471,34 +1767,4 @@ function timerPullExtension(
   const originLength = Math.hypot(origin.x, baseLength + origin.y + 8);
   const targetLength = Math.hypot(target.x, baseLength + target.y + 8);
   return Math.max(0, targetLength - originLength);
-}
-
-function projectTimerToRope(
-  target: RopePoint,
-  mode: RopeMode,
-  rigHeight: number,
-  isMobileViewport: boolean,
-) {
-  const runningTop = rigHeight * RUNNING_TIMER_TOP_RATIO;
-  const modeTop =
-    rigHeight *
-    (mode === "paused"
-      ? isMobileViewport
-        ? MOBILE_PAUSED_TIMER_TOP_RATIO
-        : PAUSED_TIMER_TOP_RATIO
-      : mode === "ready"
-        ? READY_TIMER_TOP_RATIO
-        : mode === "resumePullback"
-          ? RESUME_PULLBACK_TIMER_TOP_RATIO
-          : RUNNING_TIMER_TOP_RATIO);
-  const fromAnchor = {
-    x: target.x,
-    y: runningTop + target.y + 8,
-  };
-  const distance = Math.max(1, Math.hypot(fromAnchor.x, fromAnchor.y));
-  const ropeLength = (modeTop + 8) * 1.025 * 0.985;
-  return {
-    x: (fromAnchor.x / distance) * ropeLength,
-    y: (fromAnchor.y / distance) * ropeLength - runningTop - 8,
-  };
 }

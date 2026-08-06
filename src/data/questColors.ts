@@ -11,6 +11,17 @@ export type QuestAccentStyle = CSSProperties & {
   "--accent-rgb": string;
 };
 
+export type MoodArtStyle = CSSProperties & {
+  "--mood-card-bg": string;
+  "--mood-card-border": string;
+  "--mood-card-copy": string;
+  "--mood-card-muted": string;
+  "--mood-art-1": string;
+  "--mood-art-2": string;
+  "--mood-art-3": string;
+  "--mood-art-4": string;
+};
+
 export const QUEST_ACCENT_BY_MOOD: Record<MoodId, QuestAccent> = {
   relax: { color: "#65D6B4", rgb: "101 214 180" },
   explore: { color: "#F7B955", rgb: "247 185 85" },
@@ -25,6 +36,38 @@ export const QUEST_ACCENT_BY_MOOD: Record<MoodId, QuestAccent> = {
   curious: { color: "#4FE0C1", rgb: "79 224 193" },
   "low-energy": { color: "#9BA7C9", rgb: "155 167 201" },
 };
+
+const MOOD_ART_BY_MOOD: Record<
+  MoodId,
+  readonly [string, string, string, string]
+> = {
+  relax: ["#15271f", "#315545", "#6f9f85", "#cce7d5"],
+  explore: ["#291f0e", "#62491c", "#ad7d31", "#f0cb72"],
+  progress: ["#101d2b", "#294f72", "#6094bd", "#c8e0f3"],
+  create: ["#2c1527", "#71385f", "#bd729f", "#f3c5e3"],
+  challenge: ["#2b1317", "#73303a", "#bd6873", "#f2c2c7"],
+  connect: ["#1d260f", "#4d6526", "#91ad55", "#dae9ae"],
+  nostalgic: ["#21152d", "#573b70", "#9472ad", "#dcc8e9"],
+  overwhelmed: ["#2d1b12", "#74452d", "#bc7b55", "#f0cbb4"],
+  restless: ["#2b230f", "#6d5927", "#b69b55", "#eee0ae"],
+  focused: ["#161a2e", "#384a78", "#748dbd", "#cbd6ef"],
+  curious: ["#102724", "#28645b", "#63a89b", "#c2e9e1"],
+  "low-energy": ["#191c28", "#3d455f", "#7e88a7", "#d0d5e4"],
+};
+
+export function getMoodArtStyle(moodId: MoodId): MoodArtStyle {
+  const [shade1, shade2, shade3, shade4] = MOOD_ART_BY_MOOD[moodId];
+  return {
+    "--mood-card-bg": shade1,
+    "--mood-card-border": shade3,
+    "--mood-card-copy": shade4,
+    "--mood-card-muted": shade3,
+    "--mood-art-1": shade1,
+    "--mood-art-2": shade2,
+    "--mood-art-3": shade3,
+    "--mood-art-4": shade4,
+  };
+}
 
 export function getMoodAccentStyle(moodId: MoodId): QuestAccentStyle {
   const accent = QUEST_ACCENT_BY_MOOD[moodId];

@@ -19,9 +19,14 @@ import { formatScore } from "../lib/format";
 import { playSound } from "../lib/sound";
 import { localizeMood } from "../localization/catalog";
 import { normalizeLanguage } from "../localization/i18n";
-import type { Quest, QuestSession } from "../stores/useQuestStore";
+import type {
+  CompletedSession,
+  Quest,
+  QuestSession,
+} from "../stores/useQuestStore";
 import { ActiveTaskCard } from "./ActiveTaskCard";
 import { ArcDeck, type ArcDeckItem } from "./ArcDeck";
+import { CoinIcon } from "./Icons";
 import { QuestOfferDeck } from "./QuestOfferDeck";
 import { SolidButton } from "./SolidButton";
 import styles from "../App.module.css";
@@ -102,6 +107,7 @@ const SelectionLayer = forwardRef<HTMLDivElement, SelectionLayerProps>(
 type Props = {
   currentQuest: Quest | null;
   currentSession: QuestSession | null;
+  previousCompletions: readonly CompletedSession[];
   selectedMood: MoodDefinition | null;
   offeredQuests: readonly QuestDefinition[];
   points: number;
@@ -120,11 +126,15 @@ type Props = {
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
   onComplete: (gameTitle: string) => void;
+  onCoinFlightStart: (pointsAwarded: number) => void;
+  onCoinHit: (pointsReceived: number) => void;
+  onPurchaseRedRopes: () => boolean;
 };
 
 export function TaskScreen({
   currentQuest,
   currentSession,
+  previousCompletions,
   selectedMood,
   offeredQuests,
   points,
@@ -143,6 +153,9 @@ export function TaskScreen({
   onPause,
   onResume,
   onComplete,
+  onCoinFlightStart,
+  onCoinHit,
+  onPurchaseRedRopes,
 }: Props) {
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
@@ -296,7 +309,9 @@ export function TaskScreen({
               <ActiveTaskCard
                 quest={currentQuest}
                 session={currentSession}
+                previousCompletions={previousCompletions}
                 layoutSessionId={layoutSessionIdRef.current}
+                coins={points}
                 redRopes={redRopes}
                 debugMode={debugMode}
                 reduceMotion={reduceMotion}
@@ -306,6 +321,9 @@ export function TaskScreen({
                 onPause={onPause}
                 onResume={onResume}
                 onComplete={onComplete}
+                onCoinFlightStart={onCoinFlightStart}
+                onCoinHit={onCoinHit}
+                onPurchaseRedRopes={onPurchaseRedRopes}
               />
             </motion.div>
           ) : (
@@ -427,10 +445,12 @@ export function TaskScreen({
                           >
                             {t("ui.task.shuffleCards")}
                           </SolidButton>
-                          <span>
-                            {t("ui.task.costsPoints", {
-                              points: formatScore(shuffleCost, language),
-                            })}
+                          <span className={styles.inlineCoinCopy}>
+                            <span>{t("ui.task.shufflePricePrefix")}</span>
+                            <strong>
+                              {formatScore(shuffleCost, language)}
+                            </strong>
+                            <CoinIcon />
                           </span>
                         </motion.div>
                       </header>

@@ -170,18 +170,18 @@ function HistoryQuestGroup({
         <SolidButton
           className={styles.startButton}
           type="button"
-          aria-label={t("ui.history.startQuestLabel", {
+          aria-label={t("ui.history.repeatQuestLabel", {
             title: group.quest.title,
           })}
           aria-describedby={directStartDisabled ? unavailableId : undefined}
           disabled={directStartDisabled}
           onClick={() => onStartQuest(group.quest.id)}
         >
-          {t("ui.history.startQuest")}
+          {t("ui.history.repeatQuest")}
         </SolidButton>
         {directStartDisabled ? (
           <p className={styles.startUnavailable} id={unavailableId}>
-            {t("ui.history.startQuestUnavailable")}
+            {t("ui.history.repeatQuestUnavailable")}
           </p>
         ) : null}
       </div>
@@ -364,9 +364,7 @@ function groupCompletionsByQuest(
         (left, right) => right.completedAt - left.completedAt,
       ),
     }))
-    .sort(
-      (left, right) => right.newestCompletionAt - left.newestCompletionAt,
-    );
+    .sort((left, right) => right.newestCompletionAt - left.newestCompletionAt);
 }
 
 function readGameTitle(completion: CompletedQuest) {

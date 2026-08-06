@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { useShallow } from "zustand/react/shallow";
 import styles from "./App.module.css";
-import { CheckIcon } from "./components/Icons";
+import { CoinIcon } from "./components/Icons";
 import { HistoryScreen } from "./components/HistoryScreen";
 import { InteractiveDotBackground } from "./components/InteractiveDotBackground";
 import { ProfileDrawer } from "./components/ProfileDrawer";
@@ -25,11 +25,6 @@ import {
   SHUFFLE_COST,
   useQuestStore,
 } from "./stores/useQuestStore";
-
-type Toast = {
-  id: string;
-  questId: string;
-};
 
 export function App() {
   const { i18n, t } = useTranslation();
@@ -84,12 +79,24 @@ export function App() {
     })),
   );
   const reduceMotion = Boolean(useReducedMotion());
-  const [toast, setToast] = useState<Toast | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [introComplete, setIntroComplete] = useState(reduceMotion);
   const [brandRotation, setBrandRotation] = useState(0);
+  const [animatedCoinBalance, setAnimatedCoinBalance] = useState<number | null>(
+    null,
+  );
+  const [coinPulse, setCoinPulse] = useState(0);
+  const [profileCompactSnap, setProfileCompactSnap] = useState(() =>
+    typeof window === "undefined"
+      ? "640px"
+      : `${Math.min(640, window.innerHeight)}px`,
+  );
+  const [profileActiveSnapPoint, setProfileActiveSnapPoint] = useState<
+    number | string | null
+  >(profileCompactSnap);
+  const coinAnimationTargetRef = useRef<number | null>(null);
   const profileTriggerRef = useRef<HTMLButtonElement>(null);
   const desktop = useDesktopSheet();
   const currentQuest = currentSession
@@ -114,17 +121,25 @@ export function App() {
       }),
     [completedSessions, language],
   );
-  const formattedPoints = formatScore(profile.points, language);
-  const toastTitle = toast
-    ? localizeQuest(toast.questId, language)?.title ?? ""
-    : "";
-
-  useEffect(() => {
-    if (!toast) return;
-    const timeout = window.setTimeout(() => setToast(null), 2500);
-    return () => window.clearTimeout(timeout);
-  }, [toast]);
-
+  const displayedCoins = animatedCoinBalance ?? profile.points;
+  const formattedPoints = formatScore(displayedCoins, language);
+  const totalCoinsCollected = useMemo(
+    () =>
+      completedSessions.reduce(
+        (total, completion) => total + completion.pointsAwarded,
+        0,
+      ),
+    [completedSessions],
+  );
+  const previousCompletions = useMemo(
+    () =>
+      currentSession
+        ? completedSessions.filter(
+            (completion) => completion.questId === currentSession.questId,
+          )
+        : [],
+    [completedSessions, currentSession],
+  );
   useEffect(() => {
     if (reduceMotion) {
       setIntroComplete(true);
@@ -133,6 +148,49 @@ export function App() {
     const timeout = window.setTimeout(() => setIntroComplete(true), 1000);
     return () => window.clearTimeout(timeout);
   }, [reduceMotion]);
+
+  useEffect(() => {
+    if (
+      coinAnimationTargetRef.current !== null &&
+      profile.points === coinAnimationTargetRef.current
+    ) {
+      coinAnimationTargetRef.current = null;
+      setAnimatedCoinBalance(null);
+    }
+  }, [profile.points]);
+
+  useEffect(() => {
+    if (!profileOpen || desktop) return;
+
+    const drawer = document.querySelector<HTMLElement>("[data-profile-drawer]");
+    const header = drawer?.querySelector<HTMLElement>(
+      "[data-profile-drawer-header]",
+    );
+    const body = drawer?.querySelector<HTMLElement>(
+      "[data-profile-drawer-body]",
+    );
+    if (!drawer || !header || !body) return;
+
+    const updateCompactSnap = () => {
+      const naturalHeight = Math.ceil(header.scrollHeight + body.scrollHeight);
+      const nextSnap = `${Math.min(naturalHeight, window.innerHeight)}px`;
+      setProfileCompactSnap(nextSnap);
+      setProfileActiveSnapPoint((current) =>
+        current === 1 ? current : nextSnap,
+      );
+    };
+
+    updateCompactSnap();
+    const observer = new ResizeObserver(updateCompactSnap);
+    observer.observe(header);
+    observer.observe(body);
+    window.addEventListener("resize", updateCompactSnap);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateCompactSnap);
+    };
+  }, [desktop, language, profileOpen]);
 
   useEffect(() => {
     const refresh = () => refreshMoodWindow();
@@ -162,12 +220,18 @@ export function App() {
   }, [currentSession, moodSelectedAt, refreshMoodWindow]);
 
   function handleComplete(gameTitle: string) {
-    if (!currentQuest || !currentSession) return;
-    const nextToast = {
-      id: currentSession.sessionId,
-      questId: currentSession.questId,
-    };
-    if (completeQuest(gameTitle)) setToast(nextToast);
+    completeQuest(gameTitle);
+  }
+
+  function handleCoinFlightStart(pointsAwarded: number) {
+    coinAnimationTargetRef.current = profile.points + pointsAwarded;
+    setAnimatedCoinBalance(profile.points);
+  }
+
+  function handleCoinHit(pointsReceived: number) {
+    setAnimatedCoinBalance(profile.points + pointsReceived);
+    setCoinPulse((pulse) => pulse + 1);
+    playSound("coinHit");
   }
 
   function handleOpenHistory() {
@@ -194,6 +258,7 @@ export function App() {
   function handleProfileOpenChange(open: boolean) {
     if (open === profileOpen) return;
     playSound(open ? "drawerOpen" : "drawerClose");
+    if (open && !desktop) setProfileActiveSnapPoint(profileCompactSnap);
     setProfileOpen(open);
   }
 
@@ -207,7 +272,12 @@ export function App() {
   );
 
   return (
-    <div className={styles.app}>
+    <div
+      className={styles.app}
+      data-screen={
+        currentSession ? "active" : selectedMoodId ? "quests" : "moods"
+      }
+    >
       <InteractiveDotBackground reduceMotion={reduceMotion} />
 
       <a className={styles.skipLink} href="#main-content">
@@ -324,26 +394,65 @@ export function App() {
               direction={desktop ? "right" : "bottom"}
               open={profileOpen}
               onOpenChange={handleProfileOpenChange}
+              activeSnapPoint={
+                desktop ? undefined : profileActiveSnapPoint
+              }
+              setActiveSnapPoint={
+                desktop ? undefined : setProfileActiveSnapPoint
+              }
+              snapPoints={
+                desktop ? undefined : [profileCompactSnap, 1]
+              }
               shouldScaleBackground={false}
             >
-              <Drawer.Trigger asChild>
-                <SolidButton
-                  ref={profileTriggerRef}
-                  data-active={profileOpen || undefined}
-                  data-sound-click-skip
-                  type="button"
-                  aria-label={t("ui.nav.profileLabel", {
-                    points: formattedPoints,
-                  })}
-                >
-                  {t("ui.nav.points", { points: formattedPoints })}
-                </SolidButton>
-              </Drawer.Trigger>
+              <div className={styles.profileTriggerImpact}>
+                <Drawer.Trigger asChild>
+                  <SolidButton
+                    ref={profileTriggerRef}
+                    data-profile-trigger
+                    data-active={profileOpen || undefined}
+                    data-sound-click-skip
+                    type="button"
+                    aria-label={t("ui.nav.profileLabel", {
+                      points: formattedPoints,
+                    })}
+                  >
+                    <span className={styles.coinTriggerBalance}>
+                      <motion.strong
+                        key={`coin-label-${coinPulse}`}
+                        initial={{ scaleX: 1 }}
+                        animate={
+                          coinPulse === 0 || reduceMotion
+                            ? { scaleX: 1 }
+                            : { scaleX: [1, 1.18, 0.94, 1.035, 1] }
+                        }
+                        transition={{ duration: reduceMotion ? 0 : 0.38 }}
+                      >
+                        {formattedPoints}
+                      </motion.strong>
+                      <motion.span
+                        className={styles.coinTriggerIconImpact}
+                        key={`coin-icon-${coinPulse}`}
+                        initial={{ scale: 1 }}
+                        animate={
+                          coinPulse === 0 || reduceMotion
+                            ? { scale: 1 }
+                            : { scale: [1, 1.18, 0.94, 1.035, 1] }
+                        }
+                        transition={{ duration: reduceMotion ? 0 : 0.38 }}
+                      >
+                        <CoinIcon />
+                      </motion.span>
+                    </span>
+                  </SolidButton>
+                </Drawer.Trigger>
+              </div>
               <Drawer.Portal>
                 <Drawer.Overlay className={styles.drawerOverlay} />
                 <Drawer.Content
-                  className={styles.floatingDrawer}
+                  className={`${styles.floatingDrawer} ${styles.profileFloatingDrawer}`}
                   data-direction={desktop ? "right" : "bottom"}
+                  onEscapeKeyDown={(event) => event.preventDefault()}
                 >
                   {!desktop && (
                     <div className={styles.drawerHandle} aria-hidden="true" />
@@ -356,6 +465,7 @@ export function App() {
                     profile={profile}
                     reduceMotion={reduceMotion}
                     stats={stats}
+                    totalCoinsCollected={totalCoinsCollected}
                   />
                 </Drawer.Content>
               </Drawer.Portal>
@@ -388,6 +498,7 @@ export function App() {
               <TaskScreen
                 currentQuest={currentQuest}
                 currentSession={currentSession}
+                previousCompletions={previousCompletions}
                 selectedMood={selectedMood}
                 offeredQuests={offeredQuests}
                 points={profile.points}
@@ -406,33 +517,15 @@ export function App() {
                 onPause={pauseQuest}
                 onResume={resumeQuest}
                 onComplete={handleComplete}
+                onCoinFlightStart={handleCoinFlightStart}
+                onCoinHit={handleCoinHit}
+                onPurchaseRedRopes={purchaseRedRopes}
               />
             </motion.div>
           )}
         </AnimatePresence>
       </main>
 
-      <div className={styles.toastRegion} aria-live="polite" aria-atomic="true">
-        <AnimatePresence>
-          {toast && (
-            <motion.div
-              className={styles.toast}
-              key={toast.id}
-              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
-              transition={{ duration: reduceMotion ? 0 : 0.18 }}
-              role="status"
-              aria-label={t("ui.toast.completeLabel", { title: toastTitle })}
-            >
-              <span aria-hidden="true">
-                <CheckIcon />
-              </span>
-              <strong>{t("ui.toast.complete")}</strong>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
     </div>
   );
 }
