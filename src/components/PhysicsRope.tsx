@@ -1,21 +1,9 @@
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
-  BallCollider,
-  Physics,
-  RigidBody,
-  useRapier,
-  useRopeJoint,
-  type RapierRigidBody,
-} from "@react-three/rapier";
-import {
-  createRef,
   useEffect,
-  useMemo,
   useRef,
   type MutableRefObject,
   type RefObject,
 } from "react";
-import * as THREE from "three";
 import styles from "../App.module.css";
 
 export type RopePoint = { x: number; y: number };
@@ -30,19 +18,17 @@ export type RopeMode = "ready" | "running" | "paused" | "resumePullback";
 export type TimerPose = RopePoint & {
   mode: RopeMode;
   rotation: number;
+  settled: boolean;
   velocity: RopePoint;
 };
 export type RopeRelease = {
   mode: RopeMode;
-  offset: RopePoint;
-  preserveOffset?: boolean;
   sequence: number;
   velocity: RopePoint;
 };
 
 type Props = {
   cut: RopeCut | null;
-  dragVelocityRef: MutableRefObject<RopePoint>;
   draggingRef: MutableRefObject<boolean>;
   isMobileViewport: boolean;
   mode: RopeMode;
@@ -54,16 +40,62 @@ type Props = {
   targetRef: MutableRefObject<RopePoint>;
 };
 
-type SimulationProps = Omit<Props, "red"> & {
-  initialOffset: RopePoint;
-  lowerPathRef: RefObject<SVGPathElement | null>;
-  upperPathRef: RefObject<SVGPathElement | null>;
+type VerletPoint = {
+  inverseMass: number;
+  previousX: number;
+  previousY: number;
+  x: number;
+  y: number;
 };
 
-type RopeJointRef = ReturnType<typeof useRopeJoint>;
+type CutState = {
+  linkIndex: number;
+  localT: number;
+  lowerTip: VerletPoint;
+  upperTip: VerletPoint;
+};
+
+type RopeState = {
+  accumulator: number;
+  anchorX: number;
+  currentLength: number;
+  cut: CutState | null;
+  handledReleaseSequence: number;
+  height: number;
+  isMobileViewport: boolean;
+  lastFrameAt: number;
+  lengthVelocity: number;
+  mode: RopeMode;
+  points: VerletPoint[];
+  settledSteps: number;
+  velocity: RopePoint;
+  width: number;
+};
 
 const ROPE_LINKS = 8;
 const CURVE_POINTS = 36;
+const FIXED_TIME_STEP = 1 / 120;
+const MAX_FRAME_DELTA = 1 / 30;
+const MAX_STEPS_PER_FRAME = 5;
+const CONSTRAINT_ITERATIONS = 7;
+const ANCHOR_OFFSET_Y = -8;
+const GRAVITY = 3_600;
+const LINK_INVERSE_MASS = 1 / 0.055;
+const TIMER_INVERSE_MASS = 1 / 1.65;
+const CUT_TIP_INVERSE_MASS = 1 / 0.018;
+const RELEASE_VELOCITY_TRANSFER = 0.48;
+const MAX_RELEASE_SPEED = 1_200;
+const MAX_STRETCH_MIN = 54;
+const MAX_STRETCH_MAX = 76;
+const DRAG_LENGTH_STIFFNESS = 560;
+const DRAG_LENGTH_DAMPING = 34;
+const RETURN_LENGTH_STIFFNESS = 108;
+const RETURN_LENGTH_DAMPING = 10.5;
+const PAUSED_RETURN_LENGTH_STIFFNESS = 92;
+const PAUSED_RETURN_LENGTH_DAMPING = 15.5;
+const GRAB_STIFFNESS = 720;
+const GRAB_DAMPING = 38;
+
 export const RUNNING_TIMER_TOP_RATIO = 0.35;
 export const PAUSED_TIMER_TOP_RATIO = 0.17;
 export const MOBILE_PAUSED_TIMER_TOP_RATIO = 0.185;
@@ -72,7 +104,6 @@ export const RESUME_PULLBACK_TIMER_TOP_RATIO = 0.11;
 
 export function PhysicsRope({
   cut,
-  dragVelocityRef,
   draggingRef,
   isMobileViewport,
   mode,
@@ -83,46 +114,123 @@ export function PhysicsRope({
   screenPointsRef,
   targetRef,
 }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const upperPathRef = useRef<SVGPathElement>(null);
   const lowerPathRef = useRef<SVGPathElement>(null);
-  const initialRunningOffsetRef = useRef(targetRef.current);
-  const hasPausedRef = useRef(false);
-  if (mode !== "running") hasPausedRef.current = true;
-  const initialOffset = mode === "running" && !hasPausedRef.current
-    ? initialRunningOffsetRef.current
-    : targetRef.current;
+  const latestRef = useRef({
+    cut,
+    draggingRef,
+    isMobileViewport,
+    mode,
+    onTimerMove,
+    reduceMotion,
+    releaseRef,
+    screenPointsRef,
+    targetRef,
+  });
+  latestRef.current = {
+    cut,
+    draggingRef,
+    isMobileViewport,
+    mode,
+    onTimerMove,
+    reduceMotion,
+    releaseRef,
+    screenPointsRef,
+    targetRef,
+  };
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const width = Math.max(1, rect.width || window.innerWidth);
+    const height = Math.max(1, rect.height || window.innerHeight);
+    const state = createRopeState(
+      width,
+      height,
+      targetRef.current,
+      mode,
+      isMobileViewport,
+    );
+    let animationFrame = 0;
+
+    function resizeSimulation() {
+      const nextRect = container?.getBoundingClientRect();
+      if (!nextRect) return;
+      const nextWidth = Math.max(1, nextRect.width);
+      const nextHeight = Math.max(1, nextRect.height);
+      if (nextWidth === state.width && nextHeight === state.height) return;
+
+      const nextAnchorX = nextWidth / 2;
+      const horizontalShift = nextAnchorX - state.anchorX;
+      for (const point of state.points) {
+        point.x += horizontalShift;
+        point.previousX += horizontalShift;
+      }
+      if (state.cut) {
+        shiftPointX(state.cut.upperTip, horizontalShift);
+        shiftPointX(state.cut.lowerTip, horizontalShift);
+      }
+      state.anchorX = nextAnchorX;
+      state.width = nextWidth;
+      state.height = nextHeight;
+    }
+
+    const resizeObserver = new ResizeObserver(resizeSimulation);
+    resizeObserver.observe(container);
+
+    function frame(frameAt: number) {
+      const latest = latestRef.current;
+      resizeSimulation();
+      state.mode = latest.mode;
+      state.isMobileViewport = latest.isMobileViewport;
+      handleCut(state, latest.cut);
+      handleRelease(state, latest.releaseRef.current);
+
+      const frameDelta = state.lastFrameAt === 0
+        ? 1 / 60
+        : Math.min(MAX_FRAME_DELTA, (frameAt - state.lastFrameAt) / 1_000);
+      state.lastFrameAt = frameAt;
+      state.accumulator += Math.max(0, frameDelta);
+
+      let steps = 0;
+      while (
+        state.accumulator >= FIXED_TIME_STEP &&
+        steps < MAX_STEPS_PER_FRAME
+      ) {
+        stepRope(state, latest);
+        state.accumulator -= FIXED_TIME_STEP;
+        steps += 1;
+      }
+      if (steps === MAX_STEPS_PER_FRAME) state.accumulator = 0;
+
+      renderRope(
+        state,
+        upperPathRef,
+        lowerPathRef,
+        latest.screenPointsRef,
+        latest.onTimerMove,
+        latest.draggingRef.current,
+      );
+      animationFrame = window.requestAnimationFrame(frame);
+    }
+
+    animationFrame = window.requestAnimationFrame(frame);
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   return (
     <div
+      ref={containerRef}
       className={styles.ropeCanvas}
       data-rope-red={red ? "true" : "false"}
       aria-hidden="true"
     >
-      <Canvas
-        orthographic
-        camera={{ position: [0, 0, 10], zoom: 100 }}
-        dpr={1}
-        gl={{ alpha: true, antialias: false, powerPreference: "low-power" }}
-      >
-        <Physics gravity={[0, -36, 0]} interpolate timeStep={1 / 60}>
-          <RopeSimulation
-            key={`${mode}-${isMobileViewport ? "mobile" : "desktop"}`}
-            cut={cut}
-            dragVelocityRef={dragVelocityRef}
-            draggingRef={draggingRef}
-            initialOffset={initialOffset}
-            isMobileViewport={isMobileViewport}
-            lowerPathRef={lowerPathRef}
-            mode={mode}
-            onTimerMove={onTimerMove}
-            reduceMotion={reduceMotion}
-            releaseRef={releaseRef}
-            screenPointsRef={screenPointsRef}
-            targetRef={targetRef}
-            upperPathRef={upperPathRef}
-          />
-        </Physics>
-      </Canvas>
       <svg className={styles.ropeVisual} aria-hidden="true">
         <path ref={upperPathRef} className={styles.ropePath} />
         <path ref={lowerPathRef} className={styles.ropePath} />
@@ -131,480 +239,430 @@ export function PhysicsRope({
   );
 }
 
-function RopeSimulation({
-  cut,
-  dragVelocityRef,
-  draggingRef,
-  initialOffset,
-  isMobileViewport,
-  lowerPathRef,
-  mode,
-  onTimerMove,
-  reduceMotion,
-  releaseRef,
-  screenPointsRef,
-  targetRef,
-  upperPathRef,
-}: SimulationProps) {
-  const { viewport, size } = useThree();
-  const { world } = useRapier();
-  const bodyRefs = useMemo(
-    () => Array.from(
-      { length: ROPE_LINKS + 1 },
-      () => createRef<RapierRigidBody>() as RefObject<RapierRigidBody>,
-    ),
-    [],
-  );
-  const jointRefs = useRef<Array<RopeJointRef | undefined>>([]);
-  const upperTipRef = useRef<RapierRigidBody>(null!);
-  const lowerTipRef = useRef<RapierRigidBody>(null!);
-  const smoothed = useRef<THREE.Vector3[]>([]);
-  const elasticPoints = useRef<THREE.Vector3[]>([]);
-  const cutHandled = useRef(false);
-  const handledReleaseSequence = useRef(0);
-  const previousEndpointRef = useRef<RopePoint | null>(null);
-  const anchorY = viewport.height / 2 + 0.08;
-  const timerTopRatio = mode === "paused" || mode === "ready"
-    ? mode === "ready"
-      ? READY_TIMER_TOP_RATIO
-      : isMobileViewport
-        ? MOBILE_PAUSED_TIMER_TOP_RATIO
-        : PAUSED_TIMER_TOP_RATIO
-    : mode === "resumePullback"
-      ? RESUME_PULLBACK_TIMER_TOP_RATIO
-      : RUNNING_TIMER_TOP_RATIO;
-  const runningTargetY = viewport.height / 2 -
-    viewport.height * RUNNING_TIMER_TOP_RATIO;
-  const targetY = viewport.height / 2 - viewport.height * timerTopRatio;
-  const segmentLength = (anchorY - targetY) * 1.025 / ROPE_LINKS;
-  const initialTargetRef = useRef(
-    offsetToWorld(initialOffset, runningTargetY, size, viewport),
-  );
-  const cutTopology = cut ? resolveCutTopology(cut.curveT, segmentLength) : null;
-  const cutWorldPoint = cut
-    ? screenToWorld(cut.point, size, viewport)
-    : null;
-  const segmentProps = {
-    angularDamping: 4,
-    colliders: false as const,
-    linearDamping: 1.35,
+function createRopeState(
+  width: number,
+  height: number,
+  initialOffset: RopePoint,
+  mode: RopeMode,
+  isMobileViewport: boolean,
+): RopeState {
+  const anchorX = width / 2;
+  const endpoint = {
+    x: anchorX + initialOffset.x,
+    y: height * RUNNING_TIMER_TOP_RATIO + initialOffset.y,
   };
-
-  useFrame((_, delta) => {
-    const bodies = bodyRefs.map((bodyRef) => bodyRef.current);
-    if (bodies.some((body) => !body)) return;
-
-    const endpoint = bodies[ROPE_LINKS];
-    if (!endpoint) return;
-
-    const target = offsetToWorld(
-      targetRef.current,
-      runningTargetY,
-      size,
-      viewport,
+  const points = Array.from({ length: ROPE_LINKS + 1 }, (_, index) => {
+    const ratio = index / ROPE_LINKS;
+    const x = anchorX + (endpoint.x - anchorX) * ratio;
+    const y = ANCHOR_OFFSET_Y + (endpoint.y - ANCHOR_OFFSET_Y) * ratio;
+    return createPoint(
+      x,
+      y,
+      index === 0
+        ? 0
+        : index === ROPE_LINKS
+          ? TIMER_INVERSE_MASS
+          : LINK_INVERSE_MASS,
     );
-
-    const dragging = draggingRef.current && !cutTopology;
-    const anchor = new THREE.Vector3(0, anchorY, 0);
-    const release = releaseRef.current;
-
-    if (
-      !cutTopology &&
-      release?.mode === mode &&
-      release.sequence !== handledReleaseSequence.current
-    ) {
-      const requestedTarget = offsetToWorld(
-        release.offset,
-        runningTargetY,
-        size,
-        viewport,
-      );
-      const direction = requestedTarget.clone().sub(anchor);
-      if (direction.lengthSq() < 0.0001) direction.set(0, -1, 0);
-      direction.normalize();
-      const releasedTarget = release.preserveOffset
-        ? requestedTarget
-        : anchor.clone().addScaledVector(
-            direction,
-            segmentLength * ROPE_LINKS * 0.985,
-          );
-      const tangentialVelocity = new THREE.Vector3(
-        release.velocity.x / Math.max(1, size.width) * viewport.width,
-        -release.velocity.y / Math.max(1, size.height) * viewport.height,
-        0,
-      );
-      tangentialVelocity.addScaledVector(
-        direction,
-        -tangentialVelocity.dot(direction),
-      );
-      tangentialVelocity.multiplyScalar(0.48);
-      tangentialVelocity.clampLength(0, viewport.height * 0.68);
-
-      bodies.slice(1).forEach((body, index) => {
-        const ratio = (index + 1) / ROPE_LINKS;
-        const position = anchor.clone().lerp(releasedTarget, ratio);
-        body?.setTranslation(position, true);
-        body?.setLinvel(tangentialVelocity.clone().multiplyScalar(ratio), true);
-        body?.wakeUp();
-      });
-      smoothed.current = Array.from({ length: ROPE_LINKS + 1 }, (_, index) =>
-        anchor.clone().lerp(releasedTarget, index / ROPE_LINKS)
-      );
-      elasticPoints.current = [];
-      handledReleaseSequence.current = release.sequence;
-    }
-
-    if (cutTopology && !cutHandled.current) {
-      const joint = jointRefs.current[cutTopology.linkIndex]?.current;
-      if (joint) {
-        if (world.getImpulseJoint(joint.handle)) {
-          world.removeImpulseJoint(joint, true);
-        }
-        bodies.slice(cutTopology.linkIndex + 1).forEach((body) => body?.wakeUp());
-        cutHandled.current = true;
-      }
-    }
-
-    const livePoints = bodies.map((body) => bodyPoint(body));
-
-    if (smoothed.current.length !== livePoints.length) {
-      smoothed.current = livePoints.map((point) => point.clone());
-    }
-
-    const followDelta = reduceMotion ? 1 : Math.min(1, delta * 24);
-    smoothed.current.forEach((point, index) => {
-      const livePoint = livePoints[index];
-      const distance = point.distanceTo(livePoint);
-      const speed = Math.min(1, followDelta * (0.82 + Math.min(1, distance) * 1.8));
-      point.lerp(livePoint, speed);
-    });
-    let timerRopePoints: RopePoint[] = [];
-
-    if (!cutTopology) {
-      let controls = smoothed.current;
-      if (dragging) {
-        const elasticTargets = stretchRopePoints(
-          smoothed.current,
-          target,
-          dragVelocityRef.current,
-          size,
-          viewport,
-        );
-        if (elasticPoints.current.length !== elasticTargets.length) {
-          elasticPoints.current = smoothed.current.map((point) => point.clone());
-        }
-        const elasticFollow = reduceMotion ? 1 : Math.min(1, delta * 13);
-        elasticPoints.current.forEach((point, index) => {
-          point.lerp(elasticTargets[index], elasticFollow * (0.62 + index / ROPE_LINKS * 0.38));
-        });
-        elasticPoints.current[0].copy(elasticTargets[0]);
-        elasticPoints.current[ROPE_LINKS].copy(target);
-        controls = elasticPoints.current;
-        dragVelocityRef.current = {
-          x: THREE.MathUtils.damp(dragVelocityRef.current.x, 0, 9, delta),
-          y: THREE.MathUtils.damp(dragVelocityRef.current.y, 0, 9, delta),
-        };
-      } else {
-        elasticPoints.current = [];
-        dragVelocityRef.current = { x: 0, y: 0 };
-      }
-      const renderedPoints = sampleCurve(controls).map(
-        (point) => worldToScreen(point, size, viewport),
-      );
-      const physicalLength = bodyPoint(endpoint).distanceTo(anchor);
-      const visualLength = target.distanceTo(anchor);
-      const stretchProgress = dragging
-        ? Math.min(1, Math.max(0, visualLength - physicalLength) / (viewport.height * 0.075))
-        : 0;
-      updateRopePath(
-        upperPathRef.current,
-        renderedPoints,
-        ropeStrokeWidth(size, stretchProgress),
-      );
-      hideRopePath(lowerPathRef.current);
-      screenPointsRef.current = renderedPoints;
-      timerRopePoints = renderedPoints;
-    } else {
-      const fallbackTip = cutWorldPoint ?? smoothed.current[cutTopology.linkIndex];
-      const upperTip = upperTipRef.current ? bodyPoint(upperTipRef.current) : fallbackTip;
-      const lowerTip = lowerTipRef.current ? bodyPoint(lowerTipRef.current) : fallbackTip;
-      const upperControls = [
-        ...smoothed.current.slice(0, cutTopology.linkIndex + 1),
-        upperTip,
-      ];
-      const lowerControls = [
-        lowerTip,
-        ...smoothed.current.slice(cutTopology.linkIndex + 1),
-      ];
-
-      const upperPoints = sampleCurve(upperControls).map(
-        (point) => worldToScreen(point, size, viewport),
-      );
-      const lowerPoints = sampleCurve(lowerControls).map(
-        (point) => worldToScreen(point, size, viewport),
-      );
-      updateRopePath(
-        upperPathRef.current,
-        upperPoints,
-        ropeStrokeWidth(size, 0),
-      );
-      updateRopePath(
-        lowerPathRef.current,
-        lowerPoints,
-        ropeStrokeWidth(size, 0),
-      );
-      timerRopePoints = lowerPoints;
-    }
-
-    const endpointScreen = worldToScreen(bodyPoint(endpoint), size, viewport);
-    const previousEndpoint = previousEndpointRef.current;
-    const endpointVelocity = previousEndpoint
-      ? {
-          x: (endpointScreen.x - previousEndpoint.x) / Math.max(delta, 1 / 240),
-          y: (endpointScreen.y - previousEndpoint.y) / Math.max(delta, 1 / 240),
-        }
-      : { x: 0, y: 0 };
-    previousEndpointRef.current = endpointScreen;
-    onTimerMove({
-      x: endpointScreen.x - size.width / 2,
-      y: endpointScreen.y - size.height * RUNNING_TIMER_TOP_RATIO,
-      mode,
-      rotation: timerRotationFromRope(
-        timerRopePoints,
-        dragging ? dragVelocityRef.current.x : 0,
-      ),
-      velocity: {
-        x: THREE.MathUtils.clamp(endpointVelocity.x, -1200, 1200),
-        y: THREE.MathUtils.clamp(endpointVelocity.y, -1200, 1200),
-      },
-    });
   });
+  const baseLength = ropeLengthForMode(mode, height, isMobileViewport);
 
-  return (
-    <>
-      <RigidBody
-        ref={bodyRefs[0]}
-        type="fixed"
-        position={[0, anchorY, 0]}
-        colliders={false}
-      />
+  return {
+    accumulator: 0,
+    anchorX,
+    currentLength: Math.max(
+      baseLength,
+      distanceBetween(points[0], points[ROPE_LINKS]),
+    ),
+    cut: null,
+    handledReleaseSequence: 0,
+    height,
+    isMobileViewport,
+    lastFrameAt: 0,
+    lengthVelocity: 0,
+    mode,
+    points,
+    settledSteps: 0,
+    velocity: { x: 0, y: 0 },
+    width,
+  };
+}
 
-      {Array.from({ length: ROPE_LINKS - 1 }, (_, index) => {
-        const bodyIndex = index + 1;
-        const bodyRatio = bodyIndex / ROPE_LINKS;
-        const initialPosition: [number, number, number] = [
-          initialTargetRef.current.x * bodyRatio,
-          anchorY + (initialTargetRef.current.y - anchorY) * bodyRatio,
-          0,
-        ];
-        return (
-          <RigidBody
-            key={`rope-body-${bodyIndex}`}
-            ref={bodyRefs[bodyIndex]}
-            position={initialPosition}
-            {...segmentProps}
-          >
-            <BallCollider args={[0.035]} mass={0.055} collisionGroups={0} />
-          </RigidBody>
-        );
-      })}
-
-      <RigidBody
-        ref={bodyRefs[ROPE_LINKS]}
-        type="dynamic"
-        position={[
-          initialTargetRef.current.x,
-          initialTargetRef.current.y,
-          0,
-        ]}
-        ccd
-        {...segmentProps}
-      >
-        <BallCollider args={[0.08]} mass={1.65} collisionGroups={0} />
-      </RigidBody>
-
-      {Array.from({ length: ROPE_LINKS }, (_, index) => (
-        <RopeLink
-          key={`rope-link-${index}`}
-          body1={bodyRefs[index]}
-          body2={bodyRefs[index + 1]}
-          index={index}
-          jointRefs={jointRefs}
-          length={segmentLength}
-        />
-      ))}
-
-      {cutTopology && cutWorldPoint && (
-        <CutTips
-          body1={bodyRefs[cutTopology.linkIndex]}
-          body2={bodyRefs[cutTopology.linkIndex + 1]}
-          lowerLength={cutTopology.lowerLength}
-          lowerTipRef={lowerTipRef}
-          position={cutWorldPoint}
-          upperLength={cutTopology.upperLength}
-          upperTipRef={upperTipRef}
-        />
-      )}
-    </>
+function stepRope(
+  state: RopeState,
+  latest: {
+    cut: RopeCut | null;
+    draggingRef: MutableRefObject<boolean>;
+    isMobileViewport: boolean;
+    mode: RopeMode;
+    onTimerMove: (pose: TimerPose) => void;
+    reduceMotion: boolean;
+    releaseRef: MutableRefObject<RopeRelease | null>;
+    screenPointsRef: MutableRefObject<RopePoint[]>;
+    targetRef: MutableRefObject<RopePoint>;
+  },
+) {
+  const dragging = latest.draggingRef.current && !state.cut;
+  const baseLength = ropeLengthForMode(
+    state.mode,
+    state.height,
+    state.isMobileViewport,
   );
-}
+  const grabTarget = timerOffsetToScreen(
+    latest.targetRef.current,
+    state.width,
+    state.height,
+  );
+  const requestedLength = Math.hypot(
+    grabTarget.x - state.anchorX,
+    grabTarget.y - ANCHOR_OFFSET_Y,
+  );
+  const maxStretch = Math.max(
+    MAX_STRETCH_MIN,
+    Math.min(MAX_STRETCH_MAX, state.height * 0.085),
+  );
+  const desiredLength = dragging
+    ? Math.max(baseLength, Math.min(baseLength + maxStretch, requestedLength))
+    : baseLength;
+  const returningToPaused = !dragging && state.mode === "paused";
+  const lengthStiffness = dragging
+    ? DRAG_LENGTH_STIFFNESS
+    : returningToPaused
+      ? PAUSED_RETURN_LENGTH_STIFFNESS
+      : RETURN_LENGTH_STIFFNESS;
+  const lengthDamping = dragging
+    ? DRAG_LENGTH_DAMPING
+    : returningToPaused
+      ? PAUSED_RETURN_LENGTH_DAMPING
+      : RETURN_LENGTH_DAMPING;
+  state.lengthVelocity +=
+    ((desiredLength - state.currentLength) * lengthStiffness -
+      state.lengthVelocity * lengthDamping) * FIXED_TIME_STEP;
+  state.currentLength = Math.max(
+    state.height * 0.07,
+    state.currentLength + state.lengthVelocity * FIXED_TIME_STEP,
+  );
 
-function RopeLink({
-  body1,
-  body2,
-  index,
-  jointRefs,
-  length,
-}: {
-  body1: RefObject<RapierRigidBody>;
-  body2: RefObject<RapierRigidBody>;
-  index: number;
-  jointRefs: MutableRefObject<Array<RopeJointRef | undefined>>;
-  length: number;
-}) {
-  const joint = useRopeJoint(body1, body2, [[0, 0, 0], [0, 0, 0], length]);
+  for (let index = 1; index < state.points.length; index += 1) {
+    integratePoint(
+      state.points[index],
+      index === ROPE_LINKS && dragging ? grabTarget : null,
+      index === ROPE_LINKS,
+      latest.reduceMotion,
+    );
+  }
+  if (state.cut) {
+    integratePoint(state.cut.upperTip, null, false, latest.reduceMotion);
+    integratePoint(state.cut.lowerTip, null, false, latest.reduceMotion);
+  }
 
-  useEffect(() => {
-    jointRefs.current[index] = joint;
-    return () => {
-      jointRefs.current[index] = undefined;
-    };
-  }, [index, joint, jointRefs]);
+  const segmentLength = state.currentLength / ROPE_LINKS;
+  for (let iteration = 0; iteration < CONSTRAINT_ITERATIONS; iteration += 1) {
+    pinAnchor(state);
+    for (let index = 0; index < ROPE_LINKS; index += 1) {
+      if (state.cut?.linkIndex === index) continue;
+      constrainDistance(
+        state.points[index],
+        state.points[index + 1],
+        segmentLength,
+      );
+    }
+    if (state.cut) {
+      constrainDistance(
+        state.points[state.cut.linkIndex],
+        state.cut.upperTip,
+        segmentLength * state.cut.localT,
+      );
+      constrainDistance(
+        state.cut.lowerTip,
+        state.points[state.cut.linkIndex + 1],
+        segmentLength * (1 - state.cut.localT),
+      );
+    }
+  }
+  pinAnchor(state);
 
-  return null;
-}
-
-function CutTips({
-  body1,
-  body2,
-  lowerLength,
-  lowerTipRef,
-  position,
-  upperLength,
-  upperTipRef,
-}: {
-  body1: RefObject<RapierRigidBody>;
-  body2: RefObject<RapierRigidBody>;
-  lowerLength: number;
-  lowerTipRef: RefObject<RapierRigidBody>;
-  position: THREE.Vector3;
-  upperLength: number;
-  upperTipRef: RefObject<RapierRigidBody>;
-}) {
-  useRopeJoint(body1, upperTipRef, [[0, 0, 0], [0, 0, 0], upperLength]);
-  useRopeJoint(lowerTipRef, body2, [[0, 0, 0], [0, 0, 0], lowerLength]);
-  const initialPosition: [number, number, number] = [position.x, position.y, 0];
-  const tipProps = {
-    angularDamping: 3.2,
-    canSleep: false,
-    colliders: false as const,
-    linearDamping: 1.4,
+  const endpoint = state.points[ROPE_LINKS];
+  state.velocity = {
+    x: clamp(
+      (endpoint.x - endpoint.previousX) / FIXED_TIME_STEP,
+      -MAX_RELEASE_SPEED,
+      MAX_RELEASE_SPEED,
+    ),
+    y: clamp(
+      (endpoint.y - endpoint.previousY) / FIXED_TIME_STEP,
+      -MAX_RELEASE_SPEED,
+      MAX_RELEASE_SPEED,
+    ),
   };
 
-  return (
-    <>
-      <RigidBody ref={upperTipRef} position={initialPosition} {...tipProps}>
-        <BallCollider args={[0.022]} mass={0.018} collisionGroups={0} />
-      </RigidBody>
-      <RigidBody ref={lowerTipRef} position={initialPosition} {...tipProps}>
-        <BallCollider args={[0.022]} mass={0.018} collisionGroups={0} />
-      </RigidBody>
-    </>
-  );
+  const speed = Math.hypot(state.velocity.x, state.velocity.y);
+  const lengthSettled =
+    Math.abs(state.currentLength - desiredLength) < 1.5 &&
+    Math.abs(state.lengthVelocity) < 8;
+  if (!dragging && !state.cut && lengthSettled && speed < 42) {
+    state.settledSteps += 1;
+  } else {
+    state.settledSteps = 0;
+  }
 }
 
-function resolveCutTopology(curveT: number, segmentLength: number) {
-  const linkPosition = Math.max(0.001, Math.min(ROPE_LINKS - 0.001, curveT * ROPE_LINKS));
+function integratePoint(
+  point: VerletPoint,
+  grabTarget: RopePoint | null,
+  timerMass: boolean,
+  reduceMotion: boolean,
+) {
+  const damping = reduceMotion ? 0.965 : timerMass ? 0.986 : 0.989;
+  const velocityX = (point.x - point.previousX) * damping;
+  const velocityY = (point.y - point.previousY) * damping;
+  let accelerationX = 0;
+  let accelerationY = GRAVITY;
+
+  if (grabTarget) {
+    const physicalVelocityX = velocityX / FIXED_TIME_STEP;
+    const physicalVelocityY = velocityY / FIXED_TIME_STEP;
+    accelerationX +=
+      (grabTarget.x - point.x) * GRAB_STIFFNESS -
+      physicalVelocityX * GRAB_DAMPING;
+    accelerationY +=
+      (grabTarget.y - point.y) * GRAB_STIFFNESS -
+      physicalVelocityY * GRAB_DAMPING;
+  }
+
+  point.previousX = point.x;
+  point.previousY = point.y;
+  point.x += velocityX + accelerationX * FIXED_TIME_STEP ** 2;
+  point.y += velocityY + accelerationY * FIXED_TIME_STEP ** 2;
+}
+
+function constrainDistance(
+  first: VerletPoint,
+  second: VerletPoint,
+  maximumDistance: number,
+) {
+  const deltaX = second.x - first.x;
+  const deltaY = second.y - first.y;
+  const distance = Math.hypot(deltaX, deltaY);
+  if (distance <= maximumDistance || distance < 0.0001) return;
+
+  const totalInverseMass = first.inverseMass + second.inverseMass;
+  if (totalInverseMass <= 0) return;
+  const correction = (distance - maximumDistance) / distance;
+  const firstShare = first.inverseMass / totalInverseMass;
+  const secondShare = second.inverseMass / totalInverseMass;
+  first.x += deltaX * correction * firstShare;
+  first.y += deltaY * correction * firstShare;
+  second.x -= deltaX * correction * secondShare;
+  second.y -= deltaY * correction * secondShare;
+}
+
+function handleRelease(state: RopeState, release: RopeRelease | null) {
+  if (!release || release.sequence === state.handledReleaseSequence) return;
+  state.mode = release.mode;
+  const velocity = clampVector(release.velocity, MAX_RELEASE_SPEED);
+  const endpoint = state.points[ROPE_LINKS];
+  endpoint.previousX =
+    endpoint.x - velocity.x * RELEASE_VELOCITY_TRANSFER * FIXED_TIME_STEP;
+  endpoint.previousY =
+    endpoint.y - velocity.y * RELEASE_VELOCITY_TRANSFER * FIXED_TIME_STEP;
+  state.velocity = velocity;
+  state.handledReleaseSequence = release.sequence;
+  state.settledSteps = 0;
+}
+
+function handleCut(state: RopeState, cut: RopeCut | null) {
+  if (!cut || state.cut) return;
+  const linkPosition = Math.max(
+    0.001,
+    Math.min(ROPE_LINKS - 0.001, cut.curveT * ROPE_LINKS),
+  );
   const linkIndex = Math.min(ROPE_LINKS - 1, Math.floor(linkPosition));
   const localT = linkPosition - linkIndex;
-  return {
+  state.cut = {
     linkIndex,
-    lowerLength: Math.max(0.012, segmentLength * (1 - localT)),
-    upperLength: Math.max(0.012, segmentLength * localT),
+    localT,
+    lowerTip: createPoint(cut.point.x, cut.point.y, CUT_TIP_INVERSE_MASS),
+    upperTip: createPoint(cut.point.x, cut.point.y, CUT_TIP_INVERSE_MASS),
   };
 }
 
-function bodyPoint(body: RapierRigidBody | null) {
-  const position = body?.translation();
-  return new THREE.Vector3(position?.x ?? 0, position?.y ?? 0, position?.z ?? 0);
-}
-
-function sampleCurve(points: THREE.Vector3[]) {
-  if (points.length < 2) return points;
-  const curve = new THREE.CatmullRomCurve3(points, false, "centripetal");
-  return curve.getPoints(Math.max(12, Math.round(CURVE_POINTS * points.length / (ROPE_LINKS + 1))));
-}
-
-function stretchRopePoints(
-  points: THREE.Vector3[],
-  target: THREE.Vector3,
-  velocity: RopePoint,
-  size: { width: number; height: number },
-  viewport: { width: number; height: number },
+function renderRope(
+  state: RopeState,
+  upperPathRef: RefObject<SVGPathElement | null>,
+  lowerPathRef: RefObject<SVGPathElement | null>,
+  screenPointsRef: MutableRefObject<RopePoint[]>,
+  onTimerMove: (pose: TimerPose) => void,
+  dragging: boolean,
 ) {
-  const endpoint = points.at(-1);
-  if (!endpoint || points.length < 2) return points;
-  const delta = target.clone().sub(endpoint);
-  const velocityWorld = new THREE.Vector3(
-    velocity.x / Math.max(1, size.width) * viewport.width,
-    -velocity.y / Math.max(1, size.height) * viewport.height,
-    0,
-  );
-  return points.map((point, index) => {
-    const ratio = index / (points.length - 1);
-    const lag = Math.sin(Math.PI * ratio) * -0.018;
-    return point.clone()
-      .addScaledVector(delta, Math.pow(ratio, 1.42))
-      .addScaledVector(velocityWorld, lag);
+  let timerRopePoints: RopePoint[];
+  if (!state.cut) {
+    const controls = state.points.map(pointToRopePoint);
+    const renderedPoints = sampleCurve(controls);
+    updateRopePath(
+      upperPathRef.current,
+      renderedPoints,
+      ropeStrokeWidth(state, dragging),
+    );
+    hideRopePath(lowerPathRef.current);
+    screenPointsRef.current = renderedPoints;
+    timerRopePoints = renderedPoints;
+  } else {
+    const upperControls = [
+      ...state.points
+        .slice(0, state.cut.linkIndex + 1)
+        .map(pointToRopePoint),
+      pointToRopePoint(state.cut.upperTip),
+    ];
+    const lowerControls = [
+      pointToRopePoint(state.cut.lowerTip),
+      ...state.points
+        .slice(state.cut.linkIndex + 1)
+        .map(pointToRopePoint),
+    ];
+    const upperPoints = sampleCurve(upperControls);
+    const lowerPoints = sampleCurve(lowerControls);
+    updateRopePath(upperPathRef.current, upperPoints, ropeStrokeWidth(state, false));
+    updateRopePath(lowerPathRef.current, lowerPoints, ropeStrokeWidth(state, false));
+    timerRopePoints = lowerPoints;
+  }
+
+  const endpoint = state.points[ROPE_LINKS];
+  onTimerMove({
+    mode: state.mode,
+    rotation: timerRotationFromRope(timerRopePoints, state.velocity.x),
+    settled: state.settledSteps >= 10,
+    velocity: state.velocity,
+    x: endpoint.x - state.width / 2,
+    y: endpoint.y - state.height * RUNNING_TIMER_TOP_RATIO,
   });
 }
 
-function timerRotationFromRope(points: RopePoint[], horizontalVelocity: number) {
+function pinAnchor(state: RopeState) {
+  const anchor = state.points[0];
+  anchor.x = state.anchorX;
+  anchor.y = ANCHOR_OFFSET_Y;
+  anchor.previousX = state.anchorX;
+  anchor.previousY = ANCHOR_OFFSET_Y;
+}
+
+function ropeLengthForMode(
+  mode: RopeMode,
+  height: number,
+  isMobileViewport: boolean,
+) {
+  const topRatio = mode === "paused"
+    ? isMobileViewport
+      ? MOBILE_PAUSED_TIMER_TOP_RATIO
+      : PAUSED_TIMER_TOP_RATIO
+    : mode === "ready"
+      ? READY_TIMER_TOP_RATIO
+      : mode === "resumePullback"
+        ? RESUME_PULLBACK_TIMER_TOP_RATIO
+        : RUNNING_TIMER_TOP_RATIO;
+  return (height * topRatio + Math.abs(ANCHOR_OFFSET_Y)) * 1.025;
+}
+
+function timerOffsetToScreen(
+  offset: RopePoint,
+  width: number,
+  height: number,
+): RopePoint {
+  return {
+    x: width / 2 + offset.x,
+    y: height * RUNNING_TIMER_TOP_RATIO + offset.y,
+  };
+}
+
+function createPoint(
+  x: number,
+  y: number,
+  inverseMass: number,
+): VerletPoint {
+  return { inverseMass, previousX: x, previousY: y, x, y };
+}
+
+function pointToRopePoint(point: VerletPoint): RopePoint {
+  return { x: point.x, y: point.y };
+}
+
+function shiftPointX(point: VerletPoint, shift: number) {
+  point.x += shift;
+  point.previousX += shift;
+}
+
+function distanceBetween(first: VerletPoint, second: VerletPoint) {
+  return Math.hypot(second.x - first.x, second.y - first.y);
+}
+
+function clamp(value: number, minimum: number, maximum: number) {
+  return Math.max(minimum, Math.min(maximum, value));
+}
+
+function clampVector(point: RopePoint, maximumLength: number): RopePoint {
+  const length = Math.hypot(point.x, point.y);
+  if (length <= maximumLength || length === 0) return point;
+  const scale = maximumLength / length;
+  return { x: point.x * scale, y: point.y * scale };
+}
+
+function sampleCurve(points: RopePoint[]) {
+  if (points.length < 3) return points;
+  const samples = Math.max(
+    12,
+    Math.round(CURVE_POINTS * points.length / (ROPE_LINKS + 1)),
+  );
+  return Array.from({ length: samples + 1 }, (_, sampleIndex) => {
+    const progress = sampleIndex / samples * (points.length - 1);
+    const index = Math.min(points.length - 2, Math.floor(progress));
+    const t = progress - index;
+    const first = points[Math.max(0, index - 1)];
+    const second = points[index];
+    const third = points[Math.min(points.length - 1, index + 1)];
+    const fourth = points[Math.min(points.length - 1, index + 2)];
+    return {
+      x: catmullRom(first.x, second.x, third.x, fourth.x, t),
+      y: catmullRom(first.y, second.y, third.y, fourth.y, t),
+    };
+  });
+}
+
+function catmullRom(
+  first: number,
+  second: number,
+  third: number,
+  fourth: number,
+  t: number,
+) {
+  const t2 = t * t;
+  const t3 = t2 * t;
+  return 0.5 * (
+    2 * second +
+    (-first + third) * t +
+    (2 * first - 5 * second + 4 * third - fourth) * t2 +
+    (-first + 3 * second - 3 * third + fourth) * t3
+  );
+}
+
+function timerRotationFromRope(
+  points: RopePoint[],
+  horizontalVelocity: number,
+) {
   if (points.length < 2) return 0;
   const end = points[points.length - 1];
   const tangent = points[Math.max(0, points.length - 5)];
-  const ropeAngle = Math.atan2(end.x - tangent.x, end.y - tangent.y) * 180 / Math.PI;
-  const velocityTilt = THREE.MathUtils.clamp(horizontalVelocity * 0.0014, -2, 2);
-  return THREE.MathUtils.clamp(ropeAngle * 0.18 + velocityTilt, -10, 10);
+  const ropeAngle = Math.atan2(end.x - tangent.x, end.y - tangent.y) *
+    180 /
+    Math.PI;
+  const velocityTilt = clamp(horizontalVelocity * 0.0022, -3, 3);
+  return clamp(ropeAngle * 0.24 + velocityTilt, -12, 12);
 }
 
-function screenToWorld(
-  point: RopePoint,
-  size: { width: number; height: number },
-  viewport: { width: number; height: number },
+function updateRopePath(
+  path: SVGPathElement | null,
+  points: RopePoint[],
+  width: number,
 ) {
-  return new THREE.Vector3(
-    (point.x / Math.max(1, size.width) - 0.5) * viewport.width,
-    (0.5 - point.y / Math.max(1, size.height)) * viewport.height,
-    0,
-  );
-}
-
-function offsetToWorld(
-  offset: RopePoint,
-  targetY: number,
-  size: { width: number; height: number },
-  viewport: { width: number; height: number },
-) {
-  return new THREE.Vector3(
-    offset.x / Math.max(1, size.width) * viewport.width,
-    targetY - offset.y / Math.max(1, size.height) * viewport.height,
-    0,
-  );
-}
-
-function worldToScreen(
-  point: THREE.Vector3,
-  size: { width: number; height: number },
-  viewport: { width: number; height: number },
-) {
-  return {
-    x: (point.x / viewport.width + 0.5) * size.width,
-    y: (0.5 - point.y / viewport.height) * size.height,
-  };
-}
-
-function updateRopePath(path: SVGPathElement | null, points: RopePoint[], width: number) {
   if (!path) return;
   if (points.length < 2) {
     hideRopePath(path);
@@ -613,9 +671,11 @@ function updateRopePath(path: SVGPathElement | null, points: RopePoint[], width:
   path.style.display = "";
   path.setAttribute(
     "d",
-    points.map((point, index) =>
-      `${index === 0 ? "M" : "L"}${point.x.toFixed(1)} ${point.y.toFixed(1)}`
-    ).join(" "),
+    points
+      .map((point, index) =>
+        `${index === 0 ? "M" : "L"}${point.x.toFixed(1)} ${point.y.toFixed(1)}`
+      )
+      .join(" "),
   );
   path.setAttribute("stroke-width", width.toFixed(2));
 }
@@ -624,10 +684,21 @@ function hideRopePath(path: SVGPathElement | null) {
   if (path) path.style.display = "none";
 }
 
-function ropeStrokeWidth(
-  size: { width: number; height: number },
-  stretchProgress: number,
-) {
-  const restingWidth = Math.max(5, Math.min(size.width, size.height) * 0.0115);
+function ropeStrokeWidth(state: RopeState, dragging: boolean) {
+  const restingWidth = Math.max(
+    6.75,
+    Math.min(state.width, state.height) * 0.0155,
+  );
+  if (!dragging) return restingWidth;
+  const baseLength = ropeLengthForMode(
+    state.mode,
+    state.height,
+    state.isMobileViewport,
+  );
+  const stretchProgress = clamp(
+    (state.currentLength - baseLength) / (state.height * 0.075),
+    0,
+    1,
+  );
   return restingWidth * (1 - stretchProgress * 0.32);
 }
