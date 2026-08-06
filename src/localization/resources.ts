@@ -78,7 +78,7 @@ export const englishUi = {
     ready: "Ready",
     paused: "Paused",
     gameTitleLabel: "Game title",
-    addGameTitle: "Add game title",
+    addGameTitle: "Game title",
     completeQuest: "Complete quest",
     completeAvailableIn:
       "You can complete this quest in <strong>{{time}}</strong>.",
@@ -166,7 +166,7 @@ export const englishUi = {
     completedAt: "Completed",
     mood: "Mood",
     timePlayed: "Time",
-    noGameTitle: "No game title added",
+    noGameTitle: "-",
     earlierLabel: "Earlier quest history",
     earlierCompletions_one:
       "One earlier completion has no quest details to display.",
@@ -261,7 +261,7 @@ export const germanUi = {
     ready: "Bereit",
     paused: "Pausiert",
     gameTitleLabel: "Spieltitel",
-    addGameTitle: "Spieltitel hinzufügen",
+    addGameTitle: "Titel des Spiels",
     completeQuest: "Quest abschließen",
     completeAvailableIn:
       "Du kannst die Quest erst in <strong>{{time}}</strong> abschließen.",
@@ -276,8 +276,7 @@ export const germanUi = {
     saveCompletion: "Speichern",
     pullContinue: "Zieh am Timer, um fortzufahren.",
     redRopesRemaining_one: "Du hast noch {{count}} rotes Seil zum Abbrechen.",
-    redRopesRemaining_other:
-      "Du hast noch {{count}} rote Seile zum Abbrechen.",
+    redRopesRemaining_other: "Du hast noch {{count}} rote Seile zum Abbrechen.",
     noRopesRemaining: "Du hast keine roten Seile mehr, um abzubrechen.",
     pullStart: "Ziehe den Timer, um zu starten.",
     readyInstructions:
@@ -350,7 +349,7 @@ export const germanUi = {
     completedAt: "Abgeschlossen",
     mood: "Stimmung",
     timePlayed: "Zeit",
-    noGameTitle: "Kein Spieltitel hinzugefügt",
+    noGameTitle: "-",
     earlierLabel: "Früherer Quest-Verlauf",
     earlierCompletions_one:
       "Für einen früheren Abschluss sind keine Quest-Details verfügbar.",

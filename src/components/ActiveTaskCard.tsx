@@ -372,10 +372,7 @@ export function ActiveTaskCard({
     [],
   );
 
-  function queueRopeRelease(
-    mode: RopeMode,
-    velocity: RopePoint,
-  ) {
+  function queueRopeRelease(mode: RopeMode, velocity: RopePoint) {
     ropeReleaseSequenceRef.current += 1;
     ropeReleaseRef.current = {
       mode,
@@ -516,10 +513,7 @@ export function ActiveTaskCard({
     if (cardRect) {
       setCompletionOffset({
         x: window.innerWidth / 2 - (cardRect.left + cardRect.width / 2),
-        y:
-          window.innerHeight / 2 +
-          40 -
-          (cardRect.top + cardRect.height / 2),
+        y: window.innerHeight / 2 + 40 - (cardRect.top + cardRect.height / 2),
       });
     }
     setPhase("completion-preview");
@@ -760,8 +754,7 @@ export function ActiveTaskCard({
         const readyTopRatio = isMobileViewport
           ? MOBILE_READY_TIMER_TOP_RATIO
           : READY_TIMER_TOP_RATIO;
-        const restingY =
-          -rigHeight * (RUNNING_TIMER_TOP_RATIO - readyTopRatio);
+        const restingY = -rigHeight * (RUNNING_TIMER_TOP_RATIO - readyTopRatio);
         const distanceFromRest = Math.hypot(pose.x, pose.y - restingY);
         const speed = Math.hypot(pose.velocity.x, pose.velocity.y);
         const settled = elapsed > 480 && distanceFromRest < 22 && speed < 130;
@@ -779,8 +772,7 @@ export function ActiveTaskCard({
         pose.mode === timerReturnModeRef.current
       ) {
         const elapsed = performance.now() - timerReturnStartedAtRef.current;
-        const activating =
-          resumePendingRef.current || startPendingRef.current;
+        const activating = resumePendingRef.current || startPendingRef.current;
         const rigHeight = rigRef.current?.clientHeight ?? window.innerHeight;
         const pullbackY =
           -rigHeight *
@@ -823,9 +815,7 @@ export function ActiveTaskCard({
   const minimumDurationMs = task.minimumDurationMinutes * 60_000;
   const canComplete = debugMode || elapsedMs >= minimumDurationMs;
   const completionRemainingMs = Math.max(0, minimumDurationMs - elapsedMs);
-  const completionRemainingMinutes = Math.floor(
-    completionRemainingMs / 60_000,
-  );
+  const completionRemainingMinutes = Math.floor(completionRemainingMs / 60_000);
   const completionAward = calculateCompletionPoints(elapsedMs);
   const displayedGameTitle = sanitizeGameTitle(gameTitle);
   const cardFocusAvailable = isMobileViewport && revealFinished && !exiting;
@@ -959,8 +949,8 @@ export function ActiveTaskCard({
             scale:
               previewingCompletion || completed
                 ? isMobileViewport
-                  ? 0.86
-                  : 0.895
+                  ? 1.1
+                  : 0.95
                 : 1,
             x: previewingCompletion || completed ? completionOffset.x : 0,
             y: previewingCompletion || completed ? completionOffset.y : 0,
@@ -1134,8 +1124,12 @@ export function ActiveTaskCard({
                             >
                               <CompletionCheckIcon />
                               <span>{t("ui.timer.yourTime")}</span>
-                              <strong>{formatRunningDuration(elapsedMs)}</strong>
-                              {displayedGameTitle && <b>{displayedGameTitle}</b>}
+                              <strong>
+                                {formatRunningDuration(elapsedMs)}
+                              </strong>
+                              {displayedGameTitle && (
+                                <b>{displayedGameTitle}</b>
+                              )}
                             </motion.div>
                           ) : (
                             <motion.form
@@ -1149,7 +1143,9 @@ export function ActiveTaskCard({
                               animate={{ opacity: 1 }}
                             >
                               <span>{t("ui.timer.yourTime")}</span>
-                              <strong>{formatRunningDuration(elapsedMs)}</strong>
+                              <strong>
+                                {formatRunningDuration(elapsedMs)}
+                              </strong>
                               <input
                                 autoFocus
                                 className={styles.completionGameTitleInput}
@@ -1186,8 +1182,7 @@ export function ActiveTaskCard({
         className={styles.timerRig}
         ref={rigRef}
         animate={{
-          opacity:
-            previewingCompletion || completed || !revealFinished ? 0 : 1,
+          opacity: previewingCompletion || completed || !revealFinished ? 0 : 1,
         }}
         transition={{ duration: reduceMotion ? 0 : 0.16, ease: "easeOut" }}
         style={{
@@ -1431,56 +1426,56 @@ export function ActiveTaskCard({
               priorCompletionRows.length > 0 &&
               !hasNoRopes
             ) && (
-            <motion.div
-              className={styles.timerHint}
-              data-cut-ignore
-              key={phase}
-              initial={reduceMotion ? false : { opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
-              transition={{
-                duration: reduceMotion ? 0 : 0.16,
-                ease: "easeOut",
-              }}
-            >
-              {phase === "ready" ? (
-                <span className={styles.readyTimerInstructions}>
-                  <Trans
-                    i18nKey="ui.timer.readyInstructions"
-                    values={{
-                      time: t("ui.quest.durationSingleLong", {
-                        count: task.minimumDurationMinutes,
-                      }),
-                    }}
-                    components={{ br: <br />, strong: <strong /> }}
+              <motion.div
+                className={styles.timerHint}
+                data-cut-ignore
+                key={phase}
+                initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.16,
+                  ease: "easeOut",
+                }}
+              >
+                {phase === "ready" ? (
+                  <span className={styles.readyTimerInstructions}>
+                    <Trans
+                      i18nKey="ui.timer.readyInstructions"
+                      values={{
+                        time: t("ui.quest.durationSingleLong", {
+                          count: task.minimumDurationMinutes,
+                        }),
+                      }}
+                      components={{ br: <br />, strong: <strong /> }}
+                    />
+                  </span>
+                ) : (
+                  <span>
+                    {phase === "paused"
+                      ? t("ui.timer.pullResume")
+                      : t("ui.timer.pullPause")}
+                  </span>
+                )}
+                {phase === "ready" && hasNoRopes && (
+                  <span>{t("ui.timer.noRopesRemaining")}</span>
+                )}
+                {(phase === "running" || phase === "paused") && (
+                  <span>
+                    {hasNoRopes
+                      ? t("ui.timer.noRopesRemaining")
+                      : t("ui.timer.cutStop")}
+                  </span>
+                )}
+                {hasNoRopes && (
+                  <RopePurchaseRow
+                    coins={coins}
+                    onPurchase={onPurchaseRedRopes}
+                    variant="black"
                   />
-                </span>
-              ) : (
-                <span>
-                  {phase === "paused"
-                    ? t("ui.timer.pullResume")
-                    : t("ui.timer.pullPause")}
-                </span>
-              )}
-              {phase === "ready" && hasNoRopes && (
-                <span>{t("ui.timer.noRopesRemaining")}</span>
-              )}
-              {(phase === "running" || phase === "paused") && (
-                <span>
-                  {hasNoRopes
-                    ? t("ui.timer.noRopesRemaining")
-                    : t("ui.timer.cutStop")}
-                </span>
-              )}
-              {hasNoRopes && (
-                <RopePurchaseRow
-                  coins={coins}
-                  onPurchase={onPurchaseRedRopes}
-                  variant="black"
-                />
-              )}
-            </motion.div>
-          )}
+                )}
+              </motion.div>
+            )}
         </AnimatePresence>
 
         <AnimatePresence>
@@ -1502,7 +1497,9 @@ export function ActiveTaskCard({
                       <strong>
                         {completion.gameTitle ?? t("ui.history.noGameTitle")}
                       </strong>
-                      <time>{formatRunningDuration(completion.durationMs)}</time>
+                      <time>
+                        {formatRunningDuration(completion.durationMs)}
+                      </time>
                     </li>
                   ))}
                 </ol>
@@ -1531,9 +1528,7 @@ function FlyingCoin({
 }) {
   const rotationDirection = isMobileViewport ? 1 : -1;
   const arcX =
-    start.x +
-    (end.x - start.x) * 0.43 +
-    rotationDirection * (54 + index * 9);
+    start.x + (end.x - start.x) * 0.43 + rotationDirection * (54 + index * 9);
   const arcY = Math.min(start.y, end.y) - 105 - index * 10;
 
   return (
@@ -1552,11 +1547,7 @@ function FlyingCoin({
           : {
               left: [start.x, arcX, end.x],
               opacity: [0, 1, 1, 0],
-              rotate: [
-                0,
-                rotationDirection * 180,
-                rotationDirection * 420,
-              ],
+              rotate: [0, rotationDirection * 180, rotationDirection * 420],
               scale: [0.55, 2, 1.6, 0.3],
               top: [start.y, arcY, end.y],
             }

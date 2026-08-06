@@ -126,8 +126,11 @@ describe("localization resources", () => {
       expect(translation.name === translation.title).toBe(false);
       expect(/[.!?]$/.test(translation.name)).toBe(false);
       expect(/[.!?]$/.test(translation.title)).toBe(false);
-      expect(translation.title.trim().split(/\s+/).length <= 8).toBe(true);
-      expect(translation.title.length <= 50).toBe(true);
+      expect(translation.title.trim().split(/\s+/).length <= 14).toBe(true);
+      expect(translation.title.toLowerCase()).not.toContain(
+        translation.name.toLowerCase(),
+      );
+      expect(translation.title.length <= 105).toBe(true);
       expect(
         /Speichervorgang|Rettungswurf|Tageszeitung|Mittelbibliothek|One Named|One System|Programm Eine/.test(
           translation.title,
@@ -145,12 +148,12 @@ describe("localization resources", () => {
 
     expect(englishQuest).toMatchObject({
       id: questId,
-      title: "Play a Childhood Favorite",
+      title: "Start the part you remember best",
     });
     expect(germanQuest).toMatchObject({
       id: questId,
       name: "Kindheitsgefühl",
-      title: "Spiele einen Kindheitsfavoriten",
+      title: "Starte den Abschnitt, an den du dich am besten erinnerst",
     });
     expect(germanQuest?.rewardPoints).toBe(englishQuest?.rewardPoints);
     expect(germanQuest?.tips[0].title).not.toBe(englishQuest?.tips[0].title);

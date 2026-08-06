@@ -40,9 +40,12 @@ describe("mood quest catalog", () => {
       expect(quest.name.length <= 32).toBe(true);
       expect(quest.name === quest.title).toBe(false);
       expect(/[.!?]$/.test(quest.name)).toBe(false);
-      expect(wordCount(quest.title) <= 6).toBe(true);
-      expect(wordCount(quest.objective) <= 14).toBe(true);
-      expect(wordCount(quest.completion) <= 12).toBe(true);
+      expect(wordCount(quest.title) <= 14).toBe(true);
+      expect(wordCount(quest.objective) <= 18).toBe(true);
+      expect(wordCount(quest.completion) <= 16).toBe(true);
+      expect(quest.title.toLowerCase()).not.toContain(
+        quest.name.toLowerCase(),
+      );
       expect("motivation" in quest).toBe(false);
       expect(quest.tips).toHaveLength(2);
       expect(quest.tipIds).toHaveLength(2);
@@ -64,11 +67,9 @@ describe("mood quest catalog", () => {
             ) && !("bonusPoints" in tip),
         ),
       ).toBe(true);
-      expect(quest.minimumDurationMinutes >= 5).toBe(true);
-      expect(quest.minimumDurationMinutes <= 30).toBe(true);
-      expect(quest.minimumDurationMinutes % 5).toBe(0);
-      expect(quest.suggestedDurationMinutes >= 15).toBe(true);
-      expect(quest.suggestedDurationMinutes <= 60).toBe(true);
+      expect([1, 2, 5, 10]).toContain(quest.minimumDurationMinutes);
+      expect(quest.suggestedDurationMinutes >= 5).toBe(true);
+      expect(quest.suggestedDurationMinutes <= 30).toBe(true);
       expect(quest.suggestedDurationMinutes % 5).toBe(0);
       expect(
         quest.suggestedDurationMinutes >= quest.minimumDurationMinutes,
@@ -79,56 +80,38 @@ describe("mood quest catalog", () => {
     }
   });
 
-  test("uses varied mood-aware minimums with shorter restorative sessions", () => {
-    const restorativeMoodIds = [
-      "relax",
-      "low-energy",
-      "overwhelmed",
-      "nostalgic",
-    ] as const;
-
-    for (const moodId of restorativeMoodIds) {
-      const durations = QUESTS_BY_MOOD[moodId].map(
-        (quest) => quest.minimumDurationMinutes,
-      );
-      expect(Math.min(...durations)).toBe(5);
-      expect(Math.max(...durations) <= 25).toBe(true);
-      expect(new Set(durations).size >= 4).toBe(true);
-    }
-
-    for (const mood of MOODS) {
-      expect(
-        new Set(
-          QUESTS_BY_MOOD[mood.id].map(
-            (quest) => quest.minimumDurationMinutes,
-          ),
-        ).size >= 4,
-      ).toBe(true);
-    }
-
+  test("keeps most quest minimums tiny and reserves longer gates for substantial play", () => {
     const averageDuration =
       QUESTS.reduce(
         (total, quest) => total + quest.minimumDurationMinutes,
         0,
       ) / QUESTS.length;
-    expect(averageDuration < 20).toBe(true);
-
+    expect(averageDuration < 4).toBe(true);
     expect(
-      QUESTS.some((quest) => quest.suggestedDurationMinutes === 15),
+      QUESTS.filter((quest) => quest.minimumDurationMinutes <= 2).length >=
+        QUESTS.length * 0.7,
     ).toBe(true);
     expect(
-      QUESTS.some((quest) => quest.suggestedDurationMinutes === 60),
+      QUESTS.filter((quest) => quest.minimumDurationMinutes === 10).length <
+        QUESTS.length * 0.15,
+    ).toBe(true);
+
+    expect(
+      QUESTS.some((quest) => quest.suggestedDurationMinutes === 5),
+    ).toBe(true);
+    expect(
+      QUESTS.some((quest) => quest.suggestedDurationMinutes === 30),
     ).toBe(true);
   });
 
   test("separates the points minimum from a genre-aware session suggestion", () => {
     expect(QUESTS_BY_ID["challenge-one-step-harder"]).toMatchObject({
-      minimumDurationMinutes: 25,
-      suggestedDurationMinutes: 35,
+      minimumDurationMinutes: 5,
+      suggestedDurationMinutes: 15,
     });
     expect(QUESTS_BY_ID["challenge-pressure-proof"]).toMatchObject({
-      minimumDurationMinutes: 20,
-      suggestedDurationMinutes: 60,
+      minimumDurationMinutes: 10,
+      suggestedDurationMinutes: 30,
     });
 
     for (const quest of QUESTS) {
@@ -140,12 +123,15 @@ describe("mood quest catalog", () => {
     }
   });
 
-  test("names a recognizable game or game group before giving the finish", () => {
-    const gameCue =
-      /\b(game|games|library|save|campaign|level|quest|mode|world|series|shooter|fighter|fighting|racing|sport|sandbox|sim|simulation|simulator|RPG|JRPG|roguelike|strategy|tactics|card|deck|platformer|rhythm|puzzle|builder|building|survival|horror|arcade|match|track|chapter|console|character|developer|studio|controller|MMO|tabletop|pinball|FMV|favorite|achievement|map|cover|flight|novel|adventure)\b/i;
-
+  test("separates setting, standalone action, game frame, and visible finish", () => {
     for (const quest of QUESTS) {
-      expect(gameCue.test(`${quest.title} ${quest.objective}`)).toBe(true);
+      expect((quest.objective.match(/[.!?]/g) ?? []).length).toBe(1);
+      expect(/[.!?]$/.test(quest.title)).toBe(false);
+      expect(
+        /^(?:it|its|that|this|them|there|use it|play it|finish it|start it|enter it|follow it|keep it|do it|make it|reach it|accept it|leave it|try it|continue it|open it|replay it)\b/i.test(
+          quest.title,
+        ),
+      ).toBe(false);
       expect(
         /\b(choose|pick|select|browse) (?:an? |the )?(?:owned |installed )?game\b/i.test(
           quest.completion,
@@ -159,7 +145,7 @@ describe("mood quest catalog", () => {
       /\b(customize|customization|new build|themed deck|change (?:the )?(?:camera|controls|setup)|restore (?:your )?(?:settings|setup)|character backstory|neglected character)\b/i;
 
     for (const quest of QUESTS) {
-      const coreCopy = `${quest.title} ${quest.objective} ${quest.completion}`;
+      const coreCopy = `${quest.name} ${quest.title} ${quest.objective} ${quest.completion}`;
       if (quest.tips.some((tip) => tip.title === "Keep Your Setup")) {
         expect(setupChangingLanguage.test(coreCopy)).toBe(false);
       }
@@ -175,7 +161,7 @@ describe("mood quest catalog", () => {
       }
       if (quest.tips.some((tip) => tip.title === "Help First")) {
         expect(
-          /\b(co-op|multiplayer|player|team|shared|stranger|companion|resident|support)\b/i.test(
+          /\b(co-op|multiplayer|player|team|shared|stranger|companion|resident|support|character|company)\b/i.test(
             coreCopy,
           ),
         ).toBe(true);
@@ -190,7 +176,7 @@ describe("mood quest catalog", () => {
       ),
     ).toBe(true);
     expect(
-      /library|installed.*row/i.test(
+      /library|installed/i.test(
         `${QUESTS_BY_ID["explore-wrong-turn"].title} ${QUESTS_BY_ID["explore-wrong-turn"].objective}`,
       ),
     ).toBe(true);
@@ -200,8 +186,8 @@ describe("mood quest catalog", () => {
       ),
     ).toBe(true);
     expect(QUESTS_BY_ID["progress-clean-finish"]).toMatchObject({
-      minimumDurationMinutes: 30,
-      suggestedDurationMinutes: 60,
+      minimumDurationMinutes: 10,
+      suggestedDurationMinutes: 30,
       rewardPoints: 250,
     });
     expect(
@@ -225,7 +211,7 @@ describe("mood quest catalog", () => {
       ),
     ).toBe(true);
     expect(
-      /former friends-only game/i.test(
+      /game your old group once played together/i.test(
         QUESTS_BY_ID["connect-lift-the-lowest"].objective,
       ),
     ).toBe(true);

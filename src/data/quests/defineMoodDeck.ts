@@ -1,11 +1,11 @@
 import type { MoodId, MoodQuestDefinition } from "../questTypes";
-import { QUEST_INSTRUCTIONS } from "./instructions";
+import { buildQuestPrompt, QUEST_INSTRUCTIONS } from "./instructions";
 import { ENGLISH_QUEST_NAMES } from "./names";
 import { resolveQuestTips, type QuestTipId } from "./tips";
 
 export type MoodQuestDraft = Omit<
   MoodQuestDefinition,
-  "moodId" | "name" | "objective" | "completion" | "tips"
+  "moodId" | "name" | "title" | "objective" | "completion" | "tips"
 > & {
   tipIds: readonly [QuestTipId, QuestTipId];
 };
@@ -24,13 +24,13 @@ export function defineMoodDeck(
     if (!instruction) {
       throw new Error(`Missing localized quest instruction: ${quest.id}`);
     }
+    const prompt = buildQuestPrompt(instruction.en);
 
     return {
       ...quest,
       moodId,
       name,
-      objective: instruction.en.objective,
-      completion: instruction.en.completion,
+      ...prompt,
       tipIds,
       tips: resolveQuestTips(tipIds),
     };
