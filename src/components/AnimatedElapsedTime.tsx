@@ -110,6 +110,59 @@ export function AnimatedElapsedTime({ elapsedMs, reduceMotion }: Props) {
       aria-live="off"
       aria-label={t("ui.timer.elapsed", { time: formatted })}
     >
+      <svg
+        className={styles.timerEffectDefinitions}
+        aria-hidden="true"
+        focusable="false"
+      >
+        <defs>
+          <filter
+            id="timer-digit-depth"
+            x="-25%"
+            y="-25%"
+            width="150%"
+            height="160%"
+            colorInterpolationFilters="sRGB"
+          >
+            <feDropShadow
+              dx="0"
+              dy="1.5"
+              floodColor="#212121"
+              floodOpacity="0.15"
+              stdDeviation="1.5"
+              result="softShadow"
+            />
+            <feGaussianBlur
+              in="SourceAlpha"
+              stdDeviation="2"
+              result="innerBlur"
+            />
+            <feOffset in="innerBlur" dy="-2" result="innerOffset" />
+            <feComposite
+              in="SourceAlpha"
+              in2="innerOffset"
+              operator="out"
+              result="innerEdge"
+            />
+            <feFlood
+              floodColor="#ffffff"
+              floodOpacity="0.5"
+              result="innerColor"
+            />
+            <feComposite
+              in="innerColor"
+              in2="innerEdge"
+              operator="in"
+              result="innerShadow"
+            />
+            <feMerge>
+              <feMergeNode in="softShadow" />
+              <feMergeNode in="SourceGraphic" />
+              <feMergeNode in="innerShadow" />
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
       <span className={styles.timerDigits} aria-hidden="true">
         {tokens.map(({ character, slot }) => {
           if (character === ":") {
@@ -119,7 +172,7 @@ export function AnimatedElapsedTime({ elapsedMs, reduceMotion }: Props) {
                 data-timer-slot={slot}
                 key={`slot-${slot}`}
               >
-                {character}
+                <span className={styles.timerDigitFace}>{character}</span>
               </span>
             );
           }
@@ -139,7 +192,9 @@ export function AnimatedElapsedTime({ elapsedMs, reduceMotion }: Props) {
               key={`slot-${slot}`}
             >
               {reduceMotion ? (
-                <span className={styles.timerDigit}>{character}</span>
+                <span className={styles.timerDigit}>
+                  <span className={styles.timerDigitFace}>{character}</span>
+                </span>
               ) : (
                 <AnimatePresence initial={false} custom={delay}>
                   <motion.span
@@ -152,7 +207,7 @@ export function AnimatedElapsedTime({ elapsedMs, reduceMotion }: Props) {
                     key={character}
                     variants={digitVariants}
                   >
-                    {character}
+                    <span className={styles.timerDigitFace}>{character}</span>
                   </motion.span>
                 </AnimatePresence>
               )}

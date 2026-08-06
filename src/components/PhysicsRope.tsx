@@ -96,11 +96,14 @@ const PAUSED_RETURN_LENGTH_DAMPING = 15.5;
 const GRAB_STIFFNESS = 720;
 const GRAB_DAMPING = 38;
 
-export const RUNNING_TIMER_TOP_RATIO = 0.35;
-export const PAUSED_TIMER_TOP_RATIO = 0.17;
-export const MOBILE_PAUSED_TIMER_TOP_RATIO = 0.185;
+export const RUNNING_TIMER_TOP_RATIO = 0.325;
+export const PAUSED_TIMER_TOP_RATIO = 0.155;
 export const READY_TIMER_TOP_RATIO = 0.17;
 export const RESUME_PULLBACK_TIMER_TOP_RATIO = 0.11;
+export const MOBILE_RUNNING_TIMER_TOP_RATIO = 0.3675;
+export const MOBILE_READY_TIMER_TOP_RATIO = 0.1615;
+export const MOBILE_PAUSED_TIMER_TOP_RATIO =
+  MOBILE_READY_TIMER_TOP_RATIO * 0.6;
 
 export function PhysicsRope({
   cut,
@@ -556,10 +559,14 @@ function ropeLengthForMode(
       ? MOBILE_PAUSED_TIMER_TOP_RATIO
       : PAUSED_TIMER_TOP_RATIO
     : mode === "ready"
-      ? READY_TIMER_TOP_RATIO
+      ? isMobileViewport
+        ? MOBILE_READY_TIMER_TOP_RATIO
+        : READY_TIMER_TOP_RATIO
       : mode === "resumePullback"
         ? RESUME_PULLBACK_TIMER_TOP_RATIO
-        : RUNNING_TIMER_TOP_RATIO;
+        : isMobileViewport
+          ? MOBILE_RUNNING_TIMER_TOP_RATIO
+          : RUNNING_TIMER_TOP_RATIO;
   return (height * topRatio + Math.abs(ANCHOR_OFFSET_Y)) * 1.025;
 }
 

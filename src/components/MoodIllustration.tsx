@@ -1,3 +1,10 @@
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import type { MoodId } from "../data/moods";
 
 type MoodIllustrationProps = {
@@ -17,9 +24,38 @@ export function MoodIllustration({ moodId, className }: MoodIllustrationProps) {
       viewBox="0 0 445 302"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {illustrationForMood(moodId)}
+      {quantizeIllustration(illustrationForMood(moodId))}
     </svg>
   );
+}
+
+function quantizeIllustration(node: ReactNode): ReactNode {
+  if (!isValidElement(node)) return node;
+  const element = node as ReactElement<{
+    children?: ReactNode;
+    fill?: string;
+  }>;
+  const fill = element.props.fill;
+  const children = Children.map(element.props.children, quantizeIllustration);
+
+  return cloneElement(element, {
+    ...(fill ? { fill: fourShadeFill(fill) } : {}),
+    ...(children ? { children } : {}),
+  });
+}
+
+function fourShadeFill(fill: string) {
+  if (fill === "white") return "var(--mood-art-4)";
+  const match = /^#([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i.exec(fill);
+  if (!match) return fill;
+  const red = Number.parseInt(match[1], 16);
+  const green = Number.parseInt(match[2], 16);
+  const blue = Number.parseInt(match[3], 16);
+  const luminance = red * 0.2126 + green * 0.7152 + blue * 0.0722;
+  if (luminance < 34) return "var(--mood-art-1)";
+  if (luminance < 92) return "var(--mood-art-2)";
+  if (luminance < 164) return "var(--mood-art-3)";
+  return "var(--mood-art-4)";
 }
 
 function illustrationForMood(moodId: MoodId) {

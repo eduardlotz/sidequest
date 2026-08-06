@@ -18,6 +18,7 @@ export type SoundName =
   | "buttonHover"
   | "cardHover"
   | "cardSelect"
+  | "coinHit"
   | "completion"
   | "cut"
   | "drawerClose"
@@ -73,6 +74,28 @@ const minimalClick: SoundDefinition = {
   gain: 0.1,
 };
 
+const coinHitFrequencies = [880, 914, 948, 986, 1028, 1072] as const;
+const playCoinHits = coinHitFrequencies.map((frequency, index) =>
+  defineSound({
+    layers: [
+      {
+        source: { type: "sine", frequency },
+        envelope: { attack: 0, decay: 0.075, sustain: 0, release: 0.025 },
+        gain: 0.045,
+      },
+      {
+        source: {
+          type: "sine",
+          frequency: frequency * 2.48,
+          detune: index % 2 === 0 ? -4 : 5,
+        },
+        envelope: { attack: 0, decay: 0.045, sustain: 0, release: 0.018 },
+        gain: 0.018,
+      },
+    ],
+  }),
+);
+
 const playPause = defineSound(core.slideDown);
 const playResume = defineSound(core.toggleOn);
 const playTimerGrab = defineSound(core.select);
@@ -84,6 +107,7 @@ const playShuffle = defineSequence([
   { sound: organic.tap, at: 0.045, volume: 0.3 },
   { sound: organic.tap, at: 0.09, volume: 0.48 },
 ]);
+let nextCoinHit = 0;
 
 const sounds: Record<SoundName, () => unknown> = {
   accordionClose: defineSound(core.collapse),
@@ -92,6 +116,11 @@ const sounds: Record<SoundName, () => unknown> = {
   buttonHover: defineSound(core.hover),
   cardHover: defineSound(core.hover),
   cardSelect: defineSound(bloom),
+  coinHit: () => {
+    const playCoin = playCoinHits[nextCoinHit % playCoinHits.length];
+    nextCoinHit += 1;
+    return playCoin({ volume: 0.62 });
+  },
   completion: playCompletion,
   cut: defineSound(cut),
   drawerClose: defineSound(core.drawerClose),

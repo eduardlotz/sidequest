@@ -15,6 +15,7 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 import type { MoodId } from "../data/moods";
+import { getMoodArtStyle } from "../data/questColors";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import { moodCardLayoutId } from "../lib/cardMotion";
 import { playSound } from "../lib/sound";
@@ -538,6 +539,7 @@ function ArcCard({
             subtitle: item.subtitle,
           })}
           style={{
+            ...getMoodArtStyle(item.id),
             rotateX,
             rotateY,
             transformPerspective: 1_000,
