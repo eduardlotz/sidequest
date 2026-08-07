@@ -17,6 +17,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useTiltEffect } from "../hooks/useTiltEffect";
 import {
   calculateCompletionPoints,
+  RED_ROPE_BUNDLE_COST,
   sanitizeGameTitle,
   type CompletedSession,
   type Quest,
@@ -1085,7 +1086,7 @@ export function ActiveTaskCard({
                     <motion.div className={styles.questDetails} initial={false}>
                       <h2 className={styles.questTitle}>{task.title}</h2>
                       <p className={styles.questDescription}>
-                        {task.objective} {task.completion}
+                        {task.completion}
                       </p>
                       <QuestTips tips={task.tips} />
                     </motion.div>
@@ -1394,7 +1395,7 @@ export function ActiveTaskCard({
                           count: redRopes,
                         })}
                   </p>
-                  {hasNoRopes && (
+                  {hasNoRopes && coins >= RED_ROPE_BUNDLE_COST && (
                     <RopePurchaseRow
                       coins={coins}
                       onPurchase={onPurchaseRedRopes}
@@ -1489,7 +1490,7 @@ export function ActiveTaskCard({
                       : t("ui.timer.cutStop")}
                   </span>
                 )}
-                {hasNoRopes && (
+                {hasNoRopes && coins >= RED_ROPE_BUNDLE_COST && (
                   <RopePurchaseRow
                     coins={coins}
                     onPurchase={onPurchaseRedRopes}

@@ -1,5 +1,5 @@
 export const germanQuestNames = {
-  "relax-soft-landing": "Kindheitsgefühl",
+  "relax-soft-landing": "Nostalgie Pur",
   "relax-scenic-route": "Muskelgedächtnis",
   "relax-care-shift": "Vertrauter Soundtrack",
   "relax-one-good-loop": "Lieblingsort",
@@ -24,7 +24,7 @@ export const germanQuestNames = {
   "relax-small-routine": "Beruhigende Routine",
   "relax-watch-and-wander": "Ruhiges Umherstreifen",
   "relax-one-button-deeper": "Ein Knopf",
-  "relax-safe-home-base": "Heimatbasis",
+  "relax-safe-home-base": "Tapetenwechsel in deiner Base",
   "relax-low-volume": "Leise gespielt",
   "relax-kindest-save-file": "Ruhiger Spielstand",
   "relax-comforting-repetition": "Wohlfühlrunde",
