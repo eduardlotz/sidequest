@@ -127,7 +127,7 @@ export function AnimatedElapsedTime({ elapsedMs, reduceMotion }: Props) {
             <feDropShadow
               dx="0"
               dy="1.5"
-              floodColor="#212121"
+              floodColor="var(--timer-shadow-color)"
               floodOpacity="0.15"
               stdDeviation="1.5"
               result="softShadow"
@@ -145,7 +145,7 @@ export function AnimatedElapsedTime({ elapsedMs, reduceMotion }: Props) {
               result="innerEdge"
             />
             <feFlood
-              floodColor="#ffffff"
+              floodColor="var(--timer-highlight-color)"
               floodOpacity="0.5"
               result="innerColor"
             />

@@ -14,6 +14,13 @@ import { AVATAR_MARK_BY_THEME, markAssetUrl } from "./data/questMarks";
 import { formatScore } from "./lib/format";
 import { playSound } from "./lib/sound";
 import {
+  applyThemeChoice,
+  DARK_THEME_MEDIA_QUERY,
+  readThemeChoice,
+  saveThemeChoice,
+  type ThemeChoice,
+} from "./lib/theme";
+import {
   hydrateCompletedQuest,
   hydrateQuest,
   localizeMood,
@@ -79,6 +86,7 @@ export function App() {
     })),
   );
   const reduceMotion = Boolean(useReducedMotion());
+  const [themeChoice, setThemeChoice] = useState<ThemeChoice>(readThemeChoice);
   const [profileOpen, setProfileOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -140,6 +148,15 @@ export function App() {
         : [],
     [completedSessions, currentSession],
   );
+  useEffect(() => {
+    const media = window.matchMedia(DARK_THEME_MEDIA_QUERY);
+    const applyTheme = () => applyThemeChoice(themeChoice, media.matches);
+
+    applyTheme();
+    media.addEventListener("change", applyTheme);
+    return () => media.removeEventListener("change", applyTheme);
+  }, [themeChoice]);
+
   useEffect(() => {
     if (reduceMotion) {
       setIntroComplete(true);
@@ -264,6 +281,12 @@ export function App() {
 
   function toggleLanguage() {
     void i18n.changeLanguage(language === "en" ? "de" : "en");
+  }
+
+  function handleThemeChange(choice: ThemeChoice) {
+    saveThemeChoice(choice);
+    applyThemeChoice(choice);
+    setThemeChoice(choice);
   }
 
   const nextLanguage = language === "en" ? "de" : "en";
@@ -461,11 +484,13 @@ export function App() {
                     onDebugModeChange={setDebugMode}
                     onOpenHistory={handleOpenHistory}
                     onPurchaseRedRopes={purchaseRedRopes}
+                    onThemeChange={handleThemeChange}
                     open={profileOpen}
                     profile={profile}
                     reduceMotion={reduceMotion}
                     stats={stats}
                     totalCoinsCollected={totalCoinsCollected}
+                    themeChoice={themeChoice}
                   />
                 </Drawer.Content>
               </Drawer.Portal>
