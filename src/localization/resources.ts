@@ -134,8 +134,7 @@ export const englishUi = {
     favoriteMood: "Favorite mood",
     noFavoriteMood: "None yet",
     debugMode: "Debug mode",
-    debugModeDescription:
-      "No completion minimums. Cancelling never spends red ropes.",
+    debugModeDescription: "No minimum duration and cancelling is free",
     debugModeLabel: "Toggle local debug mode",
     debugModeInfoLabel: "About developer mode",
     debugModeOn: "On",
@@ -319,8 +318,7 @@ export const germanUi = {
     favoriteMood: "Lieblingsstimmung",
     noFavoriteMood: "Noch keine",
     debugMode: "Debug-Modus",
-    debugModeDescription:
-      "Mindestzeit wird ignoriert und Abbrüche kosten keine Seile",
+    debugModeDescription: "Keine Mindestzeit und Abbrüche sind gratis",
     debugModeLabel: "Lokalen Debug-Modus umschalten",
     debugModeInfoLabel: "Über den Developer Mode",
     debugModeOn: "An",

@@ -4341,7 +4341,7 @@ button.arcCard {
   }
 
   .previewCardSlot {
-    width: min(70vw, 300px);
+    width: min(80vw, 320px);
   }
 
   .questSelectionPrompt {
@@ -4852,11 +4852,11 @@ button.arcCard {
 
 .activeCardStage {
   width: clamp(310px, 29.7cqw, 460px);
-  aspect-ratio: 0.7;
+  aspect-ratio: 0.735;
   translate: 26px 12px;
 }
 
-.activeExperience[data-phase="completion-preview"] .activeCardStage,
+/* .activeExperience[data-phase="completion-preview"] .activeCardStage,
 .activeExperience[data-phase="completed"] .activeCardStage {
   aspect-ratio: 0.735;
 }
@@ -4865,7 +4865,7 @@ button.arcCard {
 .activeExperience[data-phase="paused"] .activeCardStage {
   aspect-ratio: 0.715;
   translate: 26px 16px;
-}
+} */
 
 .timerRig {
   translate: -8px 0;
@@ -5477,6 +5477,8 @@ button.arcCard {
 
 .settingInfoTooltip {
   position: absolute;
+  width: fit-content;
+  max-width: calc(100% - 32px);
   right: 8px;
   bottom: calc(100% + 8px);
   left: 8px;
