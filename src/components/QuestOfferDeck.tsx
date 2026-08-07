@@ -125,7 +125,7 @@ export function QuestOfferDeck({
 
   function cycleCard(direction: -1 | 1, focusNext = false) {
     if (selectedId || items.length < 2) return;
-    playSound("slide");
+    playSound("cardHover");
     setActiveCardIndex(
       (current) => (current + direction + items.length) % items.length,
     );
@@ -275,8 +275,10 @@ function QuestOfferCard({
       drag={isMobile && isTopCard && !selectionStarted ? "x" : false}
       dragConstraints={{ left: 0, right: 0 }}
       dragDirectionLock
-      dragElastic={0.34}
+      // dragElastic={0.34}
+      dragElastic={1}
       dragMomentum={false}
+      // dragMomentum={true}
       onPointerDown={() => {
         suppressClickRef.current = false;
       }}
@@ -284,18 +286,22 @@ function QuestOfferCard({
         if (Math.abs(info.offset.x) > 8) suppressClickRef.current = true;
       }}
       onDragEnd={(_, info) => {
+        // always cycle forwards no matter drag direction
         const direction =
-          info.offset.x < -64 || info.velocity.x < -500
+          info.offset.x < -100 || info.velocity.x < -800
             ? 1
-            : info.offset.x > 64 || info.velocity.x > 500
-              ? -1
+            : info.offset.x > 100 || info.velocity.x > 800
+              ? 1
               : 0;
         if (direction) onCycle(direction);
+
         window.setTimeout(() => {
           suppressClickRef.current = false;
         }, 0);
       }}
-      style={{ rotate: isMobile ? 0 : CARD_ROTATIONS[index] ?? 0 }}
+      style={{
+        rotate: isMobile ? 0 : (CARD_ROTATIONS[index] ?? 0),
+      }}
       initial={
         reduceMotion
           ? false
@@ -320,8 +326,7 @@ function QuestOfferCard({
           : selectionStarted && !selected
             ? "blur(5px)"
             : "blur(0px)",
-        opacity:
-          (selectionStarted && !selected) || returningToMoods ? 0 : 1,
+        opacity: (selectionStarted && !selected) || returningToMoods ? 0 : 1,
         x:
           selectionStarted && !selected
             ? index === 0
@@ -341,11 +346,7 @@ function QuestOfferCard({
               ? MOOD_HANDOFF_OFFSET_Y
               : 0,
         scale:
-          selectionStarted && !selected
-            ? 0.72
-            : returningToMoods
-              ? 0.96
-              : 1,
+          selectionStarted && !selected ? 0.72 : returningToMoods ? 0.96 : 1,
       }}
       exit={
         returningToMoods
