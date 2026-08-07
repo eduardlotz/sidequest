@@ -978,15 +978,12 @@ export function ActiveTaskCard({
             scale:
               previewingCompletion || completed
                 ? isMobileViewport
-                  ? 1.1
+                  ? 1
                   : 0.95
                 : 1,
             x: previewingCompletion || completed ? completionOffset.x : 0,
             y: previewingCompletion || completed ? completionOffset.y : 0,
-            rotate:
-              cardFocused || previewingCompletion || completed
-                ? 0
-                : -3.5,
+            rotate: cardFocused || previewingCompletion || completed ? 0 : -3.5,
           }}
         >
           <motion.div
@@ -1428,7 +1425,7 @@ export function ActiveTaskCard({
               >
                 <span>{t("ui.timer.backToSelection")}</span>
               </button>
-              {!isMobileViewport && (
+              {/* {!isMobileViewport && (
                 <span
                   className={styles.moodEditTooltip}
                   id={returnTooltipId}
@@ -1436,7 +1433,7 @@ export function ActiveTaskCard({
                 >
                   {t("ui.timer.backToSelectionTooltip")}
                 </span>
-              )}
+              )} */}
             </motion.span>
           )}
         </AnimatePresence>

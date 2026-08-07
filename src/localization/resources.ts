@@ -320,7 +320,7 @@ export const germanUi = {
     noFavoriteMood: "Noch keine",
     debugMode: "Debug-Modus",
     debugModeDescription:
-      "Keine Mindestzeit. Abbrüche verbrauchen keine roten Seile.",
+      "Mindestzeit wird ignoriert und Abbrüche kosten keine Seile",
     debugModeLabel: "Lokalen Debug-Modus umschalten",
     debugModeInfoLabel: "Über den Developer Mode",
     debugModeOn: "An",

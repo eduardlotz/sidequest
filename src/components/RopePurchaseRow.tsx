@@ -25,13 +25,13 @@ export function RopePurchaseRow({
 
   return (
     <div className={styles.ropePurchaseRow} data-variant={variant}>
-      <span className={styles.ropePurchaseCopy}>
+      {/* <span className={styles.ropePurchaseCopy}>
         <strong>{t("ui.profile.buyRopeInline")}</strong>
         <span>
           {formatScore(RED_ROPE_BUNDLE_COST, language)}
           <CoinIcon />
         </span>
-      </span>
+      </span> */}
       <button
         className={styles.drawerActionButton}
         data-variant={variant}
@@ -44,7 +44,15 @@ export function RopePurchaseRow({
         })}
         onClick={onPurchase}
       >
-        {t("ui.profile.buy")}
+        <span>{t("ui.profile.buyRopeInline")}</span>
+
+        <span className={styles.ropePurchaseCopy}>
+          {/* <strong>{t("ui.profile.buyRopeInline")}</strong> */}
+          <span>
+            {formatScore(RED_ROPE_BUNDLE_COST, language)}
+            <CoinIcon />
+          </span>
+        </span>
       </button>
     </div>
   );

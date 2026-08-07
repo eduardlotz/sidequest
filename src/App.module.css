@@ -7,11 +7,7 @@
   min-height: 100svh;
   overflow: hidden;
   background:
-    radial-gradient(
-      circle at 22% 58%,
-      var(--theme-glow),
-      transparent 30%
-    ),
+    radial-gradient(circle at 22% 58%, var(--theme-glow), transparent 30%),
     var(--canvas);
   color: var(--ink);
   isolation: isolate;
@@ -589,6 +585,11 @@
   margin-left: calc(var(--timer-width) / -2);
   cursor: grab;
   touch-action: none;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .timerPosition:focus-visible {
@@ -741,7 +742,7 @@
   width: 100%;
   height: 100%;
   place-items: center;
-  color: #0b0b0c;
+  color: var(--timer-digit-color);
   filter: url("#timer-digit-depth");
   line-height: 1;
 }
@@ -2815,6 +2816,12 @@ button.arcCard {
   cursor: pointer;
   transition: opacity 150ms ease;
   -webkit-tap-highlight-color: transparent;
+  color: var(--ink);
+
+  svg {
+    width: 58px;
+    height: 58px;
+  }
 }
 
 .brandMark:not(:disabled):hover {
@@ -3313,18 +3320,20 @@ button.arcCard {
   opacity: 0.09;
   transform: rotate(-10deg) scale(1.08);
   transition: opacity 150ms ease;
-}
 
-.questCardBackPattern img {
-  display: block;
-  width: 100%;
-  height: auto;
-  filter: brightness(0) invert(1);
-}
+  svg {
+    height: 58px;
+    width: 58px;
 
-.questCardBackPattern img:nth-child(3n) {
-  opacity: 0.34;
-  transform: rotate(180deg);
+    display: block;
+    /* filter: brightness(0) invert(1); */
+    transform: rotate(-20deg);
+
+    &:nth-child(2n) {
+      opacity: 0.55;
+      transform: rotate(170deg);
+    }
+  }
 }
 
 .questCardMeta {
@@ -4432,14 +4441,9 @@ button.arcCard {
   }
 }
 
-/* 2026 coin, profile, timer, and completion visual system */
 .app {
   --canvas: var(--color-canvas);
   background: var(--canvas);
-}
-
-.app[data-screen="moods"] [data-dot-background] {
-  opacity: 0;
 }
 
 .moodSelectionCardBody {
@@ -4604,7 +4608,7 @@ button.arcCard {
   display: flex;
   min-height: 31px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 14px;
 }
 
@@ -4640,30 +4644,65 @@ button.arcCard {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: -0.025em;
-  cursor: pointer;
-  transition:
-    filter 150ms ease,
-    scale 150ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  span {
+    color: inherit;
+  }
+
+  > span:first-child {
+    opacity: 0.75;
+  }
+
+  &:hover:not(:disabled) {
+    cursor: pointer;
+
+    > span:first-child {
+      opacity: 1;
+    }
+  }
 }
 
 .drawerActionButton[data-variant="black"] {
   background: var(--color-inverse-surface);
   color: var(--color-inverse-copy);
+
+  span {
+    color: inherit;
+  }
+
+  &:disabled {
+    background: color-mix(
+      in srgb,
+      var(--color-inverse-surface),
+      var(--color-canvas) 90%
+    );
+    color: color-mix(in srgb, var(--color-inverse-copy), var(--color-copy) 90%);
+  }
 }
 
 .drawerActionButton[data-variant="white"] {
   background: var(--color-surface);
   color: var(--color-text);
+
+  span {
+    color: inherit;
+  }
 }
 
 .drawerActionButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.4;
+  /* opacity: 0.25; */
 }
 
 .drawerActionButton:hover:not(:disabled) {
   filter: brightness(0.94);
-  scale: 0.985;
+}
+
+.drawerActionButton:active:not(:disabled) {
+  scale: 0.98;
 }
 
 .openHistoryButton {
@@ -5386,6 +5425,14 @@ button.arcCard {
   font-weight: 700;
   letter-spacing: -0.035em;
   white-space: nowrap;
+}
+
+.timerReturnControl:hover button {
+  filter: brightness(0.95);
+}
+
+.timerReturnControl:active button {
+  scale: 0.98;
 }
 
 .activeExperience[data-phase="ready"] .timerHint {

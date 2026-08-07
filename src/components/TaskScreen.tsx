@@ -162,9 +162,7 @@ export function TaskScreen({
   const isActive = Boolean(currentQuest && currentSession);
   const wasActiveRef = useRef(isActive);
   const returnedFromActive = wasActiveRef.current && !isActive;
-  const lastActiveSessionIdRef = useRef(
-    currentSession?.sessionId ?? "initial",
-  );
+  const lastActiveSessionIdRef = useRef(currentSession?.sessionId ?? "initial");
   const lastActiveQuestIdRef = useRef(currentQuest?.id);
   const layoutSessionIdRef = useRef(
     currentSession ? `active-${currentSession.sessionId}` : "initial",
@@ -176,8 +174,7 @@ export function TaskScreen({
     lastActiveQuestIdRef.current = currentQuest.id;
   }
   if (returnedFromActive) {
-    layoutSessionIdRef.current =
-      `deck-after-${lastActiveSessionIdRef.current}`;
+    layoutSessionIdRef.current = `deck-after-${lastActiveSessionIdRef.current}`;
   }
   const lastSelectedMoodIdRef = useRef<MoodId | undefined>(selectedMood?.id);
   if (selectedMood) {
@@ -186,8 +183,7 @@ export function TaskScreen({
   const previousSelectionModeRef = useRef<"moods" | "quests">(
     selectedMood ? "quests" : "moods",
   );
-  const selectionLayoutSessionId =
-    `${layoutSessionIdRef.current}-selection`;
+  const selectionLayoutSessionId = `${layoutSessionIdRef.current}-selection`;
   const questEntryMotion =
     returnedFromActive || previousSelectionModeRef.current === "quests"
       ? "bottom"
@@ -330,9 +326,7 @@ export function TaskScreen({
             <motion.div
               className={styles.deckWrap}
               key={`deck-session-${layoutSessionIdRef.current}`}
-              initial={
-                reduceMotion ? false : { opacity: 0, scale: 0.985 }
-              }
+              initial={reduceMotion ? false : { opacity: 0, scale: 0.985 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{
                 opacity: reduceMotion ? 1 : 0,
@@ -426,22 +420,6 @@ export function TaskScreen({
                               available: formatScore(points, language),
                             })}
                             onClick={shuffleCards}
-                            iconLeft={
-                              <motion.span
-                                animate={{ rotate: shuffleRotation }}
-                                transition={
-                                  reduceMotion
-                                    ? { duration: 0 }
-                                    : {
-                                        type: "spring",
-                                        stiffness: 210,
-                                        damping: 20,
-                                      }
-                                }
-                              >
-                                ↻
-                              </motion.span>
-                            }
                           >
                             {t("ui.task.shuffleCards")}
                           </SolidButton>
@@ -466,9 +444,7 @@ export function TaskScreen({
                             : undefined
                         }
                         returningToMoods={editingMood}
-                        onSelectionStart={() =>
-                          setQuestSelectionClosing(true)
-                        }
+                        onSelectionStart={() => setQuestSelectionClosing(true)}
                         onSelect={onRevealQuest}
                       />
                     </>

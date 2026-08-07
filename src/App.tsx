@@ -32,6 +32,7 @@ import {
   SHUFFLE_COST,
   useQuestStore,
 } from "./stores/useQuestStore";
+import { Logo } from "./assets/logo";
 
 export function App() {
   const { i18n, t } = useTranslation();
@@ -378,9 +379,7 @@ export function App() {
             title={t("ui.nav.spinLogo")}
             onClick={() => setBrandRotation((rotation) => rotation + 360)}
           >
-            <motion.img
-              src={markAssetUrl(AVATAR_MARK_BY_THEME[profile.avatarTheme])}
-              alt=""
+            <motion.div
               animate={{ rotate: brandRotation }}
               transition={
                 reduceMotion
@@ -392,7 +391,9 @@ export function App() {
                       mass: 0.72,
                     }
               }
-            />
+            >
+              <Logo />
+            </motion.div>
           </button>
         )}
 
@@ -417,15 +418,11 @@ export function App() {
               direction={desktop ? "right" : "bottom"}
               open={profileOpen}
               onOpenChange={handleProfileOpenChange}
-              activeSnapPoint={
-                desktop ? undefined : profileActiveSnapPoint
-              }
+              activeSnapPoint={desktop ? undefined : profileActiveSnapPoint}
               setActiveSnapPoint={
                 desktop ? undefined : setProfileActiveSnapPoint
               }
-              snapPoints={
-                desktop ? undefined : [profileCompactSnap, 1]
-              }
+              snapPoints={desktop ? undefined : [profileCompactSnap, 1]}
               shouldScaleBackground={false}
             >
               <div className={styles.profileTriggerImpact}>
@@ -550,7 +547,6 @@ export function App() {
           )}
         </AnimatePresence>
       </main>
-
     </div>
   );
 }
@@ -564,9 +560,7 @@ function AboutSidequest() {
         <Drawer.Title asChild>
           <h2 id="about-title">{t("ui.about.title")}</h2>
         </Drawer.Title>
-        <Drawer.Description>
-          {t("ui.about.description")}
-        </Drawer.Description>
+        <Drawer.Description>{t("ui.about.description")}</Drawer.Description>
       </header>
 
       <div className={styles.aboutBody}>
@@ -587,7 +581,7 @@ function AboutSidequest() {
       </div>
 
       <footer className={styles.aboutCredit}>
-        {t("ui.about.madeBy")} {" "}
+        {t("ui.about.madeBy")}{" "}
         <a href="https://eduardlotz.de" rel="noreferrer" target="_blank">
           Eduard Lotz
         </a>
