@@ -79,14 +79,17 @@ const MAX_FRAME_DELTA = 1 / 30;
 const MAX_STEPS_PER_FRAME = 5;
 const CONSTRAINT_ITERATIONS = 7;
 const ANCHOR_OFFSET_Y = -8;
-const GRAVITY = 3_600;
+// const GRAVITY = 3_600;
+
+const GRAVITY = 4000;
+
 const LINK_INVERSE_MASS = 1 / 0.055;
 const TIMER_INVERSE_MASS = 1 / 1.65;
 const CUT_TIP_INVERSE_MASS = 1 / 0.018;
 const RELEASE_VELOCITY_TRANSFER = 0.48;
 const MAX_RELEASE_SPEED = 1_200;
-const MAX_STRETCH_MIN = 54;
-const MAX_STRETCH_MAX = 76;
+const MAX_STRETCH_MIN = 60;
+const MAX_STRETCH_MAX = 94;
 const DRAG_LENGTH_STIFFNESS = 560;
 const DRAG_LENGTH_DAMPING = 34;
 const RETURN_LENGTH_STIFFNESS = 108;
@@ -102,8 +105,7 @@ export const READY_TIMER_TOP_RATIO = 0.17;
 export const RESUME_PULLBACK_TIMER_TOP_RATIO = 0.11;
 export const MOBILE_RUNNING_TIMER_TOP_RATIO = 0.3675;
 export const MOBILE_READY_TIMER_TOP_RATIO = 0.1615;
-export const MOBILE_PAUSED_TIMER_TOP_RATIO =
-  MOBILE_READY_TIMER_TOP_RATIO * 0.6;
+export const MOBILE_PAUSED_TIMER_TOP_RATIO = MOBILE_READY_TIMER_TOP_RATIO * 0.6;
 
 export function PhysicsRope({
   cut,
@@ -192,9 +194,10 @@ export function PhysicsRope({
       handleCut(state, latest.cut);
       handleRelease(state, latest.releaseRef.current);
 
-      const frameDelta = state.lastFrameAt === 0
-        ? 1 / 60
-        : Math.min(MAX_FRAME_DELTA, (frameAt - state.lastFrameAt) / 1_000);
+      const frameDelta =
+        state.lastFrameAt === 0
+          ? 1 / 60
+          : Math.min(MAX_FRAME_DELTA, (frameAt - state.lastFrameAt) / 1_000);
       state.lastFrameAt = frameAt;
       state.accumulator += Math.max(0, frameDelta);
 
@@ -340,7 +343,8 @@ function stepRope(
       : RETURN_LENGTH_DAMPING;
   state.lengthVelocity +=
     ((desiredLength - state.currentLength) * lengthStiffness -
-      state.lengthVelocity * lengthDamping) * FIXED_TIME_STEP;
+      state.lengthVelocity * lengthDamping) *
+    FIXED_TIME_STEP;
   state.currentLength = Math.max(
     state.height * 0.07,
     state.currentLength + state.lengthVelocity * FIXED_TIME_STEP,
@@ -512,21 +516,25 @@ function renderRope(
     timerRopePoints = renderedPoints;
   } else {
     const upperControls = [
-      ...state.points
-        .slice(0, state.cut.linkIndex + 1)
-        .map(pointToRopePoint),
+      ...state.points.slice(0, state.cut.linkIndex + 1).map(pointToRopePoint),
       pointToRopePoint(state.cut.upperTip),
     ];
     const lowerControls = [
       pointToRopePoint(state.cut.lowerTip),
-      ...state.points
-        .slice(state.cut.linkIndex + 1)
-        .map(pointToRopePoint),
+      ...state.points.slice(state.cut.linkIndex + 1).map(pointToRopePoint),
     ];
     const upperPoints = sampleCurve(upperControls);
     const lowerPoints = sampleCurve(lowerControls);
-    updateRopePath(upperPathRef.current, upperPoints, ropeStrokeWidth(state, false));
-    updateRopePath(lowerPathRef.current, lowerPoints, ropeStrokeWidth(state, false));
+    updateRopePath(
+      upperPathRef.current,
+      upperPoints,
+      ropeStrokeWidth(state, false),
+    );
+    updateRopePath(
+      lowerPathRef.current,
+      lowerPoints,
+      ropeStrokeWidth(state, false),
+    );
     timerRopePoints = lowerPoints;
   }
 
@@ -554,19 +562,20 @@ function ropeLengthForMode(
   height: number,
   isMobileViewport: boolean,
 ) {
-  const topRatio = mode === "paused"
-    ? isMobileViewport
-      ? MOBILE_PAUSED_TIMER_TOP_RATIO
-      : PAUSED_TIMER_TOP_RATIO
-    : mode === "ready"
+  const topRatio =
+    mode === "paused"
       ? isMobileViewport
-        ? MOBILE_READY_TIMER_TOP_RATIO
-        : READY_TIMER_TOP_RATIO
-      : mode === "resumePullback"
-        ? RESUME_PULLBACK_TIMER_TOP_RATIO
-        : isMobileViewport
-          ? MOBILE_RUNNING_TIMER_TOP_RATIO
-          : RUNNING_TIMER_TOP_RATIO;
+        ? MOBILE_PAUSED_TIMER_TOP_RATIO
+        : PAUSED_TIMER_TOP_RATIO
+      : mode === "ready"
+        ? isMobileViewport
+          ? MOBILE_READY_TIMER_TOP_RATIO
+          : READY_TIMER_TOP_RATIO
+        : mode === "resumePullback"
+          ? RESUME_PULLBACK_TIMER_TOP_RATIO
+          : isMobileViewport
+            ? MOBILE_RUNNING_TIMER_TOP_RATIO
+            : RUNNING_TIMER_TOP_RATIO;
   return (height * topRatio + Math.abs(ANCHOR_OFFSET_Y)) * 1.025;
 }
 
@@ -581,11 +590,7 @@ function timerOffsetToScreen(
   };
 }
 
-function createPoint(
-  x: number,
-  y: number,
-  inverseMass: number,
-): VerletPoint {
+function createPoint(x: number, y: number, inverseMass: number): VerletPoint {
   return { inverseMass, previousX: x, previousY: y, x, y };
 }
 
@@ -617,10 +622,10 @@ function sampleCurve(points: RopePoint[]) {
   if (points.length < 3) return points;
   const samples = Math.max(
     12,
-    Math.round(CURVE_POINTS * points.length / (ROPE_LINKS + 1)),
+    Math.round((CURVE_POINTS * points.length) / (ROPE_LINKS + 1)),
   );
   return Array.from({ length: samples + 1 }, (_, sampleIndex) => {
-    const progress = sampleIndex / samples * (points.length - 1);
+    const progress = (sampleIndex / samples) * (points.length - 1);
     const index = Math.min(points.length - 2, Math.floor(progress));
     const t = progress - index;
     const first = points[Math.max(0, index - 1)];
@@ -643,11 +648,12 @@ function catmullRom(
 ) {
   const t2 = t * t;
   const t3 = t2 * t;
-  return 0.5 * (
-    2 * second +
-    (-first + third) * t +
-    (2 * first - 5 * second + 4 * third - fourth) * t2 +
-    (-first + 3 * second - 3 * third + fourth) * t3
+  return (
+    0.5 *
+    (2 * second +
+      (-first + third) * t +
+      (2 * first - 5 * second + 4 * third - fourth) * t2 +
+      (-first + 3 * second - 3 * third + fourth) * t3)
   );
 }
 
@@ -658,9 +664,8 @@ function timerRotationFromRope(
   if (points.length < 2) return 0;
   const end = points[points.length - 1];
   const tangent = points[Math.max(0, points.length - 5)];
-  const ropeAngle = Math.atan2(end.x - tangent.x, end.y - tangent.y) *
-    180 /
-    Math.PI;
+  const ropeAngle =
+    (Math.atan2(end.x - tangent.x, end.y - tangent.y) * 180) / Math.PI;
   const velocityTilt = clamp(horizontalVelocity * 0.0022, -3, 3);
   return clamp(ropeAngle * 0.24 + velocityTilt, -12, 12);
 }
@@ -679,8 +684,9 @@ function updateRopePath(
   path.setAttribute(
     "d",
     points
-      .map((point, index) =>
-        `${index === 0 ? "M" : "L"}${point.x.toFixed(1)} ${point.y.toFixed(1)}`
+      .map(
+        (point, index) =>
+          `${index === 0 ? "M" : "L"}${point.x.toFixed(1)} ${point.y.toFixed(1)}`,
       )
       .join(" "),
   );

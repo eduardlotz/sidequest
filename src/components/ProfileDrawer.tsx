@@ -7,6 +7,7 @@ import { formatScore } from "../lib/format";
 import { applySoundEnabled, readSoundEnabled } from "../lib/sound";
 import { localizeMood } from "../localization/catalog";
 import { normalizeLanguage } from "../localization/i18n";
+import { THEME_CHOICES, type ThemeChoice } from "../lib/theme";
 import type { QuestStats, UserProfile } from "../stores/useQuestStore";
 import { InfoIcon } from "./Icons";
 import { RopePurchaseRow } from "./RopePurchaseRow";
@@ -15,24 +16,26 @@ type Props = {
   onDebugModeChange: (enabled: boolean) => void;
   onOpenHistory: () => void;
   onPurchaseRedRopes: () => boolean;
+  onThemeChange: (theme: ThemeChoice) => void;
   open: boolean;
   profile: UserProfile;
   reduceMotion: boolean;
   stats: QuestStats;
   totalCoinsCollected: number;
+  themeChoice: ThemeChoice;
 };
-
-type ThemeChoice = "light" | "dark" | "auto";
 
 export function ProfileDrawer({
   onDebugModeChange,
   onOpenHistory,
   onPurchaseRedRopes,
+  onThemeChange,
   open,
   profile,
   reduceMotion,
   stats,
   totalCoinsCollected,
+  themeChoice,
 }: Props) {
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
@@ -40,7 +43,6 @@ export function ProfileDrawer({
     ? localizeMood(stats.favoriteMoodId, language)
     : null;
   const [soundEnabled, setSoundEnabled] = useState(readSoundEnabled);
-  const [themeChoice, setThemeChoice] = useState<ThemeChoice>("light");
 
   function changeSound(enabled: boolean) {
     setSoundEnabled(enabled);
@@ -138,13 +140,13 @@ export function ProfileDrawer({
               role="group"
               aria-label={t("ui.profile.theme")}
             >
-              {(["light", "dark", "auto"] as const).map((choice) => (
+              {THEME_CHOICES.map((choice) => (
                 <button
                   data-active={themeChoice === choice || undefined}
                   type="button"
                   aria-pressed={themeChoice === choice}
                   key={choice}
-                  onClick={() => setThemeChoice(choice)}
+                  onClick={() => onThemeChange(choice)}
                 >
                   {t(`ui.profile.theme${capitalize(choice)}`)}
                 </button>

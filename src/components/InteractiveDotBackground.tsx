@@ -53,7 +53,18 @@ export function InteractiveDotBackground(_: Props) {
 
     draw();
     window.addEventListener("resize", draw);
-    return () => window.removeEventListener("resize", draw);
+
+    const observer = new MutationObserver(draw);
+
+    // TODO: refactor with theme hook or passed theme
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    return () => {
+      window.removeEventListener("resize", draw);
+      observer.disconnect();
+    };
   }, []);
 
   return (

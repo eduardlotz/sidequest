@@ -14,6 +14,13 @@ import { AVATAR_MARK_BY_THEME, markAssetUrl } from "./data/questMarks";
 import { formatScore } from "./lib/format";
 import { playSound } from "./lib/sound";
 import {
+  applyThemeChoice,
+  DARK_THEME_MEDIA_QUERY,
+  readThemeChoice,
+  saveThemeChoice,
+  type ThemeChoice,
+} from "./lib/theme";
+import {
   hydrateCompletedQuest,
   hydrateQuest,
   localizeMood,
@@ -25,6 +32,7 @@ import {
   SHUFFLE_COST,
   useQuestStore,
 } from "./stores/useQuestStore";
+import { Logo } from "./assets/logo";
 
 export function App() {
   const { i18n, t } = useTranslation();
@@ -79,6 +87,7 @@ export function App() {
     })),
   );
   const reduceMotion = Boolean(useReducedMotion());
+  const [themeChoice, setThemeChoice] = useState<ThemeChoice>(readThemeChoice);
   const [profileOpen, setProfileOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -140,6 +149,15 @@ export function App() {
         : [],
     [completedSessions, currentSession],
   );
+  useEffect(() => {
+    const media = window.matchMedia(DARK_THEME_MEDIA_QUERY);
+    const applyTheme = () => applyThemeChoice(themeChoice, media.matches);
+
+    applyTheme();
+    media.addEventListener("change", applyTheme);
+    return () => media.removeEventListener("change", applyTheme);
+  }, [themeChoice]);
+
   useEffect(() => {
     if (reduceMotion) {
       setIntroComplete(true);
@@ -266,6 +284,12 @@ export function App() {
     void i18n.changeLanguage(language === "en" ? "de" : "en");
   }
 
+  function handleThemeChange(choice: ThemeChoice) {
+    saveThemeChoice(choice);
+    applyThemeChoice(choice);
+    setThemeChoice(choice);
+  }
+
   const nextLanguage = language === "en" ? "de" : "en";
   const nextLanguageName = t(
     nextLanguage === "de" ? "ui.nav.german" : "ui.nav.english",
@@ -355,9 +379,7 @@ export function App() {
             title={t("ui.nav.spinLogo")}
             onClick={() => setBrandRotation((rotation) => rotation + 360)}
           >
-            <motion.img
-              src={markAssetUrl(AVATAR_MARK_BY_THEME[profile.avatarTheme])}
-              alt=""
+            <motion.div
               animate={{ rotate: brandRotation }}
               transition={
                 reduceMotion
@@ -369,7 +391,9 @@ export function App() {
                       mass: 0.72,
                     }
               }
-            />
+            >
+              <Logo />
+            </motion.div>
           </button>
         )}
 
@@ -394,15 +418,11 @@ export function App() {
               direction={desktop ? "right" : "bottom"}
               open={profileOpen}
               onOpenChange={handleProfileOpenChange}
-              activeSnapPoint={
-                desktop ? undefined : profileActiveSnapPoint
-              }
+              activeSnapPoint={desktop ? undefined : profileActiveSnapPoint}
               setActiveSnapPoint={
                 desktop ? undefined : setProfileActiveSnapPoint
               }
-              snapPoints={
-                desktop ? undefined : [profileCompactSnap, 1]
-              }
+              snapPoints={desktop ? undefined : [profileCompactSnap, 1]}
               shouldScaleBackground={false}
             >
               <div className={styles.profileTriggerImpact}>
@@ -461,11 +481,13 @@ export function App() {
                     onDebugModeChange={setDebugMode}
                     onOpenHistory={handleOpenHistory}
                     onPurchaseRedRopes={purchaseRedRopes}
+                    onThemeChange={handleThemeChange}
                     open={profileOpen}
                     profile={profile}
                     reduceMotion={reduceMotion}
                     stats={stats}
                     totalCoinsCollected={totalCoinsCollected}
+                    themeChoice={themeChoice}
                   />
                 </Drawer.Content>
               </Drawer.Portal>
@@ -525,7 +547,6 @@ export function App() {
           )}
         </AnimatePresence>
       </main>
-
     </div>
   );
 }
@@ -539,9 +560,7 @@ function AboutSidequest() {
         <Drawer.Title asChild>
           <h2 id="about-title">{t("ui.about.title")}</h2>
         </Drawer.Title>
-        <Drawer.Description>
-          {t("ui.about.description")}
-        </Drawer.Description>
+        <Drawer.Description>{t("ui.about.description")}</Drawer.Description>
       </header>
 
       <div className={styles.aboutBody}>
@@ -562,7 +581,7 @@ function AboutSidequest() {
       </div>
 
       <footer className={styles.aboutCredit}>
-        {t("ui.about.madeBy")} {" "}
+        {t("ui.about.madeBy")}{" "}
         <a href="https://eduardlotz.de" rel="noreferrer" target="_blank">
           Eduard Lotz
         </a>

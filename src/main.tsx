@@ -7,8 +7,10 @@ import {
   bindSounds,
   readSoundEnabled,
 } from "./lib/sound";
+import { applyThemeChoice, readThemeChoice } from "./lib/theme";
 import "./styles/global.css";
 
+applyThemeChoice(readThemeChoice());
 applySoundEnabled(readSoundEnabled());
 bindSounds();
 

@@ -1,6 +1,7 @@
 import { markAssetUrl } from "../data/questMarks";
 import styles from "../App.module.css";
 import { QuestCardMeta } from "./QuestCardMeta";
+import { Logo } from "../assets/logo";
 
 type Props =
   | {
@@ -27,13 +28,14 @@ export function QuestCardBack(props: Props) {
     >
       <span className={styles.questCardBackPattern}>
         {Array.from({ length: 35 }, (_, index) => (
-          <img
-            src={mark}
-            alt=""
-            width="58"
-            height="58"
-            key={index}
-          />
+          // <img
+          //   src={mark}
+          //   alt=""
+          //   width="58"
+          //   height="58"
+          //   key={index}
+          // />
+          <Logo key={index} />
         ))}
       </span>
       {summary ? (
