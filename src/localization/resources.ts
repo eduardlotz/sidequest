@@ -63,7 +63,8 @@ export const englishUi = {
     durationRange: "{{minimum}}–{{suggested}} min",
     durationRangeLong: "{{minimum}}–{{suggested}} minutes",
     durationSingle: "{{count}} min",
-    durationSingleLong: "{{count}} minutes",
+    durationSingleLong_one: "{{count}} minute",
+    durationSingleLong_other: "{{count}} minutes",
     optionalTwists: "Optional twists",
     activeLabel: "Active {{mood}} quest: {{title}}",
     focusCard: "Focus quest card: {{title}}",
@@ -82,6 +83,7 @@ export const englishUi = {
     completeQuest: "Complete quest",
     completeAvailableIn:
       "You can complete this quest in <strong>{{time}}</strong>.",
+    lessThanMinute: "less than a minute",
     completeOrCancel:
       "You need to finish this quest or cancel it by cutting the rope.",
     noRedRopes: "No red ropes left. Complete this quest first.",
@@ -246,7 +248,8 @@ export const germanUi = {
     durationRange: "{{minimum}}–{{suggested}} Min.",
     durationRangeLong: "{{minimum}}–{{suggested}} Minuten",
     durationSingle: "{{count}} Min.",
-    durationSingleLong: "{{count}} Minuten",
+    durationSingleLong_one: "{{count}} Minute",
+    durationSingleLong_other: "{{count}} Minuten",
     optionalTwists: "Optionale Spielvarianten",
     activeLabel: "Aktive Quest für {{mood}}: {{title}}",
     focusCard: "Quest-Karte fokussieren: {{title}}",
@@ -265,6 +268,7 @@ export const germanUi = {
     completeQuest: "Quest abschließen",
     completeAvailableIn:
       "Du kannst die Quest erst in <strong>{{time}}</strong> abschließen.",
+    lessThanMinute: "weniger als einer Minute",
     completeOrCancel:
       "Du musst diese Quest abschließen oder sie durch Durchtrennen des Seils abbrechen.",
     noRedRopes: "Keine roten Seile mehr. Schließe zuerst diese Quest ab.",

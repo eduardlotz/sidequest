@@ -26,7 +26,10 @@ import { getQuestCardAccentStyle } from "../data/questColors";
 import { CARD_LAYOUT_TRANSITION } from "../lib/cardMotion";
 import { formatRunningDuration } from "../lib/format";
 import { playSound } from "../lib/sound";
-import { isDownwardActivationPull } from "../lib/timerRopeMechanics";
+import {
+  completionRemainingTime,
+  isDownwardActivationPull,
+} from "../lib/timerRopeMechanics";
 import { AnimatedElapsedTime } from "./AnimatedElapsedTime";
 import { CompletionCheckIcon } from "./CompletionCheckIcon";
 import { CoinIcon, InfoIcon } from "./Icons";
@@ -245,6 +248,7 @@ export function ActiveTaskCard({
   const pausedTotalRef = useRef(assignment.pausedTotalMs);
   const cutGestureRef = useRef(false);
   const exitStartedRef = useRef(false);
+  const cutGestureStartRef = useRef<Point | null>(null);
   const lastCutPointRef = useRef<Point | null>(null);
   const trailClearTimeoutRef = useRef<number | null>(null);
   const cancellationBlockedTimeoutRef = useRef<number | null>(null);
@@ -307,7 +311,6 @@ export function ActiveTaskCard({
 
     if (
       !isMobileViewport ||
-      phase === "paused" ||
       phase === "completion-preview" ||
       phase === "cutting" ||
       phase === "completed"
@@ -541,7 +544,6 @@ export function ActiveTaskCard({
 
     coinFlightFinishedRef.current = false;
     onCoinFlightStart(award);
-    setCompletionOffset((offset) => ({ ...offset, y: offset.y - 13 }));
     setPhase("completed");
     if (reduceMotion) {
       setShowFinishedFace(true);
@@ -703,6 +705,7 @@ export function ActiveTaskCard({
     }
     cutGestureRef.current = true;
     const point = pointerInRig(event);
+    cutGestureStartRef.current = point;
     lastCutPointRef.current = point;
     setCutTrail([point]);
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -722,10 +725,28 @@ export function ActiveTaskCard({
     }
   }
 
-  function endCut() {
+  function endCut(event: ReactPointerEvent<HTMLDivElement>) {
+    const start = cutGestureStartRef.current;
+    const end = pointerInRig(event);
+    const cardRect = cardProjectionRef.current?.getBoundingClientRect();
+    const tappedPausedCard =
+      event.type === "pointerup" &&
+      cutGestureRef.current &&
+      start !== null &&
+      phase === "paused" &&
+      isMobileViewport &&
+      cardRect !== undefined &&
+      Math.hypot(end.x - start.x, end.y - start.y) < 8 &&
+      event.clientX >= cardRect.left &&
+      event.clientX <= cardRect.right &&
+      event.clientY >= cardRect.top &&
+      event.clientY <= cardRect.bottom;
+
     cutGestureRef.current = false;
+    cutGestureStartRef.current = null;
     lastCutPointRef.current = null;
     clearCutTrailAfter(CUT_TRAIL_CLEAR_DELAY_MS);
+    if (tappedPausedCard) setCardFocused(true);
   }
 
   function clearCutTrailAfter(delay: number) {
@@ -815,7 +836,15 @@ export function ActiveTaskCard({
   const minimumDurationMs = task.minimumDurationMinutes * 60_000;
   const canComplete = debugMode || elapsedMs >= minimumDurationMs;
   const completionRemainingMs = Math.max(0, minimumDurationMs - elapsedMs);
-  const completionRemainingMinutes = Math.floor(completionRemainingMs / 60_000);
+  const completionRemaining = completionRemainingTime(completionRemainingMs);
+  const completionRemainingLabel =
+    completionRemaining.kind === "less-than-minute"
+      ? t("ui.timer.lessThanMinute")
+      : completionRemaining.kind === "minutes"
+        ? t("ui.quest.durationSingleLong", {
+            count: completionRemaining.count,
+          })
+        : "";
   const completionAward = calculateCompletionPoints(elapsedMs);
   const displayedGameTitle = sanitizeGameTitle(gameTitle);
   const cardFocusAvailable = isMobileViewport && revealFinished && !exiting;
@@ -957,9 +986,7 @@ export function ActiveTaskCard({
             rotate:
               cardFocused || previewingCompletion || completed
                 ? 0
-                : phase === "paused"
-                  ? -1
-                  : -3.5,
+                : -3.5,
           }}
         >
           <motion.div
@@ -1357,9 +1384,7 @@ export function ActiveTaskCard({
                     <Trans
                       i18nKey="ui.timer.completeAvailableIn"
                       values={{
-                        time: t("ui.quest.durationSingleLong", {
-                          count: completionRemainingMinutes,
-                        }),
+                        time: completionRemainingLabel,
                       }}
                       components={{ strong: <strong /> }}
                     />
