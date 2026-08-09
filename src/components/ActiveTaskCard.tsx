@@ -54,6 +54,7 @@ import {
   type TimerPose,
 } from "./PhysicsRope";
 import styles from "../App.module.css";
+import { WordmarkLogo } from "../assets/wordmark";
 
 type Props = {
   quest: Quest;
@@ -1092,12 +1093,7 @@ export function ActiveTaskCard({
                     </motion.div>
 
                     <span className={styles.cardBrand} aria-hidden="true">
-                      <img
-                        src={`${import.meta.env.BASE_URL}sidequest-wordmark.svg`}
-                        alt=""
-                        width="837"
-                        height="550"
-                      />
+                      <WordmarkLogo />
                     </span>
                   </motion.div>
                   {cardFocusAvailable && !cardFocused && (

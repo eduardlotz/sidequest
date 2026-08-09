@@ -314,18 +314,17 @@
   transform-origin: center;
 }
 
-.cardBrand img {
+.cardBrand svg {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 837 / 550;
-  filter: invert(1);
+  color: white;
 }
 
 .activeQuestCard .cardBrand {
-  right: -2%;
-  bottom: 1%;
-  width: 60cqw;
+  right: -10%;
+  bottom: -6%;
+  width: 70cqw;
 }
 
 .cardPick {
@@ -3287,6 +3286,12 @@ button.arcCard {
   line-height: 1.45;
   opacity: 0.5;
   text-wrap: pretty;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+  color: var(--text);
 }
 
 .aboutCredit a {

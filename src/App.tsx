@@ -33,6 +33,7 @@ import {
   useQuestStore,
 } from "./stores/useQuestStore";
 import { Logo } from "./assets/logo";
+import { WordmarkLogo } from "./assets/wordmark";
 
 export function App() {
   const { i18n, t } = useTranslation();
@@ -581,10 +582,14 @@ function AboutSidequest() {
       </div>
 
       <footer className={styles.aboutCredit}>
-        {t("ui.about.madeBy")}{" "}
-        <a href="https://eduardlotz.de" rel="noreferrer" target="_blank">
-          Eduard Lotz
-        </a>
+        <span>
+          {t("ui.about.madeBy")}{" "}
+          <a href="https://eduardlotz.de" rel="noreferrer" target="_blank">
+            Eduard Lotz
+          </a>
+        </span>
+
+        <WordmarkLogo width={80} />
       </footer>
     </section>
   );
