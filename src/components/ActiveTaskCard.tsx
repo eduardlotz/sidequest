@@ -878,6 +878,18 @@ export function ActiveTaskCard({
     }
   }
 
+  const [revealStarted, setRevealStarted] = useState(!animateReveal);
+
+  useEffect(() => {
+    if (!animateReveal) return;
+
+    const frame = requestAnimationFrame(() => {
+      setRevealStarted(true);
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [animateReveal]);
+
   return (
     <div
       className={styles.activeExperience}
@@ -944,7 +956,7 @@ export function ActiveTaskCard({
           ref={cardProjectionRef}
           className={styles.activeCardProjection}
           layoutId={`task-card-${layoutSessionId}-${task.id}`}
-          layoutCrossfade={false}
+          // layoutCrossfade={false}
           drag={cardFocused}
           dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
           dragElastic={0.5}
@@ -991,7 +1003,7 @@ export function ActiveTaskCard({
           <motion.div
             className={styles.revealFlip}
             initial={{ rotateY: animateReveal ? 0 : 180 }}
-            animate={{ rotateY: 180 }}
+            animate={{ rotateY: revealStarted ? 180 : 0 }}
             transition={
               animateReveal
                 ? {
@@ -1007,9 +1019,18 @@ export function ActiveTaskCard({
               setRevealFinished(true);
             }}
           >
-            <div
+            <motion.div
               className={`${styles.activeQuestCard} ${styles.revealBack}`}
               aria-hidden="true"
+              animate={{
+                opacity: revealStarted ? [1, 1, 0] : 1,
+              }}
+              transition={{
+                opacity: {
+                  duration: 0.34,
+                  times: [0, 0.65, 1],
+                },
+              }}
             >
               <QuestCardBack
                 minimumDurationMinutes={task.minimumDurationMinutes}
@@ -1019,7 +1040,7 @@ export function ActiveTaskCard({
                 title={task.title}
                 variant="summary"
               />
-            </div>
+            </motion.div>
 
             <div className={styles.revealFront}>
               <motion.div
