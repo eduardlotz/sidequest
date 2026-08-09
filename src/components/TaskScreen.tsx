@@ -285,7 +285,7 @@ export function TaskScreen({
       <LayoutGroup id="quest-flow">
         <AnimatePresence
           initial={animateEntrance}
-          mode={returnedFromActive ? "wait" : "sync"}
+          mode={returnedFromActive ? "wait" : "popLayout"}
         >
           {currentQuest && currentSession ? (
             <motion.div
@@ -332,16 +332,16 @@ export function TaskScreen({
                 opacity: reduceMotion ? 1 : 0,
                 scale: 1,
                 pointerEvents: "none",
-                transition: {
-                  duration: reduceMotion ? 0 : 0.22,
-                  ease: [0.22, 0.8, 0.24, 1],
-                },
+                // transition: {
+                //   duration: reduceMotion ? 0 : 0.22,
+                //   ease: [0.22, 0.8, 0.24, 1],
+                // },
               }}
-              transition={
-                reduceMotion
-                  ? { duration: 0 }
-                  : { type: "spring", stiffness: 350, damping: 34, mass: 0.78 }
-              }
+              // transition={
+              //   reduceMotion
+              //     ? { duration: 0 }
+              //     : { type: "spring", stiffness: 350, damping: 34, mass: 0.78 }
+              // }
             >
               <AnimatePresence
                 initial={false}

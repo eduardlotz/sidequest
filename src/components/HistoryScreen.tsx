@@ -13,6 +13,7 @@ import { CheckIcon } from "./Icons";
 import { QuestCardMeta } from "./QuestCardMeta";
 import { QuestTips } from "./QuestTips";
 import { SolidButton } from "./SolidButton";
+import { WordmarkLogo } from "../assets/wordmark";
 
 type Props = {
   completedQuests: readonly CompletedQuest[];
@@ -255,12 +256,7 @@ function HistoryQuestCard({
         </div>
 
         <span className={appStyles.cardBrand} aria-hidden="true">
-          <img
-            src={`${import.meta.env.BASE_URL}sidequest-wordmark.svg`}
-            alt=""
-            width="837"
-            height="550"
-          />
+          <WordmarkLogo />
         </span>
       </motion.article>
     </div>

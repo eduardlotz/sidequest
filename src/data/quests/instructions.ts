@@ -31,15 +31,15 @@ type LocalizedQuestInstruction = {
 export const QUEST_INSTRUCTIONS: Record<string, LocalizedQuestInstruction> = {
   "relax-soft-landing": {
     en: {
-      objective:
-        "Think of the game you loved most as a child or teenager. Start the part you remember best.",
-      completion: "Reach the next checkpoint you still recognize.",
+      objective: "Think of the game you loved to play as a child or teenager",
+      completion:
+        "Start the part you remember best or just continue where you left off.",
     },
     de: {
       objective:
-        "Denk an das Spiel, das du als Kind oder Teenager am meisten geliebt hast. Starte den Abschnitt, an den du dich am besten erinnerst.",
+        "Denk an das Spiel, das du als Kind oder Teenager am liebsten gespielt hast",
       completion:
-        "Erreiche den nächsten Kontrollpunkt, den du noch wiedererkennst.",
+        "Starte den Abschnitt, an den du dich am besten erinnerst oder mach dort weiter, wo du aufgehört hast.",
     },
   },
   "relax-scenic-route": {

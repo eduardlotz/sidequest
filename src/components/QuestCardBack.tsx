@@ -17,7 +17,6 @@ type Props =
     };
 
 export function QuestCardBack(props: Props) {
-  const mark = markAssetUrl("sidequest-mark.svg");
   const summary = props.variant === "summary";
 
   return (
@@ -28,13 +27,6 @@ export function QuestCardBack(props: Props) {
     >
       <span className={styles.questCardBackPattern}>
         {Array.from({ length: 35 }, (_, index) => (
-          // <img
-          //   src={mark}
-          //   alt=""
-          //   width="58"
-          //   height="58"
-          //   key={index}
-          // />
           <Logo key={index} />
         ))}
       </span>
