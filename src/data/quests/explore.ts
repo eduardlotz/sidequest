@@ -209,7 +209,7 @@ export const EXPLORE_QUESTS = defineMoodDeck("explore", [
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 20,
     rewardPoints: 230,
-    tipIds: ["oppositeInstinct", "letItStand"],
+    tipIds: ["fullDialogue", "minimalHud"],
   },
   {
     id: "explore-immersive-sim",

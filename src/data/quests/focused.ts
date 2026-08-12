@@ -69,14 +69,14 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 15,
     rewardPoints: 230,
-    tipIds: ["fixedKit", "threeAttempts"],
+    tipIds: ["minimalHud", "photoProof"],
   },
   {
     id: "skill-lab",
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 15,
     rewardPoints: 230,
-    tipIds: ["oneMove", "fixedKit"],
+    tipIds: ["noOutsideHelp", "fixedKit"],
   },
   {
     id: "one-city-block",
@@ -167,7 +167,7 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 220,
-    tipIds: ["threeAttempts", "fixedKit"],
+    tipIds: ["minimalHud", "fixedKit"],
   },
   {
     id: "map-pocket",
@@ -209,7 +209,7 @@ export const FOCUSED_QUESTS = defineMoodDeck("focused", [
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 20,
     rewardPoints: 250,
-    tipIds: ["oneTrack", "cleanExit"],
+    tipIds: ["minimalHud", "favoriteSetup"],
   },
   {
     id: "focused-grand-strategy-turn",

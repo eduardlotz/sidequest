@@ -160,7 +160,7 @@ export const CURIOUS_QUESTS = defineMoodDeck("curious", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 15,
     rewardPoints: 230,
-    tipIds: ["oppositeInstinct", "letItStand"],
+    tipIds: ["fullDialogue", "minimalHud"],
   },
   {
     id: "small-studio",

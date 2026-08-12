@@ -13,7 +13,7 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 200,
-    tipIds: ["fixedKit", "threeAttempts"],
+    tipIds: ["cockpitView", "minimalHud"],
   },
   {
     id: "destruction-break",
@@ -41,7 +41,7 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 220,
-    tipIds: ["noMap", "oneMove"],
+    tipIds: ["noMap", "photoProof"],
   },
   {
     id: "arena-sprint",
@@ -55,7 +55,7 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 200,
-    tipIds: ["oneMove", "threeAttempts"],
+    tipIds: ["fixedKit", "minimalHud"],
   },
   {
     id: "chase-sequence",
@@ -69,7 +69,7 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 220,
-    tipIds: ["threeAttempts", "fixedKit"],
+    tipIds: ["damageBudget", "noRecovery"],
   },
   {
     id: "sports-quarter",
@@ -104,7 +104,7 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 200,
-    tipIds: ["threeAttempts", "letItStand"],
+    tipIds: ["minimalHud", "fixedKit"],
   },
   {
     id: "movement-only-win",
@@ -132,14 +132,14 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 220,
-    tipIds: ["longWay", "noMap"],
+    tipIds: ["photoProof", "noMap"],
   },
   {
     id: "trick-session",
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 220,
-    tipIds: ["oneMove", "threeAttempts"],
+    tipIds: ["noOutsideHelp", "photoProof"],
   },
   {
     id: "rapid-puzzle",
@@ -195,7 +195,7 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 220,
-    tipIds: ["holdYourRole", "helpFirst"],
+    tipIds: ["quietLobby", "helpFirst"],
   },
   {
     id: "physical-finish",
@@ -209,7 +209,7 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 220,
-    tipIds: ["oneTrack", "cleanExit"],
+    tipIds: ["worldAudio", "fixedKit"],
   },
   {
     id: "restless-twin-stick",
@@ -244,7 +244,7 @@ export const RESTLESS_QUESTS = defineMoodDeck("restless", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 210,
-    tipIds: ["fixedKit", "noRestart"],
+    tipIds: ["damageBudget", "noRestart"],
   },
   {
     id: "restless-rts-rush",

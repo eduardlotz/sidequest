@@ -48,14 +48,14 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 220,
-    tipIds: ["threeAttempts", "fixedKit"],
+    tipIds: ["noRestart", "fixedKit"],
   },
   {
     id: "rental-weekend",
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 10,
     rewardPoints: 180,
-    tipIds: ["firstInstinct", "cleanExit"],
+    tipIds: ["firstInstinct", "memoryFirst"],
   },
   {
     id: "demo-memory",
@@ -83,7 +83,7 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 200,
-    tipIds: ["noMap", "landmarksOnly"],
+    tipIds: ["worldAudio", "photoProof"],
   },
   {
     id: "credits-memory",
@@ -125,7 +125,7 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 200,
-    tipIds: ["borrowedStyle", "cleanExit"],
+    tipIds: ["borrowedStyle", "favoriteSetup"],
   },
   {
     id: "retired-strategy",
@@ -195,7 +195,7 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 10,
     rewardPoints: 200,
-    tipIds: ["oneMove", "threeAttempts"],
+    tipIds: ["memoryFirst", "fixedKit"],
   },
   {
     id: "legacy-character",
@@ -209,7 +209,7 @@ export const NOSTALGIC_QUESTS = defineMoodDeck("nostalgic", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 15,
     rewardPoints: 220,
-    tipIds: ["photoProof", "cleanExit"],
+    tipIds: ["photoProof", "memoryFirst"],
   },
   {
     id: "nostalgic-arcade-credit",

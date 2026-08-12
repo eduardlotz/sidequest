@@ -48,44 +48,8 @@
   transform: none;
 }
 
-.historyTab {
-  position: fixed;
-  top: 50%;
-  right: 0;
-  z-index: 50;
-  display: grid;
-  min-width: 48px;
-  min-height: 116px;
-  place-items: center;
-  padding: 16px 12px;
-  border: 1px solid rgb(255 255 255 / 0.12);
-  border-right: 0;
-  border-radius: 18px 0 0 18px;
-  background: rgb(9 9 11 / 0.94);
-  box-shadow: 0 12px 34px rgb(var(--color-card-shadow-rgb) / 0.28);
-  color: var(--color-card-copy);
-  cursor: pointer;
-  transform: translateY(-50%);
-  backdrop-filter: blur(18px);
-  transition:
-    padding 160ms ease,
-    background 160ms ease;
-}
-
-.historyTab span {
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  writing-mode: vertical-rl;
-}
-
-.historyTab:hover {
-  padding-right: 17px;
-  background: #1d1d21;
-}
-
 .main,
-.taskMainView,
+.questScreen,
 .tabScreen,
 .screen,
 .deckWrap,
@@ -111,45 +75,6 @@
 
 .activeWrap {
   z-index: 1;
-}
-
-.previewState {
-  display: grid;
-  min-height: 100svh;
-  place-items: center;
-  padding: clamp(38px, 7vh, 80px) clamp(18px, 5vw, 80px);
-}
-
-.deckIntro {
-  position: relative;
-  z-index: 5;
-  padding-bottom: clamp(28px, 5vh, 58px);
-  text-align: center;
-}
-
-.eyebrow {
-  display: inline-flex;
-  padding: 8px 13px;
-  border: 1px solid var(--color-border-soft);
-  border-radius: 999px;
-  color: var(--color-muted);
-  font-size: clamp(0.7rem, 1.2cqw, 0.82rem);
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.deckIntro p {
-  margin: 16px 0 5px;
-  font-size: clamp(2rem, 4.4cqw, 4.6rem);
-  font-weight: 700;
-  letter-spacing: -0.065em;
-  line-height: 0.95;
-}
-
-.deckIntro small {
-  color: var(--muted);
-  font-size: clamp(0.82rem, 1.2cqw, 1rem);
 }
 
 .deck {
@@ -201,26 +126,6 @@
   transform-style: preserve-3d;
 }
 
-.previewCard {
-  display: flex;
-  width: clamp(220px, 24cqw, 355px);
-  height: 100%;
-  aspect-ratio: 0.72;
-  flex: 0 1 auto;
-  flex-direction: column;
-  padding: clamp(23px, 2.35cqw, 38px);
-  border-radius: clamp(24px, 2.5cqw, 42px);
-  text-align: left;
-  cursor: pointer;
-  transform-style: preserve-3d;
-  scale: 1;
-  transition:
-    filter 180ms ease,
-    box-shadow 240ms ease,
-    scale 400ms cubic-bezier(0.03, 0.98, 0.52, 0.99);
-  -webkit-tap-highlight-color: transparent;
-}
-
 .previewCardHitArea {
   color: inherit;
   text-align: left;
@@ -232,10 +137,6 @@
 .previewCard,
 .activeQuestCard {
   pointer-events: none;
-}
-
-.previewCard + .previewCard {
-  margin-left: clamp(-48px, -2.6cqw, -24px);
 }
 
 .previewCardHitArea:not([data-selected]):hover .previewCard {
@@ -284,22 +185,6 @@
   transform-origin: 0 0;
 }
 
-.previewTitle,
-.activeTitle {
-  position: relative;
-  z-index: 2;
-  margin: clamp(24px, 3.4cqw, 48px) 0 0;
-  color: #f6f6fa;
-  font-weight: 700;
-  letter-spacing: -0.055em;
-  line-height: 1.03;
-  text-wrap: balance;
-}
-
-.previewTitle {
-  font-size: clamp(1.55rem, 2.8cqw, 2.65rem);
-}
-
 .cardBrand {
   position: absolute;
   right: -12%;
@@ -327,30 +212,12 @@
   width: 70cqw;
 }
 
-.cardPick {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 17px;
-  border-top: 1px solid rgb(255 255 255 / 0.1);
-  color: #8f8f97;
-  font-size: clamp(0.72rem, 1cqw, 0.88rem);
-  font-weight: 600;
-}
-
-.cardPick b {
-  color: var(--accent);
-  font-size: 1.2em;
-}
-
 .activeWrap {
   min-width: 0;
   min-height: 0;
 }
 
-.activeExperience {
+.activeQuest {
   position: relative;
   display: grid;
   min-height: 100svh;
@@ -394,12 +261,18 @@
   backface-visibility: hidden;
 }
 
-.activeExperience[data-reveal-complete="true"]:not(
+.activeQuest[data-reveal-complete="true"]:not(
     [data-phase="completed"]
-  ):not([data-phase="cutting"])
+  )
   .activeCardHitArea
   .activeQuestCard:not([data-completed]) {
   animation: activeCardFloat 5.2s ease-in-out infinite;
+}
+
+.activeQuest[data-phase="cutting"]
+  .activeCardHitArea
+  .activeQuestCard:not([data-completed]) {
+  animation-play-state: paused;
 }
 
 .activeQuestCard[data-completed] {
@@ -424,49 +297,6 @@
   }
 }
 
-.activeTitle {
-  margin-top: clamp(34px, 4cqw, 62px);
-  font-size: clamp(2rem, 3.5cqw, 4rem);
-  line-height: 1.02;
-}
-
-.completionOverlay {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  display: flex;
-  overflow: hidden;
-  align-items: center;
-  justify-content: center;
-  padding-top: 20%;
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-.completionOverlay::before {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgb(9 9 11 / 1) 0%,
-    rgb(9 9 11 / 0.82) 34%,
-    rgb(9 9 11 / 0.32) 68%,
-    rgb(9 9 11 / 0) 100%
-  );
-  content: "";
-}
-
-.completionMark {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
-  color: white;
-  text-align: center;
-}
-
 .completionCheckIcon {
   --completion-check-dark-cool: color-mix(in srgb, var(--accent) 38%, #07130e);
   --completion-check-dark-1: color-mix(in srgb, var(--accent) 43%, #07100c);
@@ -489,36 +319,6 @@
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.completionMark strong {
-  margin-top: 0;
-  color: white;
-  font-size: clamp(4rem, 18cqw, 6rem);
-  font-weight: 700;
-  letter-spacing: -0.075em;
-  line-height: 1;
-}
-
-.completionTime {
-  display: flex;
-  max-width: 100%;
-  align-items: center;
-  flex-direction: column;
-  flex-wrap: wrap;
-  gap: clamp(8px, 2.5cqw, 12px);
-  justify-content: center;
-}
-
-.completionTime small {
-  max-width: min(82%, 260px);
-  color: rgb(255 255 255 / 0.82);
-  font-size: clamp(0.82rem, 3.8cqw, 1.15rem);
-  font-weight: 650;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
-  overflow-wrap: anywhere;
-  text-wrap: balance;
 }
 
 .timerRig {
@@ -759,56 +559,6 @@
   gap: 10px;
 }
 
-.gameTitleInput {
-  width: min(100%, 250px);
-  min-height: 44px;
-  padding: 0 15px;
-  border: 0;
-  border-radius: 15px;
-  outline: none;
-  background: transparent;
-  color: var(--text);
-  font-size: 0.9rem;
-  font-weight: 650;
-  letter-spacing: -0.02em;
-  text-align: center;
-  transition:
-    background 150ms ease,
-    color 150ms ease;
-}
-
-.gameTitleInput::placeholder {
-  color: #66666e;
-  opacity: 1;
-}
-
-.gameTitleInput:hover,
-.gameTitleInput:focus,
-.gameTitleInput[data-has-value] {
-  background: #e5e5ed;
-}
-
-.gameTitleInput:focus-visible {
-  outline: 3px solid rgb(49 59 102 / 0.28);
-  outline-offset: 2px;
-}
-
-.pauseMinimumInfo {
-  display: flex;
-  width: min(100%, 290px);
-  min-height: 24px;
-  margin: 3px 0 0;
-  color: #606068;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.82rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
-  line-height: 1.3;
-  text-align: center;
-  text-wrap: balance;
-}
-
 .cancellationBlockedInfo {
   position: absolute;
   top: calc(100% + 8px);
@@ -867,11 +617,6 @@
   cursor: not-allowed;
   filter: none;
   transform: none;
-}
-
-.continueAction {
-  background: #e2e2eb;
-  color: var(--text);
 }
 
 .saveAction:hover,
@@ -951,17 +696,18 @@
   color: var(--text);
 }
 
-.timerReturnChevron {
-  width: 13px;
-  height: 13px;
-  flex: 0 0 auto;
-  margin-left: -2px;
-  stroke-width: 2.2;
-}
-
 .activeCardProjection {
   position: relative;
   transform-style: preserve-3d;
+}
+
+.screen[data-active-handoff="pending"] .activeCardProjection {
+  visibility: hidden !important;
+}
+
+.screen[data-active-handoff="pending"]
+  .previewCardProjection[data-selected] {
+  visibility: visible !important;
 }
 
 .revealFlip,
@@ -1059,32 +805,6 @@
   backdrop-filter: blur(5px);
 }
 
-.historyDrawer {
-  position: fixed;
-  z-index: 100;
-  overflow: hidden;
-  border: 1px solid rgb(8 8 10 / 0.08);
-  background: var(--canvas);
-  box-shadow: -24px 0 80px rgb(8 8 10 / 0.16);
-  outline: none;
-}
-
-.historyDrawer[data-direction="right"] {
-  inset: 1rem 1rem 1rem auto;
-  width: min(440px, 92vw);
-  height: auto;
-  border-radius: 30px;
-}
-
-.historyDrawer[data-direction="bottom"] {
-  right: 1rem;
-  bottom: 1rem;
-  left: 1rem;
-  height: min(calc(82svh - 1rem), 760px);
-  border-radius: 30px;
-  box-shadow: 0 -24px 80px rgb(8 8 10 / 0.17);
-}
-
 .drawerHandle {
   position: absolute;
   top: 10px;
@@ -1095,103 +815,6 @@
   border-radius: 99px;
   background: var(--drawer-handle);
   transform: translateX(-50%);
-}
-
-.drawerClose {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  z-index: 5;
-  display: grid;
-  width: 40px;
-  height: 40px;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--drawer-close-surface);
-  color: var(--drawer-close-copy);
-  font-size: 1.5rem;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.historyScreen {
-  height: 100%;
-  overflow: auto;
-  padding: 74px 18px 60px;
-  overscroll-behavior: contain;
-}
-
-.largeHeader,
-.historyContent {
-  width: min(100%, 760px);
-  margin: 0 auto;
-}
-
-.largeHeader h1 {
-  margin: 0 0 28px;
-  font-size: clamp(2.7rem, 6vw, 5rem);
-  letter-spacing: -0.065em;
-}
-
-.summaryList {
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-  border: 1px solid var(--color-border-soft);
-  border-radius: 24px;
-  background: rgb(var(--color-surface-rgb) / 0.62);
-  box-shadow: 0 18px 50px rgb(var(--color-shadow-rgb) / 0.055);
-  list-style: none;
-}
-
-.historyList {
-  display: flex;
-  padding: 0;
-  margin: 0;
-  flex-direction: column;
-  gap: 10px;
-  list-style: none;
-}
-
-.summaryList > div {
-  display: flex;
-  min-height: 64px;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 22px;
-}
-
-.summaryList > div + div {
-  border-top: 1px solid rgb(8 8 10 / 0.07);
-}
-
-.summaryList dd {
-  margin: 0;
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-}
-
-.listHeader {
-  padding: 32px 16px 10px;
-  color: var(--muted);
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.historyEmpty {
-  display: grid;
-  min-height: 240px;
-  place-items: center;
-  padding: 36px;
-  color: var(--muted);
-  text-align: center;
-}
-
-.historyEmpty h2,
-.historyEmpty p {
-  margin: 0;
 }
 
 .emptyCheck {
@@ -1207,119 +830,9 @@
   width: 28px;
 }
 
-.historyRow {
-  display: block;
-  min-height: 0;
-  overflow: hidden;
-  border: 1px solid rgb(8 8 10 / 0.07);
-  border-radius: 20px;
-  background: rgb(255 255 255 / 0.66);
-  box-shadow: 0 12px 32px rgb(8 8 10 / 0.045);
-}
-
-.historyQuestRow {
-  display: flex;
-  width: 100%;
-  min-height: 82px;
-  align-items: center;
-  gap: 18px;
-  padding: 17px 18px;
-  background: transparent;
-  color: var(--text);
-  text-align: left;
-}
-
-.historyCompletionCount {
-  flex: 0 0 auto;
-  color: var(--muted);
-  font-size: 0.84rem;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.rowCheck {
-  display: grid;
-  width: 30px;
-  aspect-ratio: 1;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 50%;
-  background: #09090b;
-  color: white;
-}
-
-.rowCheck svg {
-  width: 17px;
-}
-
-.rowContent {
-  display: flex;
-  min-width: 0;
-  flex: 1;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.rowContent strong {
-  font-size: 0.98rem;
-  line-height: 1.12;
-}
-
-.rowContent small {
-  color: var(--muted);
-}
-
-@container (max-width: 900px) {
-  .previewCard {
-    width: clamp(190px, 29cqw, 270px);
-  }
-
-  .previewCard + .previewCard {
-    margin-left: -36px;
-  }
-}
-
 @media (max-width: 820px) {
   .app {
     overflow: auto;
-  }
-
-  .historyTab {
-    top: 14px;
-    right: 14px;
-    min-width: auto;
-    min-height: 42px;
-    padding: 0 16px;
-    border: 1px solid rgb(8 8 10 / 0.035);
-    border-radius: 999px;
-    background: rgb(230 230 239 / 0.9);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.7);
-    color: var(--text);
-    transform: none;
-  }
-
-  .historyTab span {
-    font-size: 0.84rem;
-    letter-spacing: 0;
-    writing-mode: horizontal-tb;
-  }
-
-  .historyTab:hover {
-    padding-right: 16px;
-    background: #dedee8;
-  }
-
-  .previewState {
-    padding: 58px 0 24px;
-    overflow: hidden;
-  }
-
-  .deckIntro {
-    padding: 0 18px 26px;
-  }
-
-  .deckIntro p {
-    font-size: clamp(2.15rem, 10cqw, 3.3rem);
   }
 
   .deck {
@@ -1327,31 +840,11 @@
     margin-left: -8%;
   }
 
-  .previewCard {
-    width: min(42cqw, 230px);
-    min-width: 150px;
-    padding: clamp(17px, 4.5cqw, 24px);
-    border-radius: clamp(21px, 6cqw, 31px);
-  }
-
-  .previewCard + .previewCard {
-    margin-left: -6cqw;
-  }
-
-  .previewTitle {
-    margin-top: 20px;
-    font-size: clamp(1rem, 4.5cqw, 1.45rem);
-  }
-
   .cardBrand {
     font-size: clamp(1.5rem, 8cqw, 2.5rem);
   }
 
-  .cardPick {
-    display: none;
-  }
-
-  .activeExperience {
+  .activeQuest {
     display: block;
     min-height: 100svh;
     overflow: hidden;
@@ -1369,7 +862,7 @@
       transform 360ms cubic-bezier(0.22, 0.8, 0.24, 1);
   }
 
-  .screen:has(.activeExperience[data-card-focused="true"]) {
+  .screen:has(.activeQuest[data-card-focused="true"]) {
     z-index: 121;
   }
 
@@ -1401,11 +894,11 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  .activeExperience[data-card-focused] {
+  .activeQuest[data-card-focused] {
     overflow: hidden;
   }
 
-  .activeExperience[data-card-focused] .activeCardStage {
+  .activeQuest[data-card-focused] .activeCardStage {
     position: fixed;
     top: 50%;
     z-index: 201;
@@ -1413,26 +906,26 @@
     transform: translate(-50%, -50%);
   }
 
-  .activeExperience[data-card-focused] .activeQuestCard {
+  .activeQuest[data-card-focused] .activeQuestCard {
     animation: none;
   }
 
-  .activeExperience[data-card-focused] .activeCardProjection {
+  .activeQuest[data-card-focused] .activeCardProjection {
     cursor: grab;
     touch-action: none;
   }
 
-  .activeExperience[data-card-focused] .activeCardProjection:active {
+  .activeQuest[data-card-focused] .activeCardProjection:active {
     cursor: grabbing;
   }
 
-  .activeExperience[data-card-focused]
+  .activeQuest[data-card-focused]
     .activeCardHitArea[data-hover-ready]:hover
     .activeQuestCard {
     scale: 1;
   }
 
-  .activeExperience[data-card-focused] .timerRig {
+  .activeQuest[data-card-focused] .timerRig {
     pointer-events: none;
   }
 
@@ -1442,21 +935,12 @@
     transform-origin: center;
   }
 
-  .activeTitle {
-    margin-top: 24px;
-    font-size: clamp(1.7rem, 8cqw, 2.45rem);
-  }
-
   .activeQuestCard .cardBrand {
     font-size: clamp(2.3rem, 11cqw, 3.3rem);
   }
 
   .completionCheckIcon {
     width: min(24cqw, 76px);
-  }
-
-  .completionMark strong {
-    font-size: 3.75rem;
   }
 
   .timerRig {
@@ -1468,11 +952,11 @@
     border-top: 0;
   }
 
-  .activeExperience[data-phase="paused"] .timerRig {
+  .activeQuest[data-phase="paused"] .timerRig {
     height: 100svh;
   }
 
-  .activeExperience[data-phase="paused"] .pausePanel {
+  .activeQuest[data-phase="paused"] .pausePanel {
     top: calc(35% + 64px);
     bottom: auto;
     overflow: visible;
@@ -1517,18 +1001,6 @@
 }
 
 @media (max-height: 700px) and (min-width: 821px) {
-  .previewState {
-    padding-top: 72px;
-    padding-bottom: 24px;
-  }
-
-  .deckIntro {
-    padding-bottom: 24px;
-  }
-
-  .previewCard {
-    width: min(20cqw, 265px);
-  }
 
   .activeCardStage {
     width: min(25cqw, 365px);
@@ -1536,16 +1008,6 @@
 }
 
 /* Refined mood and quest selection */
-.navAction {
-  background: var(--color-surface-muted);
-  opacity: 1;
-}
-
-.navAction:hover,
-.navAction:active,
-.navAction[data-active]:hover {
-  background: var(--color-surface-sunken);
-}
 
 .selectionScreen {
   overflow-x: clip;
@@ -1593,36 +1055,6 @@
   height: 100%;
   transform-style: preserve-3d;
   will-change: filter, opacity, transform;
-}
-
-.arcCard {
-  position: relative;
-  z-index: 2;
-  display: block;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: 4px solid #74747b;
-  border-radius: 30px;
-  background: #09090b;
-  box-shadow:
-    0 0 0 3px #252529,
-    0 22px 45px rgb(8 8 10 / 0.2);
-  color: white;
-  cursor: pointer;
-  transform-style: preserve-3d;
-  backface-visibility: visible;
-}
-
-.arcCard:hover {
-  box-shadow:
-    0 0 0 3px #252529,
-    0 31px 62px rgb(8 8 10 / 0.26);
-}
-
-.arcCard:focus-visible {
-  outline: 3px solid rgb(8 8 10 / 0.28);
-  outline-offset: 9px;
 }
 
 .moodCardVisual {
@@ -1812,81 +1244,14 @@
   gap: 6px;
 }
 
-.shuffleAction {
-  display: inline-flex;
-  min-width: 0;
-  min-height: 34px;
-  align-items: center;
-  justify-content: center;
-  padding: 0 13px;
-  border: 1px solid rgb(8 8 10 / 0.12);
-  border-radius: 999px;
-  background: linear-gradient(
-    180deg,
-    rgb(255 255 255 / 0.96),
-    rgb(239 239 245 / 0.95)
-  );
-  box-shadow:
-    0 2px 5px rgb(8 8 10 / 0.12),
-    inset 0 1px 0 white;
-  color: var(--text);
-  font-size: 0.78rem;
-  font-weight: 720;
-  gap: 6px;
-  cursor: pointer;
-  transition:
-    box-shadow 150ms ease,
-    filter 150ms ease,
-    transform 150ms ease;
-}
-
-.shuffleAction > span {
-  color: #73737b;
-  font-size: 0.94rem;
-  line-height: 1;
-}
-
-.shuffleAction:hover:not(:disabled) {
-  box-shadow:
-    0 4px 9px rgb(8 8 10 / 0.15),
-    inset 0 1px 0 white;
-  filter: brightness(0.985);
-  transform: translateY(-1px);
-}
-
-.shuffleAction:active:not(:disabled) {
-  box-shadow:
-    0 1px 3px rgb(8 8 10 / 0.12),
-    inset 0 1px 0 white;
-  transform: translateY(0);
-}
-
-.shuffleAction:disabled {
-  color: #aaaab2;
-  cursor: not-allowed;
-  opacity: 0.62;
-}
-
 .questShuffleControl > span {
   color: #aaaab3;
   font-size: 0.72rem;
   font-weight: 600;
 }
 
-.activeExperience[data-phase="paused"] .timerRig {
+.activeQuest[data-phase="paused"] .timerRig {
   z-index: 10;
-}
-
-.historySession > .historyMood {
-  display: block;
-  padding: 0 16px;
-  margin: 0 0 6px;
-  color: #686870;
-  font-size: 0.68rem;
-  font-weight: 650;
-  letter-spacing: 0.025em;
-  line-height: 1.2;
-  text-transform: none;
 }
 
 @media (max-width: 820px) {
@@ -1910,10 +1275,6 @@
   .arcCardSlot {
     width: min(88vw, 420px);
     margin-left: calc(min(88vw, 420px) / -2);
-  }
-
-  .arcCard {
-    border-radius: 28px;
   }
 
   .moodDeckControls {
@@ -2009,33 +1370,6 @@
   letter-spacing: -0.02em;
 }
 
-.selectedMood {
-  display: inline-flex;
-  align-items: center;
-  padding: 7px 8px 7px 15px;
-  border: 1px solid rgb(8 8 10 / 0.08);
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.52);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.62);
-  gap: 10px;
-}
-
-.selectedMood strong {
-  color: var(--text);
-  font-size: 0.86rem;
-}
-
-.selectedMood button {
-  min-height: 30px;
-  padding: 0 12px;
-  border-radius: 999px;
-  background: #09090b;
-  color: white;
-  font-size: 0.74rem;
-  font-weight: 750;
-  cursor: pointer;
-}
-
 .arcDeck {
   position: relative;
   width: 100%;
@@ -2098,53 +1432,6 @@
   will-change: transform, opacity;
 }
 
-.arcCardFlip {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  will-change: transform;
-}
-
-.arcCard {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  padding: clamp(24px, 8cqw, 34px);
-  border: clamp(3px, 1.35cqw, 5px) solid var(--accent);
-  border-radius: 30px;
-  background: #09090b;
-  box-shadow:
-    0 0 0 3px #242427,
-    0 22px 45px rgb(8 8 10 / 0.2),
-    0 0 52px rgb(var(--accent-rgb) / 0.1);
-  color: #f8f8fb;
-  text-align: left;
-  cursor: pointer;
-  isolation: isolate;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-}
-
-button.arcCard {
-  appearance: none;
-}
-
-.arcCardFace {
-  position: absolute;
-  inset: 0;
-}
-
-.arcCardFront {
-  transform: rotateY(0deg);
-}
-
-.arcCardBack {
-  padding: 0;
-  transform: rotateY(180deg);
-}
-
 .arcCardSlot[data-center] .arcCardFront:hover {
   box-shadow:
     0 0 0 3px #242427,
@@ -2203,62 +1490,6 @@ button.arcCard {
 
 .arcCard .questCardBackPattern {
   opacity: 0.1;
-}
-
-.questOfferActions {
-  position: absolute;
-  bottom: 34px;
-  left: 50%;
-  z-index: 70;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 6px;
-  transform: translateX(-50%);
-}
-
-.shuffleAction {
-  min-width: 170px;
-  min-height: 46px;
-  padding: 0 20px;
-  border-radius: 16px;
-  background: #09090b;
-  box-shadow:
-    0 12px 30px rgb(8 8 10 / 0.2),
-    inset 0 1px 0 rgb(255 255 255 / 0.12);
-  color: white;
-  font-size: 0.86rem;
-  font-weight: 750;
-  cursor: pointer;
-}
-
-.shuffleAction:disabled {
-  cursor: not-allowed;
-  opacity: 0.38;
-}
-
-.shuffleAction:focus-visible,
-.selectedMood button:focus-visible {
-  outline: 3px solid rgb(8 8 10 / 0.24);
-  outline-offset: 3px;
-}
-
-.questOfferActions > span {
-  color: #9d9da6;
-  font-size: 0.68rem;
-  font-weight: 650;
-}
-
-.deckGestureHint {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  z-index: 60;
-  margin: 0;
-  color: #b4b4bd;
-  font-size: 0.72rem;
-  font-weight: 650;
-  transform: translateX(-50%);
 }
 
 .questTipsSection {
@@ -2339,14 +1570,6 @@ button.arcCard {
     width: min(70vw, 300px);
     margin-left: calc(min(70vw, 300px) / -2);
   }
-
-  .arcCard {
-    border-radius: 28px;
-  }
-
-  .questOfferActions {
-    bottom: 32px;
-  }
 }
 
 @media (max-height: 700px) {
@@ -2366,140 +1589,6 @@ button.arcCard {
   .arcDeckTrack {
     top: 26px;
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .arcCard,
-  .shuffleAction,
-  .selectedMood button {
-    transition: none;
-  }
-}
-
-.profilePointBalance {
-  display: flex;
-  align-items: flex-end;
-  margin: 0;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.profilePointBalance span {
-  color: #9999a1;
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.profilePointBalance strong {
-  color: var(--text);
-  font-size: 1.2rem;
-  letter-spacing: -0.04em;
-}
-
-.profileHistoryPanel {
-  min-height: 0;
-}
-
-.profileOverview {
-  display: flex;
-  height: 100%;
-  min-height: 0;
-  overflow: auto;
-  padding: 12px 18px 18px;
-  flex-direction: column;
-  overscroll-behavior: contain;
-}
-
-.redRopeSection {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 17px 0 19px;
-  border-bottom: 1px solid #e9e9ed;
-  gap: 14px;
-}
-
-.redRopeSection > div {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.redRopeSection > div > span {
-  color: #85858d;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
-}
-
-.redRopeCount {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 1.55rem;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.055em;
-  line-height: 1;
-}
-
-.redRopeMultiplier {
-  margin-right: -3px;
-  color: #ff2f36;
-  font-size: 0.72em;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-}
-
-.redRopeCount::before {
-  width: 21px;
-  height: 4px;
-  border-radius: 99px;
-  background: #ff2f36;
-  box-shadow: 0 1px 2px rgb(173 13 21 / 0.22);
-  content: "";
-}
-
-.purchaseRopesButton {
-  display: flex;
-  min-width: 126px;
-  min-height: 48px;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 8px 13px;
-  border-radius: 15px;
-  background: #ececf0;
-  color: var(--text);
-  flex-direction: column;
-  cursor: pointer;
-  transition:
-    background 150ms ease,
-    opacity 150ms ease;
-}
-
-.purchaseRopesButton:hover:not(:disabled) {
-  background: #e2e2e7;
-}
-
-.purchaseRopesButton:disabled {
-  opacity: 0.42;
-  cursor: not-allowed;
-}
-
-.purchaseRopesButton span {
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.purchaseRopesButton small {
-  margin-top: 1px;
-  color: #85858d;
-  font-size: 0.65rem;
-  font-weight: 650;
 }
 
 .profileMetrics {
@@ -2536,91 +1625,6 @@ button.arcCard {
   white-space: nowrap;
 }
 
-.debugModeSection {
-  display: grid;
-  align-items: center;
-  padding: 14px 1px 16px;
-  border-top: 1px solid #e9e9ed;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
-}
-
-.debugModeSection > div {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.debugModeSection > div > span {
-  color: var(--text);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: -0.015em;
-}
-
-.debugModeSection small {
-  max-width: 210px;
-  color: #85858d;
-  font-size: 0.67rem;
-  font-weight: 600;
-  line-height: 1.35;
-}
-
-.debugModeToggle {
-  display: flex;
-  min-width: 74px;
-  min-height: 38px;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 5px 9px 5px 6px;
-  border-radius: 13px;
-  background: #ececf0;
-  color: #77777f;
-  gap: 7px;
-  cursor: pointer;
-  transition:
-    background 150ms ease,
-    color 150ms ease;
-}
-
-.debugModeToggle > span {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #aaaab2;
-  box-shadow: 0 0 0 3px rgb(170 170 178 / 0.14);
-  transition:
-    background 150ms ease,
-    box-shadow 150ms ease;
-}
-
-.debugModeToggle strong {
-  min-width: 19px;
-  font-size: 0.7rem;
-  font-weight: 750;
-  text-align: center;
-}
-
-.debugModeToggle:hover {
-  background: #e2e2e7;
-}
-
-.debugModeToggle[data-active] {
-  background: #292d32;
-  color: white;
-}
-
-.debugModeToggle[data-active] > span {
-  background: #31ff6c;
-  box-shadow: 0 0 0 3px rgb(49 255 108 / 0.15);
-}
-
-.debugModeToggle:focus-visible {
-  outline: 3px solid rgb(49 59 102 / 0.28);
-  outline-offset: 2px;
-}
-
 .openHistoryButton {
   width: 100%;
   min-height: 48px;
@@ -2633,52 +1637,6 @@ button.arcCard {
   font-weight: 700;
   letter-spacing: -0.02em;
   cursor: pointer;
-}
-
-.legacyCompletionSummary {
-  padding: 11px 13px;
-  border-radius: 13px;
-  margin-bottom: 12px;
-  background: rgb(8 8 10 / 0.045);
-  color: #7d7d85;
-  font-size: 0.72rem;
-  font-weight: 600;
-}
-
-.historySession {
-  width: 100%;
-}
-
-.historyMood {
-  display: block;
-  margin-bottom: 4px;
-  color: #686870;
-  font-size: 0.64rem;
-  font-weight: 750;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
-.historyObjective {
-  display: block;
-  margin-top: 4px;
-  color: #686870;
-  font-size: 0.72rem;
-  font-weight: 600;
-  line-height: 1.25;
-}
-
-.historySessionMeta {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: flex-end;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.historyPointsAwarded {
-  color: #0d7430;
-  font-size: 0.68rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2731,74 +1689,6 @@ button.arcCard {
   gap: 4px;
 }
 
-.navAction {
-  min-height: 35px;
-  padding: 0 13px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  box-shadow: none;
-  color: var(--text);
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  opacity: 0.5;
-  cursor: pointer;
-  transition:
-    background 150ms ease,
-    opacity 150ms ease;
-}
-
-.navAction:hover,
-.navAction:active {
-  background: #e9e9f1;
-  opacity: 1;
-}
-
-.navAction[data-active] {
-  background: #e9e9f1;
-  opacity: 1;
-}
-
-.navAction[data-active]:hover {
-  background: #dedee7;
-}
-
-.soundAction {
-  display: grid;
-  width: 35px;
-  height: 35px;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--text);
-  opacity: 0.5;
-  cursor: pointer;
-  transition:
-    background 150ms ease,
-    opacity 150ms ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.soundAction:hover,
-.soundAction:active,
-.soundAction[aria-pressed="true"] {
-  background: #e9e9f1;
-  opacity: 1;
-}
-
-.soundAction:focus-visible {
-  outline: 3px solid rgb(8 8 10 / 0.24);
-  outline-offset: 2px;
-}
-
-.soundAction svg {
-  width: 19px;
-  height: 19px;
-}
-
 .brandMark {
   position: absolute;
   top: -15px;
@@ -2842,34 +1732,6 @@ button.arcCard {
   width: 100%;
   height: 100%;
   pointer-events: none;
-}
-
-.previewState {
-  position: relative;
-  display: flex;
-  min-height: 100svh;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  overflow: hidden;
-  padding: 124px 0 0;
-}
-
-.deckIntro {
-  z-index: 20;
-  width: 100%;
-  padding: 0;
-  text-align: center;
-}
-
-.deckIntro h2 {
-  margin: 29px 20px 58px;
-  color: var(--text);
-  font-size: clamp(2.35rem, 3.25cqw, 2.75rem);
-  font-weight: 700;
-  letter-spacing: -0.058em;
-  line-height: 1;
-  white-space: nowrap;
 }
 
 .deck {
@@ -2933,39 +1795,10 @@ button.arcCard {
   pointer-events: none;
 }
 
-.previewCard {
-  z-index: 1;
-  width: 100%;
-  aspect-ratio: 0.7;
-  padding: 29px 28px;
-  border-width: 2px;
-  border-radius: 30px;
-  box-shadow:
-    0 0 0 3px #242427,
-    0 22px 45px rgb(8 8 10 / 0.18);
-}
-
 .previewCardHitArea:not([data-selected]):hover .previewCard {
   box-shadow:
     0 0 0 3px #242427,
     0 30px 60px rgb(8 8 10 / 0.25);
-}
-
-.previewTitle,
-.activeTitle {
-  display: block;
-  margin-top: 24px;
-  letter-spacing: -0.05em;
-  line-height: 1.04;
-}
-
-.previewTitle {
-  font-size: clamp(2rem, 13.2cqw, 3.2rem);
-}
-
-.activeTitle {
-  margin-top: clamp(34px, 8cqw, 54px);
-  font-size: clamp(2rem, 13.2cqw, 4rem);
 }
 
 .drawerOverlay {
@@ -3046,35 +1879,6 @@ button.arcCard {
   text-wrap: pretty;
 }
 
-.profileSettingsButton {
-  display: grid;
-  width: 36px;
-  height: 36px;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 12px;
-  background: var(--color-surface-soft);
-  color: var(--color-muted);
-  cursor: pointer;
-  transition:
-    background 150ms ease,
-    color 150ms ease;
-}
-
-.profileSettingsButton:hover {
-  background: var(--color-surface-pressed);
-}
-
-.profileSettingsButton[data-active] {
-  background: var(--color-inverse-surface);
-  color: var(--color-inverse-copy);
-}
-
-.profileSettingsButton svg {
-  width: 18px;
-  height: 18px;
-}
-
 .profileDrawerBody {
   min-height: 0;
   flex: 1;
@@ -3083,118 +1887,6 @@ button.arcCard {
 
 .profileDrawerBody > div {
   height: 100%;
-}
-
-.profileSetupCanvas {
-  min-height: 100svh;
-}
-
-.historyScreen {
-  height: 100%;
-  overflow: auto;
-  padding: 15px 9px 22px;
-  overscroll-behavior: contain;
-}
-
-.historyContent {
-  width: 100%;
-  margin: 0;
-}
-
-.historySummary {
-  display: flex;
-  min-height: 64px;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 15px 0 16px;
-}
-
-.historySummary p {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: 0.96rem;
-  font-weight: 600;
-  letter-spacing: -0.025em;
-}
-
-.historySummary p span,
-.historySummary p strong {
-  color: var(--text);
-  font-weight: 700;
-}
-
-.historyCompletionBadge {
-  position: relative;
-  display: grid;
-  width: 46px;
-  height: 46px;
-  flex: 0 0 auto;
-  place-items: center;
-}
-
-.historyCompletionBadge svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  transform: rotate(-90deg);
-}
-
-.historyCompletionBadge circle {
-  fill: none;
-  stroke-width: 6;
-}
-
-.badgeTrack {
-  stroke: var(--color-border);
-}
-
-.badgeProgress {
-  stroke: #24df57;
-  stroke-linecap: round;
-}
-
-.historyCompletionBadge strong {
-  padding-top: 2px;
-  font-size: 0.66rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.historyList {
-  gap: 14px;
-}
-
-.historyRow {
-  overflow: hidden;
-  border: 0;
-  border-radius: 16px;
-  background: var(--color-surface);
-  box-shadow: none;
-}
-
-.historyQuestRow {
-  min-height: 51px;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 16px;
-  background: var(--color-surface-soft);
-}
-
-.rowContent strong {
-  font-size: 0.97rem;
-  letter-spacing: -0.025em;
-  line-height: 1.1;
-}
-
-.historyCompletionCount {
-  color: var(--color-muted);
-  font-size: 0.84rem;
-  font-weight: 700;
-}
-
-.historyEmpty {
-  min-height: 340px;
 }
 
 .aboutContent {
@@ -3430,245 +2122,15 @@ button.arcCard {
   line-height: 1.32;
 }
 
-.activeExperience[data-phase="ready"]:not([data-rope-mode="resumePullback"])
+.activeQuest[data-phase="ready"]:not([data-rope-mode="resumePullback"])
   .elapsedTime {
   color: #85858d;
-}
-
-.onboardingScreen {
-  display: grid;
-  min-height: 100svh;
-  place-items: start center;
-  padding: 120px 20px 22px;
-}
-
-.preferencesPanel {
-  height: 100%;
-  overflow: hidden;
-  padding: 2px 16px 16px;
-  background: var(--color-surface);
-  overscroll-behavior: contain;
-}
-
-.onboardingForm {
-  display: flex;
-  width: min(100%, 360px);
-  padding: 20px;
-  margin: auto;
-  border-radius: 22px;
-  background: rgb(var(--color-surface-rgb) / 0.98);
-  flex-direction: column;
-}
-
-.onboardingScreen .onboardingForm {
-  width: min(320px, calc(100vw - 40px));
-  height: min(578px, calc(100svh - 142px));
-  padding: 0;
-  margin: 0;
-  border-radius: 0;
-  background: transparent;
-}
-
-.preferencesPanel .onboardingForm {
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.onboardingIntro {
-  padding: 10px 10px 12px;
-  text-align: center;
-}
-
-.onboardingIntro > p:last-child {
-  margin: 0;
-  color: var(--color-faint);
-  font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1.35;
-}
-
-.genreFieldset {
-  min-height: 0;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  flex: 1;
-}
-
-.genreGrid {
-  height: 100%;
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-  border-radius: 18px;
-  background: var(--color-surface);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-.genreChoice {
-  display: flex;
-  width: 100%;
-  min-height: 45px;
-  align-items: center;
-  padding: 0 14px;
-  border-radius: 0;
-  background: var(--color-surface);
-  color: var(--text);
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    background 150ms ease,
-    color 150ms ease;
-}
-
-.genreChoice + .genreChoice {
-  border-top: 1px solid var(--color-border);
-}
-
-.genreChoice:hover {
-  background: var(--color-surface-soft);
-}
-
-.genreChoice[data-selected] {
-  color: var(--text);
-}
-
-.genreCheck {
-  display: grid;
-  width: 20px;
-  height: 20px;
-  flex: 0 0 auto;
-  place-items: center;
-  margin-right: 14px;
-  border: 2px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-surface);
-  color: var(--color-surface);
-  transition:
-    border-color 150ms ease,
-    background 150ms ease;
-}
-
-.genreCheck svg {
-  width: 13px;
-  height: 13px;
-  stroke-width: 3;
-}
-
-.genreChoice[data-selected] .genreCheck {
-  border-color: #19e85a;
-  background: #19e85a;
-}
-
-.genreChoiceLabel {
-  min-width: 0;
-}
-
-.genreChoiceHints {
-  display: flex;
-  min-width: 0;
-  justify-content: flex-end;
-  margin-left: auto;
-  gap: 16px;
-  color: var(--color-faint);
-  font-weight: 600;
-}
-
-.genreChoiceHints span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.genreChoice:focus-visible,
-.secondaryAction:focus-visible,
-.editPreferencesAction:focus-visible,
-.profileSettingsButton:focus-visible,
-.onlinePreference:has(input:focus-visible) {
-  outline: 3px solid color-mix(in srgb, var(--color-focus) 44%, transparent);
-  outline-offset: 3px;
-}
-
-.onlinePreference {
-  display: flex;
-  min-height: 52px;
-  align-items: center;
-  padding: 0 0 0 1px;
-  color: var(--text);
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.preferenceSwitch {
-  position: relative;
-  width: 40px;
-  height: 24px;
-  flex: 0 0 auto;
-  margin-left: auto;
-  border-radius: 999px;
-  background: var(--color-surface-pressed);
-  transition: background 150ms ease;
-}
-
-.preferenceSwitch > span {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
-  background: var(--color-surface);
-  box-shadow: 0 1px 2px rgb(var(--color-shadow-rgb) / 0.2);
-  transition: transform 170ms ease;
-}
-
-.preferenceSwitch[data-checked] {
-  background: #19e85a;
-}
-
-.preferenceSwitch[data-checked] > span {
-  transform: translateX(16px);
-}
-
-.onboardingActions {
-  margin-top: 0;
-}
-
-.secondaryAction,
-.editPreferencesAction {
-  min-height: 46px;
-  padding: 0 18px;
-  border-radius: 999px;
-  background: var(--color-surface-soft);
-  color: var(--text);
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.editPreferencesAction {
-  align-self: flex-start;
 }
 
 .onboardingActions .saveAction {
   width: 100%;
   min-height: 50px;
   font-size: 1rem;
-}
-
-.preferencesPanel .onboardingActions {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 10px;
 }
 
 .preferencesPanel .onboardingActions .saveAction {
@@ -3691,37 +2153,10 @@ button.arcCard {
     left: 18px;
   }
 
-  .navAction {
-    max-width: 132px;
-    min-height: 36px;
-    padding: 0 12px;
-    font-size: 0.82rem;
-  }
-
-  .soundAction {
-    width: 36px;
-    height: 36px;
-  }
-
   .brandMark {
     top: -8px;
     width: 46px;
     height: 46px;
-  }
-
-  .previewState {
-    display: flex;
-    min-height: 100svh;
-    align-items: center;
-    padding: 92px 0 32px;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  .deckIntro h2 {
-    margin: 24px 16px 34px;
-    font-size: clamp(1.85rem, 8.2cqw, 2.6rem);
-    white-space: normal;
   }
 
   .deck {
@@ -3779,43 +2214,8 @@ button.arcCard {
     pointer-events: none;
   }
 
-  .previewCard {
-    min-width: 0;
-    padding: clamp(23px, 7cqw, 30px);
-    border-radius: clamp(25px, 7cqw, 32px);
-  }
-
-  .previewTitle {
-    margin-top: 24px;
-    font-size: clamp(2rem, 13.2cqw, 3.35rem);
-  }
-
   .aboutContent {
     padding: 34px 24px 26px;
-  }
-
-  .onboardingScreen {
-    padding: 90px 14px 16px;
-  }
-
-  .onboardingForm {
-    padding: 28px 20px;
-    border-radius: 24px;
-  }
-
-  .onboardingScreen .onboardingForm {
-    width: min(320px, calc(100vw - 28px));
-    height: calc(100svh - 106px);
-    padding: 0;
-    border-radius: 0;
-  }
-
-  .preferencesPanel {
-    padding: 2px 16px 16px;
-  }
-
-  .preferencesPanel .onboardingForm {
-    padding: 0;
   }
 
   .profileDrawerHeader {
@@ -3842,22 +2242,9 @@ button.arcCard {
   .floatingDrawer[data-direction="bottom"] > .profileDrawer {
     border-radius: 24px;
   }
-
-  .historyScreen {
-    padding-top: 24px;
-  }
 }
 
 @media (max-height: 700px) and (min-width: 821px) {
-  .previewState {
-    padding-top: 84px;
-  }
-
-  .deckIntro h2 {
-    margin-top: 20px;
-    margin-bottom: 36px;
-    font-size: 2.15rem;
-  }
 
   .previewCardSlot {
     width: min(21cqw, 270px);
@@ -3865,16 +2252,6 @@ button.arcCard {
 }
 
 /* Final selection overrides stay last to beat the legacy deck rules above. */
-.navAction {
-  background: #e9e9f1;
-  opacity: 1;
-}
-
-.navAction:hover,
-.navAction:active,
-.navAction[data-active]:hover {
-  background: #dcdce6;
-}
 
 .selectionScreen {
   height: 100svh;
@@ -3950,25 +2327,6 @@ button.arcCard {
   will-change: transform;
 }
 
-.arcCard {
-  position: relative;
-  z-index: 2;
-  display: block;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: 4px solid #74747b;
-  border-radius: 30px;
-  background: #09090b;
-  box-shadow:
-    0 0 0 3px #252529,
-    0 22px 45px rgb(8 8 10 / 0.2);
-  color: white;
-  cursor: pointer;
-  transform-style: preserve-3d;
-  backface-visibility: visible;
-}
-
 .arcCardContent {
   position: absolute;
   top: clamp(24px, 6cqw, 32px);
@@ -3992,33 +2350,6 @@ button.arcCard {
   margin-top: clamp(10px, 2.3cqw, 14px);
   color: rgb(247 247 250 / 0.88);
   font-size: clamp(0.94rem, 4.2cqw, 1.15rem);
-}
-
-.shuffleAction {
-  display: inline-flex;
-  min-width: 0;
-  min-height: 34px;
-  align-items: center;
-  justify-content: center;
-  padding: 0 13px;
-  border: 1px solid rgb(8 8 10 / 0.12);
-  border-radius: 999px;
-  background: linear-gradient(
-    180deg,
-    rgb(255 255 255 / 0.96),
-    rgb(239 239 245 / 0.95)
-  );
-  box-shadow:
-    0 2px 5px rgb(8 8 10 / 0.12),
-    inset 0 1px 0 white;
-  color: var(--text);
-  font-size: 0.78rem;
-  font-weight: 720;
-}
-
-.shuffleAction:disabled {
-  color: #aaaab2;
-  opacity: 0.62;
 }
 
 @media (max-width: 820px) {
@@ -4045,10 +2376,6 @@ button.arcCard {
   .arcCardSlot {
     width: var(--mood-card-width);
     margin-left: calc(var(--mood-card-width) / -2);
-  }
-
-  .arcCard {
-    border-radius: 28px;
   }
 }
 
@@ -4170,17 +2497,27 @@ button.arcCard {
   border: 0;
   border-radius: 30px;
   background: transparent;
-  box-shadow: 0 22px 45px rgb(8 8 10 / 0.16);
   color: white;
   text-align: left;
   cursor: pointer;
   appearance: none;
-  transform-style: preserve-3d;
-  transition: box-shadow 240ms cubic-bezier(0.22, 0.8, 0.24, 1);
+  transform-style: flat;
   -webkit-tap-highlight-color: transparent;
 }
 
-.arcCardSlot[data-center] .arcCardHitArea:hover {
+.moodCardTiltSurface {
+  position: absolute;
+  display: block;
+  border-radius: 30px;
+  box-shadow: 0 22px 45px rgb(8 8 10 / 0.16);
+  inset: 0;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  transition: box-shadow 240ms cubic-bezier(0.22, 0.8, 0.24, 1);
+  will-change: transform;
+}
+
+.arcCardSlot[data-center] .arcCardHitArea:hover .moodCardTiltSurface {
   box-shadow: 0 31px 62px rgb(8 8 10 / 0.26);
 }
 
@@ -4341,7 +2678,8 @@ button.arcCard {
 
   .selectionCardBody,
   .selectionCardContent,
-  .arcCardHitArea {
+  .arcCardHitArea,
+  .moodCardTiltSurface {
     border-radius: 28px;
   }
 
@@ -4434,7 +2772,8 @@ button.arcCard {
 
 @media (prefers-reduced-motion: reduce) {
   .moodSelectionCardBody::before,
-  .arcCardHitArea {
+  .arcCardHitArea,
+  .moodCardTiltSurface {
     transition: none;
   }
 }
@@ -4541,23 +2880,6 @@ button.arcCard {
 .profileDrawerHeader h2 {
   font-size: 1rem;
   letter-spacing: -0.035em;
-}
-
-.profileCoinBalance {
-  margin: 0;
-  gap: 5px;
-  color: var(--text);
-}
-
-.profileCoinBalance strong {
-  font-size: 1rem;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.035em;
-}
-
-.profileCoinBalance svg {
-  width: 21px;
-  height: 21px;
 }
 
 .profileDrawerBody {
@@ -4861,13 +3183,13 @@ button.arcCard {
   translate: 26px 12px;
 }
 
-/* .activeExperience[data-phase="completion-preview"] .activeCardStage,
-.activeExperience[data-phase="completed"] .activeCardStage {
+/* .activeQuest[data-phase="completion-preview"] .activeCardStage,
+.activeQuest[data-phase="completed"] .activeCardStage {
   aspect-ratio: 0.735;
 }
 
-.activeExperience[data-phase="running"] .activeCardStage,
-.activeExperience[data-phase="paused"] .activeCardStage {
+.activeQuest[data-phase="running"] .activeCardStage,
+.activeQuest[data-phase="paused"] .activeCardStage {
   aspect-ratio: 0.715;
   translate: 26px 16px;
 } */
@@ -5087,7 +3409,7 @@ button.arcCard {
   pointer-events: none;
 }
 
-.activeExperience[data-phase="completion-preview"] .completionCardBack {
+.activeQuest[data-phase="completion-preview"] .completionCardBack {
   pointer-events: auto;
 }
 
@@ -5279,10 +3601,10 @@ button.arcCard {
   }
 
   .activeCardStage,
-  .activeExperience[data-phase="running"] .activeCardStage,
-  .activeExperience[data-phase="paused"] .activeCardStage,
-  .activeExperience[data-phase="completion-preview"] .activeCardStage,
-  .activeExperience[data-phase="completed"] .activeCardStage {
+  .activeQuest[data-phase="running"] .activeCardStage,
+  .activeQuest[data-phase="paused"] .activeCardStage,
+  .activeQuest[data-phase="completion-preview"] .activeCardStage,
+  .activeQuest[data-phase="completed"] .activeCardStage {
     position: fixed;
     width: min(calc(100vw - 28px), calc((100svh - 48px) * 0.7), 390px);
     aspect-ratio: 0.735;
@@ -5350,7 +3672,7 @@ button.arcCard {
 
 /* Final state, sheet, and shared-control refinements. */
 
-.activeExperience {
+.activeQuest {
   &[data-phase="running"] .timerDigits {
     opacity: 1;
   }
@@ -5440,7 +3762,7 @@ button.arcCard {
   scale: 0.98;
 }
 
-.activeExperience[data-phase="ready"] .timerHint {
+.activeQuest[data-phase="ready"] .timerHint {
   bottom: 22%;
   color: var(--muted);
 }
@@ -5452,12 +3774,12 @@ button.arcCard {
 
 .profileFloatingDrawer[data-direction="right"] {
   top: 79px;
-  right: 32px;
+  right: 0;
   bottom: auto;
-  width: min(342px, calc(100vw - 64px));
+  width: calc(min(342px, calc(100vw - 64px)) + 32px);
   height: auto;
   max-height: calc(100svh - 98px);
-  padding: 0;
+  padding: 0 32px 0 0;
 }
 
 .profileFloatingDrawer > .profileDrawer {
@@ -5511,32 +3833,19 @@ button.arcCard {
   transform: translateY(0);
 }
 
-.shuffleAction {
-  border: 0;
-  border-radius: 16px;
-  background: var(--color-surface);
-  box-shadow: var(--control-shadow);
-  color: var(--text);
-}
-
-.shuffleAction:hover:not(:disabled),
-.shuffleAction:active:not(:disabled) {
-  box-shadow: var(--control-shadow);
-}
-
 @media (max-width: 820px) {
-  .activeExperience[data-phase="ready"]:not([data-card-focused])
+  .activeQuest[data-phase="ready"]:not([data-card-focused])
     .activeCardStage {
     top: 72svh;
   }
 
-  .activeExperience[data-phase="ready"] .timerHint {
+  .activeQuest[data-phase="ready"] .timerHint {
     bottom: 24px;
     font-size: 0.86rem;
     line-height: 1.35;
   }
 
-  .activeExperience[data-card-focused] .activeCardStage {
+  .activeQuest[data-card-focused] .activeCardStage {
     top: 50%;
     transform: translate(-50%, -50%);
   }
@@ -5546,31 +3855,30 @@ button.arcCard {
   }
 
   .profileFloatingDrawer[data-direction="bottom"] {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100svh;
-    max-height: 100svh;
-    padding: 0;
-    overflow: hidden;
-    border-radius: 24px 24px 0 0;
-    background: var(--color-surface);
-    box-shadow: var(--raised-shadow);
-  }
-
-  .profileFloatingDrawer[data-direction="bottom"] > .profileDrawer {
-    height: auto;
-    min-height: 0;
-    max-height: 100svh;
-    border-radius: 0;
+    top: auto;
+    right: 12px;
+    bottom: -12px;
+    left: 12px;
+    width: auto;
+    height: calc(100svh + 12px);
+    max-height: none;
+    padding: 0 0 12px;
+    overflow: visible;
     background: transparent;
     box-shadow: none;
   }
 
+  .profileFloatingDrawer[data-direction="bottom"] > .profileDrawer {
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+    border-radius: 24px;
+    background: var(--color-surface);
+    box-shadow: var(--raised-shadow);
+  }
+
   .profileFloatingDrawer[data-direction="bottom"] .profileDrawerBody {
-    max-height: calc(100svh - 72px);
+    max-height: none;
     overflow: auto;
   }
 }

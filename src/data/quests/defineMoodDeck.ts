@@ -1,5 +1,6 @@
 import type { MoodId, MoodQuestDefinition } from "../questTypes";
 import { buildQuestPrompt, QUEST_INSTRUCTIONS } from "./instructions";
+import { applyQuestTipReview } from "./tipReview";
 import { ENGLISH_QUEST_NAMES } from "./names";
 import { resolveQuestTips, type QuestTipId } from "./tips";
 
@@ -24,15 +25,16 @@ export function defineMoodDeck(
     if (!instruction) {
       throw new Error(`Missing localized quest instruction: ${quest.id}`);
     }
-    const prompt = buildQuestPrompt(instruction.en);
+    const prompt = buildQuestPrompt(quest.id, "en", instruction.en);
+    const reviewedTipIds = applyQuestTipReview(quest.id, tipIds);
 
     return {
       ...quest,
       moodId,
       name,
       ...prompt,
-      tipIds,
-      tips: resolveQuestTips(tipIds),
+      tipIds: reviewedTipIds,
+      tips: resolveQuestTips(reviewedTipIds),
     };
   });
 }

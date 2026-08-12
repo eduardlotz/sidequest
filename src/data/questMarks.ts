@@ -1,4 +1,4 @@
-import type { AvatarTheme } from "../stores/useQuestStore";
+import type { AvatarTheme } from "../domain/quest/model";
 
 const GENERIC_MARK = "sidequest-mark.svg";
 const TEST_MARKS = {

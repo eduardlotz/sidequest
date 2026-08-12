@@ -4,7 +4,7 @@ import type {
   CompletedQuest,
   CompletedSession,
   Quest,
-} from "../stores/useQuestStore";
+} from "../domain/quest/model";
 import i18n, { normalizeLanguage, type AppLanguage } from "./i18n";
 
 function translator(language: AppLanguage) {
