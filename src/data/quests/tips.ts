@@ -15,7 +15,7 @@ export const QUEST_TIPS = {
   },
   minimalHud: {
     title: "Minimal HUD",
-    description: "Hide optional HUD elements and keep only the information needed for this quest.",
+    description: "Hide optional UI, but keep the quest's required goal and finish indicators visible.",
   },
   noMap: {
     title: "No Map",
@@ -180,6 +180,126 @@ export const QUEST_TIPS = {
   groundLevel: {
     title: "Ground Level",
     description: "Keep the camera close to the character or world instead of overhead or distant.",
+  },
+  memoryFirst: {
+    title: "Memory First",
+    description: "Use memory first; open controls, maps, or tutorials only when truly stuck.",
+  },
+  favoriteSetup: {
+    title: "Favorite Setup",
+    description: "Use the character, loadout, deck, or vehicle you most associate with this game.",
+  },
+  musicForward: {
+    title: "Music Forward",
+    description: "Lower effects and voices until the music becomes the clearest part of the scene.",
+  },
+  stillScene: {
+    title: "Still Scene",
+    description: "Keep the character and camera in one peaceful view for the entire track.",
+  },
+  fullDialogue: {
+    title: "Full Dialogue",
+    description: "Let every spoken or written line finish before advancing.",
+  },
+  knownGround: {
+    title: "Known Ground",
+    description: "Replay a level you know instead of learning a new route.",
+  },
+  handsOffPause: {
+    title: "Hands-Off Pause",
+    description: "Put the controller down and take three slow breaths before resuming.",
+  },
+  noMenuChores: {
+    title: "No Menu Chores",
+    description: "Use the pause as a break, not for maps, inventory, or setup changes.",
+  },
+  defendFirst: {
+    title: "Defend First",
+    description: "Make the opening turn about defense or positioning when the rules allow it.",
+  },
+  stayForReaction: {
+    title: "Stay for the Reaction",
+    description: "After finishing, stay long enough to see the cared-for target's first response.",
+  },
+  beforeAfter: {
+    title: "Before and After",
+    description: "Capture the room once before changing it and once after completion.",
+  },
+  optionalConversation: {
+    title: "Optional Conversation",
+    description: "Follow one optional dialogue branch before the current scene ends.",
+  },
+  talkItThrough: {
+    title: "Talk It Through",
+    description: "Say your intended move aloud before making it.",
+  },
+  bringGift: {
+    title: "Bring a Gift",
+    description: "If possible, bring one item that suits the chosen character.",
+  },
+  defaultSetup: {
+    title: "Default Setup",
+    description: "Accept the default character, deck, equipment, and settings without adjustments.",
+  },
+  threeImageSet: {
+    title: "Three-Image Set",
+    description: "Capture one screenshot of each detail you discover.",
+  },
+  soundTiming: {
+    title: "Sound Timing",
+    description: "Follow audio cues instead of watching only the score or timing bar.",
+  },
+  otherHand: {
+    title: "Other Hand",
+    description: "Use the main input with your non-dominant hand.",
+  },
+  voiceAndText: {
+    title: "Voice and Text Only",
+    description: "Turn music off and follow only quiet voices and captions.",
+  },
+  letEndingPlay: {
+    title: "Let the Ending Play",
+    description: "Let the closing music or transition run until the next menu appears.",
+  },
+  oneSpot: {
+    title: "One Fishing Spot",
+    description: "Stay at one fishing spot until all three fish are caught.",
+  },
+  cockpitView: {
+    title: "Cockpit View",
+    description: "Stay in first-person or cockpit view for the whole journey.",
+  },
+  noCollectibles: {
+    title: "Skip Collectibles",
+    description: "Pass optional collectibles without leaving the route.",
+  },
+  boardScan: {
+    title: "Scan the Board",
+    description: "Before every turn, scan the entire board once before choosing.",
+  },
+  handsOnCare: {
+    title: "Hands-On Care",
+    description: "Use direct actions instead of automation, menus, or instant-care items when possible.",
+  },
+  visibleFirst: {
+    title: "Most Visible First",
+    description: "Start with the most visible unfinished item before checking the full task list.",
+  },
+  nameLesson: {
+    title: "Name the Lesson",
+    description: "After success, name one mistake the exercise helped you correct.",
+  },
+  newRoute: {
+    title: "Change the Approach",
+    description: "After the first mistake, change route or tactic instead of repeating it.",
+  },
+  matchBase: {
+    title: "Match the Base",
+    description: "Reuse one material, color, or shape already visible elsewhere in the base.",
+  },
+  clearPath: {
+    title: "Leave a Clear Path",
+    description: "Keep one clear walking route through the finished area.",
   },
 } as const satisfies Record<string, QuestTip>;
 

@@ -20,7 +20,7 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 180,
-    tipIds: ["minimalHud", "threeAttempts"],
+    tipIds: ["minimalHud", "cockpitView"],
   },
   {
     id: "challenge-pressure-proof",
@@ -62,7 +62,7 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 180,
-    tipIds: ["threeAttempts", "noRestart"],
+    tipIds: ["fixedKit", "minimalHud"],
   },
   {
     id: "challenge-neglected-tool",
@@ -90,7 +90,7 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 15,
     rewardPoints: 220,
-    tipIds: ["noRestart", "basicTools"],
+    tipIds: ["noRestart", "damageBudget"],
   },
   {
     id: "challenge-precision-passage",
@@ -125,7 +125,7 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 200,
-    tipIds: ["underdogKit", "noUpgrades"],
+    tipIds: ["noRestart", "noUpgrades"],
   },
   {
     id: "challenge-no-restart-recovery",
@@ -174,14 +174,14 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 200,
-    tipIds: ["oneMove", "fixedKit"],
+    tipIds: ["noOutsideHelp", "fixedKit"],
   },
   {
     id: "challenge-clean-combo",
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 180,
-    tipIds: ["firstTake", "threeAttempts"],
+    tipIds: ["firstTake", "noOutsideHelp"],
   },
   {
     id: "challenge-damage-budget",
@@ -223,14 +223,14 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 30,
     rewardPoints: 240,
-    tipIds: ["noUndo", "noRestart"],
+    tipIds: ["noOutsideHelp", "photoProof"],
   },
   {
     id: "challenge-rhythm-clean-song",
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 190,
-    tipIds: ["threeAttempts", "fixedKit"],
+    tipIds: ["soundTiming", "fixedKit"],
   },
   {
     id: "challenge-sports-comeback",
@@ -251,6 +251,6 @@ export const CHALLENGE_QUESTS = defineMoodDeck("challenge", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 200,
-    tipIds: ["threeAttempts", "fixedKit"],
+    tipIds: ["minimalHud", "fixedKit"],
   },
 ]);

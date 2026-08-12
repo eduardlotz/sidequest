@@ -41,7 +41,7 @@ export const CONNECT_QUESTS = defineMoodDeck("connect", [
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 15,
     rewardPoints: 220,
-    tipIds: ["firstInstinct", "cleanExit"],
+    tipIds: ["firstInstinct", "borrowedStyle"],
   },
   {
     id: "connect-global-ghost",
@@ -55,7 +55,7 @@ export const CONNECT_QUESTS = defineMoodDeck("connect", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 180,
-    tipIds: ["letItStand", "noRestart"],
+    tipIds: ["fixedKit", "minimalHud"],
   },
   {
     id: "connect-player-made-door",
@@ -188,7 +188,7 @@ export const CONNECT_QUESTS = defineMoodDeck("connect", [
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 15,
     rewardPoints: 220,
-    tipIds: ["helpFirst", "leaveAGift"],
+    tipIds: ["quietLobby", "stayTogether"],
   },
   {
     id: "connect-parallel-company",
@@ -237,7 +237,7 @@ export const CONNECT_QUESTS = defineMoodDeck("connect", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 190,
-    tipIds: ["leaveAGift", "cleanExit"],
+    tipIds: ["quietLobby", "photoProof"],
   },
   {
     id: "connect-coop-puzzle",

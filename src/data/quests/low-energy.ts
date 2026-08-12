@@ -62,7 +62,7 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 180,
-    tipIds: ["measuredPace", "longWay"],
+    tipIds: ["worldAudio", "photoProof"],
   },
   {
     id: "familiar-save",
@@ -90,7 +90,7 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 10,
     rewardPoints: 150,
-    tipIds: ["letItStand", "cleanExit"],
+    tipIds: ["favoriteSetup", "worldAudio"],
   },
   {
     id: "one-day-sim",
@@ -111,7 +111,7 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 10,
     rewardPoints: 160,
-    tipIds: ["localMaterials", "oneTool"],
+    tipIds: ["photoProof", "oneTool"],
   },
   {
     id: "home-base-only",
@@ -153,7 +153,7 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 190,
-    tipIds: ["holdYourRole", "helpFirst"],
+    tipIds: ["stayTogether", "quietLobby"],
   },
   {
     id: "collect-nearby",
@@ -209,7 +209,7 @@ export const LOW_ENERGY_QUESTS = defineMoodDeck("low-energy", [
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 10,
     rewardPoints: 170,
-    tipIds: ["oneTrack", "cleanExit"],
+    tipIds: ["favoriteSetup", "worldAudio"],
   },
   {
     id: "low-energy-idle-check-in",

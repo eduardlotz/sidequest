@@ -435,7 +435,7 @@ export const germanTips = {
   minimalHud: {
     title: "Minimales HUD",
     description:
-      "Blende optionale HUD-Elemente aus und behalte nur die Informationen, die diese Quest braucht.",
+      "Blende optionale Anzeigen aus, aber behalte Ziel und Abschluss der Quest sichtbar.",
   },
   noMap: {
     title: "Keine Karte",
@@ -641,5 +641,151 @@ export const germanTips = {
     title: "Auf Augenhöhe",
     description:
       "Halte die Kamera nah an Figur oder Welt statt über dir oder weit entfernt.",
+  },
+  memoryFirst: {
+    title: "Erst aus Erinnerung",
+    description:
+      "Nutze zuerst dein Gedächtnis; öffne Steuerung, Karte oder Tutorial nur, wenn du feststeckst.",
+  },
+  favoriteSetup: {
+    title: "Lieblings-Setup",
+    description:
+      "Nutze die Figur, Ausrüstung, das Deck oder Fahrzeug, das du damit verbindest.",
+  },
+  musicForward: {
+    title: "Musik nach vorn",
+    description:
+      "Senke Effekte und Stimmen, bis die Musik die Szene deutlich bestimmt.",
+  },
+  stillScene: {
+    title: "Ruhiges Bild",
+    description:
+      "Halte Figur und Kamera während des ganzen Stücks in einer friedlichen Ansicht.",
+  },
+  fullDialogue: {
+    title: "Ganzer Dialog",
+    description:
+      "Lass jede gesprochene oder geschriebene Zeile enden, bevor du fortfährst.",
+  },
+  knownGround: {
+    title: "Bekanntes Terrain",
+    description:
+      "Wiederhole ein bekanntes Level, statt eine neue Route zu lernen.",
+  },
+  handsOffPause: {
+    title: "Hände weg",
+    description:
+      "Lege den Controller ab und atme dreimal langsam, bevor du weiterspielst.",
+  },
+  noMenuChores: {
+    title: "Keine Menüarbeit",
+    description:
+      "Nutze die Pause als Pause, nicht für Karte, Inventar oder Setup.",
+  },
+  defendFirst: {
+    title: "Verteidige zuerst",
+    description:
+      "Nutze den ersten Zug für Verteidigung oder Positionierung, wenn die Regeln es erlauben.",
+  },
+  stayForReaction: {
+    title: "Bleib für die Reaktion",
+    description:
+      "Bleib nach Abschluss bis zur ersten Reaktion der gepflegten Figur oder Umgebung.",
+  },
+  beforeAfter: {
+    title: "Vorher und nachher",
+    description:
+      "Fotografiere den Raum einmal vor der Veränderung und einmal nach dem Abschluss.",
+  },
+  optionalConversation: {
+    title: "Optionales Gespräch",
+    description:
+      "Folge einem optionalen Dialogzweig, bevor die aktuelle Szene endet.",
+  },
+  talkItThrough: {
+    title: "Sprich es aus",
+    description: "Sage deinen geplanten Zug laut, bevor du ihn ausführst.",
+  },
+  bringGift: {
+    title: "Bring ein Geschenk",
+    description:
+      "Bring wenn möglich einen Gegenstand mit, der zur gewählten Figur passt.",
+  },
+  defaultSetup: {
+    title: "Standard-Setup",
+    description:
+      "Akzeptiere Figur, Deck, Ausrüstung und Einstellungen ohne Anpassungen.",
+  },
+  threeImageSet: {
+    title: "Drei Bilder",
+    description: "Mache von jedem entdeckten Detail einen Screenshot.",
+  },
+  soundTiming: {
+    title: "Nach Gehör",
+    description:
+      "Folge Tonsignalen statt nur auf Punkte oder Timing-Anzeigen zu schauen.",
+  },
+  otherHand: {
+    title: "Andere Hand",
+    description: "Nutze die Hauptaktion mit deiner nicht dominanten Hand.",
+  },
+  voiceAndText: {
+    title: "Nur Stimme und Text",
+    description:
+      "Schalte Musik aus und folge nur leisen Stimmen und Untertiteln.",
+  },
+  letEndingPlay: {
+    title: "Lass das Ende laufen",
+    description:
+      "Lass Abschlussmusik oder Übergang laufen, bis das nächste Menü erscheint.",
+  },
+  oneSpot: {
+    title: "Eine Angelstelle",
+    description:
+      "Bleib an einer Angelstelle, bis alle drei Fische gefangen sind.",
+  },
+  cockpitView: {
+    title: "Cockpit-Sicht",
+    description:
+      "Bleib während der ganzen Reise in der Ego- oder Cockpit-Perspektive.",
+  },
+  noCollectibles: {
+    title: "Keine Sammelobjekte",
+    description: "Geh an optionalen Sammelobjekten vorbei, ohne die Route zu verlassen.",
+  },
+  boardScan: {
+    title: "Überblick zuerst",
+    description:
+      "Überblicke vor jedem Zug einmal das ganze Spielfeld, bevor du wählst.",
+  },
+  handsOnCare: {
+    title: "Direkte Fürsorge",
+    description:
+      "Nutze direkte Aktionen statt Automatisierung, Menüs oder sofort wirkender Pflegegegenstände.",
+  },
+  visibleFirst: {
+    title: "Sichtbares zuerst",
+    description:
+      "Beginne mit dem sichtbarsten offenen Punkt, bevor du die ganze Aufgabenliste prüfst.",
+  },
+  nameLesson: {
+    title: "Benenne die Lektion",
+    description:
+      "Benenne nach dem Erfolg einen Fehler, den die Übung verbessert hat.",
+  },
+  newRoute: {
+    title: "Anderer Ansatz",
+    description:
+      "Ändere nach dem ersten Fehler Route oder Taktik, statt sie zu wiederholen.",
+  },
+  matchBase: {
+    title: "Passend zur Basis",
+    description:
+      "Übernimm ein Material, eine Farbe oder Form aus einem anderen Bereich der Basis.",
+  },
+  clearPath: {
+    title: "Freier Weg",
+    description:
+      "Halte einen klaren Laufweg durch den fertigen Bereich frei.",
   },
 } as const satisfies Record<string, QuestTip>;

@@ -132,7 +132,7 @@ export const CREATE_QUESTS = defineMoodDeck("create", [
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 30,
     rewardPoints: 230,
-    tipIds: ["oneTrack", "keepReserve"],
+    tipIds: ["oneTrack", "photoProof"],
   },
   {
     id: "create-invent-a-team-identity",

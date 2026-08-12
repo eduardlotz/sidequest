@@ -13,7 +13,7 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 5,
     rewardPoints: 150,
-    tipIds: ["fixedKit", "cleanExit"],
+    tipIds: ["fixedKit", "minimalHud"],
   },
   {
     id: "no-setup-needed",
@@ -27,7 +27,7 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 10,
     rewardPoints: 180,
-    tipIds: ["oneTrack", "cleanExit"],
+    tipIds: ["favoriteSetup", "minimalHud"],
   },
   {
     id: "fewest-buttons",
@@ -48,7 +48,7 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 10,
     rewardPoints: 180,
-    tipIds: ["letItStand", "cleanExit"],
+    tipIds: ["letItStand", "noOutsideHelp"],
   },
   {
     id: "single-cover-pull",
@@ -62,14 +62,14 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 10,
     rewardPoints: 150,
-    tipIds: ["letItStand", "cleanExit"],
+    tipIds: ["letItStand", "worldAudio"],
   },
   {
     id: "no-inventory-session",
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 200,
-    tipIds: ["fixedKit", "noLooting"],
+    tipIds: ["minimalHud", "noLooting"],
   },
   {
     id: "one-marker-only",
@@ -83,7 +83,7 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 20,
     rewardPoints: 220,
-    tipIds: ["oneTrack", "cleanExit"],
+    tipIds: ["favoriteSetup", "worldAudio"],
   },
   {
     id: "tutorial-free",
@@ -132,14 +132,14 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 10,
     rewardPoints: 180,
-    tipIds: ["oneTool", "oneTrack"],
+    tipIds: ["noRestart", "firstTake"],
   },
   {
     id: "visible-timer",
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 10,
     rewardPoints: 180,
-    tipIds: ["oneTrack", "cleanExit"],
+    tipIds: ["favoriteSetup", "worldAudio"],
   },
   {
     id: "platform-recent",
@@ -153,7 +153,7 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 10,
     rewardPoints: 180,
-    tipIds: ["fixedKit", "cleanExit"],
+    tipIds: ["fixedKit", "firstInstinct"],
   },
   {
     id: "no-update-door",
@@ -174,7 +174,7 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 200,
-    tipIds: ["oneTrack", "letItStand"],
+    tipIds: ["minimalHud", "letItStand"],
   },
   {
     id: "finite-run",
@@ -237,7 +237,7 @@ export const OVERWHELMED_QUESTS = defineMoodDeck("overwhelmed", [
     minimumDurationMinutes: 1,
     suggestedDurationMinutes: 5,
     rewardPoints: 160,
-    tipIds: ["oneTrack", "cleanExit"],
+    tipIds: ["noOutsideHelp", "talkItThrough"],
   },
   {
     id: "overwhelmed-shortest-description",

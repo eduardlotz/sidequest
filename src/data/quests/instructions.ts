@@ -1,5 +1,10 @@
+import { QUEST_TITLES } from "./titles";
+import { QUEST_OBJECTIVES } from "./objectives";
+
 export type QuestInstruction = {
+  /** Short scene-setting card title. */
   objective: string;
+  /** Complete player-facing objective: choice, action, method, and finish. */
   completion: string;
 };
 
@@ -7,19 +12,125 @@ export type QuestPrompt = QuestInstruction & {
   title: string;
 };
 
-export function buildQuestPrompt(instruction: QuestInstruction): QuestPrompt {
-  // const sentences = instruction.objective.match(/[^.!?]+[.!?]+/g);
-  // if (!sentences || sentences.length !== 2) {
-  //   throw new Error(
-  //     `Quest objective must contain one setting and one action: ${instruction.objective}`,
-  //   );
-  // }
+const LEGACY_COMPLETION_REWRITES: Record<
+  "en" | "de",
+  Readonly<Record<string, string>>
+> = {
+  en: {
+    "Reach its first clear stopping point.":
+      "Complete the first level, round, task, or scene the game presents.",
+    "Finish one activity there.":
+      "Complete one level, quest, match, or in-game day there.",
+    "Finish it or test the idea.":
+      "Complete that activity once and stop when its result appears.",
+    "Reach one clear transition.":
+      "Continue until the game changes the level, scene, or location.",
+    "Complete the main loop once and decide whether it deserves another session.":
+      "Complete the main loop once and stop when its reward or result appears.",
+    "Finish it, then decide whether the game stays installed.":
+      "Complete that activity and stop at its result screen.",
+    "Reach one activity's ending.":
+      "Complete one level, round, task, or scene and stop at its result or save screen.",
+    "Finish one activity with it.":
+      "Complete one level, round, task, or scene with that setup.",
+    "Reach one final result and accept it.":
+      "Finish one full round, match, task, or test and keep its result.",
+    "Reach the activity's ending.":
+      "Complete one level, round, task, or scene and stop at its result or save screen.",
+    "Reach a natural result.":
+      "Complete one full attempt and stop at its result screen.",
+    "Reach a clear stopping point.":
+      "Complete the first level, round, task, or scene the game presents.",
+    "Finish that activity.":
+      "Complete that level, round, task, or scene and stop at its result screen.",
+    "Reach that moment.":
+      "Continue from that decision to the next scene break.",
+    "Finish one activity while the remembered theme is still in mind.":
+      "Complete the next level, round, task, or scene before opening another menu.",
+    "Finish one activity as they are.":
+      "Complete the next level, round, task, or scene without changing that character.",
+    "Reach a clear stop.":
+      "Complete the first level, round, task, or scene the game presents.",
+    "Reach the activity's natural ending.":
+      "Complete one level, round, task, or scene and stop at its result screen.",
+    "Finish the result.":
+      "Finish one full match or timed challenge and keep its result screen.",
+    "Return somewhere safe.":
+      "Stop at the next checkpoint, result screen, or home area.",
+    "Use it to finish the activity.":
+      "Use that action to complete one level, round, task, or scene.",
+    "Reach new material.":
+      "Reach the first level, scene, or location that was absent from the demo.",
+  },
+  de: {
+    "Erreiche den ersten klaren Haltepunkt.":
+      "Schließe das erste angebotene Level, die erste Runde, Aufgabe oder Szene ab.",
+    "Beende dort eine Aktivität.":
+      "Beende dort ein Level, eine Quest, ein Match oder einen Spieltag.",
+    "Beende sie oder teste die Idee.":
+      "Schließe diese Aktivität einmal ab und stoppe beim Ergebnis.",
+    "Erreiche einen klaren Übergang.":
+      "Spiele weiter, bis Level, Szene oder Ort wechseln.",
+    "Schließe die Hauptschleife einmal ab und entscheide, ob sie eine weitere Session verdient.":
+      "Schließe die Hauptschleife einmal ab und stoppe bei ihrer Belohnung oder ihrem Ergebnis.",
+    "Beende sie und entscheide dann, ob das Spiel installiert bleibt.":
+      "Schließe diese Aktivität ab und stoppe am Ergebnisbildschirm.",
+    "Erreiche das Ende einer Aktivität.":
+      "Beende ein Level, eine Runde, Aufgabe oder Szene und stoppe am Ergebnis- oder Speicherbildschirm.",
+    "Beende damit eine Aktivität.":
+      "Beende mit diesem Setup ein Level, eine Runde, Aufgabe oder Szene.",
+    "Erreiche ein endgültiges Ergebnis und akzeptiere es.":
+      "Beende eine ganze Runde, ein Match, eine Aufgabe oder einen Test und behalte das Ergebnis.",
+    "Erreiche das Ende der Aktivität.":
+      "Beende ein Level, eine Runde, Aufgabe oder Szene und stoppe am Ergebnis- oder Speicherbildschirm.",
+    "Erreiche ein natürliches Ergebnis.":
+      "Beende einen vollständigen Versuch und stoppe am Ergebnisbildschirm.",
+    "Erreiche einen klaren Haltepunkt.":
+      "Schließe das erste angebotene Level, die erste Runde, Aufgabe oder Szene ab.",
+    "Beende diese Aktivität.":
+      "Beende dieses Level, diese Runde, Aufgabe oder Szene und stoppe am Ergebnisbildschirm.",
+    "Erreiche diesen Moment.":
+      "Spiele von dieser Entscheidung bis zum nächsten Szenenwechsel weiter.",
+    "Beende eine Aktivität, solange das erinnerte Thema noch im Kopf ist.":
+      "Beende das nächste Level, die nächste Runde, Aufgabe oder Szene, bevor du ein anderes Menü öffnest.",
+    "Beende mit ihr eine Aktivität.":
+      "Beende mit dieser unveränderten Figur das nächste Level, die nächste Runde, Aufgabe oder Szene.",
+    "Erreiche das natürliche Ende der Aktivität.":
+      "Beende ein Level, eine Runde, Aufgabe oder Szene und stoppe am Ergebnisbildschirm.",
+    "Kehre an einen sicheren Ort zurück.":
+      "Stoppe am nächsten Kontrollpunkt, Ergebnisbildschirm oder Heimatort.",
+    "Beende damit die Aktivität.":
+      "Nutze diese Aktion, um ein Level, eine Runde, Aufgabe oder Szene abzuschließen.",
+    "Erreiche neue Inhalte.":
+      "Erreiche das erste Level, die erste Szene oder den ersten Ort, die in der Demo fehlten.",
+  },
+};
+
+export function buildQuestPrompt(
+  id: string,
+  language: "en" | "de",
+  instruction: QuestInstruction,
+): QuestPrompt {
+  const sentences = instruction.objective.match(/[^.!?]+[.!?]+/g)?.map(
+    (sentence) => sentence.trim(),
+  ) ?? [instruction.objective.trim()];
+  const derivedTitle = sentences.at(-1) ?? instruction.objective;
+  const explicitTitle = QUEST_TITLES[id]?.[language];
+  const title = (explicitTitle ?? derivedTitle).replace(/[.!?]+$/, "");
+  const completion =
+    LEGACY_COMPLETION_REWRITES[language][instruction.completion] ??
+    instruction.completion;
+  const objective =
+    QUEST_OBJECTIVES[id]?.[language] ??
+    (sentences.length === 1
+      ? completion
+      : `${instruction.objective} ${completion}`);
 
   return {
-    // title: sentences[1].trim().replace(/[.!?]+$/, ""),
-    title: instruction.objective,
-    objective: instruction.completion,
-    completion: instruction.completion,
+    title,
+    objective,
+    // Persisted/localized quest records still include this legacy alias.
+    completion: objective,
   };
 }
 
@@ -31,438 +142,434 @@ type LocalizedQuestInstruction = {
 export const QUEST_INSTRUCTIONS: Record<string, LocalizedQuestInstruction> = {
   "relax-soft-landing": {
     en: {
-      objective: "Think of the game you loved to play as a child or teenager",
+      objective: "A childhood favorite is waiting.",
       completion:
-        "Start the part you remember best or just continue where you left off.",
+        "Open a game you loved growing up, return to its most memorable part, and finish one level, round, or in-game day.",
     },
     de: {
-      objective:
-        "Denk an das Spiel, das du als Kind oder Teenager am liebsten gespielt hast",
+      objective: "Ein Kindheitsfavorit wartet auf dich.",
       completion:
-        "Starte den Abschnitt, an den du dich am besten erinnerst oder mach dort weiter, wo du aufgehört hast.",
+        "Öffne ein Spiel aus deiner Kindheit, kehre zum einprägsamsten Abschnitt zurück und beende dort ein Level, eine Runde oder einen Spieltag.",
     },
   },
   "relax-scenic-route": {
     en: {
-      objective:
-        "Open a familiar game whose controls still live in your hands. Continue the save that needs the least explanation.",
-      completion: "Reach its next clear stopping point.",
+      objective: "Your hands still know the controls.",
+      completion:
+        "Open a familiar game, choose the first objective already visible in your save, complete it, and save immediately.",
     },
     de: {
-      objective:
-        "Öffne ein vertrautes Spiel, dessen Steuerung noch in deinen Händen steckt. Setze den Spielstand fort, der keine Erklärung braucht.",
-      completion: "Erreiche den nächsten klaren Haltepunkt.",
+      objective: "Deine Hände kennen die Steuerung noch.",
+      completion:
+        "Öffne ein vertrautes Spiel, wähle das erste sichtbare Ziel in deinem Spielstand, erfülle es und speichere sofort.",
     },
   },
   "relax-care-shift": {
     en: {
-      objective:
-        "Open a game whose soundtrack you know immediately. Let one full track play while you stay somewhere calm.",
-      completion: "Listen to the track from start to finish.",
+      objective: "Remembered music fills the room.",
+      completion:
+        "Open a game whose music you recognize immediately, find a quiet in-game place, and stay there for one full track.",
     },
     de: {
-      objective:
-        "Öffne ein Spiel, dessen Soundtrack du sofort erkennst. Bleib an einem ruhigen Ort und lass ein ganzes Stück laufen.",
-      completion: "Höre das Stück von Anfang bis Ende.",
+      objective: "Erinnerte Musik füllt den Raum.",
+      completion:
+        "Öffne ein Spiel, dessen Musik du sofort erkennst, suche einen ruhigen Ort im Spiel und bleib dort für ein ganzes Stück.",
     },
   },
   "relax-one-good-loop": {
     en: {
-      objective:
-        "Think of a place in a game that feels like home. Travel there and do the most familiar activity nearby.",
+      objective: "Your favorite hub feels like home.",
       completion:
-        "Finish that activity and stop somewhere that still feels like home.",
+        "Open a game with a hub you love, accept one task offered there, complete it, and return to the hub.",
     },
     de: {
-      objective:
-        "Denk an einen Ort in einem Spiel, der sich wie Zuhause anfühlt. Reise dorthin und erledige die vertrauteste Aktivität in der Nähe.",
-      completion: "Beende die Aktivität und halte an einem vertrauten Ort an.",
+      objective: "Dein Lieblingstreffpunkt fühlt sich wie Zuhause an.",
+      completion:
+        "Öffne ein Spiel mit einem geliebten Treffpunkt, nimm dort genau eine Aufgabe an, erledige sie und kehre zurück.",
     },
   },
   "relax-small-wonder": {
     en: {
-      objective:
-        "Pick a former favorite you have not opened in a long time. Resume it without trying to catch up on everything.",
-      completion: "Reach one new checkpoint.",
+      objective: "An old favorite deserves another look.",
+      completion:
+        "Open a former favorite you have ignored for years, continue its current save without reviewing everything, and reach one new checkpoint.",
     },
     de: {
-      objective:
-        "Nimm einen früheren Favoriten, den du lange nicht geöffnet hast. Spiele weiter, ohne sofort alles nachholen zu wollen.",
-      completion: "Erreiche einen neuen Kontrollpunkt.",
+      objective: "Ein alter Favorit verdient einen neuen Blick.",
+      completion:
+        "Öffne einen früheren Favoriten nach langer Zeit, setze den aktuellen Spielstand ohne große Rückschau fort und erreiche einen neuen Kontrollpunkt.",
     },
   },
   "relax-three-loose-ends": {
     en: {
-      objective:
-        "Choose the entry you revisit least from a series you love. Continue its nearest available save.",
-      completion: "Finish one section and save at its closing point.",
+      objective: "One entry in a favorite series waits.",
+      completion:
+        "Open the least-revisited entry in a series you love, start its next level, chapter, or match, and finish it before saving.",
     },
     de: {
-      objective:
-        "Wähle den Teil einer Lieblingsreihe, zu dem du am seltensten zurückkehrst. Setze seinen nächsten verfügbaren Spielstand fort.",
-      completion: "Beende einen Abschnitt.",
+      objective: "Ein Teil deiner Lieblingsreihe wartet.",
+      completion:
+        "Öffne den selten besuchten Teil einer Lieblingsreihe, starte das nächste Level, Kapitel oder Match und beende es vor dem Speichern.",
     },
   },
   "relax-next-save": {
     en: {
-      objective:
-        "Open the save whose next step you already know. Do that step before looking at anything else.",
-      completion: "Reach the next save point.",
+      objective: "You already know the next step.",
+      completion:
+        "Open a save whose next step you remember, do only that step, and stop when you reach the next save point.",
     },
     de: {
-      objective:
-        "Öffne den Spielstand, dessen nächsten Schritt du schon kennst. Erledige ihn, bevor du dir etwas anderes ansiehst.",
-      completion: "Erreiche den nächsten Speicherpunkt.",
+      objective: "Du kennst den nächsten Schritt bereits.",
+      completion:
+        "Öffne einen Spielstand, dessen nächsten Schritt du kennst, erledige nur diesen und höre am nächsten Speicherpunkt auf.",
     },
   },
   "relax-gentlest-mode": {
     en: {
-      objective:
-        "Pick a game that lets you lower the pressure. Turn on its easiest useful setting and start one level.",
-      completion: "Reach the level's next checkpoint.",
+      objective: "The pressure can come down.",
+      completion:
+        "Open a game with difficulty or assist options, lower one setting, start a level, and reach its next checkpoint.",
     },
     de: {
-      objective:
-        "Nimm ein Spiel, bei dem du den Druck senken kannst. Aktiviere die einfachste sinnvolle Einstellung und starte ein Level.",
+      objective: "Der Druck darf sinken.",
       completion:
-        "Erreiche mit der einfacheren Einstellung den nächsten Kontrollpunkt.",
+        "Öffne ein Spiel mit Schwierigkeitsgrad oder Hilfsoptionen, senke eine Einstellung, starte ein Level und erreiche den nächsten Kontrollpunkt.",
     },
   },
   "relax-pause-anytime": {
     en: {
-      objective:
-        "Choose a solo game you can pause at any moment. Start the nearest self-contained activity.",
-      completion: "Finish it or pause safely.",
+      objective: "Nothing moves while you breathe.",
+      completion:
+        "Open a fully pausable solo game with visible progress, start one level or round, pause halfway through, then resume and finish it.",
     },
     de: {
-      objective:
-        "Wähle ein Solospiel, das du jederzeit pausieren kannst. Starte die nächste überschaubare Aktivität.",
-      completion: "Beende sie oder pausiere an einem sicheren Punkt.",
+      objective: "Nichts bewegt sich, während du atmest.",
+      completion:
+        "Öffne ein jederzeit pausierbares Solospiel mit sichtbarem Fortschritt, starte ein Level oder eine Runde, pausiere zur Halbzeit und beende sie danach.",
     },
   },
   "relax-turn-by-turn": {
     en: {
-      objective:
-        "Open a turn-based game where nothing moves until you decide. Start one battle and take every turn without rushing.",
-      completion: "Finish the battle with no rushed turns.",
+      objective: "Nothing moves until you decide.",
+      completion:
+        "Open a turn-based game, start one battle, read every choice before confirming it, and accept the final result.",
     },
     de: {
-      objective:
-        "Öffne ein rundenbasiertes Spiel, in dem ohne deine Entscheidung nichts passiert. Starte einen Kampf und nimm dir für jeden Zug Zeit.",
-      completion: "Beende den Kampf ohne einen überstürzten Zug.",
+      objective: "Nichts bewegt sich ohne deine Entscheidung.",
+      completion:
+        "Öffne ein rundenbasiertes Spiel, starte einen Kampf, lies jede Wahl vor der Bestätigung und akzeptiere das Endergebnis.",
     },
   },
   "relax-easy-victory": {
     en: {
-      objective:
-        "Return to a challenge you can beat comfortably. Win that familiar challenge cleanly without chasing a record.",
-      completion: "Earn one clean win.",
+      objective: "Known ground makes the stakes lighter.",
+      completion:
+        "Open a challenge you know well, play one full attempt without chasing a score or record, and accept the first result.",
     },
     de: {
-      objective:
-        "Kehre zu einer Herausforderung zurück, die du sicher schaffst. Gewinne diese vertraute Herausforderung sauber, ohne einem Rekord nachzujagen.",
-      completion: "Hol einen Sieg.",
+      objective: "Bekanntes Terrain macht alles leichter.",
+      completion:
+        "Öffne eine vertraute Herausforderung, spiele einen vollständigen Versuch ohne Punkte- oder Rekordjagd und akzeptiere das erste Ergebnis.",
     },
   },
   "relax-quietest-game": {
     en: {
-      objective:
-        "Choose the calmest game you own. Do the least urgent thing available and ignore every optional demand.",
-      completion: "Reach a safe stopping point.",
+      objective: "Nothing here needs to happen fast.",
+      completion:
+        "Open a game with no active timer, choose the first optional objective shown, ignore all others, and complete it.",
     },
     de: {
-      objective:
-        "Wähle das ruhigste Spiel, das du besitzt. Tu das Unaufgeregteste, was gerade möglich ist, und ignoriere alle optionalen Forderungen.",
-      completion: "Erreiche einen sicheren Haltepunkt.",
+      objective: "Hier muss nichts schnell passieren.",
+      completion:
+        "Öffne ein Spiel ohne laufenden Timer, wähle das erste angezeigte optionale Ziel, ignoriere alle anderen und erfülle es.",
     },
   },
   "relax-tend-one-thing": {
     en: {
-      objective:
-        "Think of a game where something depends on your care. Pick the first thing already waiting and look after it.",
-      completion: "Leave it visibly better.",
+      objective: "Something small is waiting for care.",
+      completion:
+        "Open a game with visible care tasks, choose the first waiting one, and continue until the game marks it complete.",
     },
     de: {
-      objective:
-        "Denk an ein Spiel, in dem etwas deine Fürsorge braucht. Kümmere dich um das Erste, das bereits auf dich wartet.",
-      completion: "Hinterlasse es sichtbar besser.",
+      objective: "Etwas Kleines wartet auf Fürsorge.",
+      completion:
+        "Öffne ein Spiel mit sichtbaren Fürsorgeaufgaben, wähle die erste wartende und spiele, bis das Spiel sie als erledigt markiert.",
     },
   },
   "relax-put-things-right": {
     en: {
-      objective:
-        "Open a game where you can clean up a messy space. Choose one room and put it in order.",
-      completion: "Finish that room and work on it.",
+      objective: "One messy room can be enough.",
+      completion:
+        "Open a cleaning or renovation game, choose one unfinished room, and complete its checklist or fill its progress meter.",
     },
     de: {
-      objective:
-        "Öffne ein Spiel, in dem du einen unordentlichen Ort aufräumen kannst. Nimm dir genau einen Raum vor.",
-      completion: "Bringe ihn zu Ende daran.",
+      objective: "Ein unordentlicher Raum reicht völlig.",
+      completion:
+        "Öffne ein Reinigungs- oder Renovierungsspiel, wähle einen unfertigen Raum und erledige seine Checkliste oder fülle seine Fortschrittsanzeige.",
     },
   },
   "relax-slow-journey": {
     en: {
-      objective:
-        "Pick a game with a vehicle you enjoy controlling. Travel from your current position to one visible landmark without hurrying.",
-      completion: "Arrive safely and stop the vehicle there.",
+      objective: "The road can be the reward.",
+      completion:
+        "Open a game with a vehicle you enjoy, choose one visible landmark, travel there without fast travel, and stop on arrival.",
     },
     de: {
-      objective:
-        "Wähle ein Spiel mit einem Fahrzeug, das du gern steuerst. Reise ohne Eile von deinem aktuellen Ort zu einem sichtbaren Ziel.",
-      completion: "Komm sicher an und halte das Fahrzeug dort an.",
+      objective: "Der Weg darf die Belohnung sein.",
+      completion:
+        "Öffne ein Spiel mit einem geliebten Fahrzeug, wähle ein sichtbares Ziel, reise ohne Schnellreise dorthin und halte bei der Ankunft an.",
     },
   },
   "relax-story-carries-you": {
     en: {
-      objective:
-        "Choose a gentle story game with little pressure. Continue the current scene and let the story choose your pace.",
-      completion: "Reach the next scene break.",
+      objective: "A gentle story can lead.",
+      completion:
+        "Open a low-pressure story game, continue its current scene, take each choice by first instinct, and reach the next scene break.",
     },
     de: {
-      objective:
-        "Wähle ein ruhiges Story-Spiel mit wenig Druck. Setze die aktuelle Szene fort und lass die Geschichte das Tempo bestimmen.",
-      completion: "Erreiche den nächsten Szenenwechsel.",
+      objective: "Eine sanfte Geschichte darf führen.",
+      completion:
+        "Öffne ein ruhiges Story-Spiel, setze die aktuelle Szene fort, entscheide aus dem ersten Impuls und erreiche den nächsten Szenenwechsel.",
     },
   },
   "relax-one-puzzle": {
     en: {
-      objective:
-        "Open a puzzle game without a running clock. Choose one unsolved puzzle and stay with only that problem.",
-      completion: "Solve it or leave one promising move ready.",
+      objective: "One puzzle deserves your attention.",
+      completion:
+        "Open a puzzle game without a timer, choose the first unsolved puzzle shown, and solve it without hints or switching puzzles.",
     },
     de: {
-      objective:
-        "Öffne ein Rätselspiel ohne laufende Uhr. Wähle ein ungelöstes Rätsel und bleib nur bei diesem Problem.",
+      objective: "Ein Rätsel verdient deine Aufmerksamkeit.",
       completion:
-        "Löse es oder hinterlasse einen vielversprechenden nächsten Zug.",
+        "Öffne ein Rätselspiel ohne Timer, wähle das erste angezeigte ungelöste Rätsel und löse es ohne Hinweise oder Wechsel.",
     },
   },
   "relax-friendly-face": {
     en: {
-      objective:
-        "Think of a game character whose company you enjoy. Find them and spend the session nearby.",
-      completion: "Finish one interaction with them.",
+      objective: "A familiar face is nearby.",
+      completion:
+        "Open a game with a character you enjoy, find them, choose one conversation or request they offer, and complete it.",
     },
     de: {
-      objective:
-        "Denk an eine Spielfigur, deren Gesellschaft du magst. Finde sie und verbringe die Session in ihrer Nähe.",
-      completion: "Beende eine Interaktion mit ihr.",
+      objective: "Ein vertrautes Gesicht ist ganz in der Nähe.",
+      completion:
+        "Öffne ein Spiel mit einer Figur, die du magst, finde sie, wähle eines ihrer Gespräche oder Anliegen und beende es.",
     },
   },
   "relax-solo-room": {
     en: {
-      objective:
-        "Choose a game where nobody else depends on you. Start one private activity on your own terms.",
-      completion: "Finish it or stop safely.",
+      objective: "Practice can stay private.",
+      completion:
+        "Open a game with solo practice, choose the first exercise already provided, complete it once, and leave practice.",
     },
     de: {
-      objective:
-        "Wähle ein Spiel, in dem niemand von dir abhängt. Starte eine private Aktivität zu deinen Bedingungen.",
-      completion: "Beende sie oder höre sicher auf.",
+      objective: "Training darf ganz privat bleiben.",
+      completion:
+        "Öffne ein Spiel mit Solo-Training, wähle die erste vorgegebene Übung, schließe sie einmal ab und verlasse das Training.",
     },
   },
   "relax-forgiving-restart": {
     en: {
-      objective:
-        "Open a game that lets you recover quickly from mistakes. Start one section and keep going after every failure.",
-      completion: "Reach its next result.",
+      objective: "Failure still moves the run forward.",
+      completion:
+        "Open a game with short runs and persistent rewards, play one run without restarting, then spend one reward it earned.",
     },
     de: {
-      objective:
-        "Öffne ein Spiel, das Fehler schnell verzeiht. Starte einen Abschnitt und spiele nach jedem Scheitern einfach weiter.",
-      completion: "Erreiche das nächste Ergebnis.",
+      objective: "Auch Scheitern bringt den Run voran.",
+      completion:
+        "Öffne ein Spiel mit kurzen Runs und bleibenden Belohnungen, spiele einen Run ohne Neustart und gib danach eine verdiente Belohnung aus.",
     },
   },
   "relax-soft-colors": {
     en: {
-      objective:
-        "Choose the game whose colors feel gentlest today. Enter the area that best matches that palette.",
-      completion: "Finish one activity there.",
+      objective: "Soft colors set the scene.",
+      completion:
+        "Open a game with softly colored, checkpointed areas, enter the one that feels gentlest today, and reach its next checkpoint.",
     },
     de: {
-      objective:
-        "Wähle das Spiel, dessen Farben sich heute am sanftesten anfühlen. Geh in den Bereich, der am besten zu dieser Palette passt.",
-      completion: "Beende dort eine Aktivität.",
+      objective: "Sanfte Farben bestimmen die Szene.",
+      completion:
+        "Öffne ein Spiel mit sanft gefärbten Bereichen und Kontrollpunkten, betrete den heute angenehmsten und erreiche seinen nächsten Kontrollpunkt.",
     },
   },
   "relax-good-weather": {
     en: {
-      objective:
-        "Open a world with weather you would enjoy right now. Travel until you find that sky and stay in the area.",
-      completion: "Finish one nearby activity.",
+      objective: "The forecast is yours to choose.",
+      completion:
+        "Open a game with selectable weather, choose weather you would enjoy now, pick a visible destination, and reach it unchanged.",
     },
     de: {
-      objective:
-        "Öffne eine Spielwelt mit einem Wetter, das dir gerade guttun würde. Reise, bis du diesen Himmel findest, und bleib dort.",
-      completion: "Beende eine Aktivität in der Nähe.",
+      objective: "Du bestimmst die Wettervorhersage.",
+      completion:
+        "Öffne ein Spiel mit wählbarem Wetter, stelle dein Wunschwetter ein, wähle ein sichtbares Ziel und erreiche es ohne Wetterwechsel.",
     },
   },
   "relax-small-routine": {
     en: {
-      objective:
-        "Think of a game with a short routine you know by heart. Perform that routine once without adding extra chores.",
-      completion: "Complete the loop from start to finish.",
+      objective: "A familiar routine needs no planning.",
+      completion:
+        "Open a game with a short routine you know by heart, perform its full loop once, and add no extra chores.",
     },
     de: {
-      objective:
-        "Denk an ein Spiel mit einer kurzen Routine, die du auswendig kennst. Führe sie einmal aus, ohne neue Aufgaben anzuhängen.",
-      completion: "Schließe den Ablauf von Anfang bis Ende ab.",
+      objective: "Eine vertraute Routine braucht keinen Plan.",
+      completion:
+        "Öffne ein Spiel mit einer kurzen vertrauten Routine, führe ihren ganzen Ablauf einmal aus und hänge keine weiteren Aufgaben an.",
     },
   },
   "relax-watch-and-wander": {
     en: {
-      objective:
-        "Open a world that rewards careful looking. Wander without a destination and notice three details you have missed before.",
-      completion: "Find all three and explore.",
+      objective: "The world rewards a slower look.",
+      completion:
+        "Open a detailed game world, wander without following a marker, and stop after finding three details you can describe.",
     },
     de: {
-      objective:
-        "Öffne eine Spielwelt, die genaues Hinsehen belohnt. Laufe ohne Ziel umher und entdecke drei Details, die dir bisher entgangen sind.",
-      completion: "Finde alle drei und erkunde.",
+      objective: "Die Welt belohnt einen langsameren Blick.",
+      completion:
+        "Öffne eine detailreiche Spielwelt, streife ohne Markierung umher und höre auf, nachdem du drei beschreibbare Details gefunden hast.",
     },
   },
   "relax-one-button-deeper": {
     en: {
-      objective:
-        "Pick a game built around one main input. Start one level and focus on its rhythm instead of perfect results.",
-      completion: "Reach the end of the level or its next checkpoint.",
+      objective: "One input can carry the rhythm.",
+      completion:
+        "Open a game built around one main input, play one level for its rhythm rather than perfection, and reach its next checkpoint.",
     },
     de: {
-      objective:
-        "Wähle ein Spiel, das auf einer einzigen Hauptaktion aufbaut. Starte ein Level und achte auf den Rhythmus statt auf Perfektion.",
-      completion: "Erreiche den nächsten Kontrollpunkt des Levels.",
+      objective: "Eine Eingabe trägt den ganzen Rhythmus.",
+      completion:
+        "Öffne ein Spiel mit einer Hauptaktion, spiele ein Level nach seinem Rhythmus statt auf Perfektion und erreiche den nächsten Kontrollpunkt.",
     },
   },
   "relax-safe-home-base": {
     en: {
-      objective: "Pick a game with an unfinished homebase",
+      objective: "One corner of the base needs care.",
       completion:
-        "Improve something that bother you the most or comes to your mind right now — no new plans!",
+        "Open a game where you can arrange a home base, choose the first unfinished corner, add one functional or decorative item, and save.",
     },
     de: {
-      objective: "Wähle ein Spiel mit einer unfertigen Homebase",
+      objective: "Eine Ecke der Basis braucht Aufmerksamkeit.",
       completion:
-        "Verbessere nur etwas, was dich gerade am meisten stört oder dir direkt in den Sinn kommt — keine neuen Pläne!",
+        "Öffne ein Spiel, in dem du eine Basis einrichten kannst, wähle die erste unfertige Ecke, platziere einen nützlichen oder dekorativen Gegenstand und speichere.",
     },
   },
   "relax-low-volume": {
     en: {
-      objective:
-        "Choose a game you can follow quietly. Lower the volume, turn on captions if needed, and start one activity.",
-      completion: "Reach the activity's ending without raising the volume.",
+      objective: "The story still works quietly.",
+      completion:
+        "Open a game with full captions, lower the volume, enable captions, play one dialogue scene, and stop at its scene break.",
     },
     de: {
-      objective:
-        "Wähle ein Spiel, dem du leise folgen kannst. Senke die Lautstärke, aktiviere bei Bedarf Untertitel und starte eine Aktivität.",
-      completion: "Erreiche ihr Ende, ohne die Lautstärke zu erhöhen.",
+      objective: "Die Geschichte funktioniert auch leise.",
+      completion:
+        "Öffne ein Spiel mit vollständigen Untertiteln, senke die Lautstärke, aktiviere Untertitel, spiele eine Dialogszene und stoppe beim Szenenwechsel.",
     },
   },
   "relax-kindest-save-file": {
     en: {
-      objective:
-        "Open the save with the fewest urgent problems. Make one small improvement and ignore every larger project.",
-      completion: "Save somewhere safe.",
+      objective: "This save has no emergency.",
+      completion:
+        "Open a save with no timed mission, choose the first unfinished task in its current list, complete it, and save immediately.",
     },
     de: {
-      objective:
-        "Öffne den Spielstand mit den wenigsten dringenden Problemen. Verbessere eine Kleinigkeit und ignoriere jedes größere Projekt.",
-      completion: "Speichere an einem sicheren Ort.",
+      objective: "Dieser Spielstand hat keinen Notfall.",
+      completion:
+        "Öffne einen Spielstand ohne Zeitmission, wähle die erste unerledigte Aufgabe der aktuellen Liste, erledige sie und speichere sofort.",
     },
   },
   "relax-comforting-repetition": {
     en: {
-      objective:
-        "Think of an activity you already love repeating. Complete that favorite loop once without chasing a score.",
-      completion: "Complete one repetition and stop before it becomes a grind.",
+      objective: "Repetition can feel like coming home.",
+      completion:
+        "Open a game with an activity you love repeating, complete that loop once without chasing a score, and stop before restarting.",
     },
     de: {
-      objective:
-        "Denk an eine Spielaktivität, die du gern wiederholst. Schließe diese Lieblingsschleife einmal ab, ohne einer Wertung nachzujagen.",
-      completion: "Schließe eine Wiederholung ab.",
+      objective: "Wiederholung kann sich wie Heimkommen anfühlen.",
+      completion:
+        "Öffne ein Spiel mit einem gern wiederholten Ablauf, schließe ihn einmal ohne Punktejagd ab und beginne ihn nicht erneut.",
     },
   },
   "relax-clean-exit": {
     en: {
-      objective:
-        "Choose a game with a clearly defined chapter. Start exactly one chapter and do not begin anything else.",
-      completion: "Finish it and stop at the closing screen.",
+      objective: "One chapter is enough for today.",
+      completion:
+        "Open a game with clear chapters, start exactly one, finish it without beginning anything else, and stop at its closing screen.",
     },
     de: {
-      objective:
-        "Wähle ein Spiel mit einem klar abgegrenzten Kapitel. Starte genau dieses Kapitel und beginne nichts anderes.",
-      completion: "Beende es und höre am Abschlussbildschirm auf.",
+      objective: "Ein Kapitel reicht für heute.",
+      completion:
+        "Öffne ein Spiel mit klaren Kapiteln, starte genau eines, beende es ohne etwas Neues anzufangen und stoppe am Abschlussbildschirm.",
     },
   },
   "relax-cozy-corner": {
     en: {
-      objective:
-        "Open a game where you can decorate a small space. Turn one unused corner into somewhere you would want to sit.",
-      completion: "Finish that corner.",
+      objective: "An empty corner can become cozy.",
+      completion:
+        "Open a game with usable furniture, build one corner with a seat, light, and surface, then sit your character there.",
     },
     de: {
-      objective:
-        "Öffne ein Spiel, in dem du einen kleinen Bereich gestalten kannst. Mach aus einer ungenutzten Ecke einen Ort, an dem du gern sitzen würdest.",
-      completion: "Stelle diese Ecke fertig.",
+      objective: "Eine leere Ecke kann gemütlich werden.",
+      completion:
+        "Öffne ein Spiel mit nutzbaren Möbeln, baue eine Ecke mit Sitzplatz, Licht und Ablage und setze deine Figur dorthin.",
     },
   },
   "relax-fishing-break": {
     en: {
-      objective:
-        "Think of one game where you can fish. Go to the nearest fishing spot and cast your line.",
-      completion: "Catch three fish and keep the one you like best.",
+      objective: "The water is calm enough to fish.",
+      completion:
+        "Open a game where you can fish, visit the nearest fishing spot, and stop immediately after catching your third fish.",
     },
     de: {
-      objective:
-        "Denk an ein Spiel, in dem du angeln kannst. Geh zum nächsten Angelplatz und wirf die Leine aus.",
-      completion: "Fange drei Fische dort.",
+      objective: "Das Wasser ist ruhig genug zum Angeln.",
+      completion:
+        "Öffne ein Spiel, in dem du angeln kannst, besuche den nächsten Angelplatz und höre direkt nach dem dritten gefangenen Fisch auf.",
     },
   },
   "relax-quiet-drive": {
     en: {
-      objective:
-        "Open a game with a road you enjoy driving. Choose one destination and take the unhurried route there.",
-      completion: "Arrive without racing.",
+      objective: "The road is open and unhurried.",
+      completion:
+        "Open a game with a road you enjoy, choose one destination, take the unhurried route, and arrive without racing.",
     },
     de: {
-      objective:
-        "Öffne ein Spiel mit einer Straße, auf der du gern fährst. Wähle ein Ziel und nimm den entspannten Weg dorthin.",
-      completion: "Komm ohne Rennen an.",
+      objective: "Die Straße ist frei und entspannt.",
+      completion:
+        "Öffne ein Spiel mit einer schönen Straße, wähle ein Ziel, nimm den entspannten Weg und komme ohne Rennen an.",
     },
   },
   "relax-gentle-platformer": {
     en: {
-      objective:
-        "Choose a platform game with forgiving checkpoints. Start one level and let every failed jump be just another try.",
-      completion: "Reach the level's next checkpoint.",
+      objective: "Every missed jump is another try.",
+      completion:
+        "Open a platformer with forgiving checkpoints, start one level, retry every missed jump without restarting, and reach the next checkpoint.",
     },
     de: {
-      objective:
-        "Wähle ein Plattformspiel mit großzügigen Kontrollpunkten. Starte ein Level und behandle jeden Fehlversuch nur als neuen Anlauf.",
-      completion: "Erreiche den nächsten Kontrollpunkt des Levels.",
+      objective: "Jeder verfehlte Sprung ist ein neuer Versuch.",
+      completion:
+        "Öffne ein Plattformspiel mit großzügigen Kontrollpunkten, starte ein Level, wiederhole Fehlversuche ohne Neustart und erreiche den nächsten Kontrollpunkt.",
     },
   },
   "relax-solo-tabletop": {
     en: {
-      objective:
-        "Open a digital tabletop game you can play alone. Deal one game and accept the first setup you receive.",
-      completion: "Play it to the result.",
+      objective: "The table is set for one.",
+      completion:
+        "Open a digital board or card game with solo play, accept its first dealt setup, and play until the result screen.",
     },
     de: {
-      objective:
-        "Öffne ein digitales Brett- oder Kartenspiel, das du allein spielen kannst. Starte eine Partie und akzeptiere die erste Ausgangslage.",
-      completion: "Spiele sie bis zum Ergebnis.",
+      objective: "Der Tisch ist für eine Person gedeckt.",
+      completion:
+        "Öffne ein digitales Brett- oder Kartenspiel mit Solomodus, akzeptiere die erste Ausgangslage und spiele bis zum Ergebnisbildschirm.",
     },
   },
   "relax-space-drift": {
     en: {
-      objective:
-        "Think of a game that lets you travel peacefully through space. Set course for the nearest station.",
-      completion: "Dock safely at the station you chose.",
+      objective: "The nearest station is enough.",
+      completion:
+        "Open a game with peaceful space travel, set course for the nearest station without fast travel, and dock there safely.",
     },
     de: {
-      objective:
-        "Denk an ein Spiel, in dem du friedlich durchs All reisen kannst. Setze Kurs auf die nächste Station.",
-      completion: "Docke sicher an der gewählten Station an.",
+      objective: "Die nächste Station reicht völlig.",
+      completion:
+        "Öffne ein Spiel mit friedlicher Raumfahrt, setze ohne Schnellreise Kurs auf die nächste Station und docke dort sicher an.",
     },
   },
   "explore-wrong-turn": {

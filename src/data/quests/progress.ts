@@ -41,7 +41,7 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 20,
     rewardPoints: 250,
-    tipIds: ["cleanExit", "letItStand"],
+    tipIds: ["noOutsideHelp", "letItStand"],
   },
   {
     id: "progress-wake-the-sleeping-save",
@@ -111,7 +111,7 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 15,
     rewardPoints: 190,
-    tipIds: ["threeAttempts", "noRestart"],
+    tipIds: ["fixedKit", "noRestart"],
   },
   {
     id: "progress-claim-the-nearby-feat",
@@ -153,7 +153,7 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
     rewardPoints: 190,
-    tipIds: ["oneMove", "threeAttempts"],
+    tipIds: ["noOutsideHelp", "noRestart"],
   },
   {
     id: "progress-play-the-missing-link",
@@ -181,7 +181,7 @@ export const PROGRESS_QUESTS = defineMoodDeck("progress", [
     minimumDurationMinutes: 10,
     suggestedDurationMinutes: 20,
     rewardPoints: 220,
-    tipIds: ["cleanExit", "oneTrack"],
+    tipIds: ["favoriteSetup", "worldAudio"],
   },
   {
     id: "progress-take-the-road-not-used",
