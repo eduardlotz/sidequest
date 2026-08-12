@@ -73,6 +73,7 @@ type Props = {
   onComplete: (gameTitle: string) => void;
   onCoinFlightStart: (pointsAwarded: number) => void;
   onCoinHit: (pointsReceived: number) => void;
+  onLayoutHandoffStart: () => void;
   onPurchaseRedRopes: () => boolean;
 };
 
@@ -150,6 +151,7 @@ export function ActiveTaskCard({
   onComplete,
   onCoinFlightStart,
   onCoinHit,
+  onLayoutHandoffStart,
   onPurchaseRedRopes,
 }: Props) {
   const { t } = useTranslation();
@@ -852,7 +854,10 @@ export function ActiveTaskCard({
   const cardFocusAvailable = isMobileViewport && revealFinished && !exiting;
   const hasNoRopes = redRopes <= 0;
   const readyUiVisible =
-    phase === "ready" && ropeMode !== "resumePullback" && !timerDragging;
+    phase === "ready" &&
+    revealFinished &&
+    ropeMode !== "resumePullback" &&
+    !timerDragging;
   const canCutRope =
     (phase === "running" || phase === "paused") && (debugMode || redRopes > 0);
   const returnTooltipId = `back-to-selection-tooltip-${assignment.sessionId}`;
@@ -956,7 +961,8 @@ export function ActiveTaskCard({
           ref={cardProjectionRef}
           className={styles.activeCardProjection}
           layoutId={`task-card-${layoutSessionId}-${task.id}`}
-          // layoutCrossfade={false}
+          layoutCrossfade={false}
+          onLayoutAnimationStart={onLayoutHandoffStart}
           drag={cardFocused}
           dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
           dragElastic={0.5}
@@ -1013,24 +1019,16 @@ export function ActiveTaskCard({
                 : { duration: 0 }
             }
             onAnimationComplete={() => {
+              if (animateReveal && !revealStarted) return;
               if (readyEntranceDropRef.current) {
                 timerEntranceStartedAtRef.current = performance.now();
               }
               setRevealFinished(true);
             }}
           >
-            <motion.div
+            <div
               className={`${styles.activeQuestCard} ${styles.revealBack}`}
               aria-hidden="true"
-              animate={{
-                opacity: revealStarted ? [1, 1, 0] : 1,
-              }}
-              transition={{
-                opacity: {
-                  duration: 0.34,
-                  times: [0, 0.65, 1],
-                },
-              }}
             >
               <QuestCardBack
                 minimumDurationMinutes={task.minimumDurationMinutes}
@@ -1040,7 +1038,7 @@ export function ActiveTaskCard({
                 title={task.title}
                 variant="summary"
               />
-            </motion.div>
+            </div>
 
             <div className={styles.revealFront}>
               <motion.div

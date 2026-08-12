@@ -396,10 +396,16 @@
 
 .activeExperience[data-reveal-complete="true"]:not(
     [data-phase="completed"]
-  ):not([data-phase="cutting"])
+  )
   .activeCardHitArea
   .activeQuestCard:not([data-completed]) {
   animation: activeCardFloat 5.2s ease-in-out infinite;
+}
+
+.activeExperience[data-phase="cutting"]
+  .activeCardHitArea
+  .activeQuestCard:not([data-completed]) {
+  animation-play-state: paused;
 }
 
 .activeQuestCard[data-completed] {
@@ -962,6 +968,15 @@
 .activeCardProjection {
   position: relative;
   transform-style: preserve-3d;
+}
+
+.screen[data-active-handoff="pending"] .activeCardProjection {
+  visibility: hidden !important;
+}
+
+.screen[data-active-handoff="pending"]
+  .previewCardProjection[data-selected] {
+  visibility: visible !important;
 }
 
 .revealFlip,
@@ -4170,17 +4185,27 @@ button.arcCard {
   border: 0;
   border-radius: 30px;
   background: transparent;
-  box-shadow: 0 22px 45px rgb(8 8 10 / 0.16);
   color: white;
   text-align: left;
   cursor: pointer;
   appearance: none;
-  transform-style: preserve-3d;
-  transition: box-shadow 240ms cubic-bezier(0.22, 0.8, 0.24, 1);
+  transform-style: flat;
   -webkit-tap-highlight-color: transparent;
 }
 
-.arcCardSlot[data-center] .arcCardHitArea:hover {
+.moodCardTiltSurface {
+  position: absolute;
+  display: block;
+  border-radius: 30px;
+  box-shadow: 0 22px 45px rgb(8 8 10 / 0.16);
+  inset: 0;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  transition: box-shadow 240ms cubic-bezier(0.22, 0.8, 0.24, 1);
+  will-change: transform;
+}
+
+.arcCardSlot[data-center] .arcCardHitArea:hover .moodCardTiltSurface {
   box-shadow: 0 31px 62px rgb(8 8 10 / 0.26);
 }
 
@@ -4341,7 +4366,8 @@ button.arcCard {
 
   .selectionCardBody,
   .selectionCardContent,
-  .arcCardHitArea {
+  .arcCardHitArea,
+  .moodCardTiltSurface {
     border-radius: 28px;
   }
 
@@ -4434,7 +4460,8 @@ button.arcCard {
 
 @media (prefers-reduced-motion: reduce) {
   .moodSelectionCardBody::before,
-  .arcCardHitArea {
+  .arcCardHitArea,
+  .moodCardTiltSurface {
     transition: none;
   }
 }

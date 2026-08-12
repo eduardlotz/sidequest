@@ -269,6 +269,7 @@ function QuestOfferCard({
       className={styles.previewCardProjection}
       data-mood-handoff={moodHandoffActive || undefined}
       data-position={index === 0 ? "left" : index === 2 ? "right" : "center"}
+      data-selected={selected || undefined}
       data-stack-position={stackPosition}
       layoutId={`task-card-${layoutSessionId}-${item.id}`}
       layoutCrossfade={false}

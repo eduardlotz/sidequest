@@ -199,7 +199,7 @@ export const germanUi = {
     history: "Verlauf",
   },
   about: {
-    title: "Willkommen bei sidequest",
+    title: "Willkommen bei sidesidequest", //TODO: add super 2
     description: "Eine kleine Hilfe bei der Wahl deines nächsten Spiels.",
     step1: "Wähle, wie du dich gerade fühlst",
     step2: "Nimm eine der drei Quests, die dich an ein Spiel denken lässt",

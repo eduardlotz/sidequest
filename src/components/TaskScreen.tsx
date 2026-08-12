@@ -183,7 +183,6 @@ export function TaskScreen({
   const previousSelectionModeRef = useRef<"moods" | "quests">(
     selectedMood ? "quests" : "moods",
   );
-  const selectionLayoutSessionId = `${layoutSessionIdRef.current}-selection`;
   const questEntryMotion =
     returnedFromActive || previousSelectionModeRef.current === "quests"
       ? "bottom"
@@ -192,7 +191,12 @@ export function TaskScreen({
   const [editingMood, setEditingMood] = useState(false);
   const [selectionPresenceGeneration, setSelectionPresenceGeneration] =
     useState(0);
+  const [questDeckGeneration, setQuestDeckGeneration] = useState(0);
   const [questSelectionClosing, setQuestSelectionClosing] = useState(false);
+  const [activeHandoffStarted, setActiveHandoffStarted] = useState(isActive);
+  const selectionLayoutSessionId = `${layoutSessionIdRef.current}-selection`;
+  const questLayoutSessionId =
+    `${layoutSessionIdRef.current}-quests-${questDeckGeneration}`;
   const editMoodFrameRef = useRef<number | null>(null);
   const moodItems = useMemo<ArcDeckItem[]>(
     () =>
@@ -223,6 +227,11 @@ export function TaskScreen({
   useEffect(() => {
     if (selectedMood) setEditingMood(false);
   }, [selectedMood]);
+
+  useEffect(() => {
+    if (selectedMood || !editingMood) return;
+    setQuestDeckGeneration((generation) => generation + 1);
+  }, [editingMood, selectedMood]);
 
   useEffect(() => {
     if (!isActive && selectedMood) setQuestSelectionClosing(false);
@@ -272,6 +281,13 @@ export function TaskScreen({
     <section
       className={styles.screen}
       data-active={isActive ? "true" : undefined}
+      data-active-handoff={
+        isActive && !reduceMotion
+          ? activeHandoffStarted
+            ? "started"
+            : "pending"
+          : undefined
+      }
       aria-labelledby="task-screen-title"
     >
       <h1 className={styles.srOnly} id="task-screen-title">
@@ -285,7 +301,7 @@ export function TaskScreen({
       <LayoutGroup id="quest-flow">
         <AnimatePresence
           initial={animateEntrance}
-          mode={returnedFromActive ? "wait" : "popLayout"}
+          mode={returnedFromActive ? "wait" : "sync"}
         >
           {currentQuest && currentSession ? (
             <motion.div
@@ -306,7 +322,7 @@ export function TaskScreen({
                 quest={currentQuest}
                 session={currentSession}
                 previousCompletions={previousCompletions}
-                layoutSessionId={layoutSessionIdRef.current}
+                layoutSessionId={questLayoutSessionId}
                 coins={points}
                 redRopes={redRopes}
                 debugMode={debugMode}
@@ -319,6 +335,7 @@ export function TaskScreen({
                 onComplete={onComplete}
                 onCoinFlightStart={onCoinFlightStart}
                 onCoinHit={onCoinHit}
+                onLayoutHandoffStart={() => setActiveHandoffStarted(true)}
                 onPurchaseRedRopes={onPurchaseRedRopes}
               />
             </motion.div>
@@ -436,7 +453,7 @@ export function TaskScreen({
                       <QuestOfferDeck
                         items={offeredQuests}
                         entryMotion={questEntryMotion}
-                        layoutSessionId={layoutSessionIdRef.current}
+                        layoutSessionId={questLayoutSessionId}
                         reduceMotion={reduceMotion}
                         returningQuestId={
                           returnedFromActive
@@ -444,7 +461,10 @@ export function TaskScreen({
                             : undefined
                         }
                         returningToMoods={editingMood}
-                        onSelectionStart={() => setQuestSelectionClosing(true)}
+                        onSelectionStart={() => {
+                          setQuestSelectionClosing(true);
+                          setActiveHandoffStarted(false);
+                        }}
                         onSelect={onRevealQuest}
                       />
                     </>

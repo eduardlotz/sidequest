@@ -538,24 +538,16 @@ function ArcCard({
             title: item.title,
             subtitle: item.subtitle,
           })}
+          animate="rest"
           style={{
             ...getMoodArtStyle(item.id),
-            rotateX,
-            rotateY,
-            transformPerspective: 1_000,
           }}
           whileHover={
-            reduceMotion || !center ? undefined : { scale: 1.035, y: -8 }
+            reduceMotion || !center ? undefined : "hover"
           }
           whileFocus={
-            reduceMotion || !center ? undefined : { scale: 1.025, y: -5 }
+            reduceMotion || !center ? undefined : "focus"
           }
-          transition={{
-            type: "spring",
-            stiffness: 300,
-            damping: 24,
-            mass: 0.74,
-          }}
           onClick={(event) => {
             const keyboardClick = event.detail === 0;
             if (center) onSelect(item.id, keyboardClick);
@@ -571,40 +563,59 @@ function ArcCard({
           onPointerEnter={handlePointerEnter}
           onPointerMove={handlePointerMove}
           onPointerLeave={handlePointerLeave}
-          onPointerOut={handlePointerLeave}
         >
-          <SelectionCardBody
-            className={styles.moodSelectionCardBody}
-            contentKey={`mood-${item.id}`}
-            contentClassName={styles.moodSelectionCardContent}
-            contentVisible={!foregroundExiting || primaryExit}
-            layoutId={moodCardLayoutId(layoutSessionId, item.id)}
-            reduceMotion={reduceMotion}
+          <motion.span
+            className={styles.moodCardTiltSurface}
+            style={{
+              rotateX,
+              rotateY,
+              transformPerspective: 1_000,
+            }}
+            variants={{
+              rest: { scale: 1, y: 0 },
+              hover: { scale: 1.035, y: -8 },
+              focus: { scale: 1.025, y: -5 },
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 24,
+              mass: 0.74,
+            }}
           >
-            <motion.span
-              className={styles.moodCardVisual}
-              style={{ opacity: contentOpacity }}
+            <SelectionCardBody
+              className={styles.moodSelectionCardBody}
+              contentKey={`mood-${item.id}`}
+              contentClassName={styles.moodSelectionCardContent}
+              contentVisible={!foregroundExiting || primaryExit}
+              layoutId={moodCardLayoutId(layoutSessionId, item.id)}
+              reduceMotion={reduceMotion}
             >
-              <span className={styles.arcCardContent}>
-                <strong className={styles.arcCardTitle}>{item.title}</strong>
-                <span className={styles.arcCardDescription}>
-                  {item.subtitle}
-                </span>
-              </span>
               <motion.span
-                className={styles.moodIllustrationLayer}
-                style={{
-                  x: illustrationX,
-                  y: illustrationY,
-                }}
+                className={styles.moodCardVisual}
+                style={{ opacity: contentOpacity }}
               >
-                <MoodIllustration
-                  className={styles.moodIllustration}
-                  moodId={item.id}
-                />
+                <span className={styles.arcCardContent}>
+                  <strong className={styles.arcCardTitle}>{item.title}</strong>
+                  <span className={styles.arcCardDescription}>
+                    {item.subtitle}
+                  </span>
+                </span>
+                <motion.span
+                  className={styles.moodIllustrationLayer}
+                  style={{
+                    x: illustrationX,
+                    y: illustrationY,
+                  }}
+                >
+                  <MoodIllustration
+                    className={styles.moodIllustration}
+                    moodId={item.id}
+                  />
+                </motion.span>
               </motion.span>
-            </motion.span>
-          </SelectionCardBody>
+            </SelectionCardBody>
+          </motion.span>
         </motion.button>
       </motion.div>
     </motion.div>
