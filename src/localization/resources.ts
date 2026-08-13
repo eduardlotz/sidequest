@@ -15,16 +15,21 @@ export const englishUi = {
     history: "History",
   },
   about: {
-    title: "Welcome to sidequest",
-    description: "A small companion for choosing what to play.",
-    step1: "Choose how you feel right now",
-    step2: "Pick one of the three quests that brings a game to mind",
-    step3: "Use the quest-specific tips and start the rope timer",
-    step4: "Pause when you are ready to complete the quest",
-    step5: "Spend earned coins on red ropes or a fresh set of cards",
-    lessChoosing: "Less choosing, more playing",
-    moodReset:
-      "Your mood resets after four hours, while coins and completed sessions stay in your local profile.",
+    title: "Welcome to sidesidequest.",
+    description: "A small companion app for people with too many video games.",
+    stepsHeading: "Three steps to your game",
+    step1: "Choose a mood that fits",
+    step2: "Pick a quest that makes you think of a specific game",
+    step3:
+      "Complete the quest at your own pace, enter the name of the game, and earn coins",
+    mismatchHeading: "The quest isn't right for you?",
+    mismatchBody: "Cut the red rope, draw a new card, and try another quest.",
+    difficultyBody:
+      "How difficult a quest ultimately is also depends on the game you choose.",
+    coinsHeading: "What do I do with the coins?",
+    coinEarning: "The longer you spend on a quest, the more coins you earn.",
+    coinSpending:
+      "New quests and cancelling a sidequest cost coins. To ease the agony of choice, sooner or later you will have to choose a quest that may not have appealed to you right away.",
     madeBy: "Made by",
   },
   task: {
@@ -194,16 +199,25 @@ export const germanUi = {
     history: "Verlauf",
   },
   about: {
-    title: "Willkommen bei sidesidequest", //TODO: add super 2
-    description: "Eine kleine Hilfe bei der Wahl deines nächsten Spiels.",
-    step1: "Wähle, wie du dich gerade fühlst",
-    step2: "Nimm eine der drei Quests, die dich an ein Spiel denken lässt",
-    step3: "Nutze die Quest-Tipps und starte den Seil-Timer",
-    step4: "Pausiere, wenn du die Quest abschließen möchtest",
-    step5: "Gib verdiente Münzen für rote Seile oder neue Karten aus",
-    lessChoosing: "Weniger wählen, mehr spielen",
-    moodReset:
-      "Deine Stimmung wird nach vier Stunden zurückgesetzt. Münzen und abgeschlossene Sessions bleiben in deinem lokalen Profil.",
+    title: "Willkommen bei sidesidequest.",
+    description:
+      "Eine kleine Companion-App für Menschen mit zu vielen Videospielen.",
+    stepsHeading: "In drei Schritten zu deinem Spiel",
+    step1: "Wähle eine passende Stimmung",
+    step2:
+      "Such dir eine Quest aus, die dich an ein bestimmtes Spiel denken lässt",
+    step3:
+      "Schließe die Quest in deinem Tempo ab, trag den Namen des Spiels ein und verdiene Münzen",
+    mismatchHeading: "Die Aufgabe passt doch nicht?",
+    mismatchBody:
+      "Schneide das rote Seil durch, ziehe eine neue Karte und probier eine andere Aufgabe aus.",
+    difficultyBody:
+      "Wie schwer eine Aufgabe am Ende ist, hängt auch von deinem gewählten Spiel ab.",
+    coinsHeading: "Was mache ich mit den Münzen?",
+    coinEarning:
+      "Je länger du an einer Quest sitzt, desto mehr Münzen gibt es dafür.",
+    coinSpending:
+      "Neue Quests und der Abbruch einer sidequest kosten Münzen. Um die Qual der Wahl etwas zu dämpfen musst du dich früher oder später auch mal für eine Quest entscheiden, die dich vielleicht nicht sofort angesprochen hat.",
     madeBy: "Von",
   },
   task: {

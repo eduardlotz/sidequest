@@ -17,18 +17,24 @@ export function AboutPanel() {
 
       <div className={styles.aboutBody}>
         <section className={styles.aboutSection}>
+          <h3>{t("ui.about.stepsHeading")}</h3>
           <ol className={styles.aboutSteps}>
             <li>{t("ui.about.step1")}</li>
             <li>{t("ui.about.step2")}</li>
             <li>{t("ui.about.step3")}</li>
-            <li>{t("ui.about.step4")}</li>
-            <li>{t("ui.about.step5")}</li>
           </ol>
         </section>
 
         <section className={styles.aboutSection}>
-          <h3>{t("ui.about.lessChoosing")}</h3>
-          <p>{t("ui.about.moodReset")}</p>
+          <h3>{t("ui.about.mismatchHeading")}</h3>
+          <p>{t("ui.about.mismatchBody")}</p>
+          <p>{t("ui.about.difficultyBody")}</p>
+        </section>
+
+        <section className={styles.aboutSection}>
+          <h3>{t("ui.about.coinsHeading")}</h3>
+          <p>{t("ui.about.coinEarning")}</p>
+          <p>{t("ui.about.coinSpending")}</p>
         </section>
       </div>
 

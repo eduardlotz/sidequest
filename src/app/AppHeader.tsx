@@ -20,7 +20,8 @@ import styles from "../App.module.css";
 import { useThemeChoice } from "./hooks/useThemeChoice";
 import { AboutPanel } from "./AboutPanel";
 
-const MOBILE_PROFILE_SNAP_POINTS = [0.78, 1];
+const MOBILE_DRAWER_SNAP_POINTS = [0.78, 1];
+const MOBILE_DEFAULT_SNAP_POINT = MOBILE_DRAWER_SNAP_POINTS[0];
 
 type Props = {
   displayedCoins: number;
@@ -59,7 +60,15 @@ export function AppHeader({
   const desktop = useMediaQuery(DESKTOP_VIEWPORT_QUERY);
   const { changeTheme, themeChoice } = useThemeChoice();
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [aboutSnapPoint, setAboutSnapPoint] = useState<
+    number | string | null
+  >(MOBILE_DEFAULT_SNAP_POINT);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [profileSnapPoint, setProfileSnapPoint] = useState<
+    number | string | null
+  >(MOBILE_DEFAULT_SNAP_POINT);
+  const [mobileDrawerContainer, setMobileDrawerContainer] =
+    useState<HTMLDivElement | null>(null);
   const [brandRotation, setBrandRotation] = useState(0);
   const totalCoinsCollected = useMemo(
     () =>
@@ -77,12 +86,14 @@ export function AppHeader({
 
   function handleAboutOpenChange(open: boolean) {
     if (open === aboutOpen) return;
+    if (open && !desktop) setAboutSnapPoint(MOBILE_DEFAULT_SNAP_POINT);
     playSound(open ? "drawerOpen" : "drawerClose");
     setAboutOpen(open);
   }
 
   function handleProfileOpenChange(open: boolean) {
     if (open === profileOpen) return;
+    if (open && !desktop) setProfileSnapPoint(MOBILE_DEFAULT_SNAP_POINT);
     playSound(open ? "drawerOpen" : "drawerClose");
     setProfileOpen(open);
   }
@@ -93,10 +104,11 @@ export function AppHeader({
   }
 
   return (
-    <header
-      className={styles.topNavigation}
-      aria-label={t("ui.nav.mainNavigation")}
-    >
+    <>
+      <header
+        className={styles.topNavigation}
+        aria-label={t("ui.nav.mainNavigation")}
+      >
       <motion.div
         className={styles.navActionSlot}
         initial={reduceMotion ? false : { opacity: 0, y: -14 }}
@@ -107,9 +119,13 @@ export function AppHeader({
       >
         <div className={styles.navActionGroup}>
           <Drawer.Root
+            activeSnapPoint={desktop ? undefined : aboutSnapPoint}
+            setActiveSnapPoint={desktop ? undefined : setAboutSnapPoint}
+            container={desktop ? undefined : mobileDrawerContainer}
             direction={desktop ? "left" : "bottom"}
             open={aboutOpen}
             onOpenChange={handleAboutOpenChange}
+            snapPoints={desktop ? undefined : MOBILE_DRAWER_SNAP_POINTS}
             shouldScaleBackground={false}
           >
             <Drawer.Trigger asChild>
@@ -124,8 +140,15 @@ export function AppHeader({
             <Drawer.Portal>
               <Drawer.Overlay className={styles.drawerOverlay} />
               <Drawer.Content
-                className={styles.floatingDrawer}
+                className={`${styles.floatingDrawer} ${styles.mobileSnapDrawer}`}
                 data-direction={desktop ? "left" : "bottom"}
+                data-mobile-snap={
+                  desktop
+                    ? undefined
+                    : aboutSnapPoint === 1
+                      ? "full"
+                      : "default"
+                }
               >
                 {!desktop && <Drawer.Handle className={styles.drawerHandle} />}
                 <AboutPanel />
@@ -182,10 +205,13 @@ export function AppHeader({
       >
         <div className={styles.navActionGroup}>
           <Drawer.Root
+            activeSnapPoint={desktop ? undefined : profileSnapPoint}
+            setActiveSnapPoint={desktop ? undefined : setProfileSnapPoint}
+            container={desktop ? undefined : mobileDrawerContainer}
             direction={desktop ? "right" : "bottom"}
             open={profileOpen}
             onOpenChange={handleProfileOpenChange}
-            snapPoints={desktop ? undefined : MOBILE_PROFILE_SNAP_POINTS}
+            snapPoints={desktop ? undefined : MOBILE_DRAWER_SNAP_POINTS}
             shouldScaleBackground={false}
           >
             <div className={styles.profileTriggerImpact}>
@@ -233,8 +259,15 @@ export function AppHeader({
             <Drawer.Portal>
               <Drawer.Overlay className={styles.drawerOverlay} />
               <Drawer.Content
-                className={`${styles.floatingDrawer} ${styles.profileFloatingDrawer}`}
+                className={`${styles.floatingDrawer} ${styles.mobileSnapDrawer} ${styles.profileFloatingDrawer}`}
                 data-direction={desktop ? "right" : "bottom"}
+                data-mobile-snap={
+                  desktop
+                    ? undefined
+                    : profileSnapPoint === 1
+                      ? "full"
+                      : "default"
+                }
               >
                 {!desktop && <Drawer.Handle className={styles.drawerHandle} />}
                 <ProfileDrawer
@@ -252,6 +285,11 @@ export function AppHeader({
           </Drawer.Root>
         </div>
       </motion.div>
-    </header>
+      </header>
+      <div
+        ref={setMobileDrawerContainer}
+        className={styles.mobileDrawerContainer}
+      />
+    </>
   );
 }
