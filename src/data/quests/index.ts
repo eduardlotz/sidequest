@@ -3,43 +3,55 @@ import {
   type MoodId,
   type MoodQuestDefinition,
   type QuestCoreDefinition,
+  type QuestTranslation,
 } from "../questTypes";
-import { CHALLENGE_QUESTS } from "./challenge";
-import { CONNECT_QUESTS } from "./connect";
-import { CREATE_QUESTS } from "./create";
-import { CURIOUS_QUESTS } from "./curious";
-import { EXPLORE_QUESTS } from "./explore";
-import { FOCUSED_QUESTS } from "./focused";
-import { LOW_ENERGY_QUESTS } from "./low-energy";
-import { NOSTALGIC_QUESTS } from "./nostalgic";
-import { OVERWHELMED_QUESTS } from "./overwhelmed";
-import { PROGRESS_QUESTS } from "./progress";
-import { RELAX_QUESTS } from "./relax";
-import { RESTLESS_QUESTS } from "./restless";
+import { AUTHORED_QUESTS } from "./catalog";
 
 export type {
+  AuthoredQuestDefinition,
   MoodId,
   MoodQuestDefinition as QuestDefinition,
   QuestCoreDefinition,
+  QuestTip,
+  QuestTipScope,
   QuestTranslation,
 } from "../questTypes";
 
-const MOOD_DECKS = [
-  RELAX_QUESTS,
-  EXPLORE_QUESTS,
-  PROGRESS_QUESTS,
-  CREATE_QUESTS,
-  CHALLENGE_QUESTS,
-  CONNECT_QUESTS,
-  NOSTALGIC_QUESTS,
-  OVERWHELMED_QUESTS,
-  RESTLESS_QUESTS,
-  FOCUSED_QUESTS,
-  CURIOUS_QUESTS,
-  LOW_ENERGY_QUESTS,
-] as const;
+type CatalogEntry = {
+  id: string;
+  moodId: MoodId;
+  minimumDurationMinutes: number;
+  suggestedDurationMinutes: number;
+  rewardPoints: number;
+  translations: Readonly<Record<"en" | "de", QuestTranslation>>;
+};
 
-export const QUESTS: readonly MoodQuestDefinition[] = MOOD_DECKS.flat();
+const moodQuestCounts = Object.fromEntries(
+  MOOD_IDS.map((moodId) => [moodId, 0]),
+) as Record<MoodId, number>;
+
+function generatedQuestId(moodId: MoodId): string {
+  moodQuestCounts[moodId] += 1;
+  return `${moodId}-${String(moodQuestCounts[moodId]).padStart(3, "0")}`;
+}
+
+export const QUEST_CATALOG: readonly CatalogEntry[] = AUTHORED_QUESTS.map(
+  (quest) => ({
+    ...quest,
+    id: generatedQuestId(quest.moodId),
+  }),
+);
+
+export const QUEST_TRANSLATIONS_BY_ID = Object.fromEntries(
+  QUEST_CATALOG.map(({ id, translations }) => [id, translations]),
+) as Record<string, Readonly<Record<"en" | "de", QuestTranslation>>>;
+
+export const QUESTS: readonly MoodQuestDefinition[] = QUEST_CATALOG.map(
+  ({ translations, ...quest }) => ({
+    ...quest,
+    ...translations.en,
+  }),
+);
 
 export const QUESTS_BY_ID = Object.fromEntries(
   QUESTS.map((quest) => [quest.id, quest]),
@@ -52,14 +64,12 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     minimumDurationMinutes,
     suggestedDurationMinutes,
     rewardPoints,
-    tipIds,
   }) => ({
     id,
     moodId,
     minimumDurationMinutes,
     suggestedDurationMinutes,
     rewardPoints,
-    tipIds,
   }),
 );
 

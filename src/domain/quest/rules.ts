@@ -25,7 +25,6 @@ export function createDefaultQuestState(): QuestState {
     currentSession: null,
     completedSessions: [],
     stats: cloneQuestStats(DEFAULT_QUEST_STATS),
-    legacyCompletionCount: 0,
   };
 }
 

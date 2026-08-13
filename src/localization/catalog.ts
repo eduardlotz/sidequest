@@ -1,5 +1,9 @@
 import { MOODS_BY_ID, type MoodDefinition, type MoodId } from "../data/moods";
-import { QUESTS_BY_ID, type QuestDefinition } from "../data/quests";
+import {
+  QUESTS_BY_ID,
+  QUEST_TRANSLATIONS_BY_ID,
+  type QuestDefinition,
+} from "../data/quests";
 import type {
   CompletedQuest,
   CompletedSession,
@@ -30,26 +34,12 @@ export function localizeQuest(
   language: AppLanguage,
 ): QuestDefinition | null {
   const quest = QUESTS_BY_ID[questId];
-  if (!quest) return null;
-  const t = translator(language);
+  const translations = QUEST_TRANSLATIONS_BY_ID[questId];
+  if (!quest || !translations) return null;
+  const translation = translations[normalizeLanguage(language)];
   return {
     ...quest,
-    name: t(`quests.${quest.id}.name`, { defaultValue: quest.name }),
-    title: t(`quests.${quest.id}.title`, { defaultValue: quest.title }),
-    objective: t(`quests.${quest.id}.objective`, {
-      defaultValue: quest.objective,
-    }),
-    completion: t(`quests.${quest.id}.completion`, {
-      defaultValue: quest.completion,
-    }),
-    tips: quest.tipIds.map((tipId, index) => ({
-      title: t(`tips.${tipId}.title`, {
-        defaultValue: quest.tips[index]?.title ?? tipId,
-      }),
-      description: t(`tips.${tipId}.description`, {
-        defaultValue: quest.tips[index]?.description ?? "",
-      }),
-    })),
+    ...translation,
   };
 }
 

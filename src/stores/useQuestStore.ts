@@ -453,7 +453,6 @@ export function createQuestStore(
         currentSession,
         completedSessions,
         stats,
-        legacyCompletionCount,
       }) => ({
         profile,
         selectedMoodId,
@@ -463,7 +462,6 @@ export function createQuestStore(
         currentSession,
         completedSessions,
         stats,
-        legacyCompletionCount,
       }),
       migrate: (persistedState, version) =>
         migratePersistedQuestState(

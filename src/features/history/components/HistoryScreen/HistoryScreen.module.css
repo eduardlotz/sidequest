@@ -48,14 +48,6 @@
   text-wrap: balance;
 }
 
-.legacyNote {
-  margin-bottom: 20px;
-  color: var(--color-muted);
-  font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1.4;
-}
-
 .questList {
   padding: 0;
   margin: 0;
