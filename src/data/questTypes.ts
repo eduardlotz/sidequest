@@ -21,9 +21,27 @@ export type MoodDefinition = {
   subtitle: string;
 };
 
+export type QuestTipScope = "gameplay" | "game-selection";
+
 export type QuestTip = {
+  scope: QuestTipScope;
   title: string;
   description: string;
+};
+
+export type QuestTranslation = {
+  name: string;
+  title: string;
+  objective: string;
+  tips: readonly [QuestTip, QuestTip];
+};
+
+export type AuthoredQuestDefinition = {
+  moodId: MoodId;
+  minimumDurationMinutes: number;
+  suggestedDurationMinutes: number;
+  rewardPoints: number;
+  translations: Readonly<Record<"en" | "de", QuestTranslation>>;
 };
 
 export type MoodQuestDefinition = {
@@ -32,11 +50,9 @@ export type MoodQuestDefinition = {
   name: string;
   title: string;
   objective: string;
-  completion: string;
   minimumDurationMinutes: number;
   suggestedDurationMinutes: number;
   rewardPoints: number;
-  tipIds: readonly [string, string];
   tips: readonly QuestTip[];
 };
 
@@ -47,10 +63,4 @@ export type QuestCoreDefinition = Pick<
   | "minimumDurationMinutes"
   | "suggestedDurationMinutes"
   | "rewardPoints"
-  | "tipIds"
->;
-
-export type QuestTranslation = Pick<
-  MoodQuestDefinition,
-  "name" | "title" | "objective" | "completion"
 >;

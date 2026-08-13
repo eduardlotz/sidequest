@@ -2,7 +2,7 @@ import type { MoodDefinition, MoodId } from "../../data/moods";
 import type { QuestDefinition } from "../../data/quests";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 8;
+export const STORE_VERSION = 9;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const SHUFFLE_COST = 25;
 export const QUEST_OFFER_COUNT = 3;
@@ -79,7 +79,6 @@ export type QuestState = {
   currentSession: QuestSession | null;
   completedSessions: CompletedSession[];
   stats: QuestStats;
-  legacyCompletionCount: number;
 };
 
 export type QuestActions = {
@@ -111,7 +110,6 @@ export type PersistedQuestState = Pick<
   | "currentSession"
   | "completedSessions"
   | "stats"
-  | "legacyCompletionCount"
 >;
 
 export type Quest = QuestDefinition & {

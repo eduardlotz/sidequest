@@ -26,7 +26,6 @@ type Props = {
 type HistoryContentProps = {
   completedQuests: readonly CompletedQuest[];
   directStartDisabled?: boolean;
-  legacyCompletionCount?: number;
   onClose: () => void;
   onStartQuest: (questId: string) => boolean | void;
   reduceMotion: boolean;
@@ -44,13 +43,11 @@ export function HistoryScreen({ onClose, reduceMotion }: Props) {
   const {
     completedSessions,
     currentSession,
-    legacyCompletionCount,
     replayQuest,
   } = useQuestStore(
     useShallow((state) => ({
       completedSessions: state.completedSessions,
       currentSession: state.currentSession,
-      legacyCompletionCount: state.legacyCompletionCount,
       replayQuest: state.replayQuest,
     })),
   );
@@ -72,7 +69,6 @@ export function HistoryScreen({ onClose, reduceMotion }: Props) {
     <HistoryContent
       completedQuests={completedQuests}
       directStartDisabled={Boolean(currentSession)}
-      legacyCompletionCount={legacyCompletionCount}
       reduceMotion={reduceMotion}
       onClose={onClose}
       onStartQuest={startQuest}
@@ -83,7 +79,6 @@ export function HistoryScreen({ onClose, reduceMotion }: Props) {
 function HistoryContent({
   completedQuests,
   directStartDisabled = false,
-  legacyCompletionCount = 0,
   onClose,
   onStartQuest,
   reduceMotion,
@@ -144,17 +139,6 @@ function HistoryContent({
             })}
           </p>
         </header>
-
-        {legacyCompletionCount > 0 ? (
-          <aside
-            className={styles.legacyNote}
-            aria-label={t("ui.history.earlierLabel")}
-          >
-            {t("ui.history.earlierCompletions", {
-              count: legacyCompletionCount,
-            })}
-          </aside>
-        ) : null}
 
         {groups.length === 0 ? (
           <div className={styles.empty}>

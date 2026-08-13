@@ -1,13 +1,9 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { MOODS } from "../data/moods";
-import { QUESTS } from "../data/quests";
-import { QUEST_TIPS } from "../data/quests/tips";
-import { germanQuestTranslations } from "./questTranslations.de";
 import {
   englishUi,
   germanMoods,
-  germanTips,
   germanUi,
 } from "./resources";
 
@@ -18,12 +14,6 @@ export type AppLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 const englishMoods = Object.fromEntries(
   MOODS.map(({ id, title, subtitle }) => [id, { title, subtitle }]),
-);
-const englishQuests = Object.fromEntries(
-  QUESTS.map(({ id, name, title, objective, completion }) => [
-    id,
-    { name, title, objective, completion },
-  ]),
 );
 
 function readStoredLanguage(): AppLanguage {
@@ -61,16 +51,12 @@ void i18n.use(initReactI18next).init({
       translation: {
         ui: englishUi,
         moods: englishMoods,
-        tips: QUEST_TIPS,
-        quests: englishQuests,
       },
     },
     de: {
       translation: {
         ui: germanUi,
         moods: germanMoods,
-        tips: germanTips,
-        quests: germanQuestTranslations,
       },
     },
   },

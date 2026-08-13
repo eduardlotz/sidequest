@@ -3,7 +3,6 @@ import { QUEST_CORES_BY_ID } from "../../data/quests";
 import {
   AVATAR_THEMES,
   DEFAULT_PROFILE,
-  DEFAULT_QUEST_STATS,
   INITIAL_RED_ROPES,
   QUEST_OFFER_COUNT,
   STORED_COMPLETION_LIMIT,
@@ -16,7 +15,6 @@ import {
   type UserProfile,
 } from "./model";
 import {
-  cloneQuestStats,
   createDefaultQuestState,
   favoriteMoodId,
   finiteNumber,
@@ -34,43 +32,9 @@ export function migratePersistedQuestState(
   now: number = Date.now(),
   random: () => number = Math.random,
 ): PersistedQuestState {
-  if (
-    version === STORE_VERSION ||
-    version === 7 ||
-    version === 6 ||
-    version === 4
-  ) {
-    return sanitizePersistedQuestState(persistedState, now, random);
-  }
-  if (version === 5) {
-    const sanitized = sanitizePersistedQuestState(persistedState, now, random);
-    const session = sanitized.currentSession;
-
-    if (!session) {
-      return {
-        ...sanitized,
-        selectedMoodId: null,
-        moodSelectedAt: null,
-        offeredQuestIds: [],
-        offerSetsByMoodId: {},
-      };
-    }
-
-    const offeredQuestIds = generateQuestOffers(
-      session.moodId,
-      random,
-      new Set([session.questId]),
-    );
-    return {
-      ...sanitized,
-      offeredQuestIds,
-      offerSetsByMoodId: { [session.moodId]: offeredQuestIds },
-    };
-  }
-  if (version === 2 || version === 3) {
-    return migrateLegacyQuestState(persistedState);
-  }
-  return createDefaultQuestState();
+  return version === STORE_VERSION
+    ? sanitizePersistedQuestState(persistedState, now, random)
+    : createDefaultQuestState();
 }
 
 export function sanitizePersistedQuestState(
@@ -105,7 +69,6 @@ export function sanitizePersistedQuestState(
       currentSession,
       completedSessions,
       stats,
-      legacyCompletionCount: safeNonNegativeInteger(value.legacyCompletionCount),
     };
   }
 
@@ -130,29 +93,6 @@ export function sanitizePersistedQuestState(
     currentSession,
     completedSessions,
     stats,
-    legacyCompletionCount: safeNonNegativeInteger(value.legacyCompletionCount),
-  };
-}
-
-function migrateLegacyQuestState(value: unknown): PersistedQuestState {
-  if (!isRecord(value)) return createDefaultQuestState();
-  return {
-    profile: {
-      points: 0,
-      redRopes: INITIAL_RED_ROPES,
-      avatarTheme: avatarThemeFromUnknown(
-        isRecord(value.profile) ? value.profile.avatarTheme : undefined,
-      ),
-      debugMode: false,
-    },
-    selectedMoodId: null,
-    moodSelectedAt: null,
-    offeredQuestIds: [],
-    offerSetsByMoodId: {},
-    currentSession: null,
-    completedSessions: [],
-    stats: cloneQuestStats(DEFAULT_QUEST_STATS),
-    legacyCompletionCount: legacyProgressCount(value.progressByQuestId),
   };
 }
 
@@ -368,28 +308,6 @@ function statsFromUnknown(
       latestCompletionAtByMoodId,
     ),
   };
-}
-
-function legacyProgressCount(value: unknown): number {
-  if (!isRecord(value)) return 0;
-  return Object.values(value).reduce<number>((total, progress) => {
-    if (!isRecord(progress)) return total;
-    const storedCount = finiteNumber(progress.completionCount);
-    if (storedCount !== null) {
-      return total + safeNonNegativeInteger(storedCount);
-    }
-    return total + legacyCompletedGamesCount(progress.completedGames);
-  }, 0);
-}
-
-function legacyCompletedGamesCount(value: unknown) {
-  if (!Array.isArray(value)) return 0;
-  return value.filter(
-    (entry) =>
-      isRecord(entry) &&
-      finiteNumber(entry.highscoreMs) !== null &&
-      finiteNumber(entry.achievedAt) !== null,
-  ).length;
 }
 
 function isMoodId(value: unknown): value is MoodId {
