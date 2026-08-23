@@ -101,7 +101,6 @@ export function ArcCard({
     handlePointerEnter,
     handlePointerLeave,
     handlePointerMove,
-    freezeTilt,
     resetTilt,
     rotateX,
     rotateY,
@@ -123,8 +122,8 @@ export function ArcCard({
           interactive && !selectedId && layerPresent && (revealCards || center)
             ? "auto"
             : "none",
-        // rotate,
-        // scale,
+        rotate,
+        scale,
         x,
         y,
         zIndex,
@@ -208,19 +207,14 @@ export function ArcCard({
             title: item.title,
             subtitle: item.subtitle,
           })}
+          animate="rest"
           style={getMoodArtStyle(item.id)}
-          animate={selected && !reduceMotion ? "hover" : "rest"}
           whileHover={reduceMotion || !center ? undefined : "hover"}
           whileFocus={reduceMotion || !center ? undefined : "focus"}
           onClick={(event) => {
             const keyboardClick = event.detail === 0;
-
-            if (center) {
-              if (!keyboardClick) freezeTilt();
-              onSelect(item.id, keyboardClick);
-            } else {
-              onCenter(index, keyboardClick);
-            }
+            if (center) onSelect(item.id, keyboardClick);
+            else onCenter(index, keyboardClick);
           }}
           onKeyDown={(event) => {
             if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
@@ -255,10 +249,6 @@ export function ArcCard({
               contentVisible={!foregroundExiting || primaryExit}
               layoutId={moodCardLayoutId(layoutSessionId, item.id)}
               reduceMotion={reduceMotion}
-              style={{
-                rotate,
-                scale,
-              }}
             >
               <motion.span
                 className={styles.moodCardVisual}
