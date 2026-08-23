@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "motion/react";
-import type { ReactNode } from "react";
+import { AnimatePresence, motion, MotionStyle } from "motion/react";
+import type { CSSProperties, ReactNode } from "react";
 import { CARD_LAYOUT_TRANSITION } from "../../../../lib/cardMotion";
 import styles from "../../../../App.module.css";
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
@@ -14,6 +14,7 @@ type SelectionCardBodyProps = {
   layoutId: string;
   reduceMotion: boolean;
   visible?: boolean;
+  style: MotionStyle;
 };
 
 type SelectionCardContentProps = {
@@ -37,13 +38,14 @@ export function SelectionCardBody({
   layoutId,
   reduceMotion,
   visible = true,
+  style,
 }: SelectionCardBodyProps) {
   return (
     <motion.span
       className={joinClassNames(styles.selectionCardBody, className)}
       layoutId={layoutId}
       layoutCrossfade={false}
-      style={{ visibility: visible ? undefined : "hidden" }}
+      style={{ ...style, visibility: visible ? undefined : "hidden" }}
       transition={{
         layout: reduceMotion ? { duration: 0 } : CARD_LAYOUT_TRANSITION,
       }}

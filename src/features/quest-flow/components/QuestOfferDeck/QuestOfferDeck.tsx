@@ -306,9 +306,6 @@ function QuestOfferCard({
       data-stack-position={stackPosition}
       layoutId={`quest-card-${layoutSessionId}-${item.id}`}
       layoutCrossfade={false}
-      style={{
-        rotate: isMobile ? 0 : (CARD_ROTATIONS[index] ?? 0),
-      }}
       initial={
         reduceMotion || shuffleSequence > 0
           ? false
@@ -521,6 +518,7 @@ function QuestOfferCard({
           }}
           style={{
             x: swipeX,
+            rotate: isMobile ? 0 : (CARD_ROTATIONS[index] ?? 0),
             rotateX,
             rotateY,
             transformPerspective: 1_000,

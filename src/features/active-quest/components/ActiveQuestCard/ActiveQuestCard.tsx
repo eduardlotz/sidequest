@@ -91,12 +91,7 @@ type Props = {
   onPurchaseRedRopes: () => boolean;
 };
 
-type Phase =
-  | "ready"
-  | "running"
-  | "paused"
-  | "cutting"
-  | "completed";
+type Phase = "ready" | "running" | "paused" | "cutting" | "completed";
 const PAUSE_PULL_DISTANCE = 44;
 const COMPLETION_FLIP_DURATION_MS = 900;
 const COMPLETION_FACE_REVEAL_MS = 225;
@@ -183,9 +178,7 @@ export function ActiveQuestCard({
     initiallyReady ? "ready" : initiallyPaused ? "paused" : "running",
   );
   const readyEntranceDropRef = useRef(
-    initiallyReady &&
-      !reduceMotion &&
-      Date.now() - session.revealedAt < 2_500,
+    initiallyReady && !reduceMotion && Date.now() - session.revealedAt < 2_500,
   );
   const [timerSettling, setTimerSettling] = useState(
     readyEntranceDropRef.current,
@@ -337,11 +330,7 @@ export function ActiveQuestCard({
   useEffect(() => {
     if (!cardFocused) return;
 
-    if (
-      !isMobileViewport ||
-      phase === "cutting" ||
-      phase === "completed"
-    ) {
+    if (!isMobileViewport || phase === "cutting" || phase === "completed") {
       setCardFocused(false);
       return;
     }
@@ -982,12 +971,11 @@ export function ActiveQuestCard({
           animate={{
             x: completed ? completionOffset.x : 0,
             y: completed ? completionOffset.y : 0,
-            rotate: cardFocused || completed ? 0 : -3.5,
           }}
         >
           <motion.div
             className={styles.activeCardDisplay}
-            initial={reduceMotion ? false : { scale: 1 }}
+            initial={reduceMotion ? false : { scale: 1, rotate: 0 }}
             animate={{
               scale: completed
                 ? isMobileViewport
@@ -996,134 +984,144 @@ export function ActiveQuestCard({
                 : cardFocused
                   ? 1
                   : activeCardScale,
+              rotate: cardFocused || completed || !revealFinished ? 0 : -3.5,
             }}
             transition={
               reduceMotion
                 ? { duration: 0 }
-                : completed
-                  ? {
-                      duration: COMPLETION_FLIP_DURATION_MS / 1000,
-                      ease: [0.42, 0, 0.18, 1],
-                    }
-                  : { duration: 0.62, ease: SELECTION_HANDOFF_EASE }
+                : {
+                    scale: completed
+                      ? {
+                          duration: COMPLETION_FLIP_DURATION_MS / 1000,
+                          ease: [0.42, 0, 0.18, 1],
+                        }
+                      : { duration: 0.62, ease: SELECTION_HANDOFF_EASE },
+                    rotate: {
+                      type: "spring",
+                      stiffness: 220,
+                      damping: 23,
+                      mass: 0.96,
+                    },
+                  }
             }
           >
-          <AnimatePresence>
-            {completed && (
-              <motion.p
-                className={styles.completionAwardBanner}
-                role="status"
-                aria-label={t("ui.timer.coinsEarnedLabel", {
-                  points: completionAward,
-                })}
-                initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: reduceMotion ? 0 : 0.28 }}
-              >
-                <span>{t("ui.timer.coinsEarned")}</span>
-                <strong>{completionAward}</strong>
-                <CoinIcon />
-              </motion.p>
-            )}
-          </AnimatePresence>
-          <div className={styles.revealFlip}>
-            <div className={styles.revealFront}>
-              <motion.div
-                className={styles.completionFlip}
-                initial={false}
-                animate={{
-                  rotateY: completed ? 360 : 0,
-                }}
-                transition={
-                  reduceMotion
-                    ? { duration: 0 }
-                    : {
-                        duration: completed
-                          ? COMPLETION_FLIP_DURATION_MS / 1000
-                          : 0,
-                        ease: CARD_FLIP_EASE,
-                      }
-                }
-              >
-                <article
-                  ref={cardHitAreaRef}
-                  className={styles.activeCardHitArea}
-                  data-sound-card
-                  data-flow-focus
-                  data-hover-ready={cardHoverArmed ? "true" : undefined}
-                  data-sound-skip={cardHoverArmed ? undefined : "true"}
-                  tabIndex={-1}
-                  onPointerEnter={(event) => {
-                    if (cardHoverArmed) handleCardPointerEnter(event);
-                  }}
-                  onPointerMove={(event) => {
-                    if (cardHoverArmed) handleCardPointerMove(event);
-                  }}
-                  onPointerLeave={(event) => {
-                    handleCardPointerLeave(event);
-                    if (event.pointerType === "mouse") setCardHoverArmed(true);
-                  }}
-                  onPointerOut={(event) => {
-                    handleCardPointerLeave(event);
-                  }}
-                  aria-label={t("ui.quest.activeLabel", {
-                    mood: quest.mood.title,
-                    title: quest.name,
+            <AnimatePresence>
+              {completed && (
+                <motion.p
+                  className={styles.completionAwardBanner}
+                  role="status"
+                  aria-label={t("ui.timer.coinsEarnedLabel", {
+                    points: completionAward,
                   })}
+                  initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.28 }}
                 >
-                  <QuestCard
-                    className={styles.activeQuestCard}
-                    completed={showFinishedFace}
-                    genres={quest.genres}
-                    minimumDurationMinutes={quest.minimumDurationMinutes}
-                    moodTitle={quest.mood.title}
-                    name={quest.name}
-                    objective={quest.objective}
-                    suggestedDurationMinutes={quest.suggestedDurationMinutes}
-                    style={{
-                      rotateX: completed ? 0 : cardRotateX,
-                      rotateY: completed ? 0 : cardRotateY,
-                      transformPerspective: 1000,
+                  <span>{t("ui.timer.coinsEarned")}</span>
+                  <strong>{completionAward}</strong>
+                  <CoinIcon />
+                </motion.p>
+              )}
+            </AnimatePresence>
+            <div className={styles.revealFlip}>
+              <div className={styles.revealFront}>
+                <motion.div
+                  className={styles.completionFlip}
+                  initial={false}
+                  animate={{
+                    rotateY: completed ? 360 : 0,
+                  }}
+                  transition={
+                    reduceMotion
+                      ? { duration: 0 }
+                      : {
+                          duration: completed
+                            ? COMPLETION_FLIP_DURATION_MS / 1000
+                            : 0,
+                          ease: CARD_FLIP_EASE,
+                        }
+                  }
+                >
+                  <article
+                    ref={cardHitAreaRef}
+                    className={styles.activeCardHitArea}
+                    data-sound-card
+                    data-flow-focus
+                    data-hover-ready={cardHoverArmed ? "true" : undefined}
+                    data-sound-skip={cardHoverArmed ? undefined : "true"}
+                    tabIndex={-1}
+                    onPointerEnter={(event) => {
+                      if (cardHoverArmed) handleCardPointerEnter(event);
                     }}
-                  />
-                  <AnimatePresence initial={false}>
-                    {showFinishedFace && (
-                      <motion.div
-                        className={`${styles.completedCardResult} ${styles.completedFrontResult}`}
-                        key="completed-card-result"
-                        role="status"
-                        aria-live="polite"
-                        initial={reduceMotion ? false : { opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: reduceMotion ? 0 : 0.2 }}
-                      >
-                        <CompletionCheckIcon />
-                        <span>{t("ui.timer.yourTime")}</span>
-                        <strong>{formatRunningDuration(elapsedMs)}</strong>
-                      </motion.div>
+                    onPointerMove={(event) => {
+                      if (cardHoverArmed) handleCardPointerMove(event);
+                    }}
+                    onPointerLeave={(event) => {
+                      handleCardPointerLeave(event);
+                      if (event.pointerType === "mouse")
+                        setCardHoverArmed(true);
+                    }}
+                    onPointerOut={(event) => {
+                      handleCardPointerLeave(event);
+                    }}
+                    aria-label={t("ui.quest.activeLabel", {
+                      mood: quest.mood.title,
+                      title: quest.name,
+                    })}
+                  >
+                    <QuestCard
+                      className={styles.activeQuestCard}
+                      completed={showFinishedFace}
+                      genres={quest.genres}
+                      minimumDurationMinutes={quest.minimumDurationMinutes}
+                      moodTitle={quest.mood.title}
+                      name={quest.name}
+                      objective={quest.objective}
+                      suggestedDurationMinutes={quest.suggestedDurationMinutes}
+                      style={{
+                        rotateX: completed ? 0 : cardRotateX,
+                        rotateY: completed ? 0 : cardRotateY,
+                        transformPerspective: 1000,
+                      }}
+                    />
+                    <AnimatePresence initial={false}>
+                      {showFinishedFace && (
+                        <motion.div
+                          className={`${styles.completedCardResult} ${styles.completedFrontResult}`}
+                          key="completed-card-result"
+                          role="status"
+                          aria-live="polite"
+                          initial={reduceMotion ? false : { opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: reduceMotion ? 0 : 0.2 }}
+                        >
+                          <CompletionCheckIcon />
+                          <span>{t("ui.timer.yourTime")}</span>
+                          <strong>{formatRunningDuration(elapsedMs)}</strong>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    {cardFocusAvailable && !cardFocused && (
+                      <button
+                        ref={cardFocusTriggerRef}
+                        className={styles.cardFocusTrigger}
+                        type="button"
+                        aria-label={t("ui.quest.focusCard", {
+                          title: quest.name,
+                        })}
+                        onClick={() => setCardFocused(true)}
+                      />
                     )}
-                  </AnimatePresence>
-                  {cardFocusAvailable && !cardFocused && (
-                    <button
-                      ref={cardFocusTriggerRef}
-                      className={styles.cardFocusTrigger}
-                      type="button"
-                      aria-label={t("ui.quest.focusCard", {
-                        title: quest.name,
-                      })}
-                      onClick={() => setCardFocused(true)}
+                  </article>
+                  {revealFinished && (
+                    <QuestCardBack
+                      className={`${styles.activeQuestCard} ${styles.completionCardBack}`}
                     />
                   )}
-                </article>
-                {revealFinished && (
-                  <QuestCardBack
-                    className={`${styles.activeQuestCard} ${styles.completionCardBack}`}
-                  />
-                )}
-              </motion.div>
+                </motion.div>
+              </div>
             </div>
-          </div>
           </motion.div>
         </motion.div>
       </div>

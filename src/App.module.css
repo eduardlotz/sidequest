@@ -256,9 +256,7 @@
   backface-visibility: hidden;
 }
 
-.activeQuest[data-reveal-complete="true"]:not(
-    [data-phase="completed"]
-  )
+.activeQuest[data-reveal-complete="true"]:not([data-phase="completed"])
   .activeCardHitArea
   .activeQuestCard:not([data-completed]) {
   animation: activeCardFloat 5.2s ease-in-out infinite;
@@ -700,8 +698,7 @@
   visibility: hidden !important;
 }
 
-.screen[data-active-handoff="pending"]
-  .previewCardProjection[data-selected] {
+.screen[data-active-handoff="pending"] .previewCardProjection[data-selected] {
   visibility: visible !important;
 }
 
@@ -962,7 +959,6 @@
 }
 
 @media (max-height: 700px) and (min-width: 821px) {
-
   .activeCardStage {
     width: min(25cqw, 365px);
   }
@@ -2196,7 +2192,6 @@
 }
 
 @media (max-height: 700px) and (min-width: 821px) {
-
   .previewCardSlot {
     width: min(21cqw, 270px);
   }
@@ -2621,18 +2616,12 @@
 .previewCardHitArea:not([data-selected]):hover
   .questSelectionCard
   .questCardFrontContent,
-.previewCardHitArea:focus-visible
-  .questSelectionCard
-  .questCardFrontContent {
+.previewCardHitArea:focus-visible .questSelectionCard .questCardFrontContent {
   opacity: 1;
 }
 
-.previewCardHitArea:not([data-selected]):hover
-  .questSelectionCard
-  .cardBrand,
-.previewCardHitArea:focus-visible
-  .questSelectionCard
-  .cardBrand {
+.previewCardHitArea:not([data-selected]):hover .questSelectionCard .cardBrand,
+.previewCardHitArea:focus-visible .questSelectionCard .cardBrand {
   opacity: 0.42;
 }
 
@@ -2773,9 +2762,7 @@
     opacity: 1;
   }
 
-  .previewCardSlot[data-stack-position="front"]
-    .questSelectionCard
-    .cardBrand {
+  .previewCardSlot[data-stack-position="front"] .questSelectionCard .cardBrand {
     opacity: 0.42;
   }
 
@@ -3811,8 +3798,7 @@
 }
 
 @media (max-width: 820px) {
-  .activeQuest[data-phase="ready"]:not([data-card-focused])
-    .activeCardStage {
+  .activeQuest[data-phase="ready"]:not([data-card-focused]) .activeCardStage {
     top: 72svh;
   }
 
