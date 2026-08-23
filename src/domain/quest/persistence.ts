@@ -22,7 +22,6 @@ import {
   moodSelectionExpired,
   safeAdd,
   safeNonNegativeInteger,
-  sanitizeGameTitle,
   uniqueStrings,
 } from "./rules";
 
@@ -203,7 +202,6 @@ function completionsFromUnknown(value: unknown): CompletedSession[] {
 
     const completedAt = finiteNumber(entry.completedAt);
     if (completedAt === null) continue;
-    const gameTitle = sanitizeGameTitle(entry.gameTitle);
     ids.add(entry.id);
     completions.push({
       id: entry.id,
@@ -212,7 +210,6 @@ function completionsFromUnknown(value: unknown): CompletedSession[] {
       durationMs: safeNonNegativeInteger(entry.durationMs),
       pointsAwarded: safeNonNegativeInteger(entry.pointsAwarded),
       completedAt: safeNonNegativeInteger(completedAt),
-      ...(gameTitle ? { gameTitle } : {}),
     });
     if (completions.length === STORED_COMPLETION_LIMIT) break;
   }

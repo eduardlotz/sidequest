@@ -86,7 +86,9 @@ export function ArcCard({
   const absoluteDistance = Math.min(2, Math.abs(discreteDistance));
   const centerStaggerDelay = absoluteDistance * CARD_CENTER_STAGGER_SECONDS;
   const direction = discreteDistance < 0 ? -1 : 1;
-  const returningOffsetX = center ? 0 : direction * (32 + absoluteDistance * 10);
+  const returningOffsetX = center
+    ? 0
+    : direction * (32 + absoluteDistance * 10);
   const returningOffsetY = center ? 36 : 28;
   const moodExitX = primaryExit ? 0 : direction * (42 + absoluteDistance * 12);
   const moodExitY = primaryExit ? 32 : 44;
@@ -150,12 +152,11 @@ export function ArcCard({
                 y: moodExitY,
               }
             : {
-                filter:
-                  returningFromQuests
-                    ? "none"
-                    : visible && !revealCards && !center
-                      ? "blur(5px)"
-                      : "blur(0px)",
+                filter: returningFromQuests
+                  ? "none"
+                  : visible && !revealCards && !center
+                    ? "blur(5px)"
+                    : "blur(0px)",
                 opacity: visible && (revealCards || center) ? 1 : 0,
                 scale: revealCards || center ? 1 : 0.92,
                 x:
@@ -255,7 +256,9 @@ export function ArcCard({
               >
                 <span className={styles.arcCardContent}>
                   <strong className={styles.arcCardTitle}>{item.title}</strong>
-                  <span className={styles.arcCardDescription}>{item.subtitle}</span>
+                  <span className={styles.arcCardDescription}>
+                    {item.subtitle}
+                  </span>
                 </span>
                 <motion.span
                   className={styles.moodIllustrationLayer}

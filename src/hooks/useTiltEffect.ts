@@ -39,8 +39,11 @@ export function useTiltEffect({
 
   const resetTilt = useCallback(
     (card: HTMLElement | null) => {
+      if (frozenRef.current) return;
+
       cardRef.current = card;
       activeRef.current = false;
+
       targetRef.current = {
         angle: currentRef.current.angle,
         glareOpacity: 0,
@@ -59,6 +62,24 @@ export function useTiltEffect({
     },
     [reduceMotion, rotateX, rotateY],
   );
+
+  const frozenRef = useRef(false);
+
+  const freezeTilt = useCallback(() => {
+    frozenRef.current = true;
+
+    if (frameRef.current !== null) {
+      window.cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    }
+
+    lastFrameAtRef.current = 0;
+  }, []);
+
+  const unfreezeTilt = useCallback(() => {
+    frozenRef.current = false;
+    resetTilt(cardRef.current);
+  }, [resetTilt]);
 
   useEffect(
     () => () => {
@@ -110,6 +131,7 @@ export function useTiltEffect({
   function readPointerTarget(event: ReactPointerEvent<HTMLElement>) {
     if (
       reduceMotion ||
+      frozenRef.current ||
       (event.pointerType !== "mouse" && event.pointerType !== "pen")
     ) {
       return false;
@@ -194,6 +216,8 @@ export function useTiltEffect({
     handlePointerLeave,
     handlePointerMove,
     resetTilt: () => resetTilt(cardRef.current),
+    freezeTilt,
+    unfreezeTilt,
     rotateX,
     rotateY,
   };
@@ -225,11 +249,7 @@ function isSettled(current: TiltState, target: TiltState) {
   );
 }
 
-function updateGlare(
-  card: HTMLElement | null,
-  angle: number,
-  opacity: number,
-) {
+function updateGlare(card: HTMLElement | null, angle: number, opacity: number) {
   card?.style.setProperty("--shine-angle", `${angle}deg`);
   card?.style.setProperty("--shine-opacity", `${opacity}`);
 }

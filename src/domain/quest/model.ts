@@ -2,7 +2,7 @@ import type { MoodDefinition, MoodId } from "../../data/moods";
 import type { QuestDefinition } from "../../data/quests";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 9;
+export const STORE_VERSION = 10;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const SHUFFLE_COST = 25;
 export const QUEST_OFFER_COUNT = 3;
@@ -13,7 +13,6 @@ export const RED_ROPE_BUNDLE_COST = 10;
 export const POINTS_PER_MINUTE = 5;
 export const POINTS_DURATION_CAP_MS = 60 * 60 * 1_000;
 export const MAX_COMPLETION_POINTS = 300;
-export const MAX_GAME_TITLE_LENGTH = 80;
 
 export const AVATAR_THEMES = [
   "default",
@@ -55,7 +54,6 @@ export type CompletedSession = {
   durationMs: number;
   pointsAwarded: number;
   completedAt: number;
-  gameTitle?: string;
 };
 
 export type QuestStats = {
@@ -94,8 +92,7 @@ export type QuestActions = {
   discardCurrentSession: () => boolean;
   purchaseRedRopes: () => boolean;
   setDebugMode: (enabled: boolean) => void;
-  replayQuest: (questId: string) => boolean;
-  completeQuest: (gameTitle?: string) => CompletedSession | null;
+  completeQuest: () => CompletedSession | null;
 };
 
 export type QuestStore = QuestState & QuestActions;
@@ -112,15 +109,7 @@ export type PersistedQuestState = Pick<
   | "stats"
 >;
 
-export type Quest = QuestDefinition & {
-  mood: MoodDefinition;
-  completionCount: number;
-};
-
-export type CompletedQuest = CompletedSession & {
-  mood: MoodDefinition;
-  quest: QuestDefinition;
-};
+export type Quest = QuestDefinition & { mood: MoodDefinition };
 
 export const DEFAULT_PROFILE: UserProfile = {
   points: 0,

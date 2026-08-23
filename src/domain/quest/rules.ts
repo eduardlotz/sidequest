@@ -4,7 +4,6 @@ import {
   DEFAULT_PROFILE,
   DEFAULT_QUEST_STATS,
   MAX_COMPLETION_POINTS,
-  MAX_GAME_TITLE_LENGTH,
   MOOD_RESET_MS,
   POINTS_DURATION_CAP_MS,
   POINTS_PER_MINUTE,
@@ -85,48 +84,6 @@ export function calculateCompletionPoints(durationMs: number) {
     MAX_COMPLETION_POINTS,
     Math.floor((scoringDurationMs * POINTS_PER_MINUTE) / 60_000),
   );
-}
-
-export function sanitizeGameTitle(value: unknown) {
-  if (typeof value !== "string") return undefined;
-  const normalized = value.trim().replace(/\s+/g, " ");
-  if (!normalized) return undefined;
-  return normalized.slice(0, MAX_GAME_TITLE_LENGTH).trim() || undefined;
-}
-
-export function replayOfferSet(
-  moodId: MoodId,
-  questId: string,
-  cachedOffers: readonly string[] | undefined,
-  random: () => number,
-) {
-  const validCachedOffers = uniqueStrings(cachedOffers).filter(
-    (candidateId) => QUEST_CORES_BY_ID[candidateId]?.moodId === moodId,
-  );
-  if (
-    validCachedOffers.length === QUEST_OFFER_COUNT &&
-    validCachedOffers.includes(questId)
-  ) {
-    return validCachedOffers;
-  }
-
-  const offeredQuestIds = [
-    questId,
-    ...validCachedOffers.filter((candidateId) => candidateId !== questId),
-  ].slice(0, QUEST_OFFER_COUNT);
-  if (offeredQuestIds.length < QUEST_OFFER_COUNT) {
-    const generated = generateQuestOffers(
-      moodId,
-      random,
-      new Set(offeredQuestIds),
-    );
-    for (const generatedQuestId of generated) {
-      if (offeredQuestIds.includes(generatedQuestId)) continue;
-      offeredQuestIds.push(generatedQuestId);
-      if (offeredQuestIds.length === QUEST_OFFER_COUNT) break;
-    }
-  }
-  return offeredQuestIds;
 }
 
 export function statsAfterCompletion(
