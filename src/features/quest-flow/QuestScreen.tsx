@@ -30,7 +30,6 @@ export function QuestScreen({
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const {
     completeQuest,
-    completedSessions,
     currentSession,
     discardCurrentSession,
     editMood,
@@ -50,7 +49,6 @@ export function QuestScreen({
   } = useQuestStore(
     useShallow((state) => ({
       completeQuest: state.completeQuest,
-      completedSessions: state.completedSessions,
       currentSession: state.currentSession,
       discardCurrentSession: state.discardCurrentSession,
       editMood: state.editMood,
@@ -73,7 +71,7 @@ export function QuestScreen({
   useMoodWindowRefresh(currentSession, moodSelectedAt, refreshMoodWindow);
 
   const currentQuest = currentSession
-    ? hydrateQuest(currentSession.questId, completedSessions, language)
+    ? hydrateQuest(currentSession.questId, language)
     : null;
   const selectedMood = selectedMoodId
     ? localizeMood(selectedMoodId, language)
@@ -86,16 +84,6 @@ export function QuestScreen({
       }),
     [language, offeredQuestIds],
   );
-  const previousCompletions = useMemo(
-    () =>
-      currentSession
-        ? completedSessions.filter(
-            (completion) => completion.questId === currentSession.questId,
-          )
-        : [],
-    [completedSessions, currentSession],
-  );
-
   return (
     <motion.div
       className={styles.questScreen}
@@ -108,7 +96,6 @@ export function QuestScreen({
       <QuestScreenContent
         currentQuest={currentQuest}
         currentSession={currentSession}
-        previousCompletions={previousCompletions}
         selectedMood={selectedMood}
         offeredQuests={offeredQuests}
         points={profile.points}

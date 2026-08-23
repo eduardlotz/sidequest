@@ -5,15 +5,13 @@ import {
   type QuestCoreDefinition,
   type QuestTranslation,
 } from "../questTypes";
-import { AUTHORED_QUESTS } from "./catalog";
+import { ALL_QUESTS } from "./catalog";
 
 export type {
   AuthoredQuestDefinition,
   MoodId,
   MoodQuestDefinition as QuestDefinition,
   QuestCoreDefinition,
-  QuestTip,
-  QuestTipScope,
   QuestTranslation,
 } from "../questTypes";
 
@@ -22,7 +20,7 @@ type CatalogEntry = {
   moodId: MoodId;
   minimumDurationMinutes: number;
   suggestedDurationMinutes: number;
-  rewardPoints: number;
+  genres: readonly string[];
   translations: Readonly<Record<"en" | "de", QuestTranslation>>;
 };
 
@@ -35,7 +33,7 @@ function generatedQuestId(moodId: MoodId): string {
   return `${moodId}-${String(moodQuestCounts[moodId]).padStart(3, "0")}`;
 }
 
-export const QUEST_CATALOG: readonly CatalogEntry[] = AUTHORED_QUESTS.map(
+export const QUEST_CATALOG: readonly CatalogEntry[] = ALL_QUESTS.map(
   (quest) => ({
     ...quest,
     id: generatedQuestId(quest.moodId),
@@ -63,13 +61,13 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     moodId,
     minimumDurationMinutes,
     suggestedDurationMinutes,
-    rewardPoints,
+    genres,
   }) => ({
     id,
     moodId,
     minimumDurationMinutes,
     suggestedDurationMinutes,
-    rewardPoints,
+    genres,
   }),
 );
 
@@ -85,9 +83,7 @@ export const QUESTS_BY_MOOD = MOOD_IDS.reduce(
   {} as Record<MoodId, readonly MoodQuestDefinition[]>,
 );
 
-export function questsForMood(
-  moodId: MoodId,
-): readonly MoodQuestDefinition[] {
+export function questsForMood(moodId: MoodId): readonly MoodQuestDefinition[] {
   return QUESTS_BY_MOOD[moodId];
 }
 

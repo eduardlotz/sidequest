@@ -13,19 +13,13 @@ import { useTranslation } from "react-i18next";
 import { MOODS, type MoodDefinition, type MoodId } from "../../../../data/moods";
 import type { QuestDefinition } from "../../../../data/quests";
 import { formatScore } from "../../../../lib/format";
-import { playSound } from "../../../../lib/sound";
 import { localizeMood } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
-import type {
-  CompletedSession,
-  Quest,
-  QuestSession,
-} from "../../../../domain/quest/model";
+import type { Quest, QuestSession } from "../../../../domain/quest/model";
 import { ActiveQuestCard } from "../../../active-quest/components/ActiveQuestCard/ActiveQuestCard";
 import { ArcDeck, type ArcDeckItem } from "../ArcDeck/ArcDeck";
 import { CoinIcon } from "../../../../shared/ui/Icons/Icons";
 import { QuestOfferDeck } from "../QuestOfferDeck/QuestOfferDeck";
-import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import styles from "../../../../App.module.css";
 import {
   NAV_ENTRY_SPRING,
@@ -39,11 +33,12 @@ const NAV_ITEM_TRANSITION = NAV_ENTRY_SPRING;
 
 const SELECTION_RESET_FADE_OUT_DURATION = 0.22;
 const SELECTION_RESET_FADE_IN_DURATION = 0.28;
+const SHUFFLE_SWAP_DELAY_MS = 560;
+const SHUFFLE_COMPLETE_DELAY_MS = 1_350;
 
 type Props = {
   currentQuest: Quest | null;
   currentSession: QuestSession | null;
-  previousCompletions: readonly CompletedSession[];
   selectedMood: MoodDefinition | null;
   offeredQuests: readonly QuestDefinition[];
   points: number;
@@ -61,7 +56,7 @@ type Props = {
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
-  onComplete: (gameTitle: string) => void;
+  onComplete: () => void;
   onCoinFlightStart: (pointsAwarded: number) => void;
   onCoinHit: (pointsReceived: number) => void;
   onPurchaseRedRopes: () => boolean;
@@ -70,7 +65,6 @@ type Props = {
 export function QuestScreenContent({
   currentQuest,
   currentSession,
-  previousCompletions,
   selectedMood,
   offeredQuests,
   points,
@@ -123,7 +117,8 @@ export function QuestScreenContent({
     returnedFromActive || previousSelectionModeRef.current === "quests"
       ? "bottom"
       : "shared";
-  const [shuffleRotation, setShuffleRotation] = useState(0);
+  const [shuffleSequence, setShuffleSequence] = useState(0);
+  const [isShuffling, setIsShuffling] = useState(false);
   const [editingMood, setEditingMood] = useState(false);
   const [selectionPresenceGeneration, setSelectionPresenceGeneration] =
     useState(0);
@@ -134,6 +129,8 @@ export function QuestScreenContent({
   const questLayoutSessionId =
     `${layoutSessionIdRef.current}-quests-${questDeckGeneration}`;
   const editMoodFrameRef = useRef<number | null>(null);
+  const shuffleTimeoutRef = useRef<number | null>(null);
+  const shuffleCompletionTimeoutRef = useRef<number | null>(null);
   const moodItems = useMemo<ArcDeckItem[]>(
     () =>
       MOODS.flatMap((mood) => {
@@ -178,19 +175,41 @@ export function QuestScreenContent({
       if (editMoodFrameRef.current !== null) {
         window.cancelAnimationFrame(editMoodFrameRef.current);
       }
+      if (shuffleTimeoutRef.current !== null) {
+        window.clearTimeout(shuffleTimeoutRef.current);
+      }
+      if (shuffleCompletionTimeoutRef.current !== null) {
+        window.clearTimeout(shuffleCompletionTimeoutRef.current);
+      }
     },
     [],
   );
 
   function shuffleCards() {
-    if (!onShuffle()) return;
-    playSound("shuffle");
-    setShuffleRotation((rotation) => rotation + 360);
+    if (isShuffling) return;
+    if (reduceMotion) {
+      onShuffle();
+      return;
+    }
+
+    setIsShuffling(true);
+    setShuffleSequence((sequence) => sequence + 1);
+    shuffleTimeoutRef.current = window.setTimeout(() => {
+      onShuffle();
+      shuffleTimeoutRef.current = null;
+    }, SHUFFLE_SWAP_DELAY_MS);
+    shuffleCompletionTimeoutRef.current = window.setTimeout(() => {
+      setQuestDeckGeneration((generation) => generation + 1);
+      setIsShuffling(false);
+      shuffleCompletionTimeoutRef.current = null;
+    }, SHUFFLE_COMPLETE_DELAY_MS);
   }
 
   function selectMood(moodId: MoodId) {
     const selected = onSelectMood(moodId);
     if (selected) {
+      setShuffleSequence(0);
+      setIsShuffling(false);
       setEditingMood(false);
       setQuestSelectionClosing(false);
     }
@@ -198,7 +217,7 @@ export function QuestScreenContent({
   }
 
   function editMood() {
-    if (editingMood || editMoodFrameRef.current !== null) return;
+    if (editingMood || isShuffling || editMoodFrameRef.current !== null) return;
     setEditingMood(true);
     setSelectionPresenceGeneration((generation) => generation + 1);
     if (reduceMotion) {
@@ -257,7 +276,6 @@ export function QuestScreenContent({
               <ActiveQuestCard
                 quest={currentQuest}
                 session={currentSession}
-                previousCompletions={previousCompletions}
                 layoutSessionId={questLayoutSessionId}
                 coins={points}
                 redRopes={redRopes}
@@ -352,38 +370,6 @@ export function QuestScreenContent({
                           </span>
                           <span>{t("ui.task.chooseSuffix")}</span>
                         </motion.p>
-
-                        <motion.div
-                          className={styles.questShuffleControl}
-                          initial={reduceMotion ? false : { opacity: 0 }}
-                          animate={{
-                            opacity: selectionControlsExiting ? 0 : 1,
-                          }}
-                          exit={{ opacity: 0 }}
-                          transition={{
-                            duration: reduceMotion ? 0 : 0.18,
-                          }}
-                        >
-                          <SolidButton
-                            data-sound-click-skip
-                            type="button"
-                            disabled={points < shuffleCost}
-                            aria-label={t("ui.task.shuffleLabel", {
-                              cost: formatScore(shuffleCost, language),
-                              available: formatScore(points, language),
-                            })}
-                            onClick={shuffleCards}
-                          >
-                            {t("ui.task.shuffleCards")}
-                          </SolidButton>
-                          <span className={styles.inlineCoinCopy}>
-                            <span>{t("ui.task.shufflePricePrefix")}</span>
-                            <strong>
-                              {formatScore(shuffleCost, language)}
-                            </strong>
-                            <CoinIcon />
-                          </span>
-                        </motion.div>
                       </header>
 
                       <QuestOfferDeck
@@ -397,12 +383,56 @@ export function QuestScreenContent({
                             : undefined
                         }
                         returningToMoods={editingMood}
+                        shuffleSequence={shuffleSequence}
+                        shuffling={isShuffling}
                         onSelectionStart={() => {
+                          setShuffleSequence(0);
+                          setIsShuffling(false);
                           setQuestSelectionClosing(true);
                           setActiveHandoffStarted(false);
                         }}
-                        onSelect={onRevealQuest}
+                        onSelect={(questId) => {
+                          onRevealQuest(questId);
+                          window.requestAnimationFrame(() =>
+                            setActiveHandoffStarted(true),
+                          );
+                        }}
                       />
+
+                      <motion.div
+                        className={styles.questShuffleControl}
+                        initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                        animate={{
+                          opacity: selectionControlsExiting ? 0 : 1,
+                          y: selectionControlsExiting ? 8 : 0,
+                        }}
+                        exit={{ opacity: 0, y: 8 }}
+                        transition={{
+                          duration: reduceMotion ? 0 : 0.18,
+                        }}
+                      >
+                        <span
+                          className={`${styles.moodEditControl} ${styles.questShuffleButton}`}
+                        >
+                          <button
+                            data-sound-click-skip
+                            type="button"
+                            disabled={isShuffling || points < shuffleCost}
+                            aria-label={t("ui.task.shuffleLabel", {
+                              cost: formatScore(shuffleCost, language),
+                              available: formatScore(points, language),
+                            })}
+                            onClick={shuffleCards}
+                          >
+                            {t("ui.task.shuffleCards")}
+                          </button>
+                        </span>
+                        <span className={styles.inlineCoinCopy}>
+                          <span>{t("ui.task.shufflePricePrefix")}</span>
+                          <strong>{formatScore(shuffleCost, language)}</strong>
+                          <CoinIcon />
+                        </span>
+                      </motion.div>
                     </>
                   </SelectionLayer>
                 ) : (

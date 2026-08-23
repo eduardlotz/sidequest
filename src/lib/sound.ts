@@ -1,5 +1,4 @@
 import {
-  defineSequence,
   defineSound,
   ensureReady,
   setMasterVolume,
@@ -102,11 +101,7 @@ const playTimerGrab = defineSound(core.select);
 const playButtonClick = defineSound(minimalClick);
 const playCompletion = defineSound(organic.notification);
 const playMoodStep = defineSound(core.tap);
-const playShuffle = defineSequence([
-  { sound: organic.tap, at: 0, volume: 0.42 },
-  { sound: organic.tap, at: 0.045, volume: 0.3 },
-  { sound: organic.tap, at: 0.09, volume: 0.48 },
-]);
+const playShuffle = defineSound(core.tap);
 let nextCoinHit = 0;
 
 const sounds: Record<SoundName, () => unknown> = {
@@ -131,7 +126,7 @@ const sounds: Record<SoundName, () => unknown> = {
   modalClose: defineSound(core.modalClose),
   modalOpen: defineSound(core.modalOpen),
   moodStep: () => playMoodStep({ volume: 0.15 }),
-  shuffle: playShuffle,
+  shuffle: () => playShuffle({ volume: 0.22 }),
   slide: defineSound(core.slide),
   tabSwitch: defineSound(core.tabSwitch),
   timerGrab: () => playTimerGrab({ volume: 0.5 }),

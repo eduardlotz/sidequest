@@ -4,11 +4,7 @@ import {
   QUEST_TRANSLATIONS_BY_ID,
   type QuestDefinition,
 } from "../data/quests";
-import type {
-  CompletedQuest,
-  CompletedSession,
-  Quest,
-} from "../domain/quest/model";
+import type { Quest } from "../domain/quest/model";
 import i18n, { normalizeLanguage, type AppLanguage } from "./i18n";
 
 function translator(language: AppLanguage) {
@@ -45,7 +41,6 @@ export function localizeQuest(
 
 export function hydrateQuest(
   questId: string,
-  completedSessions: readonly CompletedSession[],
   language: AppLanguage,
 ): Quest | null {
   const quest = localizeQuest(questId, language);
@@ -56,23 +51,5 @@ export function hydrateQuest(
   return {
     ...quest,
     mood,
-    completionCount: completedSessions.filter(
-      (completion) => completion.questId === questId,
-    ).length,
-  };
-}
-
-export function hydrateCompletedQuest(
-  completion: CompletedSession,
-  language: AppLanguage,
-): CompletedQuest | null {
-  const quest = localizeQuest(completion.questId, language);
-  const mood = localizeMood(completion.moodId, language);
-  if (!quest || !mood || quest.moodId !== mood.id) return null;
-
-  return {
-    ...completion,
-    mood,
-    quest,
   };
 }

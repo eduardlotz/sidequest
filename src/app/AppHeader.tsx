@@ -25,20 +25,16 @@ const MOBILE_DEFAULT_SNAP_POINT = MOBILE_DRAWER_SNAP_POINTS[0];
 
 type Props = {
   displayedCoins: number;
-  historyOpen: boolean;
   profileTriggerRef: RefObject<HTMLButtonElement | null>;
   coinPulse: number;
   reduceMotion: boolean;
-  onOpenHistory: () => void;
 };
 
 export function AppHeader({
   displayedCoins,
-  historyOpen,
   profileTriggerRef,
   coinPulse,
   reduceMotion,
-  onOpenHistory,
 }: Props) {
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
@@ -96,11 +92,6 @@ export function AppHeader({
     if (open && !desktop) setProfileSnapPoint(MOBILE_DEFAULT_SNAP_POINT);
     playSound(open ? "drawerOpen" : "drawerClose");
     setProfileOpen(open);
-  }
-
-  function openHistory() {
-    handleProfileOpenChange(false);
-    onOpenHistory();
   }
 
   return (
@@ -168,32 +159,30 @@ export function AppHeader({
         </div>
       </motion.div>
 
-      {!historyOpen && (
-        <button
-          className={styles.brandMark}
-          data-sound-click-skip
-          type="button"
-          aria-label={t("ui.nav.spinLogo")}
-          title={t("ui.nav.spinLogo")}
-          onClick={() => setBrandRotation((rotation) => rotation + 360)}
+      <button
+        className={styles.brandMark}
+        data-sound-click-skip
+        type="button"
+        aria-label={t("ui.nav.spinLogo")}
+        title={t("ui.nav.spinLogo")}
+        onClick={() => setBrandRotation((rotation) => rotation + 360)}
+      >
+        <motion.div
+          animate={{ rotate: brandRotation }}
+          transition={
+            reduceMotion
+              ? { duration: 0 }
+              : {
+                  type: "spring",
+                  stiffness: 190,
+                  damping: 18,
+                  mass: 0.72,
+                }
+          }
         >
-          <motion.div
-            animate={{ rotate: brandRotation }}
-            transition={
-              reduceMotion
-                ? { duration: 0 }
-                : {
-                    type: "spring",
-                    stiffness: 190,
-                    damping: 18,
-                    mass: 0.72,
-                  }
-            }
-          >
-            <Logo />
-          </motion.div>
-        </button>
-      )}
+          <Logo />
+        </motion.div>
+      </button>
 
       <motion.div
         className={styles.navActionSlot}
@@ -272,7 +261,6 @@ export function AppHeader({
                 {!desktop && <Drawer.Handle className={styles.drawerHandle} />}
                 <ProfileDrawer
                   onDebugModeChange={setDebugMode}
-                  onOpenHistory={openHistory}
                   onPurchaseRedRopes={purchaseRedRopes}
                   onThemeChange={changeTheme}
                   profile={profile}

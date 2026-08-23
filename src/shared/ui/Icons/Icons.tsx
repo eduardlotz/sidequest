@@ -23,15 +23,6 @@ export function TimerIcon(props: IconProps) {
   );
 }
 
-export function HistoryIcon(props: IconProps) {
-  return (
-    <svg {...defaults} {...props}>
-      <path d="M3.4 12a8.6 8.6 0 1 0 2.7-6.3L3.5 8.2" />
-      <path d="M3.5 3.8v4.4h4.4M12 8.5V13l3 1.8" />
-    </svg>
-  );
-}
-
 export function ShuffleIcon(props: IconProps) {
   return (
     <svg {...defaults} {...props}>

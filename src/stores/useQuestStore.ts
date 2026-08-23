@@ -31,11 +31,9 @@ import {
   generateQuestOffers,
   moodSelectionExpired,
   moodWindowState,
-  replayOfferSet,
   rotateSessionOffer,
   safeAdd,
   sameStringArray,
-  sanitizeGameTitle,
   statsAfterCompletion,
 } from "../domain/quest/rules";
 
@@ -46,7 +44,6 @@ export {
   canCompleteQuest,
   generateQuestOffers,
   minimumQuestDurationMs,
-  sanitizeGameTitle,
 } from "../domain/quest/rules";
 export {
   migratePersistedQuestState,
@@ -323,45 +320,7 @@ function createQuestState(
         },
       }));
     },
-    replayQuest: (questId) => {
-      const state = get();
-      const quest = QUEST_CORES_BY_ID[questId];
-      if (state.currentSession || !quest) return false;
-
-      const now = options.now();
-      const expired = moodSelectionExpired(state.moodSelectedAt, now);
-      const offerSetsByMoodId = expired
-        ? {}
-        : { ...state.offerSetsByMoodId };
-      const offeredQuestIds = replayOfferSet(
-        quest.moodId,
-        quest.id,
-        offerSetsByMoodId[quest.moodId],
-        options.random,
-      );
-      if (offeredQuestIds.length !== QUEST_OFFER_COUNT) return false;
-
-      set({
-        selectedMoodId: quest.moodId,
-        moodSelectedAt: expired ? now : state.moodSelectedAt,
-        offeredQuestIds,
-        offerSetsByMoodId: {
-          ...offerSetsByMoodId,
-          [quest.moodId]: offeredQuestIds,
-        },
-        currentSession: {
-          sessionId: options.createSessionId(),
-          moodId: quest.moodId,
-          questId: quest.id,
-          revealedAt: now,
-          startedAt: null,
-          pausedAt: null,
-          pausedTotalMs: 0,
-        },
-      });
-      return true;
-    },
-    completeQuest: (gameTitle) => {
+    completeQuest: () => {
       const state = get();
       const session = state.currentSession;
       if (
@@ -384,7 +343,6 @@ function createQuestState(
         return null;
       }
 
-      const sanitizedGameTitle = sanitizeGameTitle(gameTitle);
       const pointsAwarded = calculateCompletionPoints(durationMs);
       const completedSession: CompletedSession = {
         id: session.sessionId,
@@ -393,7 +351,6 @@ function createQuestState(
         durationMs,
         pointsAwarded,
         completedAt,
-        ...(sanitizedGameTitle ? { gameTitle: sanitizedGameTitle } : {}),
       };
       const rotatedOffers = rotateSessionOffer(
         state,

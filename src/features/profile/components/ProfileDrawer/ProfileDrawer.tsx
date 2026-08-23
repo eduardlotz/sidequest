@@ -13,7 +13,6 @@ import { RopePurchaseRow } from "../../../active-quest/components/RopePurchaseRo
 
 type Props = {
   onDebugModeChange: (enabled: boolean) => void;
-  onOpenHistory: () => void;
   onPurchaseRedRopes: () => boolean;
   onThemeChange: (theme: ThemeChoice) => void;
   profile: UserProfile;
@@ -24,7 +23,6 @@ type Props = {
 
 export function ProfileDrawer({
   onDebugModeChange,
-  onOpenHistory,
   onPurchaseRedRopes,
   onThemeChange,
   profile,
@@ -108,16 +106,6 @@ export function ProfileDrawer({
               value={favoriteMood?.title ?? t("ui.profile.noFavoriteMood")}
             />
           </dl>
-          {/* Quest History stays hidden until QuestScreen has been fixed. */}
-          {/*
-            <button
-              className={styles.openHistoryButton}
-              type="button"
-              onClick={onOpenHistory}
-            >
-              {t("ui.profile.openHistory")}
-            </button>
-          */}
         </section>
 
         <section className={styles.profileSection}>

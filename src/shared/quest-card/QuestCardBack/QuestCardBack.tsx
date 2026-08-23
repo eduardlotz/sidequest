@@ -1,53 +1,24 @@
-import { markAssetUrl } from "../../../data/questMarks";
+import { motion } from "motion/react";
 import styles from "../../../App.module.css";
-import { QuestCardMeta } from "../QuestCardMeta/QuestCardMeta";
 import { Logo } from "../../../assets/logo";
 
-type Props =
-  | {
-      minimumDurationMinutes: number;
-      moodTitle: string;
-      name: string;
-      suggestedDurationMinutes: number;
-      title: string;
-      variant: "summary";
-    }
-  | {
-      variant: "pattern";
-    };
+type Props = {
+  className?: string;
+};
 
-export function QuestCardBack(props: Props) {
-  const summary = props.variant === "summary";
-
+export function QuestCardBack({ className }: Props) {
   return (
-    <span
-      className={styles.questCardBackContent}
-      data-summary={summary ? "true" : undefined}
+    <motion.span
+      className={[styles.questCardSurface, className].filter(Boolean).join(" ")}
       aria-hidden="true"
     >
-      <span className={styles.questCardBackPattern}>
-        {Array.from({ length: 35 }, (_, index) => (
-          <Logo key={index} />
-        ))}
-      </span>
-      {summary ? (
-        <span className={styles.questCardBackSummaryFace}>
-          <QuestCardMeta
-            durationFormat="long"
-            minimumDurationMinutes={props.minimumDurationMinutes}
-            moodTitle={props.moodTitle}
-            suggestedDurationMinutes={props.suggestedDurationMinutes}
-          />
-          <span className={styles.questCardBackSummaryCopy}>
-            <strong className={styles.questCardBackSummaryName}>
-              {props.name}
-            </strong>
-            <span className={styles.questCardBackSummaryTitle}>
-              {props.title}
-            </span>
-          </span>
+      <span className={styles.questCardBackContent}>
+        <span className={styles.questCardBackPattern}>
+          {Array.from({ length: 35 }, (_, index) => (
+            <Logo key={index} />
+          ))}
         </span>
-      ) : null}
-    </span>
+      </span>
+    </motion.span>
   );
 }
