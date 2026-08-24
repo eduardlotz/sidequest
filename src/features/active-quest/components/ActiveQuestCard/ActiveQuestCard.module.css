@@ -244,6 +244,10 @@
   translate: -50% 0;
 }
 
+.timerActionArea {
+  display: contents;
+}
+
 .timerHint {
   position: absolute;
   right: 24px;
@@ -655,31 +659,67 @@
   top: 35%;
 }
 
-:global([data-play-layout="compact"]) .timerReturnControl {
-  /* top: calc(100% - 110px); */
-  top: calc(100% - 200px);
+:global([data-play-layout="compact"]) .timerActionArea {
+  position: absolute;
+  top: 0;
+  bottom: auto;
+  left: 50%;
+  z-index: 12;
+  display: flex;
+  box-sizing: border-box;
+  height: 80svh;
+  width: min(calc(100% - 36px), 302px);
+  align-items: center;
+  justify-content: flex-end;
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: calc((var(--active-card-height) / 2) + 16px);
+  pointer-events: none;
+  translate: -50% 0;
 }
 
+:global([data-play-layout="compact"]) .timerReturnControl,
 :global([data-play-layout="compact"]) .timerHint,
 :global([data-play-layout="compact"])
   .activeQuest[data-phase="ready"]
   .timerHint {
-  bottom: 24px;
+  position: static;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  width: min(100%, 302px);
+  translate: none;
+}
+
+:global([data-play-layout="compact"]) .timerReturnControl {
+  order: 2;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin: 0;
+  pointer-events: auto;
+}
+
+:global([data-play-layout="compact"]) .timerHint {
+  order: 1;
+  z-index: auto;
+  margin: 0;
   font-size: 0.86rem;
   line-height: 1.35;
 }
 
 :global([data-play-layout="compact"]) .pausePanel {
-  top: 56%;
-  right: 18px;
+  position: static;
+  top: auto;
+  right: auto;
   bottom: auto;
-  left: 18px;
-}
-
-:global([data-play-layout="compact"])
-  .activeQuest[data-phase="paused"]
-  .pausePanel {
-  top: calc(35% + 64px);
+  left: auto;
+  z-index: auto;
+  width: 100%;
+  margin: 0;
+  order: 2;
+  pointer-events: auto;
+  translate: none;
   overflow: visible;
   padding-bottom: 0;
 }

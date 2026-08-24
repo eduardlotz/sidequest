@@ -1248,124 +1248,125 @@ export function ActiveQuestCard({
           </AnimatePresence>
         </motion.div>
 
-        <AnimatePresence>
-          {phase === "paused" && timerInteractionUiVisible && (
-            <motion.form
-              className={styles.pausePanel}
-              data-cut-ignore
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (!canComplete) return;
-                completeQuest();
-              }}
-              initial={reduceMotion ? false : "hidden"}
-              animate="visible"
-              exit={reduceMotion ? { opacity: 0 } : "exit"}
-              variants={pausePanelVariants}
-            >
-              {canComplete ? (
-                <>
-                  <motion.p
-                    className={styles.completionReward}
-                    aria-label={t("ui.timer.coinsEarnedLabel", {
-                      points: completionAward,
-                    })}
-                    variants={pausePanelItemVariants}
-                  >
-                    <span>{t("ui.timer.coinsEarned")}</span>
-                    <strong>{completionAward}</strong>
-                    <CoinIcon />
-                  </motion.p>
-                  <motion.button
-                    className={styles.saveAction}
-                    type="submit"
-                    variants={pausePanelItemVariants}
-                  >
-                    {t("ui.timer.completeQuest")}
-                  </motion.button>
-                </>
-              ) : (
-                <motion.div
-                  className={styles.pauseMinimumCard}
-                  role="status"
-                  variants={pausePanelItemVariants}
-                >
-                  <span className={styles.pauseInfoIcon} aria-hidden="true">
-                    <InfoIcon />
-                  </span>
-                  <p>
-                    <Trans
-                      i18nKey="ui.timer.completeAvailableIn"
-                      values={{
-                        time: completionRemainingLabel,
-                      }}
-                      components={{ strong: <strong /> }}
-                    />
-                  </p>
-                  <p>{t("ui.timer.pullContinue")}</p>
-                  <p className={styles.ropeAvailability}>
-                    <Trans
-                      i18nKey={
-                        hasNoRopes
-                          ? "ui.timer.noRopesRemaining"
-                          : "ui.timer.redRopesRemaining"
-                      }
-                      count={redRopes}
-                      values={{ count: redRopes }}
-                      components={{ strong: <strong /> }}
-                    />
-                  </p>
-                  {hasNoRopes && coins >= RED_ROPE_BUNDLE_COST && (
-                    <RopePurchaseRow
-                      coins={coins}
-                      context="pause"
-                      onPurchase={onPurchaseRedRopes}
-                      tone="inverse"
-                    />
-                  )}
-                </motion.div>
-              )}
-            </motion.form>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {readyUiVisible && !exiting && (
-            <motion.span
-              className={styles.timerReturnControl}
-              initial={reduceMotion ? false : { opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
-              transition={{ duration: reduceMotion ? 0 : 0.16 }}
-            >
-              <SolidButton
-                type="button"
-                variant="soft"
-                onClick={returnToSelection}
-              >
-                <span>{t("ui.timer.backToSelection")}</span>
-              </SolidButton>
-            </motion.span>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {!exiting &&
-            timerInteractionUiVisible &&
-            (phase !== "ready" || readyUiVisible) &&
-            (phase !== "paused" || canComplete) && (
-              <motion.div
-                className={styles.timerHint}
+        <div className={styles.timerActionArea}>
+          <AnimatePresence>
+            {phase === "paused" && timerInteractionUiVisible && (
+              <motion.form
+                className={styles.pausePanel}
                 data-cut-ignore
-                key={phase}
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  if (!canComplete) return;
+                  completeQuest();
+                }}
+                initial={reduceMotion ? false : "hidden"}
+                animate="visible"
+                exit={reduceMotion ? { opacity: 0 } : "exit"}
+                variants={pausePanelVariants}
+              >
+                {canComplete ? (
+                  <>
+                    <motion.p
+                      className={styles.completionReward}
+                      aria-label={t("ui.timer.coinsEarnedLabel", {
+                        points: completionAward,
+                      })}
+                      variants={pausePanelItemVariants}
+                    >
+                      <span>{t("ui.timer.coinsEarned")}</span>
+                      <strong>{completionAward}</strong>
+                      <CoinIcon />
+                    </motion.p>
+                    <motion.button
+                      className={styles.saveAction}
+                      type="submit"
+                      variants={pausePanelItemVariants}
+                    >
+                      {t("ui.timer.completeQuest")}
+                    </motion.button>
+                  </>
+                ) : (
+                  <motion.div
+                    className={styles.pauseMinimumCard}
+                    role="status"
+                    variants={pausePanelItemVariants}
+                  >
+                    <span className={styles.pauseInfoIcon} aria-hidden="true">
+                      <InfoIcon />
+                    </span>
+                    <p>
+                      <Trans
+                        i18nKey="ui.timer.completeAvailableIn"
+                        values={{
+                          time: completionRemainingLabel,
+                        }}
+                        components={{ strong: <strong /> }}
+                      />
+                    </p>
+                    <p>{t("ui.timer.pullContinue")}</p>
+                    <p className={styles.ropeAvailability}>
+                      <Trans
+                        i18nKey={
+                          hasNoRopes
+                            ? "ui.timer.noRopesRemaining"
+                            : "ui.timer.redRopesRemaining"
+                        }
+                        count={redRopes}
+                        values={{ count: redRopes }}
+                        components={{ strong: <strong /> }}
+                      />
+                    </p>
+                    {hasNoRopes && coins >= RED_ROPE_BUNDLE_COST && (
+                      <RopePurchaseRow
+                        coins={coins}
+                        context="pause"
+                        onPurchase={onPurchaseRedRopes}
+                        tone="inverse"
+                      />
+                    )}
+                  </motion.div>
+                )}
+              </motion.form>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {readyUiVisible && !exiting && (
+              <motion.span
+                className={styles.timerReturnControl}
                 initial={reduceMotion ? false : { opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.16,
-                  ease: "easeOut",
-                }}
+                transition={{ duration: reduceMotion ? 0 : 0.16 }}
               >
+                <SolidButton
+                  type="button"
+                  variant="soft"
+                  onClick={returnToSelection}
+                >
+                  <span>{t("ui.timer.backToSelection")}</span>
+                </SolidButton>
+              </motion.span>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {!exiting &&
+              timerInteractionUiVisible &&
+              (phase !== "ready" || readyUiVisible) &&
+              (phase !== "paused" || canComplete) && (
+                <motion.div
+                  className={styles.timerHint}
+                  data-cut-ignore
+                  key={phase}
+                  initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.16,
+                    ease: "easeOut",
+                  }}
+                >
                 {phase === "ready" ? (
                   <span className={styles.readyTimerInstructions}>
                     <Trans
@@ -1423,9 +1424,10 @@ export function ActiveQuestCard({
                     tone="inverse"
                   />
                 )}
-              </motion.div>
-            )}
-        </AnimatePresence>
+                </motion.div>
+              )}
+          </AnimatePresence>
+        </div>
       </motion.div>
     </div>
   );
