@@ -643,7 +643,6 @@ export function ActiveQuestCard({
     info: PanInfo,
   ) {
     if (!timerDraggingRef.current) return;
-    setTimerDragging(false);
     const rigHeight = rigRef.current?.clientHeight ?? window.innerHeight;
     const requested = dragTargetRef.current;
     const pullDistance = timerPullExtension(
@@ -684,6 +683,7 @@ export function ActiveQuestCard({
 
     timerDraggingRef.current = false;
     beginPhysicalReturn(destinationMode, info.velocity);
+    setTimerDragging(false);
   }
 
   function pointerInRig(event: ReactPointerEvent<HTMLDivElement>): Point {
@@ -846,11 +846,12 @@ export function ActiveQuestCard({
   const completionAward = calculateCompletionPoints(elapsedMs);
   const cardFocusAvailable = isMobileViewport && revealFinished && !exiting;
   const hasNoRopes = redRopes <= 0;
+  const timerInteractionUiVisible =
+    !timerDragging && ropeMode !== "resumePullback";
   const readyUiVisible =
     phase === "ready" &&
     revealFinished &&
-    ropeMode !== "resumePullback" &&
-    !timerDragging;
+    timerInteractionUiVisible;
   const canCutRope =
     (phase === "running" || phase === "paused") && (debugMode || redRopes > 0);
   function closeCardFocus() {
@@ -1215,7 +1216,8 @@ export function ActiveQuestCard({
             />
           </motion.div>
           <AnimatePresence>
-            {(readyUiVisible || (phase === "paused" && !timerDragging)) &&
+            {(readyUiVisible ||
+              (phase === "paused" && timerInteractionUiVisible)) &&
               !cancellationBlocked && (
                 <motion.span
                   className={styles.timerStatus}
@@ -1247,7 +1249,7 @@ export function ActiveQuestCard({
         </motion.div>
 
         <AnimatePresence>
-          {phase === "paused" && !timerDragging && (
+          {phase === "paused" && timerInteractionUiVisible && (
             <motion.form
               className={styles.pausePanel}
               data-cut-ignore
@@ -1301,19 +1303,24 @@ export function ActiveQuestCard({
                     />
                   </p>
                   <p>{t("ui.timer.pullContinue")}</p>
-                  <p>
-                    {hasNoRopes
-                      ? t("ui.timer.noRopesRemaining")
-                      : t("ui.timer.redRopesRemaining", {
-                          count: redRopes,
-                        })}
+                  <p className={styles.ropeAvailability}>
+                    <Trans
+                      i18nKey={
+                        hasNoRopes
+                          ? "ui.timer.noRopesRemaining"
+                          : "ui.timer.redRopesRemaining"
+                      }
+                      count={redRopes}
+                      values={{ count: redRopes }}
+                      components={{ strong: <strong /> }}
+                    />
                   </p>
                   {hasNoRopes && coins >= RED_ROPE_BUNDLE_COST && (
                     <RopePurchaseRow
                       coins={coins}
                       context="pause"
                       onPurchase={onPurchaseRedRopes}
-                      variant="black"
+                      tone="inverse"
                     />
                   )}
                 </motion.div>
@@ -1344,7 +1351,7 @@ export function ActiveQuestCard({
 
         <AnimatePresence>
           {!exiting &&
-            !timerDragging &&
+            timerInteractionUiVisible &&
             (phase !== "ready" || readyUiVisible) &&
             (phase !== "paused" || canComplete) && (
               <motion.div
@@ -1378,14 +1385,34 @@ export function ActiveQuestCard({
                       : t("ui.timer.pullPause")}
                   </span>
                 )}
-                {phase === "ready" && hasNoRopes && (
-                  <span>{t("ui.timer.noRopesRemaining")}</span>
+                {phase === "ready" && (
+                  <span className={styles.ropeAvailability}>
+                    <Trans
+                      i18nKey={
+                        hasNoRopes
+                          ? "ui.timer.noRopesRemaining"
+                          : "ui.timer.redRopesRemaining"
+                      }
+                      count={redRopes}
+                      values={{ count: redRopes }}
+                      components={{ strong: <strong /> }}
+                    />
+                  </span>
                 )}
                 {(phase === "running" || phase === "paused") && (
-                  <span>
-                    {hasNoRopes
-                      ? t("ui.timer.noRopesRemaining")
-                      : t("ui.timer.cutStop")}
+                  <span
+                    className={
+                      hasNoRopes ? styles.ropeAvailability : undefined
+                    }
+                  >
+                    {hasNoRopes ? (
+                      <Trans
+                        i18nKey="ui.timer.noRopesRemaining"
+                        components={{ strong: <strong /> }}
+                      />
+                    ) : (
+                      t("ui.timer.cutStop")
+                    )}
                   </span>
                 )}
                 {hasNoRopes && coins >= RED_ROPE_BUNDLE_COST && (
@@ -1393,7 +1420,7 @@ export function ActiveQuestCard({
                     coins={coins}
                     context="timer"
                     onPurchase={onPurchaseRedRopes}
-                    variant="black"
+                    tone="inverse"
                   />
                 )}
               </motion.div>
