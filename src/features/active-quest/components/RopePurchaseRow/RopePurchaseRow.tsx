@@ -5,17 +5,19 @@ import {
   RED_ROPE_BUNDLE_COST,
   RED_ROPE_BUNDLE_SIZE,
 } from "../../../../domain/quest/model";
-import styles from "../../../../App.module.css";
+import styles from "./RopePurchaseRow.module.css";
 import { CoinIcon } from "../../../../shared/ui/Icons/Icons";
 
 type Props = {
   coins: number;
+  context?: "pause" | "profile" | "timer";
   onPurchase: () => boolean;
   variant?: "neutral" | "black";
 };
 
 export function RopePurchaseRow({
   coins,
+  context = "profile",
   onPurchase,
   variant = "neutral",
 }: Props) {
@@ -24,7 +26,11 @@ export function RopePurchaseRow({
   const canPurchase = coins >= RED_ROPE_BUNDLE_COST;
 
   return (
-    <div className={styles.ropePurchaseRow} data-variant={variant}>
+    <div
+      className={styles.ropePurchaseRow}
+      data-context={context}
+      data-variant={variant}
+    >
       {/* <span className={styles.ropePurchaseCopy}>
         <strong>{t("ui.profile.buyRopeInline")}</strong>
         <span>

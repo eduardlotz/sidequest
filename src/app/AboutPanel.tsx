@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { WordmarkLogo } from "../assets/wordmark";
 import { useTiltEffect } from "../hooks/useTiltEffect";
-import styles from "../App.module.css";
+import styles from "./AboutPanel.module.css";
 
 type Props = {
   reduceMotion: boolean;

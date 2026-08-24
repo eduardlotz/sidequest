@@ -1,0 +1,120 @@
+.topNavigation {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  left: 32px;
+  z-index: 120;
+  display: flex;
+  height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.topNavigation > * {
+  pointer-events: auto;
+}
+
+.navActionSlot,
+.navActionGroup,
+.profileTriggerImpact,
+.coinTriggerIconImpact {
+  display: flex;
+}
+
+.navActionGroup {
+  align-items: center;
+  gap: 4px;
+}
+
+.profileTriggerImpact,
+.coinTriggerIconImpact {
+  transform-origin: center;
+}
+
+.brandMark {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  display: grid;
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  border: 0;
+  place-items: center;
+  background: transparent;
+  color: var(--color-text);
+  opacity: 0.22;
+  translate: -50% 0;
+  cursor: pointer;
+  transition: opacity 150ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.brandMark svg {
+  width: 58px;
+  height: 58px;
+}
+
+.brandMark:focus-visible {
+  border-radius: 999px;
+  outline: 3px solid rgb(var(--color-text-rgb) / 0.24);
+  outline-offset: 3px;
+}
+
+.brandMark:disabled {
+  cursor: default;
+}
+
+.coinTriggerBalance {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.coinTriggerBalance strong {
+  display: inline-block;
+  font-weight: 700;
+  transform-origin: center;
+}
+
+.coinTriggerBalance svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.coinTriggerIconImpact {
+  flex: 0 0 auto;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .brandMark:not(:disabled):hover {
+    opacity: 0.32;
+  }
+}
+
+@media (max-width: 820px) {
+  .topNavigation {
+    top: 18px;
+    right: 18px;
+    left: 18px;
+  }
+
+  .brandMark {
+    top: -8px;
+    width: 46px;
+    height: 46px;
+  }
+
+  .brandMark svg {
+    width: 46px;
+    height: 46px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brandMark {
+    transition: none;
+  }
+}

@@ -1,0 +1,131 @@
+.ropePurchaseRow {
+  display: flex;
+  min-height: 31px;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.ropePurchaseRow[data-context="timer"] {
+  width: min(100%, 302px);
+  margin: 21px auto 0;
+  pointer-events: auto;
+}
+
+.ropePurchaseRow[data-context="pause"] {
+  width: min(100%, 302px);
+  margin: 21px auto 0;
+}
+
+.ropePurchaseCopy {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 5px;
+}
+
+.ropePurchaseCopy > span {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  gap: 3px;
+}
+
+.ropePurchaseRow[data-context="timer"] .ropePurchaseCopy > span,
+.ropePurchaseRow[data-context="pause"] .ropePurchaseCopy > span {
+  color: var(--color-text);
+  font-size: 0.78rem;
+}
+
+.ropePurchaseCopy strong {
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.ropePurchaseRow[data-context="timer"] .ropePurchaseCopy strong,
+.ropePurchaseRow[data-context="pause"] .ropePurchaseCopy strong {
+  font-size: 0.78rem;
+}
+
+.ropePurchaseCopy svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
+
+.drawerActionButton {
+  display: flex;
+  min-width: 68px;
+  min-height: 28px;
+  padding: 0 13px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  gap: 0.5rem;
+}
+
+.drawerActionButton span {
+  color: inherit;
+}
+
+.drawerActionButton > span:first-child {
+  opacity: 0.75;
+}
+
+.drawerActionButton[data-variant="black"] {
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-copy);
+}
+
+.drawerActionButton[data-variant="white"] {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.drawerActionButton:disabled {
+  cursor: not-allowed;
+}
+
+.drawerActionButton[data-variant="black"]:disabled {
+  background: color-mix(
+    in srgb,
+    var(--color-inverse-surface),
+    var(--color-canvas) 90%
+  );
+  color: color-mix(
+    in srgb,
+    var(--color-inverse-copy),
+    var(--color-text) 90%
+  );
+}
+
+.drawerActionButton:active:not(:disabled) {
+  scale: 0.98;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .drawerActionButton:hover:not(:disabled) {
+    filter: brightness(0.94);
+    cursor: pointer;
+  }
+
+  .drawerActionButton:hover:not(:disabled) > span:first-child {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawerActionButton {
+    transition: none;
+  }
+}

@@ -19,8 +19,11 @@ import type { Quest, QuestSession } from "../../../../domain/quest/model";
 import { ActiveQuestCard } from "../../../active-quest/components/ActiveQuestCard/ActiveQuestCard";
 import { ArcDeck, type ArcDeckItem } from "../ArcDeck/ArcDeck";
 import { CoinIcon } from "../../../../shared/ui/Icons/Icons";
+import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import { QuestOfferDeck } from "../QuestOfferDeck/QuestOfferDeck";
-import styles from "../../../../App.module.css";
+import { VisuallyHidden } from "../../../../shared/ui/VisuallyHidden/VisuallyHidden";
+import { PlayLayout } from "../../PlayLayout";
+import styles from "../../QuestFlowLayout.module.css";
 import {
   NAV_ENTRY_SPRING,
 } from "../../../../shared/motion/transitions";
@@ -234,9 +237,8 @@ export function QuestScreenContent({
   const selectionControlsExiting = editingMood || questSelectionClosing;
 
   return (
-    <section
+    <PlayLayout
       className={styles.screen}
-      data-active={isActive ? "true" : undefined}
       data-active-handoff={
         isActive && !reduceMotion
           ? activeHandoffStarted
@@ -246,13 +248,13 @@ export function QuestScreenContent({
       }
       aria-labelledby="task-screen-title"
     >
-      <h1 className={styles.srOnly} id="task-screen-title">
+      <VisuallyHidden as="h1" id="task-screen-title">
         {isActive
           ? t("ui.task.currentQuest")
           : selectedMood
             ? t("ui.task.chooseMoodQuest", { mood: selectedMood.title })
             : t("ui.task.selectMood")}
-      </h1>
+      </VisuallyHidden>
 
       <LayoutGroup id="quest-flow">
         <AnimatePresence
@@ -414,22 +416,19 @@ export function QuestScreenContent({
                           duration: reduceMotion ? 0 : 0.18,
                         }}
                       >
-                        <span
-                          className={`${styles.moodEditControl} ${styles.questShuffleButton}`}
+                        <SolidButton
+                          data-sound-click-skip
+                          type="button"
+                          variant="soft"
+                          disabled={isShuffling || points < shuffleCost}
+                          aria-label={t("ui.task.shuffleLabel", {
+                            cost: formatScore(shuffleCost, language),
+                            available: formatScore(points, language),
+                          })}
+                          onClick={shuffleCards}
                         >
-                          <button
-                            data-sound-click-skip
-                            type="button"
-                            disabled={isShuffling || points < shuffleCost}
-                            aria-label={t("ui.task.shuffleLabel", {
-                              cost: formatScore(shuffleCost, language),
-                              available: formatScore(points, language),
-                            })}
-                            onClick={shuffleCards}
-                          >
-                            {t("ui.task.shuffleCards")}
-                          </button>
-                        </span>
+                          {t("ui.task.shuffleCards")}
+                        </SolidButton>
                         <span className={styles.inlineCoinCopy}>
                           <span>{t("ui.task.shufflePricePrefix")}</span>
                           <strong>{formatScore(shuffleCost, language)}</strong>
@@ -477,6 +476,6 @@ export function QuestScreenContent({
           )}
         </AnimatePresence>
       </LayoutGroup>
-    </section>
+    </PlayLayout>
   );
 }

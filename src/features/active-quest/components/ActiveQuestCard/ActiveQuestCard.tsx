@@ -32,6 +32,7 @@ import {
 import { AnimatedElapsedTime } from "../AnimatedElapsedTime/AnimatedElapsedTime";
 import { CompletionCheckIcon } from "../CompletionCheckIcon/CompletionCheckIcon";
 import { CoinIcon, InfoIcon } from "../../../../shared/ui/Icons/Icons";
+import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import { QuestCardBack } from "../../../../shared/quest-card/QuestCardBack/QuestCardBack";
 import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
 import { RopePurchaseRow } from "../RopePurchaseRow/RopePurchaseRow";
@@ -51,11 +52,8 @@ import {
   type RopeRelease,
   type TimerPose,
 } from "../PhysicsRope/PhysicsRope";
-import styles from "../../../../App.module.css";
-import {
-  COMPACT_PLAY_VIEWPORT_QUERY,
-  useMediaQuery,
-} from "../../../../shared/hooks/useMediaQuery";
+import styles from "./ActiveQuestCard.module.css";
+import { usePlayLayout } from "../../../quest-flow/usePlayLayout";
 import {
   CARD_FLIP_EASE,
   SELECTION_HANDOFF_EASE,
@@ -165,7 +163,7 @@ export function ActiveQuestCard({
   const [phase, setPhase] = useState<Phase>(
     initiallyReady ? "ready" : initiallyPaused ? "paused" : "running",
   );
-  const isMobileViewport = useMediaQuery(COMPACT_PLAY_VIEWPORT_QUERY);
+  const { isCompact: isMobileViewport } = usePlayLayout();
   const activeCardScale = isMobileViewport ? 1.15 : 1.25;
   const [cardFocused, setCardFocused] = useState(false);
   const [cardHoverArmed, setCardHoverArmed] = useState(false);
@@ -854,8 +852,6 @@ export function ActiveQuestCard({
     !timerDragging;
   const canCutRope =
     (phase === "running" || phase === "paused") && (debugMode || redRopes > 0);
-  const returnTooltipId = `back-to-selection-tooltip-${session.sessionId}`;
-
   function closeCardFocus() {
     setCardFocused(false);
     window.requestAnimationFrame(() => cardFocusTriggerRef.current?.focus());
@@ -881,10 +877,8 @@ export function ActiveQuestCard({
       className={styles.activeQuest}
       style={getMoodAccentStyle(quest.moodId)}
       data-card-focused={cardFocused ? "true" : undefined}
-      data-no-ropes={hasNoRopes ? "true" : undefined}
       data-phase={phase}
       data-reveal-complete={revealFinished ? "true" : undefined}
-      data-timer-entrance={timerEntranceSettling ? "dropping" : "settled"}
       data-rope-mode={ropeMode}
     >
       {completed && (
@@ -1318,6 +1312,7 @@ export function ActiveQuestCard({
                   {hasNoRopes && coins >= RED_ROPE_BUNDLE_COST && (
                     <RopePurchaseRow
                       coins={coins}
+                      context="pause"
                       onPurchase={onPurchaseRedRopes}
                       variant="black"
                     />
@@ -1331,30 +1326,19 @@ export function ActiveQuestCard({
         <AnimatePresence>
           {readyUiVisible && !exiting && (
             <motion.span
-              className={`${styles.moodEditControl} ${styles.timerReturnControl}`}
+              className={styles.timerReturnControl}
               initial={reduceMotion ? false : { opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: reduceMotion ? 0 : -3 }}
               transition={{ duration: reduceMotion ? 0 : 0.16 }}
             >
-              <button
+              <SolidButton
                 type="button"
-                aria-describedby={
-                  isMobileViewport ? undefined : returnTooltipId
-                }
+                variant="soft"
                 onClick={returnToSelection}
               >
                 <span>{t("ui.timer.backToSelection")}</span>
-              </button>
-              {/* {!isMobileViewport && (
-                <span
-                  className={styles.moodEditTooltip}
-                  id={returnTooltipId}
-                  role="tooltip"
-                >
-                  {t("ui.timer.backToSelectionTooltip")}
-                </span>
-              )} */}
+              </SolidButton>
             </motion.span>
           )}
         </AnimatePresence>
@@ -1408,6 +1392,7 @@ export function ActiveQuestCard({
                 {hasNoRopes && coins >= RED_ROPE_BUNDLE_COST && (
                   <RopePurchaseRow
                     coins={coins}
+                    context="timer"
                     onPurchase={onPurchaseRedRopes}
                     variant="black"
                   />

@@ -4,7 +4,7 @@ import {
   type MutableRefObject,
   type RefObject,
 } from "react";
-import styles from "../../../../App.module.css";
+import styles from "./PhysicsRope.module.css";
 
 export type RopePoint = { x: number; y: number };
 

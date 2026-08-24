@@ -6,15 +6,13 @@ import { getMoodAccentStyle } from "../../../../data/questColors";
 import { useTiltEffect } from "../../../../hooks/useTiltEffect";
 import { CARD_LAYOUT_TRANSITION } from "../../../../lib/cardMotion";
 import { playSound } from "../../../../lib/sound";
-import styles from "../../../../App.module.css";
+import { VisuallyHidden } from "../../../../shared/ui/VisuallyHidden/VisuallyHidden";
+import styles from "./QuestOfferDeck.module.css";
 import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
 import { QuestCardBack } from "../../../../shared/quest-card/QuestCardBack/QuestCardBack";
 import { plainObjectiveText } from "../../../../shared/quest-card/QuestObjectiveText/QuestObjectiveText";
-import {
-  COMPACT_PLAY_VIEWPORT_QUERY,
-  useMediaQuery,
-} from "../../../../shared/hooks/useMediaQuery";
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
+import { usePlayLayout } from "../../usePlayLayout";
 
 export type QuestOfferItem = QuestDefinition;
 type QuestEntryMotion = "bottom" | "shared";
@@ -36,7 +34,6 @@ type CardProps = {
   entryMotion: QuestEntryMotion;
   item: QuestOfferItem;
   index: number;
-  isMobile: boolean;
   isTopCard: boolean;
   stackPosition: "front" | "middle" | "back";
   reduceMotion: boolean;
@@ -106,7 +103,7 @@ export function QuestOfferDeck({
   >(() => new Set());
   const deckRef = useRef<HTMLDivElement>(null);
   const selectionFrameRef = useRef<number | null>(null);
-  const isMobile = useMediaQuery(COMPACT_PLAY_VIEWPORT_QUERY);
+  const { isCompact } = usePlayLayout();
 
   useEffect(() => {
     setSelectedId(null);
@@ -189,7 +186,6 @@ export function QuestOfferDeck({
               entryMotion={entryMotion}
               item={item}
               index={index}
-              isMobile={isMobile}
               isTopCard={stackOffset === 0}
               key={`${layoutSessionId}-${index}`}
               layoutSessionId={layoutSessionId}
@@ -225,8 +221,8 @@ export function QuestOfferDeck({
         );
       })}
 
-      <span className={styles.srOnly} aria-live="polite">
-        {isMobile && items[activeCardIndex]
+      <VisuallyHidden aria-live="polite">
+        {isCompact && items[activeCardIndex]
           ? t("ui.offers.cardStatus", {
               current: activeCardIndex + 1,
               total: items.length,
@@ -240,7 +236,7 @@ export function QuestOfferDeck({
                   t("ui.offers.hiddenQuest"),
               })
             : ""}
-      </span>
+      </VisuallyHidden>
     </div>
   );
 }
@@ -249,7 +245,6 @@ function QuestOfferCard({
   entryMotion,
   item,
   index,
-  isMobile,
   isTopCard,
   layoutSessionId,
   stackPosition,
@@ -266,6 +261,7 @@ function QuestOfferCard({
   onSwipeStart,
 }: CardProps) {
   const { t } = useTranslation();
+  const { isCompact } = usePlayLayout();
   const suppressClickRef = useRef(false);
   const swipeX = useMotionValue(0);
   const swipeAnimationRef = useRef<ReturnType<typeof animate> | null>(null);
@@ -278,7 +274,7 @@ function QuestOfferCard({
     rotateY,
   } = useTiltEffect({
     maxTilt: 18,
-    reduceMotion: reduceMotion || isMobile,
+    reduceMotion,
   });
 
   useEffect(() => {
@@ -292,14 +288,14 @@ function QuestOfferCard({
     [],
   );
 
-  const centerOffsetX = isMobile
+  const centerOffsetX = isCompact
     ? 0
     : index === 0
       ? 150
       : index === 2
         ? -150
         : 0;
-  const centerStaggerDelay = isMobile
+  const centerStaggerDelay = isCompact
     ? stackPosition === "front"
       ? 0
       : stackPosition === "middle"
@@ -437,21 +433,21 @@ function QuestOfferCard({
     >
       <button
         className={styles.previewCardHitArea}
-        data-flow-focus={(isMobile ? isTopCard : index === 1) || undefined}
+        data-flow-focus={(isCompact ? isTopCard : index === 1) || undefined}
         data-sound-card
         data-quest-id={item.id}
         data-selected={selected || undefined}
         type="button"
         disabled={shuffling}
-        tabIndex={isMobile && !isTopCard ? -1 : undefined}
+        tabIndex={isCompact && !isTopCard ? -1 : undefined}
         style={getMoodAccentStyle(item.moodId)}
         onClick={() => {
-          if (suppressClickRef.current || (isMobile && !isTopCard)) return;
+          if (suppressClickRef.current || (isCompact && !isTopCard)) return;
           resetTilt();
           onSelect(item.id, CARD_ROTATIONS[index]);
         }}
         onKeyDown={(event) => {
-          if (!isMobile || !isTopCard) return;
+          if (!isCompact || !isTopCard) return;
           if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
             event.preventDefault();
             onCycle(event.key === "ArrowRight" ? 1 : -1, true);
@@ -470,7 +466,7 @@ function QuestOfferCard({
         <motion.span
           className={styles.previewCardTilt}
           drag={
-            isMobile &&
+            isCompact &&
             isTopCard &&
             !selectionStarted &&
             !shuffling
@@ -543,7 +539,7 @@ function QuestOfferCard({
           }}
           style={{
             x: swipeX,
-            rotate: isMobile ? 0 : (CARD_ROTATIONS[index] ?? 0),
+            rotate: isCompact ? 0 : (CARD_ROTATIONS[index] ?? 0),
             rotateX,
             rotateY,
             transformPerspective: 1_000,

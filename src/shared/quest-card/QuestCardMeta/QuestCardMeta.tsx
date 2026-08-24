@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import styles from "../../../App.module.css";
+import styles from "../QuestCard/QuestCard.module.css";
 
 type Props = {
   durationFormat?: "long" | "short";

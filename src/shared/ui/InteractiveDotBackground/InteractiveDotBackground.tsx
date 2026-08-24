@@ -1,16 +1,12 @@
 import { useEffect, useRef } from "react";
 import styles from "./InteractiveDotBackground.module.css";
 
-type Props = {
-  reduceMotion: boolean;
-};
-
 const DOT_SPACING = 29;
 const DOT_RADIUS = 1.55;
 const DOT_OPACITY = 0.07;
 const MAX_DEVICE_PIXEL_RATIO = 2;
 
-export function InteractiveDotBackground(_: Props) {
+export function InteractiveDotBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -56,7 +52,6 @@ export function InteractiveDotBackground(_: Props) {
 
     const observer = new MutationObserver(draw);
 
-    // TODO: refactor with theme hook or passed theme
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["data-theme"],

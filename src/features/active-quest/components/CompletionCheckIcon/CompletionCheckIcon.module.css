@@ -1,0 +1,23 @@
+.completionCheckIcon {
+  --completion-check-dark-cool: color-mix(in srgb, var(--accent) 38%, #07130e);
+  --completion-check-dark-1: color-mix(in srgb, var(--accent) 43%, #07100c);
+  --completion-check-dark-2: color-mix(in srgb, var(--accent) 47%, #07100c);
+  --completion-check-dark-3: color-mix(in srgb, var(--accent) 51%, #07100c);
+  --completion-check-mid: color-mix(in srgb, var(--accent) 76%, #0b2116);
+  --completion-check-bright: color-mix(in srgb, var(--accent) 88%, white);
+  --completion-check-main: var(--accent);
+  --completion-check-highlight: color-mix(in srgb, var(--accent) 64%, white);
+  display: block;
+  width: min(28cqw, 96px);
+  aspect-ratio: 1;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 26px rgb(var(--accent-rgb) / 0.3));
+  image-rendering: pixelated;
+  isolation: isolate;
+}
+
+.completionCheckIcon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

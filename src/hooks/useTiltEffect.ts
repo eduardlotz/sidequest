@@ -150,8 +150,8 @@ export function useTiltEffect({
         Math.atan2(event.clientX - centerX, -(event.clientY - centerY)) *
         (180 / Math.PI),
       glareOpacity: percentageY * maxGlare,
-      rotateX: maxTilt / 2 - percentageY * maxTilt,
-      rotateY: percentageX * maxTilt - maxTilt / 2,
+      rotateX: percentageY * maxTilt - maxTilt / 2,
+      rotateY: maxTilt / 2 - percentageX * maxTilt,
     };
     return true;
   }

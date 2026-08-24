@@ -1,5 +1,5 @@
 import completionCheckSvg from "../../../../assets/completion-check.svg?raw";
-import styles from "../../../../App.module.css";
+import styles from "./CompletionCheckIcon.module.css";
 
 export function CompletionCheckIcon() {
   return (

@@ -1,0 +1,279 @@
+.profileDrawer {
+  display: flex;
+  height: auto;
+  min-height: 0;
+  max-height: calc(100svh - 98px);
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--color-surface);
+  box-shadow: var(--raised-shadow);
+  flex-direction: column;
+}
+
+.profileDrawerHeader {
+  padding: 27px 25px 13px;
+  flex: 0 0 auto;
+}
+
+.profileDrawerTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.profileDrawerHeader h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+.profileDrawerHeader > p {
+  margin: 3px 44px 0 0;
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.profileDrawerBody {
+  display: block;
+  min-height: 0;
+  padding: 0 25px 20px;
+  overflow: auto;
+  flex: 0 1 auto;
+  overscroll-behavior: contain;
+}
+
+.profileDrawerBody > div {
+  height: 100%;
+}
+
+.profileSection {
+  padding: 13px 0 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.profileSection:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.profileSectionLabel {
+  margin: 0 0 9px;
+  color: var(--color-muted);
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.profileMetrics {
+  padding: 0;
+  margin: 0;
+}
+
+.profileMetrics > div {
+  display: grid;
+  min-height: 31px;
+  padding: 5px 0;
+  align-items: baseline;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+}
+
+.profileMetrics dt {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.profileMetrics dd {
+  max-width: 150px;
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profileSettingRow {
+  display: grid;
+  min-height: 42px;
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.profileSettingRowWithTooltip {
+  position: relative;
+}
+
+.themeSegmentedControl {
+  display: flex;
+  padding: 3px;
+  align-items: center;
+  border-radius: 999px;
+  background: var(--color-surface-soft);
+}
+
+.themeSegmentedControl button {
+  min-width: 52px;
+  min-height: 27px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.themeSegmentedControl button[aria-pressed="true"] {
+  background: var(--color-surface);
+  box-shadow: 0 1px 4px rgb(var(--color-shadow-rgb) / 0.2);
+  color: var(--color-text);
+}
+
+.settingToggle {
+  position: relative;
+  width: 40px;
+  height: 24px;
+  padding: 0;
+  border-radius: 999px;
+  background: var(--color-surface-pressed);
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+
+.settingToggle > span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: 0 1px 3px rgb(var(--color-shadow-rgb) / 0.28);
+  transition: transform 180ms cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+.settingToggle[aria-checked="true"] {
+  background: var(--color-success);
+}
+
+.settingToggle[aria-checked="true"] > span {
+  transform: translateX(16px);
+}
+
+.settingLabelWithInfo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.infoPopover {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+}
+
+.infoPopover > button {
+  display: grid;
+  width: 17px;
+  height: 17px;
+  padding: 0;
+  border-radius: 50%;
+  place-items: center;
+  background: transparent;
+  color: var(--color-faint);
+  cursor: help;
+}
+
+.infoPopover > button svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.2;
+}
+
+.settingInfoTooltip {
+  position: absolute;
+  right: 8px;
+  bottom: calc(100% + 8px);
+  left: 8px;
+  z-index: 8;
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--color-inverse-surface);
+  box-shadow: var(--drawer-shadow);
+  color: var(--color-inverse-copy);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.35;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .profileSettingRowWithTooltip:has(.infoPopover:hover) .settingInfoTooltip,
+  .profileSettingRowWithTooltip:has(.infoPopover:focus-within)
+    .settingInfoTooltip {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 820px) {
+  .profileDrawer {
+    height: 100%;
+    max-height: none;
+    border-radius: 24px;
+  }
+
+  .profileDrawerHeader {
+    padding: 24px 22px 12px;
+  }
+
+  .profileDrawerBody {
+    max-height: none;
+    padding: 0 22px 22px;
+    overflow: auto;
+  }
+
+  .themeSegmentedControl button {
+    min-width: 48px;
+    padding: 0 8px;
+  }
+
+  :global([data-mobile-snap="default"]) .profileDrawerBody {
+    overflow: hidden;
+  }
+
+  :global([data-mobile-snap="full"]) .profileDrawerBody {
+    overflow: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settingToggle,
+  .settingToggle > span,
+  .settingInfoTooltip {
+    transition: none;
+  }
+}

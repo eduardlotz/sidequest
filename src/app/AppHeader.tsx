@@ -1,27 +1,22 @@
 import { motion } from "motion/react";
 import { useMemo, useState, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
-import { Drawer } from "vaul";
 import { useShallow } from "zustand/react/shallow";
 import { Logo } from "../assets/logo";
 import { formatScore } from "../lib/format";
-import { playSound } from "../lib/sound";
 import { normalizeLanguage } from "../localization/i18n";
 import { ProfileDrawer } from "../features/profile/components/ProfileDrawer/ProfileDrawer";
 import { useQuestStore } from "../stores/useQuestStore";
-import {
-  DESKTOP_VIEWPORT_QUERY,
-  useMediaQuery,
-} from "../shared/hooks/useMediaQuery";
 import { NAV_ENTRY_SPRING } from "../shared/motion/transitions";
 import { CoinIcon } from "../shared/ui/Icons/Icons";
 import { SolidButton } from "../shared/ui/SolidButton/SolidButton";
-import styles from "../App.module.css";
+import {
+  ResponsiveDrawer,
+  ResponsiveDrawerContainer,
+} from "../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
+import styles from "./AppHeader.module.css";
 import { useThemeChoice } from "./hooks/useThemeChoice";
 import { AboutPanel } from "./AboutPanel";
-
-const MOBILE_DRAWER_SNAP_POINTS = [0.78, 1];
-const MOBILE_DEFAULT_SNAP_POINT = MOBILE_DRAWER_SNAP_POINTS[0];
 
 type Props = {
   displayedCoins: number;
@@ -53,16 +48,7 @@ export function AppHeader({
       stats: state.stats,
     })),
   );
-  const desktop = useMediaQuery(DESKTOP_VIEWPORT_QUERY);
   const { changeTheme, themeChoice } = useThemeChoice();
-  const [aboutOpen, setAboutOpen] = useState(false);
-  const [aboutSnapPoint, setAboutSnapPoint] = useState<
-    number | string | null
-  >(MOBILE_DEFAULT_SNAP_POINT);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [profileSnapPoint, setProfileSnapPoint] = useState<
-    number | string | null
-  >(MOBILE_DEFAULT_SNAP_POINT);
   const [mobileDrawerContainer, setMobileDrawerContainer] =
     useState<HTMLDivElement | null>(null);
   const [brandRotation, setBrandRotation] = useState(0);
@@ -80,135 +66,92 @@ export function AppHeader({
     nextLanguage === "de" ? "ui.nav.german" : "ui.nav.english",
   );
 
-  function handleAboutOpenChange(open: boolean) {
-    if (open === aboutOpen) return;
-    if (open && !desktop) setAboutSnapPoint(MOBILE_DEFAULT_SNAP_POINT);
-    playSound(open ? "drawerOpen" : "drawerClose");
-    setAboutOpen(open);
-  }
-
-  function handleProfileOpenChange(open: boolean) {
-    if (open === profileOpen) return;
-    if (open && !desktop) setProfileSnapPoint(MOBILE_DEFAULT_SNAP_POINT);
-    playSound(open ? "drawerOpen" : "drawerClose");
-    setProfileOpen(open);
-  }
-
   return (
     <>
       <header
         className={styles.topNavigation}
         aria-label={t("ui.nav.mainNavigation")}
       >
-      <motion.div
-        className={styles.navActionSlot}
-        initial={reduceMotion ? false : { opacity: 0, y: -14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={
-          reduceMotion ? { duration: 0 } : { ...NAV_ENTRY_SPRING, delay: 0.04 }
-        }
-      >
-        <div className={styles.navActionGroup}>
-          <Drawer.Root
-            activeSnapPoint={desktop ? undefined : aboutSnapPoint}
-            setActiveSnapPoint={desktop ? undefined : setAboutSnapPoint}
-            container={desktop ? undefined : mobileDrawerContainer}
-            direction={desktop ? "left" : "bottom"}
-            open={aboutOpen}
-            onOpenChange={handleAboutOpenChange}
-            snapPoints={desktop ? undefined : MOBILE_DRAWER_SNAP_POINTS}
-            shouldScaleBackground={false}
-          >
-            <Drawer.Trigger asChild>
-              <SolidButton
-                data-active={aboutOpen || undefined}
-                data-sound-click-skip
-                type="button"
-              >
-                {t("ui.nav.about")}
-              </SolidButton>
-            </Drawer.Trigger>
-            <Drawer.Portal>
-              <Drawer.Overlay className={styles.drawerOverlay} />
-              <Drawer.Content
-                className={`${styles.floatingDrawer} ${styles.mobileSnapDrawer}`}
-                data-direction={desktop ? "left" : "bottom"}
-                data-mobile-snap={
-                  desktop
-                    ? undefined
-                    : aboutSnapPoint === 1
-                      ? "full"
-                      : "default"
-                }
-              >
-                {!desktop && <Drawer.Handle className={styles.drawerHandle} />}
-                <AboutPanel reduceMotion={reduceMotion} />
-              </Drawer.Content>
-            </Drawer.Portal>
-          </Drawer.Root>
-          <SolidButton
-            type="button"
-            aria-label={t("ui.nav.switchLanguage", {
-              language: nextLanguageName,
-            })}
-            lang={nextLanguage}
-            onClick={() => void i18n.changeLanguage(nextLanguage)}
-          >
-            {nextLanguage.toUpperCase()}
-          </SolidButton>
-        </div>
-      </motion.div>
-
-      <button
-        className={styles.brandMark}
-        data-sound-click-skip
-        type="button"
-        aria-label={t("ui.nav.spinLogo")}
-        title={t("ui.nav.spinLogo")}
-        onClick={() => setBrandRotation((rotation) => rotation + 360)}
-      >
         <motion.div
-          animate={{ rotate: brandRotation }}
+          className={styles.navActionSlot}
+          initial={reduceMotion ? false : { opacity: 0, y: -14 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={
-            reduceMotion
-              ? { duration: 0 }
-              : {
-                  type: "spring",
-                  stiffness: 190,
-                  damping: 18,
-                  mass: 0.72,
-                }
+            reduceMotion ? { duration: 0 } : { ...NAV_ENTRY_SPRING, delay: 0.04 }
           }
         >
-          <Logo />
+          <div className={styles.navActionGroup}>
+            <ResponsiveDrawer
+              desktopDirection="left"
+              mobileContainer={mobileDrawerContainer}
+              variant="about"
+              trigger={
+                <SolidButton
+                  data-sound-click-skip
+                  type="button"
+                >
+                  {t("ui.nav.about")}
+                </SolidButton>
+              }
+            >
+              <AboutPanel reduceMotion={reduceMotion} />
+            </ResponsiveDrawer>
+            <SolidButton
+              type="button"
+              aria-label={t("ui.nav.switchLanguage", {
+                language: nextLanguageName,
+              })}
+              lang={nextLanguage}
+              onClick={() => void i18n.changeLanguage(nextLanguage)}
+            >
+              {nextLanguage.toUpperCase()}
+            </SolidButton>
+          </div>
         </motion.div>
-      </button>
 
-      <motion.div
-        className={styles.navActionSlot}
-        initial={reduceMotion ? false : { opacity: 0, y: -14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={
-          reduceMotion ? { duration: 0 } : { ...NAV_ENTRY_SPRING, delay: 0.1 }
-        }
-      >
-        <div className={styles.navActionGroup}>
-          <Drawer.Root
-            activeSnapPoint={desktop ? undefined : profileSnapPoint}
-            setActiveSnapPoint={desktop ? undefined : setProfileSnapPoint}
-            container={desktop ? undefined : mobileDrawerContainer}
-            direction={desktop ? "right" : "bottom"}
-            open={profileOpen}
-            onOpenChange={handleProfileOpenChange}
-            snapPoints={desktop ? undefined : MOBILE_DRAWER_SNAP_POINTS}
-            shouldScaleBackground={false}
+        <button
+          className={styles.brandMark}
+          data-sound-click-skip
+          type="button"
+          aria-label={t("ui.nav.spinLogo")}
+          title={t("ui.nav.spinLogo")}
+          onClick={() => setBrandRotation((rotation) => rotation + 360)}
+        >
+          <motion.div
+            animate={{ rotate: brandRotation }}
+            transition={
+              reduceMotion
+                ? { duration: 0 }
+                : {
+                    type: "spring",
+                    stiffness: 190,
+                    damping: 18,
+                    mass: 0.72,
+                  }
+            }
           >
-            <div className={styles.profileTriggerImpact}>
-              <Drawer.Trigger asChild>
+            <Logo />
+          </motion.div>
+        </button>
+
+        <motion.div
+          className={styles.navActionSlot}
+          initial={reduceMotion ? false : { opacity: 0, y: -14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={
+            reduceMotion ? { duration: 0 } : { ...NAV_ENTRY_SPRING, delay: 0.1 }
+          }
+        >
+          <div className={styles.navActionGroup}>
+            <ResponsiveDrawer
+              desktopDirection="right"
+              mobileContainer={mobileDrawerContainer}
+              variant="profile"
+              trigger={
                 <SolidButton
                   ref={profileTriggerRef}
+                  className={styles.profileTriggerImpact}
                   data-profile-trigger
-                  data-active={profileOpen || undefined}
                   data-sound-click-skip
                   type="button"
                   aria-label={t("ui.nav.profileLabel", {
@@ -243,41 +186,22 @@ export function AppHeader({
                     </motion.span>
                   </span>
                 </SolidButton>
-              </Drawer.Trigger>
-            </div>
-            <Drawer.Portal>
-              <Drawer.Overlay className={styles.drawerOverlay} />
-              <Drawer.Content
-                className={`${styles.floatingDrawer} ${styles.mobileSnapDrawer} ${styles.profileFloatingDrawer}`}
-                data-direction={desktop ? "right" : "bottom"}
-                data-mobile-snap={
-                  desktop
-                    ? undefined
-                    : profileSnapPoint === 1
-                      ? "full"
-                      : "default"
-                }
-              >
-                {!desktop && <Drawer.Handle className={styles.drawerHandle} />}
-                <ProfileDrawer
-                  onDebugModeChange={setDebugMode}
-                  onPurchaseRedRopes={purchaseRedRopes}
-                  onThemeChange={changeTheme}
-                  profile={profile}
-                  stats={stats}
-                  totalCoinsCollected={totalCoinsCollected}
-                  themeChoice={themeChoice}
-                />
-              </Drawer.Content>
-            </Drawer.Portal>
-          </Drawer.Root>
-        </div>
-      </motion.div>
+              }
+            >
+              <ProfileDrawer
+                onDebugModeChange={setDebugMode}
+                onPurchaseRedRopes={purchaseRedRopes}
+                onThemeChange={changeTheme}
+                profile={profile}
+                stats={stats}
+                totalCoinsCollected={totalCoinsCollected}
+                themeChoice={themeChoice}
+              />
+            </ResponsiveDrawer>
+          </div>
+        </motion.div>
       </header>
-      <div
-        ref={setMobileDrawerContainer}
-        className={styles.mobileDrawerContainer}
-      />
+      <ResponsiveDrawerContainer setContainer={setMobileDrawerContainer} />
     </>
   );
 }

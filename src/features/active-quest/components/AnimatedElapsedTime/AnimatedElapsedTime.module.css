@@ -1,0 +1,106 @@
+.elapsedTime {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  color: var(--timer-copy);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings:
+    "tnum" 1,
+    "lnum" 1;
+  font-weight: 700;
+  letter-spacing: -0.075em;
+  line-height: 1.08;
+}
+
+.timerEffectDefinitions {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.timerDigits {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings:
+    "tnum" 1,
+    "lnum" 1;
+  letter-spacing: 0;
+  line-height: 1.08;
+  opacity: 1;
+  overflow: visible;
+  transition: opacity 180ms ease;
+}
+
+.timerDigitCell {
+  position: relative;
+  display: block;
+  width: 0.64em;
+  height: 1.08em;
+  flex: 0 0 0.64em;
+  overflow: visible;
+}
+
+.timerDigit {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  overflow: visible;
+  place-items: center;
+  line-height: 1;
+  transform-origin: center;
+  will-change: filter, opacity, transform;
+}
+
+.timerColon {
+  display: grid;
+  width: 0.3em;
+  height: 1.08em;
+  flex: 0 0 0.3em;
+  place-items: center;
+  line-height: 1;
+  transform: translateY(-0.035em);
+}
+
+.timerDigitFace {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: var(--timer-digit-color);
+  filter: url("#timer-digit-depth");
+  line-height: 1;
+}
+
+:global([data-play-layout="compact"]) .elapsedTime {
+  font-size: clamp(2.55rem, 12cqw, 3.35rem);
+}
+
+:global([data-phase="ready"]:not([data-rope-mode="resumePullback"]))
+  .elapsedTime {
+  color: #85858d;
+}
+
+.elapsedTime {
+  font-size: clamp(3rem, 4.55cqw, 4.75rem);
+  filter: none;
+}
+
+:global([data-phase="ready"]:not([data-rope-mode="resumePullback"]))
+  .timerDigits,
+:global([data-phase="paused"]:not([data-rope-mode="resumePullback"]))
+  .timerDigits {
+  opacity: 0.25;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timerDigits {
+    transition: none;
+  }
+}
