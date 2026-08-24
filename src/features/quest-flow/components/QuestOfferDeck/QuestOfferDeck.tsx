@@ -545,7 +545,6 @@ function QuestOfferCard({
           <span
             className={styles.shuffleCard}
             key={`shuffle-card-${shuffleSequence}`}
-            data-shuffling={shuffling || undefined}
             data-shuffle-phase={
               shufflePhase === "idle" ? undefined : shufflePhase
             }
@@ -561,7 +560,7 @@ function QuestOfferCard({
                 event.target !== event.currentTarget ||
                 shuffleSequence < 1 ||
                 reduceMotion ||
-                (isCompact && shufflePhase !== "incoming")
+                shufflePhase !== "incoming"
               ) {
                 return;
               }

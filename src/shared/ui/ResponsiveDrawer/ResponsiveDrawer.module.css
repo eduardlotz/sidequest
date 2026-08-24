@@ -9,13 +9,15 @@
 .drawerHandle {
   position: absolute;
   top: 10px;
-  left: 50%;
+  right: 0;
+  left: 0;
   z-index: 4;
   width: 44px;
   height: 5px;
+  margin-inline: auto;
   border-radius: 99px;
   background: var(--drawer-handle);
-  transform: translateX(-50%);
+  transform: none;
 }
 
 .drawerContent {

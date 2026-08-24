@@ -18,8 +18,7 @@ import { normalizeLanguage } from "../../../../localization/i18n";
 import type { Quest, QuestSession } from "../../../../domain/quest/model";
 import { ActiveQuestCard } from "../../../active-quest/components/ActiveQuestCard/ActiveQuestCard";
 import { ArcDeck, type ArcDeckItem } from "../ArcDeck/ArcDeck";
-import { CoinIcon } from "../../../../shared/ui/Icons/Icons";
-import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
+import { CoinPriceButton } from "../../../../shared/ui/CoinPriceButton/CoinPriceButton";
 import {
   QuestOfferDeck,
   type QuestShufflePhase,
@@ -40,7 +39,7 @@ const NAV_ITEM_TRANSITION = NAV_ENTRY_SPRING;
 const SELECTION_RESET_FADE_OUT_DURATION = 0.22;
 const SELECTION_RESET_FADE_IN_DURATION = 0.28;
 const SHUFFLE_SWAP_DELAY_MS = 560;
-const SHUFFLE_COMPLETE_DELAY_MS = 1_350;
+const SHUFFLE_COMPLETE_DELAY_MS = 1_500;
 
 type Props = {
   currentQuest: Quest | null;
@@ -423,24 +422,18 @@ export function QuestScreenContent({
                             duration: reduceMotion ? 0 : 0.18,
                           }}
                         >
-                          <SolidButton
+                          <CoinPriceButton
                             data-sound-click-skip
                             type="button"
-                            variant="soft"
                             disabled={isShuffling || points < shuffleCost}
+                            label={t("ui.task.shuffleCards")}
+                            price={formatScore(shuffleCost, language)}
                             aria-label={t("ui.task.shuffleLabel", {
                               cost: formatScore(shuffleCost, language),
                               available: formatScore(points, language),
                             })}
                             onClick={shuffleCards}
-                          >
-                            {t("ui.task.shuffleCards")}
-                          </SolidButton>
-                          <span className={styles.inlineCoinCopy}>
-                            <span>{t("ui.task.shufflePricePrefix")}</span>
-                            <strong>{formatScore(shuffleCost, language)}</strong>
-                            <CoinIcon />
-                          </span>
+                          />
                         </motion.div>
                       </div>
                     </>

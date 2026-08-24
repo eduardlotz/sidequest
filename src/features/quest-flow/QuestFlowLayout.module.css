@@ -191,37 +191,6 @@
   align-items: center;
   justify-self: center;
   margin: 0;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.questShuffleControl > span {
-  color: var(--color-muted);
-  font-size: 0.72rem;
-  font-weight: 600;
-  opacity: 1;
-}
-
-.inlineCoinCopy {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.inlineCoinCopy > span {
-  color: var(--color-muted);
-}
-
-.inlineCoinCopy strong {
-  color: var(--color-text);
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-}
-
-.inlineCoinCopy svg {
-  width: 15px;
-  height: 15px;
-  flex: 0 0 auto;
 }
 
 @media (hover: hover) and (pointer: fine) {

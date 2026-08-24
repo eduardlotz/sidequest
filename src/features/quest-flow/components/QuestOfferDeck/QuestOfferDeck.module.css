@@ -118,18 +118,16 @@
   transform-style: preserve-3d;
 }
 
-.shuffleCard {
-  will-change: transform;
-}
-
-.shuffleCard[data-shuffling] {
-  animation: questCardShuffleFlip 0.9s linear var(--shuffle-delay, 0s) both;
-}
-
-.shuffleCard[data-shuffling] .shuffleCardFront,
-.shuffleCard[data-shuffling] .shuffleCardBack {
-  animation: questCardShuffleBounce 0.9s cubic-bezier(0.22, 0.8, 0.24, 1)
+.shuffleCard[data-shuffle-phase="outgoing"] {
+  animation: questCardShuffleDropOut 0.34s cubic-bezier(0.32, 0, 0.67, 0)
     var(--shuffle-delay, 0s) both;
+  will-change: filter, opacity, rotate, scale, translate;
+}
+
+.shuffleCard[data-shuffle-phase="incoming"] {
+  animation: questCardShuffleDropIn 0.44s cubic-bezier(0.22, 0.8, 0.24, 1)
+    var(--shuffle-delay, 0s) both;
+  will-change: filter, opacity, rotate, scale, translate;
 }
 
 .shuffleCardFront,
@@ -171,9 +169,9 @@
   transform: translateX(-135%);
 }
 
-.shuffleCard[data-shuffling] .shuffleShine {
+.shuffleCard[data-shuffle-phase="incoming"] .shuffleShine {
   animation: questCardShuffleShine 0.24s cubic-bezier(0.18, 0.78, 0.25, 1)
-    calc(var(--shuffle-delay, 0s) + 0.9s) both;
+    calc(var(--shuffle-delay, 0s) + 0.44s) both;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -193,32 +191,6 @@
   padding-top: 0;
   touch-action: pan-y;
   translate: none;
-}
-
-:global([data-play-layout="compact"])
-  .shuffleCard[data-shuffle-phase="outgoing"] {
-  animation: questCardShuffleDropOut 0.34s cubic-bezier(0.32, 0, 0.67, 0)
-    var(--shuffle-delay, 0s) both;
-  will-change: filter, opacity, rotate, scale, translate;
-}
-
-:global([data-play-layout="compact"])
-  .shuffleCard[data-shuffle-phase="incoming"] {
-  animation: questCardShuffleDropIn 0.44s cubic-bezier(0.22, 0.8, 0.24, 1)
-    var(--shuffle-delay, 0s) both;
-  will-change: filter, opacity, rotate, scale, translate;
-}
-
-:global([data-play-layout="compact"])
-  .shuffleCard[data-shuffling]
-  .shuffleCardFront,
-:global([data-play-layout="compact"])
-  .shuffleCard[data-shuffling]
-  .shuffleCardBack,
-:global([data-play-layout="compact"])
-  .shuffleCard[data-shuffling]
-  .shuffleShine {
-  animation: none;
 }
 
 :global([data-play-layout="compact"]) .previewCardSlot {
@@ -285,35 +257,6 @@
   .previewCardSlot[data-swipe-returning] {
   z-index: 0;
   pointer-events: none;
-}
-
-@keyframes questCardShuffleFlip {
-  from {
-    transform: rotateY(0deg);
-  }
-
-  to {
-    transform: rotateY(360deg);
-  }
-}
-
-@keyframes questCardShuffleBounce {
-  0%,
-  100% {
-    scale: 1;
-  }
-
-  38% {
-    scale: 1.03;
-  }
-
-  60% {
-    scale: 0.995;
-  }
-
-  82% {
-    scale: 1.018;
-  }
 }
 
 @keyframes questCardShuffleShine {
