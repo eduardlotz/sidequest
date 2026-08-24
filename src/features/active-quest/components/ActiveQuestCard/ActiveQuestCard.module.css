@@ -24,8 +24,7 @@
   container-type: inline-size;
   isolation: isolate;
   perspective: 1400px;
-  translate:
-    clamp(20px, calc(1.765cqw + 0.588px), 26px)
+  translate: clamp(20px, calc(1.765cqw + 0.588px), 26px)
     clamp(1px, calc(3.235cqw - 34.59px), 12px);
 }
 
@@ -135,8 +134,7 @@
     inset 0 -4px 0 #191920, inset 0 2px 0 rgb(255 255 255 / 0.1);
   --timer-metal: #555561;
   --timer-metal-shadow:
-    inset 0 -1px 1px rgb(0 0 0 / 0.42),
-    inset 0 1px 1px rgb(255 255 255 / 0.14);
+    inset 0 -1px 1px rgb(0 0 0 / 0.42), inset 0 1px 1px rgb(255 255 255 / 0.14);
   --timer-copy: #f4f4f8;
   --timer-shadow-color: #fefefe;
   --timer-highlight-color: #30303b;
@@ -161,17 +159,16 @@
 }
 
 .timerPosition {
-  --timer-width: clamp(250px, 20.833cqw, 300px);
+  --timer-size: clamp(250px, 18cqw, 300px);
+  --timer-body-width: calc(100% - 10px);
   position: absolute;
-  top: clamp(
-    30.7svh,
-    calc(30.7svh + 4.235cqw - 46.585px),
-    32.5svh
-  );
+  top: clamp(30.7svh, calc(30.7svh + 4.235cqw - 46.585px), 32.5svh);
   left: 50%;
   z-index: 7;
-  width: var(--timer-width);
-  margin-left: calc(var(--timer-width) / -2);
+  width: var(--timer-size);
+  margin-left: calc(var(--timer-size) / -2);
+  container-name: timer;
+  container-type: inline-size;
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -191,12 +188,15 @@
 .timerCapsule {
   position: relative;
   display: flex;
-  width: 100%;
+  width: var(--timer-body-width);
   min-height: auto;
-  padding: 25px 25px 20px;
+  margin-inline: auto;
+  /* padding: clamp(18px, 15cqw, 21px) clamp(20px, 15cqw, 23px)
+    clamp(15px, 15cqw, 17px); */
+  padding: 0;
   border: 0;
-  border-radius: clamp(26px, 2.4cqw, 36px);
-  aspect-ratio: 1.92 / 1;
+  border-radius: clamp(26px, 15cqw, 32px);
+  aspect-ratio: 2.04 / 1;
   align-items: center;
   justify-content: center;
   background: var(--timer-shell-gradient);
@@ -206,16 +206,16 @@
 
 .grabDots {
   position: absolute;
-  top: 13px;
+  top: clamp(10px, 4.333cqw, 13px);
   left: 50%;
   display: flex;
-  gap: 6px;
+  gap: clamp(4px, 1.667cqw, 5px);
   transform: translateX(-50%);
 }
 
 .grabDots i {
-  width: clamp(4px, 0.34cqw, 5px);
-  height: clamp(4px, 0.34cqw, 5px);
+  width: clamp(4px, 1.667cqw, 5px);
+  height: clamp(4px, 1.667cqw, 5px);
   border-radius: 50%;
   background: var(--timer-metal);
   box-shadow: var(--timer-metal-shadow);
@@ -236,11 +236,7 @@
 
 .timerReturnControl {
   position: absolute;
-  top: clamp(
-    52.5svh,
-    calc(52.5svh + 3.529cqw - 38.824px),
-    54svh
-  );
+  top: clamp(52.5svh, calc(52.5svh + 3.529cqw - 38.824px), 54svh);
   left: 50%;
   z-index: 12;
   margin: 0;
@@ -251,11 +247,7 @@
 .timerHint {
   position: absolute;
   right: 24px;
-  bottom: clamp(
-    22svh,
-    calc(25svh - 7.059cqw + 77.65px),
-    25svh
-  );
+  bottom: clamp(22svh, calc(25svh - 7.059cqw + 77.65px), 25svh);
   left: 24px;
   z-index: 4;
   display: flex;
@@ -555,13 +547,13 @@
 :global([data-play-layout="compact"]) .activeQuest {
   --active-card-height: calc(var(--quest-card-width) / 0.7);
   display: block;
-  min-height: max(100svh, calc(var(--active-card-height) + 304px));
-  overflow: visible;
+  min-height: 100svh;
+  overflow: hidden;
 }
 
 :global([data-play-layout="compact"]) .activeCardStage {
   position: absolute;
-  top: max(260px, calc(100svh - var(--active-card-height) - 48px));
+  top: calc(100svh - (var(--active-card-height) / 2));
   left: 50%;
   width: var(--quest-card-width);
   transform: translateX(-50%);
@@ -573,8 +565,8 @@
 }
 
 :global([data-play-layout="compact"]):has(
-    .activeQuest[data-card-focused="true"]
-  ) {
+  .activeQuest[data-card-focused="true"]
+) {
   z-index: 121;
 }
 
@@ -612,7 +604,7 @@
   position: fixed;
   top: 50%;
   z-index: 201;
-  width: min(calc(100vw - 28px), calc((100svh - 48px) * 0.7), 390px);
+  width: var(--quest-card-width);
   transform: translate(-50%, -50%);
 }
 
@@ -652,14 +644,8 @@
 }
 
 :global([data-play-layout="compact"]) .timerPosition {
-  --timer-width: 220px;
+  --timer-size: 220px;
   top: 35%;
-}
-
-:global([data-play-layout="compact"]) .timerCapsule {
-  min-height: 94px;
-  padding: 23px 20px 17px;
-  border-radius: 26px;
 }
 
 :global([data-play-layout="compact"]) .timerReturnControl {

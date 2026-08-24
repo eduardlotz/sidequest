@@ -101,6 +101,7 @@ const CUT_TRAIL_FADE_DURATION_MS = 60;
 const CANCELLATION_BLOCKED_DURATION_MS = 3_000;
 const CARD_FOCUS_DISMISS_DISTANCE = 96;
 const CARD_FOCUS_DISMISS_VELOCITY = 700;
+const CARD_FOCUS_SCALE_MULTIPLIER = 1.02;
 
 const pausePanelVariants: Variants = {
   hidden: { opacity: 0 },
@@ -969,11 +970,9 @@ export function ActiveQuestCard({
             }
             animate={{
               scale: completed
-                ? isMobileViewport
-                  ? 1
-                  : 0.95
+                ? activeCardScale * 0.96
                 : cardFocused
-                  ? 1
+                  ? activeCardScale * CARD_FOCUS_SCALE_MULTIPLIER
                   : activeCardScale,
               rotate: cardFocused || completed || !revealFinished ? 0 : -3.5,
             }}

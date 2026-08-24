@@ -78,17 +78,13 @@
   line-height: 1;
 }
 
-:global([data-play-layout="compact"]) .elapsedTime {
-  font-size: clamp(2.55rem, 12cqw, 3.35rem);
-}
-
 :global([data-phase="ready"]:not([data-rope-mode="resumePullback"]))
   .elapsedTime {
   color: #85858d;
 }
 
 .elapsedTime {
-  font-size: clamp(3rem, 4.55cqw, 4.75rem);
+  font-size: clamp(3rem, 25cqw, 4.5rem);
   filter: none;
 }
 

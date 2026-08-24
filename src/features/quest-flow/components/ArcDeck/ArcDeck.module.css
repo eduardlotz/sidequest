@@ -106,8 +106,10 @@
   --mood-card-radius: 30px;
   --selection-card-border: transparent;
   --selection-card-background: var(--mood-card-bg, #15271f);
+  --selection-card-content-overflow: visible;
+  --selection-card-overflow: visible;
+  --selection-card-radius: var(--mood-card-radius);
   --selection-card-shadow: none;
-  overflow: visible;
   border-color: transparent;
 }
 
@@ -133,7 +135,6 @@
 }
 
 .moodSelectionCardContent {
-  overflow: visible;
   transform-style: preserve-3d;
 }
 

@@ -20,7 +20,10 @@ import { ActiveQuestCard } from "../../../active-quest/components/ActiveQuestCar
 import { ArcDeck, type ArcDeckItem } from "../ArcDeck/ArcDeck";
 import { CoinIcon } from "../../../../shared/ui/Icons/Icons";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
-import { QuestOfferDeck } from "../QuestOfferDeck/QuestOfferDeck";
+import {
+  QuestOfferDeck,
+  type QuestShufflePhase,
+} from "../QuestOfferDeck/QuestOfferDeck";
 import { VisuallyHidden } from "../../../../shared/ui/VisuallyHidden/VisuallyHidden";
 import { PlayLayout } from "../../PlayLayout";
 import styles from "../../QuestFlowLayout.module.css";
@@ -121,7 +124,9 @@ export function QuestScreenContent({
       ? "bottom"
       : "shared";
   const [shuffleSequence, setShuffleSequence] = useState(0);
-  const [isShuffling, setIsShuffling] = useState(false);
+  const [shufflePhase, setShufflePhase] =
+    useState<QuestShufflePhase>("idle");
+  const isShuffling = shufflePhase !== "idle";
   const [editingMood, setEditingMood] = useState(false);
   const [selectionPresenceGeneration, setSelectionPresenceGeneration] =
     useState(0);
@@ -196,15 +201,16 @@ export function QuestScreenContent({
       return;
     }
 
-    setIsShuffling(true);
+    setShufflePhase("outgoing");
     setShuffleSequence((sequence) => sequence + 1);
     shuffleTimeoutRef.current = window.setTimeout(() => {
+      setShufflePhase("incoming");
       onShuffle();
       shuffleTimeoutRef.current = null;
     }, SHUFFLE_SWAP_DELAY_MS);
     shuffleCompletionTimeoutRef.current = window.setTimeout(() => {
       setQuestDeckGeneration((generation) => generation + 1);
-      setIsShuffling(false);
+      setShufflePhase("idle");
       shuffleCompletionTimeoutRef.current = null;
     }, SHUFFLE_COMPLETE_DELAY_MS);
   }
@@ -213,7 +219,7 @@ export function QuestScreenContent({
     const selected = onSelectMood(moodId);
     if (selected) {
       setShuffleSequence(0);
-      setIsShuffling(false);
+      setShufflePhase("idle");
       setEditingMood(false);
       setQuestSelectionClosing(false);
     }
@@ -376,65 +382,67 @@ export function QuestScreenContent({
                         </motion.p>
                       </header>
 
-                      <QuestOfferDeck
-                        items={offeredQuests}
-                        entryMotion={questEntryMotion}
-                        layoutSessionId={questLayoutSessionId}
-                        reduceMotion={reduceMotion}
-                        returningQuestId={
-                          returnedFromActive
-                            ? lastActiveQuestIdRef.current
-                            : undefined
-                        }
-                        returningToMoods={editingMood}
-                        shuffleSequence={shuffleSequence}
-                        shuffling={isShuffling}
-                        onSelectionStart={(previewRotation) => {
-                          setShuffleSequence(0);
-                          setIsShuffling(false);
-                          setQuestSelectionClosing(true);
-                          setActiveHandoffStarted(false);
-                          setActiveEntryRotation(previewRotation);
-                        }}
-                        onSelect={(questId) => {
-                          onRevealQuest(questId);
-                          window.requestAnimationFrame(() =>
-                            setActiveHandoffStarted(true),
-                          );
-                        }}
-                      />
+                      <div className={styles.questDeckGroup}>
+                        <QuestOfferDeck
+                          items={offeredQuests}
+                          entryMotion={questEntryMotion}
+                          layoutSessionId={questLayoutSessionId}
+                          reduceMotion={reduceMotion}
+                          returningQuestId={
+                            returnedFromActive
+                              ? lastActiveQuestIdRef.current
+                              : undefined
+                          }
+                          returningToMoods={editingMood}
+                          shuffleSequence={shuffleSequence}
+                          shufflePhase={shufflePhase}
+                          onSelectionStart={(previewRotation) => {
+                            setShuffleSequence(0);
+                            setShufflePhase("idle");
+                            setQuestSelectionClosing(true);
+                            setActiveHandoffStarted(false);
+                            setActiveEntryRotation(previewRotation);
+                          }}
+                          onSelect={(questId) => {
+                            onRevealQuest(questId);
+                            window.requestAnimationFrame(() =>
+                              setActiveHandoffStarted(true),
+                            );
+                          }}
+                        />
 
-                      <motion.div
-                        className={styles.questShuffleControl}
-                        initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-                        animate={{
-                          opacity: selectionControlsExiting ? 0 : 1,
-                          y: selectionControlsExiting ? 8 : 0,
-                        }}
-                        exit={{ opacity: 0, y: 8 }}
-                        transition={{
-                          duration: reduceMotion ? 0 : 0.18,
-                        }}
-                      >
-                        <SolidButton
-                          data-sound-click-skip
-                          type="button"
-                          variant="soft"
-                          disabled={isShuffling || points < shuffleCost}
-                          aria-label={t("ui.task.shuffleLabel", {
-                            cost: formatScore(shuffleCost, language),
-                            available: formatScore(points, language),
-                          })}
-                          onClick={shuffleCards}
+                        <motion.div
+                          className={styles.questShuffleControl}
+                          initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                          animate={{
+                            opacity: selectionControlsExiting ? 0 : 1,
+                            y: selectionControlsExiting ? 8 : 0,
+                          }}
+                          exit={{ opacity: 0, y: 8 }}
+                          transition={{
+                            duration: reduceMotion ? 0 : 0.18,
+                          }}
                         >
-                          {t("ui.task.shuffleCards")}
-                        </SolidButton>
-                        <span className={styles.inlineCoinCopy}>
-                          <span>{t("ui.task.shufflePricePrefix")}</span>
-                          <strong>{formatScore(shuffleCost, language)}</strong>
-                          <CoinIcon />
-                        </span>
-                      </motion.div>
+                          <SolidButton
+                            data-sound-click-skip
+                            type="button"
+                            variant="soft"
+                            disabled={isShuffling || points < shuffleCost}
+                            aria-label={t("ui.task.shuffleLabel", {
+                              cost: formatScore(shuffleCost, language),
+                              available: formatScore(points, language),
+                            })}
+                            onClick={shuffleCards}
+                          >
+                            {t("ui.task.shuffleCards")}
+                          </SolidButton>
+                          <span className={styles.inlineCoinCopy}>
+                            <span>{t("ui.task.shufflePricePrefix")}</span>
+                            <strong>{formatScore(shuffleCost, language)}</strong>
+                            <CoinIcon />
+                          </span>
+                        </motion.div>
+                      </div>
                     </>
                   </SelectionLayer>
                 ) : (

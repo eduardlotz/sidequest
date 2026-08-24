@@ -79,6 +79,8 @@ const MAX_FRAME_DELTA = 1 / 30;
 const MAX_STEPS_PER_FRAME = 5;
 const CONSTRAINT_ITERATIONS = 7;
 const ANCHOR_OFFSET_Y = -8;
+const MOBILE_TIMER_ROPE_EXTENSION_RATIO = 0.025;
+const TIMER_ATTACHMENT_INSET = 2;
 // const GRAVITY = 3_600;
 
 const GRAVITY = 4000;
@@ -506,13 +508,14 @@ function renderRope(
   if (!state.cut) {
     const controls = state.points.map(pointToRopePoint);
     const renderedPoints = sampleCurve(controls);
+    const visualPoints = extendRopeBehindTimer(renderedPoints, state);
     updateRopePath(
       upperPathRef.current,
-      renderedPoints,
+      visualPoints,
       ropeStrokeWidth(state, dragging),
     );
     hideRopePath(lowerPathRef.current);
-    screenPointsRef.current = renderedPoints;
+    screenPointsRef.current = visualPoints;
     timerRopePoints = renderedPoints;
   } else {
     const upperControls = [
@@ -525,6 +528,7 @@ function renderRope(
     ];
     const upperPoints = sampleCurve(upperControls);
     const lowerPoints = sampleCurve(lowerControls);
+    const visualLowerPoints = extendRopeBehindTimer(lowerPoints, state);
     updateRopePath(
       upperPathRef.current,
       upperPoints,
@@ -532,7 +536,7 @@ function renderRope(
     );
     updateRopePath(
       lowerPathRef.current,
-      lowerPoints,
+      visualLowerPoints,
       ropeStrokeWidth(state, false),
     );
     timerRopePoints = lowerPoints;
@@ -547,6 +551,30 @@ function renderRope(
     x: endpoint.x - state.width / 2,
     y: endpoint.y - state.height * RUNNING_TIMER_TOP_RATIO,
   });
+}
+
+function extendRopeBehindTimer(
+  points: readonly RopePoint[],
+  state: RopeState,
+): RopePoint[] {
+  if (!state.isMobileViewport || points.length < 2) return [...points];
+
+  const previous = points[points.length - 2];
+  const endpoint = points[points.length - 1];
+  const deltaX = endpoint.x - previous.x;
+  const deltaY = endpoint.y - previous.y;
+  const tangentLength = Math.hypot(deltaX, deltaY) || 1;
+  const extension =
+    state.height * MOBILE_TIMER_ROPE_EXTENSION_RATIO +
+    TIMER_ATTACHMENT_INSET;
+
+  return [
+    ...points,
+    {
+      x: endpoint.x + (deltaX / tangentLength) * extension,
+      y: endpoint.y + (deltaY / tangentLength) * extension,
+    },
+  ];
 }
 
 function pinAnchor(state: RopeState) {

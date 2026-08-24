@@ -25,7 +25,7 @@
 
 .button:active:not(:disabled) {
   box-shadow: var(--control-shadow);
-  transform: translateY(0);
+  transform: scale(0.98);
 }
 
 .button:disabled {
@@ -64,21 +64,30 @@
   height: 1em;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .button {
-    transition: none;
-  }
-}
-
 @media (hover: hover) and (pointer: fine) {
   .button:hover:not(:disabled) {
     box-shadow: var(--control-shadow);
     filter: brightness(0.985);
-    transform: translateY(-1px);
+    transform: scale(1.015);
   }
 
   .button[data-variant="soft"]:hover:not(:disabled) {
     box-shadow: none;
     filter: brightness(0.95);
+  }
+
+  .button:hover:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+
+  .button:hover:not(:disabled),
+  .button:active:not(:disabled) {
+    transform: none;
   }
 }

@@ -8,8 +8,8 @@
 .screen {
   --quest-card-inline-size: clamp(
     255px,
-    calc(30.556cqw + 4.44px),
-    310px
+    calc(36.111cqw - 41.111px),
+    320px
   );
   --quest-card-width: var(--quest-card-inline-size);
   position: relative;
@@ -102,11 +102,19 @@
   );
   display: grid;
   min-height: 100svh;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
   align-items: start;
   padding: var(--quest-screen-top) 0 var(--quest-screen-bottom);
   overflow-x: clip;
   overflow-y: hidden;
+}
+
+.questDeckGroup {
+  display: grid;
+  min-height: 0;
+  align-self: center;
+  grid-template-rows: var(--quest-deck-height) auto;
+  row-gap: 16px;
 }
 
 .questSelectionHeader {
@@ -179,7 +187,7 @@
   position: relative;
   z-index: 30;
   display: flex;
-  align-self: end;
+  align-self: start;
   align-items: center;
   justify-self: center;
   margin: 0;

@@ -195,6 +195,32 @@
   translate: none;
 }
 
+:global([data-play-layout="compact"])
+  .shuffleCard[data-shuffle-phase="outgoing"] {
+  animation: questCardShuffleDropOut 0.34s cubic-bezier(0.32, 0, 0.67, 0)
+    var(--shuffle-delay, 0s) both;
+  will-change: filter, opacity, rotate, scale, translate;
+}
+
+:global([data-play-layout="compact"])
+  .shuffleCard[data-shuffle-phase="incoming"] {
+  animation: questCardShuffleDropIn 0.44s cubic-bezier(0.22, 0.8, 0.24, 1)
+    var(--shuffle-delay, 0s) both;
+  will-change: filter, opacity, rotate, scale, translate;
+}
+
+:global([data-play-layout="compact"])
+  .shuffleCard[data-shuffling]
+  .shuffleCardFront,
+:global([data-play-layout="compact"])
+  .shuffleCard[data-shuffling]
+  .shuffleCardBack,
+:global([data-play-layout="compact"])
+  .shuffleCard[data-shuffling]
+  .shuffleShine {
+  animation: none;
+}
+
 :global([data-play-layout="compact"]) .previewCardSlot {
   position: absolute;
   top: 0;
@@ -203,9 +229,9 @@
   margin: 0;
   transform-origin: 50% 18%;
   transition:
-    translate 260ms cubic-bezier(0.22, 0.8, 0.24, 1),
-    scale 260ms cubic-bezier(0.22, 0.8, 0.24, 1),
-    rotate 260ms cubic-bezier(0.22, 0.8, 0.24, 1);
+    translate 210ms cubic-bezier(0.22, 0.8, 0.24, 1),
+    scale 210ms cubic-bezier(0.22, 0.8, 0.24, 1),
+    rotate 210ms cubic-bezier(0.22, 0.8, 0.24, 1);
 }
 
 :global([data-play-layout="compact"]) .previewCardSlot[data-position] {
@@ -303,6 +329,42 @@
   100% {
     opacity: 0;
     transform: translateX(235%);
+  }
+}
+
+@keyframes questCardShuffleDropOut {
+  from {
+    filter: blur(0);
+    opacity: 1;
+    rotate: 0deg;
+    scale: 1;
+    translate: 0 0;
+  }
+
+  to {
+    filter: blur(7px);
+    opacity: 0;
+    rotate: var(--shuffle-drop-rotate, 0deg);
+    scale: 0.96;
+    translate: 0 96px;
+  }
+}
+
+@keyframes questCardShuffleDropIn {
+  from {
+    filter: blur(7px);
+    opacity: 0;
+    rotate: var(--shuffle-enter-rotate, 0deg);
+    scale: 0.95;
+    translate: 0 -88px;
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    rotate: 0deg;
+    scale: 1;
+    translate: 0 0;
   }
 }
 

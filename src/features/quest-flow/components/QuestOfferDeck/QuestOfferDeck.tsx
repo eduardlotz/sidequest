@@ -15,6 +15,7 @@ import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
 import { usePlayLayout } from "../../usePlayLayout";
 
 export type QuestOfferItem = QuestDefinition;
+export type QuestShufflePhase = "idle" | "outgoing" | "incoming";
 type QuestEntryMotion = "bottom" | "shared";
 
 type Props = {
@@ -25,7 +26,7 @@ type Props = {
   returningQuestId?: string;
   returningToMoods: boolean;
   shuffleSequence: number;
-  shuffling: boolean;
+  shufflePhase: QuestShufflePhase;
   onSelectionStart: (previewRotation: number) => void;
   onSelect: (questId: string) => void;
 };
@@ -39,7 +40,7 @@ type CardProps = {
   reduceMotion: boolean;
   returningToMoods: boolean;
   shuffleSequence: number;
-  shuffling: boolean;
+  shufflePhase: QuestShufflePhase;
   selected: boolean;
   selectionStarted: boolean;
   layoutSessionId: string;
@@ -80,7 +81,7 @@ export function QuestOfferDeck({
   returningQuestId,
   returningToMoods,
   shuffleSequence,
-  shuffling,
+  shufflePhase,
   onSelectionStart,
   onSelect,
 }: Props) {
@@ -104,6 +105,7 @@ export function QuestOfferDeck({
   const deckRef = useRef<HTMLDivElement>(null);
   const selectionFrameRef = useRef<number | null>(null);
   const { isCompact } = usePlayLayout();
+  const shuffling = shufflePhase !== "idle";
 
   useEffect(() => {
     setSelectedId(null);
@@ -193,7 +195,7 @@ export function QuestOfferDeck({
               reduceMotion={reduceMotion}
               returningToMoods={returningToMoods}
               shuffleSequence={shuffleSequence}
-              shuffling={shuffling}
+              shufflePhase={shufflePhase}
               selected={selectedId === item.id}
               selectionStarted={selectedId !== null}
               onCycle={cycleCard}
@@ -251,7 +253,7 @@ function QuestOfferCard({
   reduceMotion,
   returningToMoods,
   shuffleSequence,
-  shuffling,
+  shufflePhase,
   selected,
   selectionStarted,
   onCycle,
@@ -262,6 +264,7 @@ function QuestOfferCard({
 }: CardProps) {
   const { t } = useTranslation();
   const { isCompact } = usePlayLayout();
+  const shuffling = shufflePhase !== "idle";
   const suppressClickRef = useRef(false);
   const swipeX = useMotionValue(0);
   const swipeAnimationRef = useRef<ReturnType<typeof animate> | null>(null);
@@ -490,15 +493,10 @@ function QuestOfferCard({
             if (flicked) {
               const direction =
                 info.offset.x < 0 || info.velocity.x < -520 ? -1 : 1;
-              const releaseVelocity = Math.max(
-                -1_400,
-                Math.min(1_400, info.velocity.x),
-              );
+              const compactCardWidth = Math.min(window.innerWidth * 0.8, 300);
               const exitDistance = Math.max(
-                window.innerWidth * 1.05,
-                Math.abs(info.offset.x) +
-                  260 +
-                  Math.min(Math.abs(info.velocity.x) * 0.14, 220),
+                (window.innerWidth + compactCardWidth) / 2 + 12,
+                Math.abs(info.offset.x) + 140,
               );
 
               onSwipeStart(item.id);
@@ -513,18 +511,17 @@ function QuestOfferCard({
                   swipeX,
                   direction * exitDistance,
                   {
-                    type: "spring",
-                    stiffness: 120,
-                    damping: 20,
-                    mass: 0.82,
-                    velocity: releaseVelocity,
+                    duration: 0.2,
+                    ease: [0.22, 0.8, 0.24, 1],
                     onComplete: () => {
                       onSwipeReturnStart(item.id);
                       swipeAnimationRef.current = animate(swipeX, 0, {
                         type: "spring",
-                        stiffness: 190,
-                        damping: 26,
-                        mass: 0.72,
+                        stiffness: 420,
+                        damping: 34,
+                        mass: 0.58,
+                        restDelta: 0.5,
+                        restSpeed: 25,
                         onComplete: () => onSwipeComplete(item.id),
                       });
                     },
@@ -549,16 +546,22 @@ function QuestOfferCard({
             className={styles.shuffleCard}
             key={`shuffle-card-${shuffleSequence}`}
             data-shuffling={shuffling || undefined}
+            data-shuffle-phase={
+              shufflePhase === "idle" ? undefined : shufflePhase
+            }
             style={
               {
                 "--shuffle-delay": `${index * SHUFFLE_CARD_STAGGER_SECONDS}s`,
+                "--shuffle-drop-rotate": `${(index - 1) * 2.2}deg`,
+                "--shuffle-enter-rotate": `${(1 - index) * 2.2}deg`,
               } as CSSProperties
             }
             onAnimationEnd={(event) => {
               if (
                 event.target !== event.currentTarget ||
                 shuffleSequence < 1 ||
-                reduceMotion
+                reduceMotion ||
+                (isCompact && shufflePhase !== "incoming")
               ) {
                 return;
               }
