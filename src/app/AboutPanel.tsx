@@ -1,10 +1,23 @@
+import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { WordmarkLogo } from "../assets/wordmark";
+import { useTiltEffect } from "../hooks/useTiltEffect";
 import styles from "../App.module.css";
 
-export function AboutPanel() {
+type Props = {
+  reduceMotion: boolean;
+};
+
+export function AboutPanel({ reduceMotion }: Props) {
   const { t } = useTranslation();
+  const {
+    handlePointerEnter,
+    handlePointerLeave,
+    handlePointerMove,
+    rotateX,
+    rotateY,
+  } = useTiltEffect({ maxGlare: 0, maxTilt: 14, reduceMotion });
 
   return (
     <section className={styles.aboutContent} aria-labelledby="about-title">
@@ -45,7 +58,32 @@ export function AboutPanel() {
             Eduard Lotz
           </a>
         </span>
-        <WordmarkLogo width={80} />
+        <motion.span
+          aria-hidden="true"
+          className={styles.aboutWordmarkTilt}
+          initial="rest"
+          animate="rest"
+          whileHover="hover"
+          onPointerEnter={handlePointerEnter}
+          onPointerMove={handlePointerMove}
+          onPointerLeave={handlePointerLeave}
+        >
+          <motion.span
+            className={styles.aboutWordmarkVisual}
+            style={{ rotateX, rotateY, transformPerspective: 600 }}
+            variants={{
+              rest: { scale: 1 },
+              hover: { scale: 1.05 },
+            }}
+            transition={
+              reduceMotion
+                ? { duration: 0 }
+                : { type: "spring", stiffness: 280, damping: 23, mass: 0.7 }
+            }
+          >
+            <WordmarkLogo width={80} />
+          </motion.span>
+        </motion.span>
       </footer>
     </section>
   );

@@ -53,7 +53,7 @@ import {
 } from "../PhysicsRope/PhysicsRope";
 import styles from "../../../../App.module.css";
 import {
-  MOBILE_VIEWPORT_QUERY,
+  COMPACT_PLAY_VIEWPORT_QUERY,
   useMediaQuery,
 } from "../../../../shared/hooks/useMediaQuery";
 import {
@@ -75,6 +75,7 @@ type Props = {
   quest: Quest;
   session: QuestSession;
   layoutSessionId: string;
+  entryRotation: number;
   coins: number;
   redRopes: number;
   debugMode: boolean;
@@ -141,6 +142,7 @@ export function ActiveQuestCard({
   quest,
   session,
   layoutSessionId,
+  entryRotation,
   coins,
   redRopes,
   debugMode,
@@ -163,15 +165,8 @@ export function ActiveQuestCard({
   const [phase, setPhase] = useState<Phase>(
     initiallyReady ? "ready" : initiallyPaused ? "paused" : "running",
   );
-  const isMobileViewport = useMediaQuery(MOBILE_VIEWPORT_QUERY);
-  const isShortViewport = useMediaQuery("(max-height: 700px)");
-  const activeCardScale = isMobileViewport
-    ? isShortViewport
-      ? 1.08
-      : 1.15
-    : isShortViewport
-      ? 1.12
-      : 1.2;
+  const isMobileViewport = useMediaQuery(COMPACT_PLAY_VIEWPORT_QUERY);
+  const activeCardScale = isMobileViewport ? 1.15 : 1.25;
   const [cardFocused, setCardFocused] = useState(false);
   const [cardHoverArmed, setCardHoverArmed] = useState(false);
   const [ropeMode, setRopeMode] = useState<RopeMode>(
@@ -975,7 +970,9 @@ export function ActiveQuestCard({
         >
           <motion.div
             className={styles.activeCardDisplay}
-            initial={reduceMotion ? false : { scale: 1, rotate: 0 }}
+            initial={
+              reduceMotion ? false : { scale: 1, rotate: entryRotation }
+            }
             animate={{
               scale: completed
                 ? isMobileViewport

@@ -11,7 +11,7 @@ import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
 import { QuestCardBack } from "../../../../shared/quest-card/QuestCardBack/QuestCardBack";
 import { plainObjectiveText } from "../../../../shared/quest-card/QuestObjectiveText/QuestObjectiveText";
 import {
-  MOBILE_VIEWPORT_QUERY,
+  COMPACT_PLAY_VIEWPORT_QUERY,
   useMediaQuery,
 } from "../../../../shared/hooks/useMediaQuery";
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
@@ -28,7 +28,7 @@ type Props = {
   returningToMoods: boolean;
   shuffleSequence: number;
   shuffling: boolean;
-  onSelectionStart: () => void;
+  onSelectionStart: (previewRotation: number) => void;
   onSelect: (questId: string) => void;
 };
 
@@ -43,14 +43,13 @@ type CardProps = {
   returningToMoods: boolean;
   shuffleSequence: number;
   shuffling: boolean;
-  swipeExiting: boolean;
-  swipeInProgress: boolean;
   selected: boolean;
   selectionStarted: boolean;
   layoutSessionId: string;
   onCycle: (direction: -1 | 1, focusNext?: boolean) => void;
-  onSelect: (questId: string) => void;
-  onSwipeComplete: () => void;
+  onSelect: (questId: string, previewRotation: number) => void;
+  onSwipeComplete: (questId: string) => void;
+  onSwipeReturnStart: (questId: string) => void;
   onSwipeStart: (questId: string) => void;
 };
 
@@ -99,13 +98,20 @@ export function QuestOfferDeck({
         )
       : 0,
   );
-  const [swipingId, setSwipingId] = useState<string | null>(null);
+  const [swipingIds, setSwipingIds] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
+  const [returningSwipeIds, setReturningSwipeIds] = useState<
+    ReadonlySet<string>
+  >(() => new Set());
   const deckRef = useRef<HTMLDivElement>(null);
   const selectionFrameRef = useRef<number | null>(null);
-  const isMobile = useMediaQuery(MOBILE_VIEWPORT_QUERY);
+  const isMobile = useMediaQuery(COMPACT_PLAY_VIEWPORT_QUERY);
 
   useEffect(() => {
     setSelectedId(null);
+    setSwipingIds(new Set());
+    setReturningSwipeIds(new Set());
     setActiveCardIndex(
       returningQuestId
         ? Math.max(
@@ -125,10 +131,10 @@ export function QuestOfferDeck({
     [],
   );
 
-  function selectCard(questId: string) {
+  function selectCard(questId: string, previewRotation: number) {
     if (selectedId || shuffling) return;
     playSound("cardSelect");
-    onSelectionStart();
+    onSelectionStart(previewRotation);
     setSelectedId(questId);
     if (reduceMotion) {
       onSelect(questId);
@@ -141,7 +147,7 @@ export function QuestOfferDeck({
   }
 
   function cycleCard(direction: -1 | 1, focusNext = false) {
-    if (selectedId || shuffling || swipingId || items.length < 2) return;
+    if (selectedId || shuffling || items.length < 2) return;
     playSound("cardHover");
     setActiveCardIndex(
       (current) => (current + direction + items.length) % items.length,
@@ -175,7 +181,8 @@ export function QuestOfferDeck({
               index === 0 ? "left" : index === 2 ? "right" : "center"
             }
             data-stack-position={stackPosition}
-            data-swipe-exiting={swipingId === item.id || undefined}
+            data-swipe-exiting={swipingIds.has(item.id) || undefined}
+            data-swipe-returning={returningSwipeIds.has(item.id) || undefined}
             key={`quest-offer-slot-${index}`}
           >
             <QuestOfferCard
@@ -191,14 +198,28 @@ export function QuestOfferDeck({
               returningToMoods={returningToMoods}
               shuffleSequence={shuffleSequence}
               shuffling={shuffling}
-              swipeExiting={swipingId === item.id}
-              swipeInProgress={swipingId !== null}
               selected={selectedId === item.id}
               selectionStarted={selectedId !== null}
               onCycle={cycleCard}
               onSelect={selectCard}
-              onSwipeComplete={() => setSwipingId(null)}
-              onSwipeStart={setSwipingId}
+              onSwipeComplete={(questId) =>
+                setReturningSwipeIds((ids) => {
+                  const next = new Set(ids);
+                  next.delete(questId);
+                  return next;
+                })
+              }
+              onSwipeReturnStart={(questId) => {
+                setSwipingIds((ids) => {
+                  const next = new Set(ids);
+                  next.delete(questId);
+                  return next;
+                });
+                setReturningSwipeIds((ids) => new Set(ids).add(questId));
+              }}
+              onSwipeStart={(questId) =>
+                setSwipingIds((ids) => new Set(ids).add(questId))
+              }
             />
           </motion.div>
         );
@@ -236,13 +257,12 @@ function QuestOfferCard({
   returningToMoods,
   shuffleSequence,
   shuffling,
-  swipeExiting,
-  swipeInProgress,
   selected,
   selectionStarted,
   onCycle,
   onSelect,
   onSwipeComplete,
+  onSwipeReturnStart,
   onSwipeStart,
 }: CardProps) {
   const { t } = useTranslation();
@@ -428,7 +448,7 @@ function QuestOfferCard({
         onClick={() => {
           if (suppressClickRef.current || (isMobile && !isTopCard)) return;
           resetTilt();
-          onSelect(item.id);
+          onSelect(item.id, CARD_ROTATIONS[index]);
         }}
         onKeyDown={(event) => {
           if (!isMobile || !isTopCard) return;
@@ -453,8 +473,7 @@ function QuestOfferCard({
             isMobile &&
             isTopCard &&
             !selectionStarted &&
-            !shuffling &&
-            !swipeInProgress
+            !shuffling
               ? "x"
               : false
           }
@@ -491,7 +510,7 @@ function QuestOfferCard({
 
               if (reduceMotion) {
                 swipeX.set(0);
-                onSwipeComplete();
+                onSwipeComplete(item.id);
               } else {
                 swipeAnimationRef.current?.stop();
                 swipeAnimationRef.current = animate(
@@ -504,8 +523,14 @@ function QuestOfferCard({
                     mass: 0.82,
                     velocity: releaseVelocity,
                     onComplete: () => {
-                      swipeX.set(0);
-                      onSwipeComplete();
+                      onSwipeReturnStart(item.id);
+                      swipeAnimationRef.current = animate(swipeX, 0, {
+                        type: "spring",
+                        stiffness: 190,
+                        damping: 26,
+                        mass: 0.72,
+                        onComplete: () => onSwipeComplete(item.id),
+                      });
                     },
                   },
                 );

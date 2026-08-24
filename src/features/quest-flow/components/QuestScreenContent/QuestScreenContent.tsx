@@ -125,6 +125,7 @@ export function QuestScreenContent({
   const [questDeckGeneration, setQuestDeckGeneration] = useState(0);
   const [questSelectionClosing, setQuestSelectionClosing] = useState(false);
   const [activeHandoffStarted, setActiveHandoffStarted] = useState(isActive);
+  const [activeEntryRotation, setActiveEntryRotation] = useState(0);
   const selectionLayoutSessionId = `${layoutSessionIdRef.current}-selection`;
   const questLayoutSessionId =
     `${layoutSessionIdRef.current}-quests-${questDeckGeneration}`;
@@ -277,6 +278,7 @@ export function QuestScreenContent({
                 quest={currentQuest}
                 session={currentSession}
                 layoutSessionId={questLayoutSessionId}
+                entryRotation={activeEntryRotation}
                 coins={points}
                 redRopes={redRopes}
                 debugMode={debugMode}
@@ -385,11 +387,12 @@ export function QuestScreenContent({
                         returningToMoods={editingMood}
                         shuffleSequence={shuffleSequence}
                         shuffling={isShuffling}
-                        onSelectionStart={() => {
+                        onSelectionStart={(previewRotation) => {
                           setShuffleSequence(0);
                           setIsShuffling(false);
                           setQuestSelectionClosing(true);
                           setActiveHandoffStarted(false);
+                          setActiveEntryRotation(previewRotation);
                         }}
                         onSelect={(questId) => {
                           onRevealQuest(questId);

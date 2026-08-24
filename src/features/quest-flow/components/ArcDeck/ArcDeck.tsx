@@ -16,7 +16,7 @@ import type { MoodId } from "../../../../data/moods";
 import { playSound } from "../../../../lib/sound";
 import styles from "../../../../App.module.css";
 import {
-  MOBILE_VIEWPORT_QUERY,
+  COMPACT_PLAY_VIEWPORT_QUERY,
   useMediaQuery,
 } from "../../../../shared/hooks/useMediaQuery";
 import { ArcCard } from "./ArcCard";
@@ -81,7 +81,7 @@ export function ArcDeck({
   const selectionFrameRef = useRef<number | null>(null);
   const revealTimeoutRef = useRef<number | null>(null);
   const deckRef = useRef<HTMLDivElement>(null);
-  const mobile = useMediaQuery(MOBILE_VIEWPORT_QUERY);
+  const mobile = useMediaQuery(COMPACT_PLAY_VIEWPORT_QUERY);
   const [revealCards, setRevealCards] = useState(
     reduceMotion || !initialItemId,
   );

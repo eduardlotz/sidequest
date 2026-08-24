@@ -142,7 +142,7 @@ export function AppHeader({
                 }
               >
                 {!desktop && <Drawer.Handle className={styles.drawerHandle} />}
-                <AboutPanel />
+                <AboutPanel reduceMotion={reduceMotion} />
               </Drawer.Content>
             </Drawer.Portal>
           </Drawer.Root>
