@@ -2,7 +2,7 @@ import { AnimatePresence, motion, type Variants } from "motion/react";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { formatRunningDuration } from "../../../../lib/format";
-import styles from "../../../../App.module.css";
+import styles from "./AnimatedElapsedTime.module.css";
 
 type Props = {
   elapsedMs: number;

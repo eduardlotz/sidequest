@@ -11,7 +11,7 @@ import {
 } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
 import { useQuestStore } from "../../stores/useQuestStore";
-import styles from "../../App.module.css";
+import styles from "./QuestFlowLayout.module.css";
 import { useIntroReady } from "../../app/hooks/useIntroReady";
 import { useMoodWindowRefresh } from "../../app/hooks/useMoodWindowRefresh";
 

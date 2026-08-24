@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
-import styles from "../../../../App.module.css";
+import { visuallyHiddenClassName } from "../../../../shared/ui/VisuallyHidden/VisuallyHidden";
+import styles from "./ProfileDrawer.module.css";
 import { formatScore } from "../../../../lib/format";
 import { applySoundEnabled, readSoundEnabled } from "../../../../lib/sound";
 import { localizeMood } from "../../../../localization/catalog";
@@ -54,7 +55,7 @@ export function ProfileDrawer({
             <h2 id="profile-title">{t("ui.profile.title")}</h2>
           </Drawer.Title>
         </div>
-        <Drawer.Description className={styles.srOnly}>
+        <Drawer.Description className={visuallyHiddenClassName}>
           {t("ui.profile.description")}
         </Drawer.Description>
       </header>
@@ -121,7 +122,6 @@ export function ProfileDrawer({
             >
               {THEME_CHOICES.map((choice) => (
                 <button
-                  data-active={themeChoice === choice || undefined}
                   type="button"
                   aria-pressed={themeChoice === choice}
                   key={choice}
@@ -195,7 +195,6 @@ function SettingToggle({
   return (
     <button
       className={styles.settingToggle}
-      data-active={checked || undefined}
       type="button"
       role="switch"
       aria-checked={checked}

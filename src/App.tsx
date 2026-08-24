@@ -29,7 +29,7 @@ export function App() {
         currentSession ? "active" : selectedMoodId ? "quests" : "moods"
       }
     >
-      <InteractiveDotBackground reduceMotion={reduceMotion} />
+      <InteractiveDotBackground />
 
       <a className={styles.skipLink} href="#main-content">
         {t("ui.nav.skipToContent")}

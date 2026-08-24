@@ -1,6 +1,6 @@
 import { motion, type HTMLMotionProps } from "motion/react";
 import type { ReactNode } from "react";
-import styles from "../../../App.module.css";
+import styles from "./QuestCard.module.css";
 import { QuestCardFront } from "../QuestCardFront/QuestCardFront";
 
 type Props = {

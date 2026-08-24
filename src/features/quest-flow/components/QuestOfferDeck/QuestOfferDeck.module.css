@@ -1,0 +1,387 @@
+.deck {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  width: 100%;
+  height: var(--quest-deck-height);
+  min-height: 0;
+  padding-top: 12px;
+  align-self: center;
+  align-items: flex-start;
+  justify-content: center;
+  perspective: 1400px;
+  translate: 0 12px;
+}
+
+.previewCardSlot {
+  --accent: #31ff6c;
+  --accent-rgb: 49 255 108;
+  position: relative;
+  width: var(--quest-card-width);
+  flex: 0 0 auto;
+  aspect-ratio: 0.7;
+  container-name: quest-card;
+  container-type: inline-size;
+  isolation: isolate;
+  transform-origin: 50% 50%;
+}
+
+.previewCardSlot[data-position="left"],
+.previewCardSlot[data-position="right"] {
+  top: 8px;
+}
+
+.previewCardSlot[data-position="center"] {
+  top: -12px;
+}
+
+.previewCardSlot + .previewCardSlot {
+  margin-left: clamp(-60px, calc(16.667cqw - 176.667px), -40px);
+}
+
+.previewCardSlot::before {
+  position: absolute;
+  z-index: 0;
+  background: transparent;
+  content: "";
+  inset: -35px -26px;
+  pointer-events: none;
+}
+
+.previewCardProjection {
+  position: absolute;
+  width: 100%;
+  aspect-ratio: 0.7;
+  inset: 0;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+}
+
+.previewCardProjection[data-mood-handoff] {
+  filter: blur(0) !important;
+}
+
+:global([data-active-handoff="pending"])
+  .previewCardProjection[data-selected] {
+  visibility: visible !important;
+}
+
+.previewCardHitArea {
+  --shine-angle: 180deg;
+  --shine-opacity: 0;
+  --quest-card-content-opacity: 0.36;
+  --quest-card-brand-opacity: 0.12;
+  --quest-card-back-pattern-opacity: 0.07;
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.questSelectionCard {
+  transition:
+    box-shadow 320ms ease,
+    filter 180ms ease,
+    scale 400ms cubic-bezier(0.03, 0.98, 0.52, 0.99);
+}
+
+.previewCardHitArea:active .questSelectionCard {
+  filter: brightness(1.08);
+}
+
+.previewCardTilt {
+  position: absolute;
+  display: block;
+  inset: 0;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  transition:
+    filter 180ms ease,
+    scale 400ms cubic-bezier(0.03, 0.98, 0.52, 0.99);
+  -webkit-backface-visibility: hidden;
+}
+
+.shuffleCard,
+.shuffleCardFront {
+  position: absolute;
+  display: block;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.shuffleCard {
+  will-change: transform;
+}
+
+.shuffleCard[data-shuffling] {
+  animation: questCardShuffleFlip 0.9s linear var(--shuffle-delay, 0s) both;
+}
+
+.shuffleCard[data-shuffling] .shuffleCardFront,
+.shuffleCard[data-shuffling] .shuffleCardBack {
+  animation: questCardShuffleBounce 0.9s cubic-bezier(0.22, 0.8, 0.24, 1)
+    var(--shuffle-delay, 0s) both;
+}
+
+.shuffleCardFront,
+.shuffleCardBack {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.shuffleCardFront {
+  z-index: 2;
+}
+
+.shuffleCardBack {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  transform: rotateY(180deg);
+}
+
+.shuffleShine {
+  position: absolute;
+  top: -8%;
+  bottom: -8%;
+  left: 0;
+  z-index: 6;
+  display: block;
+  width: 38%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgb(255 255 255 / 0.03) 25%,
+    rgb(255 255 255 / 0.44) 47%,
+    rgb(255 255 255 / 0.1) 61%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-135%);
+}
+
+.shuffleCard[data-shuffling] .shuffleShine {
+  animation: questCardShuffleShine 0.24s cubic-bezier(0.18, 0.78, 0.25, 1)
+    calc(var(--shuffle-delay, 0s) + 0.9s) both;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .previewCardHitArea:not([data-selected]):hover,
+  .previewCardHitArea:focus-visible {
+    --quest-card-content-opacity: 1;
+    --quest-card-brand-opacity: 0.42;
+  }
+
+  .previewCardHitArea:not([data-selected]):hover .questSelectionCard {
+    scale: 1.012;
+    will-change: transform;
+  }
+}
+
+:global([data-play-layout="compact"]) .deck {
+  padding-top: 0;
+  touch-action: pan-y;
+  translate: none;
+}
+
+:global([data-play-layout="compact"])
+  .shuffleCard[data-shuffle-phase="outgoing"] {
+  animation: questCardShuffleDropOut 0.34s cubic-bezier(0.32, 0, 0.67, 0)
+    var(--shuffle-delay, 0s) both;
+  will-change: filter, opacity, rotate, scale, translate;
+}
+
+:global([data-play-layout="compact"])
+  .shuffleCard[data-shuffle-phase="incoming"] {
+  animation: questCardShuffleDropIn 0.44s cubic-bezier(0.22, 0.8, 0.24, 1)
+    var(--shuffle-delay, 0s) both;
+  will-change: filter, opacity, rotate, scale, translate;
+}
+
+:global([data-play-layout="compact"])
+  .shuffleCard[data-shuffling]
+  .shuffleCardFront,
+:global([data-play-layout="compact"])
+  .shuffleCard[data-shuffling]
+  .shuffleCardBack,
+:global([data-play-layout="compact"])
+  .shuffleCard[data-shuffling]
+  .shuffleShine {
+  animation: none;
+}
+
+:global([data-play-layout="compact"]) .previewCardSlot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  min-width: 0;
+  margin: 0;
+  transform-origin: 50% 18%;
+  transition:
+    translate 210ms cubic-bezier(0.22, 0.8, 0.24, 1),
+    scale 210ms cubic-bezier(0.22, 0.8, 0.24, 1),
+    rotate 210ms cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+:global([data-play-layout="compact"]) .previewCardSlot[data-position] {
+  top: 0;
+}
+
+:global([data-play-layout="compact"])
+  .previewCardSlot[data-stack-position="front"] {
+  z-index: 3;
+  pointer-events: auto;
+  translate: -50% 0;
+  scale: 1;
+  rotate: 0deg;
+}
+
+:global([data-play-layout="compact"])
+  .previewCardSlot[data-stack-position="front"]
+  .previewCardHitArea {
+  --quest-card-content-opacity: 1;
+  --quest-card-brand-opacity: 0.42;
+}
+
+:global([data-play-layout="compact"])
+  .previewCardSlot[data-stack-position="middle"] {
+  z-index: 2;
+  pointer-events: none;
+  translate: -50% 17px;
+  scale: 0.96;
+  rotate: 4.5deg;
+}
+
+:global([data-play-layout="compact"])
+  .previewCardSlot[data-stack-position="back"] {
+  z-index: 1;
+  pointer-events: none;
+  translate: -50% 33px;
+  scale: 0.92;
+  rotate: -5.5deg;
+}
+
+:global([data-play-layout="compact"]) .previewCardSlot[data-swipe-exiting] {
+  z-index: 4;
+  pointer-events: none;
+  translate: -50% 0;
+  scale: 1;
+  rotate: 0deg;
+  transition: none;
+}
+
+:global([data-play-layout="compact"])
+  .previewCardSlot[data-swipe-returning] {
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes questCardShuffleFlip {
+  from {
+    transform: rotateY(0deg);
+  }
+
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes questCardShuffleBounce {
+  0%,
+  100% {
+    scale: 1;
+  }
+
+  38% {
+    scale: 1.03;
+  }
+
+  60% {
+    scale: 0.995;
+  }
+
+  82% {
+    scale: 1.018;
+  }
+}
+
+@keyframes questCardShuffleShine {
+  0% {
+    opacity: 0;
+    transform: translateX(-135%);
+  }
+
+  38% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(235%);
+  }
+}
+
+@keyframes questCardShuffleDropOut {
+  from {
+    filter: blur(0);
+    opacity: 1;
+    rotate: 0deg;
+    scale: 1;
+    translate: 0 0;
+  }
+
+  to {
+    filter: blur(7px);
+    opacity: 0;
+    rotate: var(--shuffle-drop-rotate, 0deg);
+    scale: 0.96;
+    translate: 0 96px;
+  }
+}
+
+@keyframes questCardShuffleDropIn {
+  from {
+    filter: blur(7px);
+    opacity: 0;
+    rotate: var(--shuffle-enter-rotate, 0deg);
+    scale: 0.95;
+    translate: 0 -88px;
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    rotate: 0deg;
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .questSelectionCard,
+  .previewCardSlot,
+  .previewCardTilt {
+    transition: none;
+  }
+
+  .previewCardHitArea:hover .questSelectionCard {
+    scale: 1;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  .previewCardProjection {
+    filter: none !important;
+  }
+}

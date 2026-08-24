@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { CoinIcon } from "../../../../shared/ui/Icons/Icons";
 import type { Point } from "../../model/activeQuestMath";
-import styles from "../../../../App.module.css";
+import styles from "./FlyingCoin.module.css";
 
 type Props = {
   end: Point;

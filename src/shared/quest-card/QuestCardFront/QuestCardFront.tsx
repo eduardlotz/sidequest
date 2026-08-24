@@ -1,4 +1,4 @@
-import styles from "../../../App.module.css";
+import styles from "../QuestCard/QuestCard.module.css";
 import { WordmarkLogo } from "../../../assets/wordmark";
 import { QuestCardMeta } from "../QuestCardMeta/QuestCardMeta";
 import { QuestObjectiveText } from "../QuestObjectiveText/QuestObjectiveText";

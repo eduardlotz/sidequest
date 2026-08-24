@@ -6,7 +6,8 @@ import { getMoodArtStyle } from "../../../../data/questColors";
 import { useTiltEffect } from "../../../../hooks/useTiltEffect";
 import { moodCardLayoutId } from "../../../../lib/cardMotion";
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
-import styles from "../../../../App.module.css";
+import { usePlayLayout } from "../../usePlayLayout";
+import styles from "./ArcDeck.module.css";
 import { MoodIllustration } from "../MoodIllustration/MoodIllustration";
 import { SelectionCardBody } from "../SelectionCard/SelectionCard";
 import type { ArcDeckItem } from "./ArcDeck";
@@ -19,7 +20,6 @@ type Props = {
   itemCount: number;
   layerPresent: boolean;
   layoutSessionId: number | string;
-  mobile: boolean;
   position: MotionValue<number>;
   reduceMotion: boolean;
   revealCards: boolean;
@@ -48,7 +48,6 @@ export function ArcCard({
   itemCount,
   layerPresent,
   layoutSessionId,
-  mobile,
   position,
   reduceMotion,
   revealCards,
@@ -58,12 +57,13 @@ export function ArcCard({
   onSelect,
 }: Props) {
   const { t } = useTranslation();
+  const { isCompact } = usePlayLayout();
   const distance = useTransform(position, (latest) =>
     loopDistance(index - latest, itemCount),
   );
   const x = useTransform(
     distance,
-    (value) => value * (mobile ? MOBILE_CARD_GAP : DESKTOP_CARD_GAP),
+    (value) => value * (isCompact ? MOBILE_CARD_GAP : DESKTOP_CARD_GAP),
   );
   const y = useTransform(distance, (value) => -42 + Math.abs(value) * 92);
   const rotate = useTransform(distance, (value) => value * 11);

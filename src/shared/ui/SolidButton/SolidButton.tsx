@@ -8,17 +8,26 @@ import styles from "./SolidButton.module.css";
 type SolidButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
+  variant?: "surface" | "soft";
 };
 
 export const SolidButton = forwardRef<HTMLButtonElement, SolidButtonProps>(
   function SolidButton(
-    { children, className, iconLeft, iconRight, ...props },
+    {
+      children,
+      className,
+      iconLeft,
+      iconRight,
+      variant = "surface",
+      ...props
+    },
     ref,
   ) {
     return (
       <button
         {...props}
         className={[styles.button, className].filter(Boolean).join(" ")}
+        data-variant={variant}
         ref={ref}
       >
         {iconLeft ? (

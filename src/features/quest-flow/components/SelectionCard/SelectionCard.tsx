@@ -1,11 +1,10 @@
 import { AnimatePresence, motion } from "motion/react";
 import type { ReactNode } from "react";
 import { CARD_LAYOUT_TRANSITION } from "../../../../lib/cardMotion";
-import styles from "../../../../App.module.css";
+import styles from "./SelectionCard.module.css";
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
 
 type SelectionCardBodyProps = {
-  animateContentOnMount?: boolean;
   children?: ReactNode;
   className?: string;
   contentClassName?: string;
@@ -13,11 +12,9 @@ type SelectionCardBodyProps = {
   contentVisible?: boolean;
   layoutId: string;
   reduceMotion: boolean;
-  visible?: boolean;
 };
 
 type SelectionCardContentProps = {
-  animateOnMount?: boolean;
   children: ReactNode;
   className?: string;
   contentKey: string;
@@ -28,7 +25,6 @@ type SelectionCardContentProps = {
 const CONTENT_EASE = SELECTION_HANDOFF_EASE;
 
 export function SelectionCardBody({
-  animateContentOnMount = true,
   children,
   className,
   contentClassName,
@@ -36,21 +32,18 @@ export function SelectionCardBody({
   contentVisible = true,
   layoutId,
   reduceMotion,
-  visible = true,
 }: SelectionCardBodyProps) {
   return (
     <motion.span
       className={joinClassNames(styles.selectionCardBody, className)}
       layoutId={layoutId}
       layoutCrossfade={false}
-      style={{ visibility: visible ? undefined : "hidden" }}
       transition={{
         layout: reduceMotion ? { duration: 0 } : CARD_LAYOUT_TRANSITION,
       }}
     >
       {children && contentKey ? (
         <SelectionCardContent
-          animateOnMount={animateContentOnMount}
           className={contentClassName}
           contentKey={contentKey}
           reduceMotion={reduceMotion}
@@ -64,7 +57,6 @@ export function SelectionCardBody({
 }
 
 function SelectionCardContent({
-  animateOnMount = true,
   children,
   className,
   contentKey,
@@ -72,7 +64,7 @@ function SelectionCardContent({
   visible,
 }: SelectionCardContentProps) {
   return (
-    <AnimatePresence initial={animateOnMount} mode="sync">
+    <AnimatePresence initial mode="sync">
       {visible ? (
         <motion.span
           className={joinClassNames(styles.selectionCardContent, className)}

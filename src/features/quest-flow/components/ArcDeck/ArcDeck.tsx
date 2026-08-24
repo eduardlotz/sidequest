@@ -14,11 +14,9 @@ import {
 import { useTranslation } from "react-i18next";
 import type { MoodId } from "../../../../data/moods";
 import { playSound } from "../../../../lib/sound";
-import styles from "../../../../App.module.css";
-import {
-  MOBILE_VIEWPORT_QUERY,
-  useMediaQuery,
-} from "../../../../shared/hooks/useMediaQuery";
+import { VisuallyHidden } from "../../../../shared/ui/VisuallyHidden/VisuallyHidden";
+import { usePlayLayout } from "../../usePlayLayout";
+import styles from "./ArcDeck.module.css";
 import { ArcCard } from "./ArcCard";
 import { clamp, loopDistance, modulo } from "./arcDeckMath";
 
@@ -81,12 +79,12 @@ export function ArcDeck({
   const selectionFrameRef = useRef<number | null>(null);
   const revealTimeoutRef = useRef<number | null>(null);
   const deckRef = useRef<HTMLDivElement>(null);
-  const mobile = useMediaQuery(MOBILE_VIEWPORT_QUERY);
+  const { isCompact } = usePlayLayout();
   const [revealCards, setRevealCards] = useState(
     reduceMotion || !initialItemId,
   );
   const itemKey = items.map((item) => item.id).join("|");
-  const cardGap = mobile ? MOBILE_CARD_GAP : DESKTOP_CARD_GAP;
+  const cardGap = isCompact ? MOBILE_CARD_GAP : DESKTOP_CARD_GAP;
 
   useEffect(() => {
     animationRef.current?.stop();
@@ -179,7 +177,7 @@ export function ArcDeck({
         ? event.deltaX
         : event.deltaY;
     const pixels = event.deltaMode === 1 ? raw * 16 : raw;
-    const advance = clamp(pixels / (mobile ? 110 : 136), -2.5, 2.5);
+    const advance = clamp(pixels / (isCompact ? 110 : 136), -2.5, 2.5);
     if (Math.abs(advance) < 0.01) return;
     moveTo(targetRef.current + advance);
     if (wheelTimeoutRef.current !== null) {
@@ -293,7 +291,6 @@ export function ArcDeck({
             key={item.id}
             layerPresent={layerPresent}
             layoutSessionId={layoutSessionId}
-            mobile={mobile}
             position={position}
             reduceMotion={reduceMotion}
             revealCards={revealCards}
@@ -316,7 +313,7 @@ export function ArcDeck({
         <MoodArrow right />
       </motion.div>
 
-      <span className={styles.srOnly} aria-live="polite">
+      <VisuallyHidden aria-live="polite">
         {items[activeIndex]
           ? t("ui.arc.status", {
               current: activeIndex + 1,
@@ -325,7 +322,7 @@ export function ArcDeck({
               subtitle: items[activeIndex].subtitle,
             })
           : t("ui.arc.noCards")}
-      </span>
+      </VisuallyHidden>
     </div>
   );
 }

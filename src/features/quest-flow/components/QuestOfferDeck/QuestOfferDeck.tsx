@@ -6,17 +6,16 @@ import { getMoodAccentStyle } from "../../../../data/questColors";
 import { useTiltEffect } from "../../../../hooks/useTiltEffect";
 import { CARD_LAYOUT_TRANSITION } from "../../../../lib/cardMotion";
 import { playSound } from "../../../../lib/sound";
-import styles from "../../../../App.module.css";
+import { VisuallyHidden } from "../../../../shared/ui/VisuallyHidden/VisuallyHidden";
+import styles from "./QuestOfferDeck.module.css";
 import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
 import { QuestCardBack } from "../../../../shared/quest-card/QuestCardBack/QuestCardBack";
 import { plainObjectiveText } from "../../../../shared/quest-card/QuestObjectiveText/QuestObjectiveText";
-import {
-  MOBILE_VIEWPORT_QUERY,
-  useMediaQuery,
-} from "../../../../shared/hooks/useMediaQuery";
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
+import { usePlayLayout } from "../../usePlayLayout";
 
 export type QuestOfferItem = QuestDefinition;
+export type QuestShufflePhase = "idle" | "outgoing" | "incoming";
 type QuestEntryMotion = "bottom" | "shared";
 
 type Props = {
@@ -27,8 +26,8 @@ type Props = {
   returningQuestId?: string;
   returningToMoods: boolean;
   shuffleSequence: number;
-  shuffling: boolean;
-  onSelectionStart: () => void;
+  shufflePhase: QuestShufflePhase;
+  onSelectionStart: (previewRotation: number) => void;
   onSelect: (questId: string) => void;
 };
 
@@ -36,21 +35,19 @@ type CardProps = {
   entryMotion: QuestEntryMotion;
   item: QuestOfferItem;
   index: number;
-  isMobile: boolean;
   isTopCard: boolean;
   stackPosition: "front" | "middle" | "back";
   reduceMotion: boolean;
   returningToMoods: boolean;
   shuffleSequence: number;
-  shuffling: boolean;
-  swipeExiting: boolean;
-  swipeInProgress: boolean;
+  shufflePhase: QuestShufflePhase;
   selected: boolean;
   selectionStarted: boolean;
   layoutSessionId: string;
   onCycle: (direction: -1 | 1, focusNext?: boolean) => void;
-  onSelect: (questId: string) => void;
-  onSwipeComplete: () => void;
+  onSelect: (questId: string, previewRotation: number) => void;
+  onSwipeComplete: (questId: string) => void;
+  onSwipeReturnStart: (questId: string) => void;
   onSwipeStart: (questId: string) => void;
 };
 
@@ -84,7 +81,7 @@ export function QuestOfferDeck({
   returningQuestId,
   returningToMoods,
   shuffleSequence,
-  shuffling,
+  shufflePhase,
   onSelectionStart,
   onSelect,
 }: Props) {
@@ -99,13 +96,21 @@ export function QuestOfferDeck({
         )
       : 0,
   );
-  const [swipingId, setSwipingId] = useState<string | null>(null);
+  const [swipingIds, setSwipingIds] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
+  const [returningSwipeIds, setReturningSwipeIds] = useState<
+    ReadonlySet<string>
+  >(() => new Set());
   const deckRef = useRef<HTMLDivElement>(null);
   const selectionFrameRef = useRef<number | null>(null);
-  const isMobile = useMediaQuery(MOBILE_VIEWPORT_QUERY);
+  const { isCompact } = usePlayLayout();
+  const shuffling = shufflePhase !== "idle";
 
   useEffect(() => {
     setSelectedId(null);
+    setSwipingIds(new Set());
+    setReturningSwipeIds(new Set());
     setActiveCardIndex(
       returningQuestId
         ? Math.max(
@@ -125,10 +130,10 @@ export function QuestOfferDeck({
     [],
   );
 
-  function selectCard(questId: string) {
+  function selectCard(questId: string, previewRotation: number) {
     if (selectedId || shuffling) return;
     playSound("cardSelect");
-    onSelectionStart();
+    onSelectionStart(previewRotation);
     setSelectedId(questId);
     if (reduceMotion) {
       onSelect(questId);
@@ -141,7 +146,7 @@ export function QuestOfferDeck({
   }
 
   function cycleCard(direction: -1 | 1, focusNext = false) {
-    if (selectedId || shuffling || swipingId || items.length < 2) return;
+    if (selectedId || shuffling || items.length < 2) return;
     playSound("cardHover");
     setActiveCardIndex(
       (current) => (current + direction + items.length) % items.length,
@@ -175,14 +180,14 @@ export function QuestOfferDeck({
               index === 0 ? "left" : index === 2 ? "right" : "center"
             }
             data-stack-position={stackPosition}
-            data-swipe-exiting={swipingId === item.id || undefined}
+            data-swipe-exiting={swipingIds.has(item.id) || undefined}
+            data-swipe-returning={returningSwipeIds.has(item.id) || undefined}
             key={`quest-offer-slot-${index}`}
           >
             <QuestOfferCard
               entryMotion={entryMotion}
               item={item}
               index={index}
-              isMobile={isMobile}
               isTopCard={stackOffset === 0}
               key={`${layoutSessionId}-${index}`}
               layoutSessionId={layoutSessionId}
@@ -190,22 +195,36 @@ export function QuestOfferDeck({
               reduceMotion={reduceMotion}
               returningToMoods={returningToMoods}
               shuffleSequence={shuffleSequence}
-              shuffling={shuffling}
-              swipeExiting={swipingId === item.id}
-              swipeInProgress={swipingId !== null}
+              shufflePhase={shufflePhase}
               selected={selectedId === item.id}
               selectionStarted={selectedId !== null}
               onCycle={cycleCard}
               onSelect={selectCard}
-              onSwipeComplete={() => setSwipingId(null)}
-              onSwipeStart={setSwipingId}
+              onSwipeComplete={(questId) =>
+                setReturningSwipeIds((ids) => {
+                  const next = new Set(ids);
+                  next.delete(questId);
+                  return next;
+                })
+              }
+              onSwipeReturnStart={(questId) => {
+                setSwipingIds((ids) => {
+                  const next = new Set(ids);
+                  next.delete(questId);
+                  return next;
+                });
+                setReturningSwipeIds((ids) => new Set(ids).add(questId));
+              }}
+              onSwipeStart={(questId) =>
+                setSwipingIds((ids) => new Set(ids).add(questId))
+              }
             />
           </motion.div>
         );
       })}
 
-      <span className={styles.srOnly} aria-live="polite">
-        {isMobile && items[activeCardIndex]
+      <VisuallyHidden aria-live="polite">
+        {isCompact && items[activeCardIndex]
           ? t("ui.offers.cardStatus", {
               current: activeCardIndex + 1,
               total: items.length,
@@ -219,7 +238,7 @@ export function QuestOfferDeck({
                   t("ui.offers.hiddenQuest"),
               })
             : ""}
-      </span>
+      </VisuallyHidden>
     </div>
   );
 }
@@ -228,24 +247,24 @@ function QuestOfferCard({
   entryMotion,
   item,
   index,
-  isMobile,
   isTopCard,
   layoutSessionId,
   stackPosition,
   reduceMotion,
   returningToMoods,
   shuffleSequence,
-  shuffling,
-  swipeExiting,
-  swipeInProgress,
+  shufflePhase,
   selected,
   selectionStarted,
   onCycle,
   onSelect,
   onSwipeComplete,
+  onSwipeReturnStart,
   onSwipeStart,
 }: CardProps) {
   const { t } = useTranslation();
+  const { isCompact } = usePlayLayout();
+  const shuffling = shufflePhase !== "idle";
   const suppressClickRef = useRef(false);
   const swipeX = useMotionValue(0);
   const swipeAnimationRef = useRef<ReturnType<typeof animate> | null>(null);
@@ -258,7 +277,7 @@ function QuestOfferCard({
     rotateY,
   } = useTiltEffect({
     maxTilt: 18,
-    reduceMotion: reduceMotion || isMobile,
+    reduceMotion,
   });
 
   useEffect(() => {
@@ -272,14 +291,14 @@ function QuestOfferCard({
     [],
   );
 
-  const centerOffsetX = isMobile
+  const centerOffsetX = isCompact
     ? 0
     : index === 0
       ? 150
       : index === 2
         ? -150
         : 0;
-  const centerStaggerDelay = isMobile
+  const centerStaggerDelay = isCompact
     ? stackPosition === "front"
       ? 0
       : stackPosition === "middle"
@@ -417,21 +436,21 @@ function QuestOfferCard({
     >
       <button
         className={styles.previewCardHitArea}
-        data-flow-focus={(isMobile ? isTopCard : index === 1) || undefined}
+        data-flow-focus={(isCompact ? isTopCard : index === 1) || undefined}
         data-sound-card
         data-quest-id={item.id}
         data-selected={selected || undefined}
         type="button"
         disabled={shuffling}
-        tabIndex={isMobile && !isTopCard ? -1 : undefined}
+        tabIndex={isCompact && !isTopCard ? -1 : undefined}
         style={getMoodAccentStyle(item.moodId)}
         onClick={() => {
-          if (suppressClickRef.current || (isMobile && !isTopCard)) return;
+          if (suppressClickRef.current || (isCompact && !isTopCard)) return;
           resetTilt();
-          onSelect(item.id);
+          onSelect(item.id, CARD_ROTATIONS[index]);
         }}
         onKeyDown={(event) => {
-          if (!isMobile || !isTopCard) return;
+          if (!isCompact || !isTopCard) return;
           if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
             event.preventDefault();
             onCycle(event.key === "ArrowRight" ? 1 : -1, true);
@@ -450,11 +469,10 @@ function QuestOfferCard({
         <motion.span
           className={styles.previewCardTilt}
           drag={
-            isMobile &&
+            isCompact &&
             isTopCard &&
             !selectionStarted &&
-            !shuffling &&
-            !swipeInProgress
+            !shuffling
               ? "x"
               : false
           }
@@ -475,15 +493,10 @@ function QuestOfferCard({
             if (flicked) {
               const direction =
                 info.offset.x < 0 || info.velocity.x < -520 ? -1 : 1;
-              const releaseVelocity = Math.max(
-                -1_400,
-                Math.min(1_400, info.velocity.x),
-              );
+              const compactCardWidth = Math.min(window.innerWidth * 0.8, 300);
               const exitDistance = Math.max(
-                window.innerWidth * 1.05,
-                Math.abs(info.offset.x) +
-                  260 +
-                  Math.min(Math.abs(info.velocity.x) * 0.14, 220),
+                (window.innerWidth + compactCardWidth) / 2 + 12,
+                Math.abs(info.offset.x) + 140,
               );
 
               onSwipeStart(item.id);
@@ -491,21 +504,26 @@ function QuestOfferCard({
 
               if (reduceMotion) {
                 swipeX.set(0);
-                onSwipeComplete();
+                onSwipeComplete(item.id);
               } else {
                 swipeAnimationRef.current?.stop();
                 swipeAnimationRef.current = animate(
                   swipeX,
                   direction * exitDistance,
                   {
-                    type: "spring",
-                    stiffness: 120,
-                    damping: 20,
-                    mass: 0.82,
-                    velocity: releaseVelocity,
+                    duration: 0.2,
+                    ease: [0.22, 0.8, 0.24, 1],
                     onComplete: () => {
-                      swipeX.set(0);
-                      onSwipeComplete();
+                      onSwipeReturnStart(item.id);
+                      swipeAnimationRef.current = animate(swipeX, 0, {
+                        type: "spring",
+                        stiffness: 420,
+                        damping: 34,
+                        mass: 0.58,
+                        restDelta: 0.5,
+                        restSpeed: 25,
+                        onComplete: () => onSwipeComplete(item.id),
+                      });
                     },
                   },
                 );
@@ -518,7 +536,7 @@ function QuestOfferCard({
           }}
           style={{
             x: swipeX,
-            rotate: isMobile ? 0 : (CARD_ROTATIONS[index] ?? 0),
+            rotate: isCompact ? 0 : (CARD_ROTATIONS[index] ?? 0),
             rotateX,
             rotateY,
             transformPerspective: 1_000,
@@ -528,16 +546,22 @@ function QuestOfferCard({
             className={styles.shuffleCard}
             key={`shuffle-card-${shuffleSequence}`}
             data-shuffling={shuffling || undefined}
+            data-shuffle-phase={
+              shufflePhase === "idle" ? undefined : shufflePhase
+            }
             style={
               {
                 "--shuffle-delay": `${index * SHUFFLE_CARD_STAGGER_SECONDS}s`,
+                "--shuffle-drop-rotate": `${(index - 1) * 2.2}deg`,
+                "--shuffle-enter-rotate": `${(1 - index) * 2.2}deg`,
               } as CSSProperties
             }
             onAnimationEnd={(event) => {
               if (
                 event.target !== event.currentTarget ||
                 shuffleSequence < 1 ||
-                reduceMotion
+                reduceMotion ||
+                (isCompact && shufflePhase !== "incoming")
               ) {
                 return;
               }

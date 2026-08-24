@@ -1,0 +1,256 @@
+.questCardSurface {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: clamp(3px, 1.1cqw, 5px) solid var(--accent);
+  border-radius: clamp(30px, 10cqw, 49px);
+  background: var(--color-card);
+  box-shadow:
+    0 0 0 3px var(--color-card-border),
+    0 24px 55px rgb(var(--color-card-shadow-rgb) / 0.2),
+    0 0 52px rgb(var(--accent-rgb) / 0.11);
+  color: var(--color-card-copy);
+  isolation: isolate;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition:
+    box-shadow 320ms ease,
+    scale 400ms cubic-bezier(0.03, 0.98, 0.52, 0.99);
+  pointer-events: none;
+}
+
+.questCardSurface::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(
+      circle at 50% 110%,
+      rgb(var(--accent-rgb) / 0.09),
+      transparent 42%
+    ),
+    linear-gradient(145deg, rgb(255 255 255 / 0.025), transparent 40%);
+  content: "";
+}
+
+.cardShimmer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: 200%;
+  aspect-ratio: 1;
+  background: linear-gradient(
+    0deg,
+    rgb(255 255 255 / 0) 0%,
+    rgb(255 255 255 / 0.52) 100%
+  );
+  opacity: var(--shine-opacity);
+  pointer-events: none;
+  transform: rotate(var(--shine-angle)) translate(-50%, -50%);
+  transform-origin: 0 0;
+}
+
+.cardBrand {
+  position: absolute;
+  right: -10%;
+  bottom: -6%;
+  z-index: 1;
+  display: block;
+  width: 70cqw;
+  opacity: var(--quest-card-brand-opacity, 0.42);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  transform: rotate(-17deg);
+  transform-origin: center;
+}
+
+.cardBrand svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: white;
+}
+
+@container quest-card (max-width: 220px) {
+  .cardBrand {
+    width: 58cqw;
+  }
+}
+
+@container quest-card (min-width: 400px) {
+  .cardBrand {
+    width: 52cqw;
+  }
+}
+
+.questCardBackContent {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.questCardBackPattern {
+  position: absolute;
+  inset: -12%;
+  display: grid;
+  padding: clamp(16px, 5cqw, 30px);
+  grid-template-columns: repeat(5, 1fr);
+  gap: clamp(12px, 4cqw, 22px);
+  opacity: var(--quest-card-back-pattern-opacity, 0.09);
+  transform: rotate(-10deg) scale(1.08);
+  transition: opacity 150ms ease;
+
+  svg {
+    height: 58px;
+    width: 58px;
+
+    display: block;
+    /* filter: brightness(0) invert(1); */
+    transform: rotate(-20deg);
+
+    &:nth-child(2n) {
+      opacity: 0.55;
+      transform: rotate(170deg);
+    }
+  }
+}
+
+.questCardMeta {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(12px, 4cqw, 22px);
+}
+
+.questCardIdentity {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(3px, 1.2cqw, 6px);
+}
+
+.questCardMood {
+  color: var(--accent);
+  font-size: clamp(0.78rem, 3.8cqw, 1.15rem);
+  font-weight: 720;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.questCardName {
+  overflow: hidden;
+  color: #8f8f98;
+  font-size: clamp(0.68rem, 3cqw, 0.92rem);
+  font-weight: 680;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  hyphens: auto;
+}
+
+.questCardDuration {
+  flex: 0 0 auto;
+  color: #c7c7cd;
+  font-size: clamp(0.7rem, 3.1cqw, 0.94rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.questCardDivider {
+  position: relative;
+  z-index: 2;
+  display: block;
+  height: 1px;
+  margin-top: clamp(10px, 3.5cqw, 17px);
+  background: rgb(246 246 250 / 0.25);
+}
+
+.questCardFrontContent {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  padding: clamp(22px, 7.5cqw, 38px);
+  color: #f8f8fb;
+  opacity: var(--quest-card-content-opacity, 1);
+  text-align: left;
+  transition: opacity 180ms ease;
+}
+
+.questCardFrontCopy {
+  display: flex;
+  margin-top: clamp(18px, 6cqw, 32px);
+  flex-direction: column;
+  gap: clamp(7px, 2.5cqw, 12px);
+}
+
+.questCardFrontName {
+  color: #f6f6fa;
+  font-size: clamp(1.85rem, 8.5cqw, 3.1rem);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+  text-wrap: balance;
+  hyphens: auto;
+}
+
+.questCardFrontObjective {
+  color: rgb(246 246 250 / 0.82);
+  font-size: clamp(0.78rem, 3.15cqw, 1rem);
+  font-weight: 620;
+  letter-spacing: normal;
+  line-height: 1.32;
+  text-wrap: balance;
+}
+
+.questCardFrontObjective strong {
+  color: #f6f6fa;
+  font-weight: 760;
+}
+
+.questCardGenres {
+  display: flex;
+  margin-top: clamp(1px, 1cqw, 5px);
+  flex-wrap: wrap;
+  gap: clamp(5px, 1.8cqw, 8px);
+}
+
+.questCardGenre {
+  display: inline-flex;
+  min-height: clamp(20px, 6cqw, 27px);
+  padding: 0 clamp(7px, 2.4cqw, 11px);
+  align-items: center;
+  border-radius: 999px;
+  background: rgb(246 246 250 / 0.1);
+  color: rgb(246 246 250 / 0.72);
+  font-size: clamp(0.62rem, 2.8cqw, 0.78rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .questCardSurface,
+  .questCardBackPattern,
+  .questCardFrontContent {
+    transition: none;
+  }
+}

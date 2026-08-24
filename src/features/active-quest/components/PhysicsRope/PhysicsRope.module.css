@@ -1,0 +1,36 @@
+.ropeCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ropeVisual {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ropePath {
+  fill: none;
+  stroke: #a3a3ad;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 180ms ease;
+  vector-effect: non-scaling-stroke;
+}
+
+.ropeCanvas[data-rope-red="true"] .ropePath {
+  stroke: #ff2f36;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ropePath {
+    transition: none;
+  }
+}

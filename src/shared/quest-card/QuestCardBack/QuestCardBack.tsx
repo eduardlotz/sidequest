@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import styles from "../../../App.module.css";
+import styles from "../QuestCard/QuestCard.module.css";
 import { Logo } from "../../../assets/logo";
 
 type Props = {
