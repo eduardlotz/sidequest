@@ -1126,7 +1126,6 @@
   position: relative;
   z-index: 30;
   display: flex;
-  min-height: 150px;
   align-items: center;
   flex: 0 0 auto;
   flex-direction: column;
@@ -1196,9 +1195,9 @@
 .questShuffleControl {
   display: flex;
   align-items: center;
-  margin-top: 29px;
+  margin-top: 24px;
   flex-direction: column;
-  gap: 6px;
+  gap: 0.5rem;
 }
 
 .questShuffleControl > span {
@@ -1247,17 +1246,9 @@
     padding-top: 74px;
   }
 
-  .questSelectionHeader {
-    min-height: 148px;
-  }
-
   .questSelectionPrompt {
     margin-top: 18px;
     font-size: 0.8rem;
-  }
-
-  .questShuffleControl {
-    margin-top: 25px;
   }
 }
 
@@ -1283,16 +1274,12 @@
     padding-top: 68px;
   }
 
-  .questSelectionHeader {
-    min-height: 130px;
-  }
-
   .questSelectionPrompt {
     margin-top: 9px;
   }
 
   .questShuffleControl {
-    margin-top: 20px;
+    margin-top: 0;
   }
 }
 
@@ -2101,8 +2088,8 @@
   .deck {
     position: relative;
     width: 100%;
-    height: min(142vw, 620px);
-    min-height: min(142vw, 620px);
+    height: max(125vw, 420px);
+    min-height: max(125vw, 420px);
     align-items: flex-start;
     margin: 0;
     touch-action: pan-y;
@@ -2364,10 +2351,6 @@
   font-weight: 600;
   letter-spacing: -0.04em;
   translate: 0 -32px;
-}
-
-.deck {
-  margin-top: 28px;
 }
 
 .selectionCardBody {
@@ -2808,10 +2791,6 @@
 
   .questSelectionScreen {
     padding-top: 56px;
-  }
-
-  .questSelectionHeader {
-    min-height: 112px;
   }
 
   .questSelectionPrompt {
@@ -3681,12 +3660,8 @@
   scale: 0.98;
 }
 
-.questSelectionHeader {
-  min-height: 78px;
-}
-
 .questSelectionScreen .deck {
-  margin-top: 16px;
+  margin-top: 32px;
 }
 
 .questShuffleControl {
