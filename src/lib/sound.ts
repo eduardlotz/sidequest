@@ -9,6 +9,9 @@ import { core, organic } from "../../.web-kits";
 const SOUND_ENABLED_STORAGE_KEY = "sidequest.sound.enabled.v1";
 const HOVER_GAP_MS = 110;
 const MASTER_VOLUME = 1.5;
+const SOUND_COOLDOWN_MS: Partial<Record<SoundName, number>> = {
+  moodStep: 110,
+};
 
 export type SoundName =
   | "accordionClose"
@@ -28,7 +31,7 @@ export type SoundName =
   | "modalClose"
   | "modalOpen"
   | "moodStep"
-  | "shuffle"
+  | "newCards"
   | "slide"
   | "tabSwitch"
   | "timerGrab"
@@ -101,7 +104,7 @@ const playTimerGrab = defineSound(core.select);
 const playButtonClick = defineSound(minimalClick);
 const playCompletion = defineSound(organic.notification);
 const playMoodStep = defineSound(core.tap);
-const playShuffle = defineSound(core.tap);
+const playNewCards = defineSound(core.tap);
 let nextCoinHit = 0;
 
 const sounds: Record<SoundName, () => unknown> = {
@@ -126,7 +129,7 @@ const sounds: Record<SoundName, () => unknown> = {
   modalClose: defineSound(core.modalClose),
   modalOpen: defineSound(core.modalOpen),
   moodStep: () => playMoodStep({ volume: 0.15 }),
-  shuffle: () => playShuffle({ volume: 0.22 }),
+  newCards: () => playNewCards({ volume: 0.22 }),
   slide: defineSound(core.slide),
   tabSwitch: defineSound(core.tabSwitch),
   timerGrab: () => playTimerGrab({ volume: 0.5 }),
@@ -138,6 +141,7 @@ let enabled = true;
 let bound = false;
 let masterVolumeSet = false;
 let lastHoverAt = -Infinity;
+const lastSoundRequestAt = new Map<SoundName, number>();
 
 export function readSoundEnabled() {
   try {
@@ -235,6 +239,12 @@ export function playSound(sound: SoundName) {
   ) {
     return;
   }
+
+  const now = performance.now();
+  const cooldown = SOUND_COOLDOWN_MS[sound] ?? 0;
+  const lastRequest = lastSoundRequestAt.get(sound) ?? -Infinity;
+  if (now - lastRequest < cooldown) return;
+  lastSoundRequestAt.set(sound, now);
 
   void ensureReady().then(
     () => {

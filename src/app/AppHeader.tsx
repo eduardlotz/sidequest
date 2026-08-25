@@ -1,5 +1,5 @@
-import { motion } from "motion/react";
-import { useMemo, useState, type RefObject } from "react";
+import { animate, motion } from "motion/react";
+import { useEffect, useMemo, useState, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { Logo } from "../assets/logo";
@@ -17,8 +17,10 @@ import {
 import styles from "./AppHeader.module.css";
 import { useThemeChoice } from "./hooks/useThemeChoice";
 import { AboutPanel } from "./AboutPanel";
+import type { CoinImpact } from "../features/active-quest/components/FlyingCoin/FlyingCoin";
 
 type Props = {
+  coinImpact: CoinImpact | null;
   displayedCoins: number;
   profileTriggerRef: RefObject<HTMLButtonElement | null>;
   coinPulse: number;
@@ -26,6 +28,7 @@ type Props = {
 };
 
 export function AppHeader({
+  coinImpact,
   displayedCoins,
   profileTriggerRef,
   coinPulse,
@@ -65,6 +68,24 @@ export function AppHeader({
   const nextLanguageName = t(
     nextLanguage === "de" ? "ui.nav.german" : "ui.nav.english",
   );
+
+  useEffect(() => {
+    const trigger = profileTriggerRef.current;
+    if (!trigger || !coinImpact || coinPulse === 0 || reduceMotion) return;
+    const controls = animate(
+      trigger,
+      { rotate: 0, x: 0, y: 0 },
+      {
+        type: "spring",
+        stiffness: 500,
+        damping: 12,
+        x: { velocity: coinImpact.xVelocity * 0.045 },
+        y: { velocity: coinImpact.yVelocity * 0.045 },
+        rotate: { velocity: coinImpact.xVelocity * 0.012 },
+      },
+    );
+    return () => controls.stop();
+  }, [coinImpact, coinPulse, profileTriggerRef, reduceMotion]);
 
   return (
     <>
@@ -165,9 +186,12 @@ export function AppHeader({
                       animate={
                         coinPulse === 0 || reduceMotion
                           ? { scaleX: 1 }
-                          : { scaleX: [1, 1.18, 0.94, 1.035, 1] }
+                          : {
+                              scaleX: [1, 1.24, 0.91, 1.08, 1],
+                              y: [0, -2, 1, -1, 0],
+                            }
                       }
-                      transition={{ duration: reduceMotion ? 0 : 0.38 }}
+                      transition={{ duration: reduceMotion ? 0 : 0.48 }}
                     >
                       {formattedPoints}
                     </motion.strong>
@@ -178,9 +202,12 @@ export function AppHeader({
                       animate={
                         coinPulse === 0 || reduceMotion
                           ? { scale: 1 }
-                          : { scale: [1, 1.18, 0.94, 1.035, 1] }
+                          : {
+                              rotate: [0, -10, 8, -4, 0],
+                              scale: [1, 1.3, 0.9, 1.1, 1],
+                            }
                       }
-                      transition={{ duration: reduceMotion ? 0 : 0.38 }}
+                      transition={{ duration: reduceMotion ? 0 : 0.48 }}
                     >
                       <CoinIcon />
                     </motion.span>

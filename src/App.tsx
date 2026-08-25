@@ -36,6 +36,7 @@ export function App() {
       </a>
 
       <AppHeader
+        coinImpact={coinBalanceAnimation.impact}
         coinPulse={coinBalanceAnimation.pulse}
         displayedCoins={coinBalanceAnimation.displayedBalance}
         profileTriggerRef={profileTriggerRef}

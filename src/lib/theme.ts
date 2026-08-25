@@ -1,31 +1,37 @@
 export const THEME_STORAGE_KEY = "sidequest.theme";
 export const DARK_THEME_MEDIA_QUERY = "(prefers-color-scheme: dark)";
 
-export const THEME_CHOICES = ["light", "dark", "auto"] as const;
+export const THEME_CHOICES = ["light", "dark"] as const;
 
 export type ThemeChoice = (typeof THEME_CHOICES)[number];
-export type ResolvedTheme = Exclude<ThemeChoice, "auto">;
 
-export function normalizeThemeChoice(value: unknown): ThemeChoice {
-  return THEME_CHOICES.includes(value as ThemeChoice)
-    ? (value as ThemeChoice)
-    : "light";
+export function deviceTheme(prefersDark = false): ThemeChoice {
+  return prefersDark ? "dark" : "light";
 }
 
-export function resolveTheme(
-  choice: ThemeChoice,
-  prefersDark: boolean,
-): ResolvedTheme {
-  return choice === "auto" ? (prefersDark ? "dark" : "light") : choice;
+export function normalizeThemeChoice(
+  value: unknown,
+  fallback: ThemeChoice,
+): ThemeChoice {
+  return THEME_CHOICES.includes(value as ThemeChoice)
+    ? (value as ThemeChoice)
+    : fallback;
 }
 
 export function readThemeChoice(): ThemeChoice {
   if (typeof window === "undefined") return "light";
 
+  const fallback = deviceTheme(
+    window.matchMedia(DARK_THEME_MEDIA_QUERY).matches,
+  );
+
   try {
-    return normalizeThemeChoice(window.localStorage.getItem(THEME_STORAGE_KEY));
+    return normalizeThemeChoice(
+      window.localStorage.getItem(THEME_STORAGE_KEY),
+      fallback,
+    );
   } catch {
-    return "light";
+    return fallback;
   }
 }
 
@@ -37,20 +43,13 @@ export function saveThemeChoice(choice: ThemeChoice) {
   }
 }
 
-export function applyThemeChoice(
-  choice: ThemeChoice,
-  prefersDark = window.matchMedia(DARK_THEME_MEDIA_QUERY).matches,
-) {
-  const resolvedTheme = resolveTheme(choice, prefersDark);
+export function applyThemeChoice(choice: ThemeChoice) {
   const root = document.documentElement;
-  root.dataset.theme = resolvedTheme;
+  root.dataset.theme = choice;
   root.dataset.themeChoice = choice;
-  root.style.colorScheme = resolvedTheme;
+  root.style.colorScheme = choice;
 
   document
     .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-    ?.setAttribute(
-      "content",
-      resolvedTheme === "dark" ? "#111118" : "#F2F2F9",
-    );
+    ?.setAttribute("content", choice === "dark" ? "#111118" : "#F2F2F9");
 }

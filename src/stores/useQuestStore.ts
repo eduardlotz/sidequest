@@ -11,7 +11,7 @@ import {
   QUEST_OFFER_COUNT,
   RED_ROPE_BUNDLE_COST,
   RED_ROPE_BUNDLE_SIZE,
-  SHUFFLE_COST,
+  NEW_CARDS_COST,
   STORED_COMPLETION_LIMIT,
   STORE_KEY,
   STORE_VERSION,
@@ -103,14 +103,14 @@ function createQuestState(
     refreshMoodWindow: () => {
       set((state) => moodWindowState(state, options.now()));
     },
-    shuffleOffers: () => {
+    dealNewCards: () => {
       const state = get();
       const now = options.now();
       if (
         state.currentSession ||
         !state.selectedMoodId ||
         moodSelectionExpired(state.moodSelectedAt, now) ||
-        state.profile.points < SHUFFLE_COST
+        state.profile.points < NEW_CARDS_COST
       ) {
         if (
           !state.currentSession &&
@@ -137,7 +137,7 @@ function createQuestState(
       set({
         profile: {
           ...state.profile,
-          points: state.profile.points - SHUFFLE_COST,
+          points: state.profile.points - NEW_CARDS_COST,
         },
         offeredQuestIds,
         offerSetsByMoodId: {

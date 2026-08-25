@@ -110,44 +110,44 @@
   -webkit-backface-visibility: hidden;
 }
 
-.shuffleCard,
-.shuffleCardFront {
+.newCardsCard,
+.newCardsCardFront {
   position: absolute;
   display: block;
   inset: 0;
   transform-style: preserve-3d;
 }
 
-.shuffleCard[data-shuffle-phase="outgoing"] {
-  animation: questCardShuffleDropOut 0.34s cubic-bezier(0.32, 0, 0.67, 0)
-    var(--shuffle-delay, 0s) both;
+.newCardsCard[data-new-cards-phase="outgoing"] {
+  animation: questCardNewCardsDropOut 0.34s cubic-bezier(0.32, 0, 0.67, 0)
+    var(--new-cards-delay, 0s) both;
   will-change: filter, opacity, rotate, scale, translate;
 }
 
-.shuffleCard[data-shuffle-phase="incoming"] {
-  animation: questCardShuffleDropIn 0.44s cubic-bezier(0.22, 0.8, 0.24, 1)
-    var(--shuffle-delay, 0s) both;
+.newCardsCard[data-new-cards-phase="incoming"] {
+  animation: questCardNewCardsDropIn 0.44s cubic-bezier(0.22, 0.8, 0.24, 1)
+    var(--new-cards-delay, 0s) both;
   will-change: filter, opacity, rotate, scale, translate;
 }
 
-.shuffleCardFront,
-.shuffleCardBack {
+.newCardsCardFront,
+.newCardsCardBack {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
-.shuffleCardFront {
+.newCardsCardFront {
   z-index: 2;
 }
 
-.shuffleCardBack {
+.newCardsCardBack {
   position: absolute;
   z-index: 1;
   inset: 0;
   transform: rotateY(180deg);
 }
 
-.shuffleShine {
+.newCardsShine {
   position: absolute;
   top: -8%;
   bottom: -8%;
@@ -169,9 +169,9 @@
   transform: translateX(-135%);
 }
 
-.shuffleCard[data-shuffle-phase="incoming"] .shuffleShine {
-  animation: questCardShuffleShine 0.24s cubic-bezier(0.18, 0.78, 0.25, 1)
-    calc(var(--shuffle-delay, 0s) + 0.44s) both;
+.newCardsCard[data-new-cards-phase="incoming"] .newCardsShine {
+  animation: questCardNewCardsShine 0.24s cubic-bezier(0.18, 0.78, 0.25, 1)
+    calc(var(--new-cards-delay, 0s) + 0.44s) both;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -259,7 +259,7 @@
   pointer-events: none;
 }
 
-@keyframes questCardShuffleShine {
+@keyframes questCardNewCardsShine {
   0% {
     opacity: 0;
     transform: translateX(-135%);
@@ -275,7 +275,7 @@
   }
 }
 
-@keyframes questCardShuffleDropOut {
+@keyframes questCardNewCardsDropOut {
   from {
     filter: blur(0);
     opacity: 1;
@@ -287,17 +287,17 @@
   to {
     filter: blur(7px);
     opacity: 0;
-    rotate: var(--shuffle-drop-rotate, 0deg);
+    rotate: var(--new-cards-drop-rotate, 0deg);
     scale: 0.96;
     translate: 0 96px;
   }
 }
 
-@keyframes questCardShuffleDropIn {
+@keyframes questCardNewCardsDropIn {
   from {
     filter: blur(7px);
     opacity: 0;
-    rotate: var(--shuffle-enter-rotate, 0deg);
+    rotate: var(--new-cards-enter-rotate, 0deg);
     scale: 0.95;
     translate: 0 -88px;
   }

@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { arc, motion, useMotionValue } from "motion/react";
 import { CoinIcon } from "../../../../shared/ui/Icons/Icons";
 import type { Point } from "../../model/activeQuestMath";
 import styles from "./FlyingCoin.module.css";
@@ -7,9 +7,14 @@ type Props = {
   end: Point;
   index: number;
   isMobileViewport: boolean;
-  onComplete: () => void;
+  onComplete: (impact: CoinImpact) => void;
   reduceMotion: boolean;
   start: Point;
+};
+
+export type CoinImpact = {
+  xVelocity: number;
+  yVelocity: number;
 };
 
 export function FlyingCoin({
@@ -20,33 +25,46 @@ export function FlyingCoin({
   reduceMotion,
   start,
 }: Props) {
-  const rotationDirection = isMobileViewport ? 1 : -1;
-  const arcX =
-    start.x + (end.x - start.x) * 0.43 + rotationDirection * (54 + index * 9);
-  const arcY = Math.min(start.y, end.y) - 105 - index * 10;
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
 
   return (
     <motion.span
       className={styles.flyingCoin}
       aria-hidden="true"
-      initial={{ left: start.x, opacity: 0, scale: 0.55, top: start.y }}
+      initial={{ opacity: 0, scale: 1 }}
       animate={
         reduceMotion
-          ? { left: end.x, opacity: 0, scale: 1, top: end.y }
+          ? { opacity: 0, scale: 1, x: dx, y: dy }
           : {
-              left: [start.x, arcX, end.x],
               opacity: [0, 1, 1, 0],
-              rotate: [0, rotationDirection * 180, rotationDirection * 420],
-              scale: [0.55, 2, 1.6, 0.3],
-              top: [start.y, arcY, end.y],
+              rotate: [0, -220, -560],
+              scale: [1, isMobileViewport ? 6 : 8, 1],
+              x: dx,
+              y: dy,
             }
       }
       transition={{
-        delay: reduceMotion ? 0 : 0.34 + index * 0.11,
-        duration: reduceMotion ? 0 : 0.78,
-        ease: [0.35, 0.02, 0.16, 1],
+        delay: reduceMotion ? 0 : 0.28 + index * 0.1,
+        duration: reduceMotion ? 0 : 1.02,
+        ease: [0.55, 0.08, 0.82, 0.52],
+        opacity: { inherit: true, times: [0, 0.08, 0.93, 1] },
+        path: arc({
+          direction: "ccw",
+          peak: 0.24 + index * 0.015,
+          rotate: 0.96,
+          strength: 0.76,
+        }),
       }}
-      onAnimationComplete={onComplete}
+      style={{ left: start.x, top: start.y, x, y }}
+      onAnimationComplete={() =>
+        onComplete({
+          xVelocity: x.getVelocity(),
+          yVelocity: y.getVelocity(),
+        })
+      }
     >
       <CoinIcon />
     </motion.span>

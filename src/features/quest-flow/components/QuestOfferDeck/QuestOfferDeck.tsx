@@ -15,7 +15,7 @@ import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
 import { usePlayLayout } from "../../usePlayLayout";
 
 export type QuestOfferItem = QuestDefinition;
-export type QuestShufflePhase = "idle" | "outgoing" | "incoming";
+export type NewCardsPhase = "idle" | "outgoing" | "incoming";
 type QuestEntryMotion = "bottom" | "shared";
 
 type Props = {
@@ -25,8 +25,8 @@ type Props = {
   reduceMotion: boolean;
   returningQuestId?: string;
   returningToMoods: boolean;
-  shuffleSequence: number;
-  shufflePhase: QuestShufflePhase;
+  newCardsSequence: number;
+  newCardsPhase: NewCardsPhase;
   onSelectionStart: (previewRotation: number) => void;
   onSelect: (questId: string) => void;
 };
@@ -39,8 +39,8 @@ type CardProps = {
   stackPosition: "front" | "middle" | "back";
   reduceMotion: boolean;
   returningToMoods: boolean;
-  shuffleSequence: number;
-  shufflePhase: QuestShufflePhase;
+  newCardsSequence: number;
+  newCardsPhase: NewCardsPhase;
   selected: boolean;
   selectionStarted: boolean;
   layoutSessionId: string;
@@ -71,7 +71,7 @@ const MOOD_HANDOFF_TRANSITION = {
 };
 const CARD_CENTER_STAGGER_SECONDS = 0.04;
 const MOOD_HANDOFF_OFFSET_Y = -48;
-const SHUFFLE_CARD_STAGGER_SECONDS = 0.11;
+const NEW_CARDS_STAGGER_SECONDS = 0.11;
 
 export function QuestOfferDeck({
   items,
@@ -80,8 +80,8 @@ export function QuestOfferDeck({
   reduceMotion,
   returningQuestId,
   returningToMoods,
-  shuffleSequence,
-  shufflePhase,
+  newCardsSequence,
+  newCardsPhase,
   onSelectionStart,
   onSelect,
 }: Props) {
@@ -105,7 +105,7 @@ export function QuestOfferDeck({
   const deckRef = useRef<HTMLDivElement>(null);
   const selectionFrameRef = useRef<number | null>(null);
   const { isCompact } = usePlayLayout();
-  const shuffling = shufflePhase !== "idle";
+  const dealingNewCards = newCardsPhase !== "idle";
 
   useEffect(() => {
     setSelectedId(null);
@@ -131,7 +131,7 @@ export function QuestOfferDeck({
   );
 
   function selectCard(questId: string, previewRotation: number) {
-    if (selectedId || shuffling) return;
+    if (selectedId || dealingNewCards) return;
     playSound("cardSelect");
     onSelectionStart(previewRotation);
     setSelectedId(questId);
@@ -146,7 +146,7 @@ export function QuestOfferDeck({
   }
 
   function cycleCard(direction: -1 | 1, focusNext = false) {
-    if (selectedId || shuffling || items.length < 2) return;
+    if (selectedId || dealingNewCards || items.length < 2) return;
     playSound("cardHover");
     setActiveCardIndex(
       (current) => (current + direction + items.length) % items.length,
@@ -194,8 +194,8 @@ export function QuestOfferDeck({
               stackPosition={stackPosition}
               reduceMotion={reduceMotion}
               returningToMoods={returningToMoods}
-              shuffleSequence={shuffleSequence}
-              shufflePhase={shufflePhase}
+              newCardsSequence={newCardsSequence}
+              newCardsPhase={newCardsPhase}
               selected={selectedId === item.id}
               selectionStarted={selectedId !== null}
               onCycle={cycleCard}
@@ -252,8 +252,8 @@ function QuestOfferCard({
   stackPosition,
   reduceMotion,
   returningToMoods,
-  shuffleSequence,
-  shufflePhase,
+  newCardsSequence,
+  newCardsPhase,
   selected,
   selectionStarted,
   onCycle,
@@ -264,7 +264,7 @@ function QuestOfferCard({
 }: CardProps) {
   const { t } = useTranslation();
   const { isCompact } = usePlayLayout();
-  const shuffling = shufflePhase !== "idle";
+  const dealingNewCards = newCardsPhase !== "idle";
   const suppressClickRef = useRef(false);
   const swipeX = useMotionValue(0);
   const swipeAnimationRef = useRef<ReturnType<typeof animate> | null>(null);
@@ -326,7 +326,7 @@ function QuestOfferCard({
       layoutId={`quest-card-${layoutSessionId}-${item.id}`}
       layoutCrossfade={false}
       initial={
-        reduceMotion || shuffleSequence > 0
+        reduceMotion || newCardsSequence > 0
           ? false
           : entryMotion === "shared"
             ? {
@@ -441,7 +441,7 @@ function QuestOfferCard({
         data-quest-id={item.id}
         data-selected={selected || undefined}
         type="button"
-        disabled={shuffling}
+        disabled={dealingNewCards}
         tabIndex={isCompact && !isTopCard ? -1 : undefined}
         style={getMoodAccentStyle(item.moodId)}
         onClick={() => {
@@ -472,7 +472,7 @@ function QuestOfferCard({
             isCompact &&
             isTopCard &&
             !selectionStarted &&
-            !shuffling
+            !dealingNewCards
               ? "x"
               : false
           }
@@ -543,32 +543,32 @@ function QuestOfferCard({
           }}
         >
           <span
-            className={styles.shuffleCard}
-            key={`shuffle-card-${shuffleSequence}`}
-            data-shuffle-phase={
-              shufflePhase === "idle" ? undefined : shufflePhase
+            className={styles.newCardsCard}
+            key={`new-cards-${newCardsSequence}`}
+            data-new-cards-phase={
+              newCardsPhase === "idle" ? undefined : newCardsPhase
             }
             style={
               {
-                "--shuffle-delay": `${index * SHUFFLE_CARD_STAGGER_SECONDS}s`,
-                "--shuffle-drop-rotate": `${(index - 1) * 2.2}deg`,
-                "--shuffle-enter-rotate": `${(1 - index) * 2.2}deg`,
+                "--new-cards-delay": `${index * NEW_CARDS_STAGGER_SECONDS}s`,
+                "--new-cards-drop-rotate": `${(index - 1) * 2.2}deg`,
+                "--new-cards-enter-rotate": `${(1 - index) * 2.2}deg`,
               } as CSSProperties
             }
             onAnimationEnd={(event) => {
               if (
                 event.target !== event.currentTarget ||
-                shuffleSequence < 1 ||
+                newCardsSequence < 1 ||
                 reduceMotion ||
-                shufflePhase !== "incoming"
+                newCardsPhase !== "incoming"
               ) {
                 return;
               }
-              playSound("shuffle");
+              playSound("newCards");
             }}
           >
             <QuestCard
-              className={`${styles.questSelectionCard} ${styles.shuffleCardFront}`}
+              className={`${styles.questSelectionCard} ${styles.newCardsCardFront}`}
               genres={item.genres}
               minimumDurationMinutes={item.minimumDurationMinutes}
               moodTitle={t(`moods.${item.moodId}.title`)}
@@ -577,11 +577,11 @@ function QuestOfferCard({
               suggestedDurationMinutes={item.suggestedDurationMinutes}
             >
               <span
-                className={styles.shuffleShine}
+                className={styles.newCardsShine}
                 aria-hidden="true"
               />
             </QuestCard>
-            <QuestCardBack className={styles.shuffleCardBack} />
+            <QuestCardBack className={styles.newCardsCardBack} />
           </span>
         </motion.span>
       </button>
