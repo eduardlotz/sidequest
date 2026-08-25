@@ -128,10 +128,13 @@
 }
 
 .questSelectionPrompt {
+  display: inline-flex;
+  align-items: center;
   margin: 18px 0 0;
   color: var(--color-muted);
   font-size: 0.875rem;
   font-weight: 600;
+  gap: 6px;
   letter-spacing: -0.04em;
   line-height: 1;
   opacity: 1;
@@ -139,26 +142,12 @@
 
 .moodEditControl {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
 }
 
-.moodEditControl button {
-  padding: 0 0 5px;
-  border-bottom: 3px solid var(--color-faint);
-  background: transparent;
-  color: var(--color-text);
-  font: inherit;
-  font-size: inherit;
-  font-weight: 600;
-  letter-spacing: inherit;
-  cursor: pointer;
-  transition: border-color 150ms ease;
-}
-
-.moodEditControl button:focus-visible {
-  border-radius: 2px;
-  outline: 3px solid color-mix(in srgb, var(--color-text) 18%, transparent);
-  outline-offset: 4px;
+.moodEditButton[data-variant="soft"] {
+  padding-inline: 12px;
+  border-radius: 12px;
 }
 
 .moodEditTooltip {
@@ -183,7 +172,7 @@
   white-space: nowrap;
 }
 
-.questShuffleControl {
+.newCardsControl {
   position: relative;
   z-index: 30;
   display: flex;
@@ -194,11 +183,6 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .moodEditControl:hover button,
-  .moodEditControl:focus-within button {
-    border-color: var(--color-text);
-  }
-
   .moodEditControl:hover .moodEditTooltip,
   .moodEditControl:focus-within .moodEditTooltip {
     opacity: 1;
@@ -240,7 +224,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .moodEditControl button,
   .moodEditTooltip {
     transition: none;
   }

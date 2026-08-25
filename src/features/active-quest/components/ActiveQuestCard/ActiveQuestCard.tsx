@@ -36,7 +36,7 @@ import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import { QuestCardBack } from "../../../../shared/quest-card/QuestCardBack/QuestCardBack";
 import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
 import { RopePurchaseRow } from "../RopePurchaseRow/RopePurchaseRow";
-import { FlyingCoin } from "../FlyingCoin/FlyingCoin";
+import { FlyingCoin, type CoinImpact } from "../FlyingCoin/FlyingCoin";
 import {
   MOBILE_PAUSED_TIMER_TOP_RATIO,
   MOBILE_READY_TIMER_TOP_RATIO,
@@ -85,7 +85,7 @@ type Props = {
   onResume: (resumedAt: number) => void;
   onComplete: () => void;
   onCoinFlightStart: (pointsAwarded: number) => void;
-  onCoinHit: (pointsReceived: number) => void;
+  onCoinHit: (pointsReceived: number, impact?: CoinImpact) => void;
   onLayoutHandoffStart: () => void;
   onPurchaseRedRopes: () => boolean;
 };
@@ -532,12 +532,7 @@ export function ActiveQuestCard({
     const triggerRect = document
       .querySelector<HTMLElement>("[data-profile-trigger]")
       ?.getBoundingClientRect();
-    const start = cardRect
-      ? {
-          x: cardRect.left + cardRect.width / 2,
-          y: cardRect.top + cardRect.height * 0.58,
-        }
-      : { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const start = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     const end = triggerRect
       ? {
           x: triggerRect.left + triggerRect.width / 2,
@@ -567,12 +562,12 @@ export function ActiveQuestCard({
     }, COMPLETION_FACE_REVEAL_MS);
   }
 
-  function finishCoinFlight(index: number) {
+  function finishCoinFlight(index: number, impact: CoinImpact) {
     if (!coinFlight || coinFlightFinishedRef.current) return;
     const pointsReceived = Math.round(
       (coinFlight.award * (index + 1)) / COIN_FLIGHT_COUNT,
     );
-    onCoinHit(pointsReceived);
+    onCoinHit(pointsReceived, impact);
     if (index !== COIN_FLIGHT_COUNT - 1) return;
     coinFlightFinishedRef.current = true;
     completionFinalizeTimeoutRef.current = window.setTimeout(() => {
@@ -901,7 +896,7 @@ export function ActiveQuestCard({
               key={`coin-flight-${index}`}
               reduceMotion={reduceMotion}
               start={coinFlight.start}
-              onComplete={() => finishCoinFlight(index)}
+              onComplete={(impact) => finishCoinFlight(index, impact)}
             />
           ))
         : null}

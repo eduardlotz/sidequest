@@ -177,7 +177,7 @@ export function ArcDeck({
         ? event.deltaX
         : event.deltaY;
     const pixels = event.deltaMode === 1 ? raw * 16 : raw;
-    const advance = clamp(pixels / (isCompact ? 110 : 136), -2.5, 2.5);
+    const advance = clamp(pixels / (cardGap * 0.5), -1.25, 1.25);
     if (Math.abs(advance) < 0.01) return;
     moveTo(targetRef.current + advance);
     if (wheelTimeoutRef.current !== null) {

@@ -8,23 +8,27 @@
       (() => {
         try {
           const stored = localStorage.getItem("sidequest.theme");
-          const choice = ["light", "dark", "auto"].includes(stored)
+          const choice = ["light", "dark"].includes(stored)
             ? stored
-            : "light";
-          const theme =
-            choice === "auto"
-              ? matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light"
-              : choice;
-          document.documentElement.dataset.theme = theme;
+            : matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          document.documentElement.dataset.theme = choice;
           document.documentElement.dataset.themeChoice = choice;
-          document.documentElement.style.colorScheme = theme;
+          document.documentElement.style.colorScheme = choice;
           document
             .querySelector('meta[name="theme-color"]')
-            .setAttribute("content", theme === "dark" ? "#111118" : "#F2F2F9");
+            .setAttribute("content", choice === "dark" ? "#111118" : "#F2F2F9");
         } catch {
-          document.documentElement.dataset.theme = "light";
+          const choice = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme = choice;
+          document.documentElement.dataset.themeChoice = choice;
+          document.documentElement.style.colorScheme = choice;
+          document
+            .querySelector('meta[name="theme-color"]')
+            .setAttribute("content", choice === "dark" ? "#111118" : "#F2F2F9");
         }
       })();
     </script>

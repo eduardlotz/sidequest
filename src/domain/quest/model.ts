@@ -4,7 +4,7 @@ import type { QuestDefinition } from "../../data/quests";
 export const STORE_KEY = "sidequest.quests";
 export const STORE_VERSION = 10;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
-export const SHUFFLE_COST = 25;
+export const NEW_CARDS_COST = 25;
 export const QUEST_OFFER_COUNT = 3;
 export const STORED_COMPLETION_LIMIT = 500;
 export const INITIAL_RED_ROPES = 3;
@@ -83,7 +83,7 @@ export type QuestActions = {
   selectMood: (moodId: MoodId) => boolean;
   editMood: () => boolean;
   refreshMoodWindow: () => void;
-  shuffleOffers: () => boolean;
+  dealNewCards: () => boolean;
   revealQuest: (questId: string) => boolean;
   startQuest: (startedAt: number) => void;
   pauseQuest: (pausedAt: number) => void;

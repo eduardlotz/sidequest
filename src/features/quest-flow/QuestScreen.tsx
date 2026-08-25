@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
-import { SHUFFLE_COST } from "../../domain/quest/model";
+import { NEW_CARDS_COST } from "../../domain/quest/model";
 import { QuestScreenContent } from "./components/QuestScreenContent/QuestScreenContent";
 import {
   hydrateQuest,
@@ -14,11 +14,12 @@ import { useQuestStore } from "../../stores/useQuestStore";
 import styles from "./QuestFlowLayout.module.css";
 import { useIntroReady } from "../../app/hooks/useIntroReady";
 import { useMoodWindowRefresh } from "../../app/hooks/useMoodWindowRefresh";
+import type { CoinImpact } from "../active-quest/components/FlyingCoin/FlyingCoin";
 
 type Props = {
   reduceMotion: boolean;
   onCoinFlightStart: (pointsAwarded: number) => void;
-  onCoinHit: (pointsReceived: number) => void;
+  onCoinHit: (pointsReceived: number, impact?: CoinImpact) => void;
 };
 
 export function QuestScreen({
@@ -44,7 +45,7 @@ export function QuestScreen({
     resumeQuest,
     selectMood,
     selectedMoodId,
-    shuffleOffers,
+    dealNewCards,
     startQuest,
   } = useQuestStore(
     useShallow((state) => ({
@@ -63,7 +64,7 @@ export function QuestScreen({
       resumeQuest: state.resumeQuest,
       selectMood: state.selectMood,
       selectedMoodId: state.selectedMoodId,
-      shuffleOffers: state.shuffleOffers,
+      dealNewCards: state.dealNewCards,
       startQuest: state.startQuest,
     })),
   );
@@ -101,14 +102,14 @@ export function QuestScreen({
         points={profile.points}
         redRopes={profile.redRopes}
         debugMode={profile.debugMode}
-        shuffleCost={SHUFFLE_COST}
+        newCardsCost={NEW_CARDS_COST}
         animateEntrance={!introReady}
         reduceMotion={reduceMotion}
         onSelectMood={selectMood}
         onEditMood={editMood}
         onRevealQuest={revealQuest}
         onReturnToSelection={returnCurrentSessionToSelection}
-        onShuffle={shuffleOffers}
+        onNewCards={dealNewCards}
         onDiscard={discardCurrentSession}
         onStart={startQuest}
         onPause={pauseQuest}
