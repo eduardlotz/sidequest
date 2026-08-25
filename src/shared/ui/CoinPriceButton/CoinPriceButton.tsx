@@ -12,7 +12,7 @@ export function CoinPriceButton({
   className,
   label,
   price,
-  tone = "neutral",
+  tone = "inverse",
   ...props
 }: Props) {
   return (

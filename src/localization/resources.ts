@@ -111,7 +111,7 @@ export const englishUi = {
     pointsLabel: "{{points}} coins",
     points: "Coins",
     description: "Your coins, settings, and completed sidequests.",
-    redRopes: "Red ropes",
+    redRopes: "Cancellation ropes",
     owned: "Owned",
     buyRopeInline: "Buy rope",
     buy: "Buy",

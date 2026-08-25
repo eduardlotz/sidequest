@@ -1,7 +1,7 @@
 export const THEME_STORAGE_KEY = "sidequest.theme";
 export const DARK_THEME_MEDIA_QUERY = "(prefers-color-scheme: dark)";
 
-export const THEME_CHOICES = ["light", "dark", "auto"] as const;
+export const THEME_CHOICES = ["light", "dark"] as const;
 
 export type ThemeChoice = (typeof THEME_CHOICES)[number];
 export type ResolvedTheme = Exclude<ThemeChoice, "auto">;
@@ -16,7 +16,7 @@ export function resolveTheme(
   choice: ThemeChoice,
   prefersDark: boolean,
 ): ResolvedTheme {
-  return choice === "auto" ? (prefersDark ? "dark" : "light") : choice;
+  return choice;
 }
 
 export function readThemeChoice(): ThemeChoice {
@@ -49,8 +49,5 @@ export function applyThemeChoice(
 
   document
     .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-    ?.setAttribute(
-      "content",
-      resolvedTheme === "dark" ? "#111118" : "#F2F2F9",
-    );
+    ?.setAttribute("content", resolvedTheme === "dark" ? "#111118" : "#F2F2F9");
 }

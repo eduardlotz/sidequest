@@ -19,7 +19,7 @@ export function RopePurchaseRow({
   coins,
   context = "profile",
   onPurchase,
-  tone = "neutral",
+  tone = "inverse",
 }: Props) {
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
