@@ -15,10 +15,7 @@ import type {
   QuestOverrides,
 } from "../../../../domain/library/model";
 import { customGameQuestIds } from "../../../../domain/library/rules";
-import {
-  localizeMood,
-  localizeQuest,
-} from "../../../../localization/catalog";
+import { localizeMood, localizeQuest } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
 import { GameVisual } from "../../../../shared/ui/GameVisual/GameVisual";
 import { GameGenreIcon } from "../../../../shared/ui/Icons/Icons";
@@ -39,9 +36,7 @@ export function CustomGameEditor({ game, onCancel, onSave }: Props) {
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const [name, setName] = useState(game?.name ?? "");
-  const [iconId, setIconId] = useState<GameIconId>(
-    game?.iconId ?? "adventure",
-  );
+  const [iconId, setIconId] = useState<GameIconId>(game?.iconId ?? "adventure");
   const [colorId, setColorId] = useState<GameColorId>(
     game?.colorId ?? "explore",
   );
@@ -155,9 +150,7 @@ export function CustomGameEditor({ game, onCancel, onSave }: Props) {
                 aria-pressed={colorId === candidate}
                 onClick={() => setColorId(candidate)}
               >
-                <span
-                  style={{ "--swatch-color": color.color } as ColorStyle}
-                />
+                <span style={{ "--swatch-color": color.color } as ColorStyle} />
               </button>
             );
           })}
@@ -181,7 +174,7 @@ export function CustomGameEditor({ game, onCancel, onSave }: Props) {
         </div>
       </fieldset>
 
-      <div className={styles.reviewSection}>
+      {/* <div className={styles.reviewSection}>
         <button
           className={styles.reviewTrigger}
           type="button"
@@ -214,13 +207,18 @@ export function CustomGameEditor({ game, onCancel, onSave }: Props) {
             })}
           </div>
         ) : null}
-      </div>
+      </div> */}
 
       <div className={styles.actions}>
-        <SolidButton type="button" variant="soft" onClick={onCancel}>
+        <SolidButton type="button" onClick={onCancel}>
           {t("ui.library.cancel")}
         </SolidButton>
-        <SolidButton type="button" disabled={!name.trim()} onClick={submit}>
+        <SolidButton
+          type="button"
+          variant="soft"
+          disabled={!name.trim()}
+          onClick={submit}
+        >
           {t(game ? "ui.library.saveGame" : "ui.library.addGame")}
         </SolidButton>
       </div>

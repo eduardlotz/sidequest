@@ -27,11 +27,11 @@ export function LibrarySetup({ reduceMotion }: { reduceMotion: boolean }) {
       transition={reduceMotion ? { duration: 0 } : NAV_ENTRY_SPRING}
       aria-labelledby="library-setup-title"
     >
-      <header className={styles.intro}>
+      {/* <header className={styles.intro}>
         <span>{t("ui.library.setupEyebrow")}</span>
         <h1 id="library-setup-title">{t("ui.library.setupTitle")}</h1>
         <p>{t("ui.library.setupDescription")}</p>
-      </header>
+      </header> */}
 
       <div className={styles.panel}>
         <LibraryCollectionEditor />
