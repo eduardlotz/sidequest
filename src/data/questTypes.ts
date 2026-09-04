@@ -1,3 +1,5 @@
+import type { GameCapabilityId } from "./gameTypes";
+
 export const MOOD_IDS = [
   "relax",
   "explore",
@@ -24,31 +26,48 @@ export type MoodDefinition = {
 export type QuestTranslation = {
   name: string;
   objective: string;
+  gameObjective?: string;
 };
 
 export type AuthoredQuestDefinition = {
-  moodId: MoodId;
+  id: string;
+  moodIds: readonly MoodId[];
   minimumDurationMinutes: number;
   suggestedDurationMinutes: number;
   genres: readonly string[];
+  universal?: boolean;
+  customGameCompatibility?: {
+    capabilityIds: readonly GameCapabilityId[];
+    match?: "all" | "any";
+  };
   translations: Readonly<Record<"en" | "de", QuestTranslation>>;
 };
 
 export type MoodQuestDefinition = {
   id: string;
-  moodId: MoodId;
+  moodIds: readonly MoodId[];
   name: string;
   objective: string;
+  gameObjective?: string;
   minimumDurationMinutes: number;
   suggestedDurationMinutes: number;
   genres: readonly string[];
+  universal: boolean;
+  gameBindable: boolean;
+  customGameCompatibility?: {
+    capabilityIds: readonly GameCapabilityId[];
+    match: "all" | "any";
+  };
 };
 
 export type QuestCoreDefinition = Pick<
   MoodQuestDefinition,
   | "id"
-  | "moodId"
+  | "moodIds"
   | "minimumDurationMinutes"
   | "suggestedDurationMinutes"
   | "genres"
+  | "universal"
+  | "gameBindable"
+  | "customGameCompatibility"
 >;

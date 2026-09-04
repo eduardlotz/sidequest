@@ -1,0 +1,265 @@
+.editor {
+  display: grid;
+  gap: 22px;
+}
+
+.previewRow {
+  display: grid;
+  align-items: end;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+}
+
+.previewRow > :first-child {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+}
+
+.nameField {
+  display: grid;
+  gap: 7px;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.nameField input {
+  width: 100%;
+  height: 42px;
+  padding: 0 13px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 13px;
+  outline: none;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font-size: 0.86rem;
+  font-weight: 650;
+}
+
+.nameField input:focus {
+  border-color: var(--color-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus) 18%, transparent);
+}
+
+.pickerFieldset,
+.capabilityFieldset {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.pickerFieldset legend,
+.capabilityFieldset legend {
+  padding: 0;
+  margin: 0 0 9px;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.capabilityFieldset > p,
+.questReview > p {
+  margin: -3px 0 11px;
+  color: var(--color-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.42;
+}
+
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.iconGrid button,
+.colorGrid button {
+  display: grid;
+  padding: 0;
+  border: 1px solid transparent;
+  place-items: center;
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.iconGrid button {
+  width: 100%;
+  border-radius: 9px;
+  aspect-ratio: 1;
+}
+
+.iconGrid svg {
+  width: 17px;
+  height: 17px;
+}
+
+.iconGrid button[aria-pressed="true"],
+.colorGrid button[aria-pressed="true"] {
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.colorGrid button {
+  width: 100%;
+  border-radius: 999px;
+  aspect-ratio: 1;
+}
+
+.colorGrid button > span {
+  display: block;
+  width: 62%;
+  border-radius: inherit;
+  background: var(--swatch-color);
+  aspect-ratio: 1;
+}
+
+.capabilityGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.capabilityGrid button {
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+  font-size: 0.69rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.capabilityGrid button[aria-pressed="true"] {
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-copy);
+}
+
+.reviewSection {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 15px;
+}
+
+.reviewTrigger {
+  display: grid;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 13px;
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.reviewTrigger strong {
+  color: var(--color-muted);
+  font-size: 0.68rem;
+}
+
+.questReview {
+  max-height: 310px;
+  padding: 13px;
+  overflow: auto;
+}
+
+.questReview > button {
+  display: grid;
+  width: 100%;
+  min-height: 38px;
+  padding: 5px 0;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  grid-template-columns: minmax(0, 1fr) auto;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 0.72rem;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+}
+
+.questReview > button:last-child {
+  border-bottom: 0;
+}
+
+.questReview > button > span:last-child {
+  position: relative;
+  width: 32px;
+  height: 19px;
+  border-radius: 999px;
+  background: var(--color-surface-pressed);
+}
+
+.questReview > button > span:last-child::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgb(var(--color-shadow-rgb) / 0.24);
+  content: "";
+  transition: transform 160ms ease;
+}
+
+.questReview > button[aria-checked="true"] > span:last-child {
+  background: var(--color-success);
+}
+
+.questReview > button[aria-checked="true"] > span:last-child::after {
+  transform: translateX(13px);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .iconGrid button:hover,
+  .colorGrid button:hover {
+    transform: scale(1.08);
+  }
+
+  .capabilityGrid button:hover {
+    filter: brightness(0.96);
+  }
+}
+
+@media (max-width: 480px) {
+  .iconGrid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .colorGrid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconGrid button,
+  .colorGrid button,
+  .questReview > button > span:last-child::after {
+    transition: none;
+  }
+}

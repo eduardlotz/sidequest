@@ -7,6 +7,8 @@ import {
 import { createStore, type StateCreator } from "zustand/vanilla";
 import { MOODS_BY_ID } from "../data/moods";
 import { QUEST_CORES_BY_ID } from "../data/quests";
+import { libraryGamesFromState } from "../domain/library/rules";
+import { libraryStore } from "./useLibraryStore";
 import {
   QUEST_OFFER_COUNT,
   RED_ROPE_BUNDLE_COST,
@@ -33,7 +35,7 @@ import {
   moodWindowState,
   rotateSessionOffer,
   safeAdd,
-  sameStringArray,
+  sameQuestOffers,
   statsAfterCompletion,
 } from "../domain/quest/rules";
 
@@ -54,6 +56,8 @@ type StoreOptions = {
   random?: () => number;
   now?: () => number;
   createSessionId?: () => string;
+  getLibraryGames?: () => ReturnType<typeof libraryGamesFromState>;
+  getLibraryRevision?: () => number;
 };
 
 function createDefaultState(): QuestState {
@@ -71,23 +75,30 @@ function createQuestState(
 
       const now = options.now();
       const expired = moodSelectionExpired(state.moodSelectedAt, now);
-      const offerSetsByMoodId = expired
+      const libraryRevision = options.getLibraryRevision();
+      const libraryChanged = state.offerLibraryRevision !== libraryRevision;
+      const offerSetsByMoodId = expired || libraryChanged
         ? {}
         : { ...state.offerSetsByMoodId };
       const cachedOffers = offerSetsByMoodId[moodId];
-      const offeredQuestIds =
+      const offeredQuests =
         cachedOffers?.length === QUEST_OFFER_COUNT
           ? [...cachedOffers]
-          : generateQuestOffers(moodId, options.random);
-      if (offeredQuestIds.length !== QUEST_OFFER_COUNT) return false;
+          : generateQuestOffers(
+              moodId,
+              options.getLibraryGames(),
+              options.random,
+            );
+      if (offeredQuests.length !== QUEST_OFFER_COUNT) return false;
 
       set({
         selectedMoodId: moodId,
         moodSelectedAt: expired ? now : state.moodSelectedAt,
-        offeredQuestIds,
+        offeredQuests,
+        offerLibraryRevision: libraryRevision,
         offerSetsByMoodId: {
           ...offerSetsByMoodId,
-          [moodId]: offeredQuestIds,
+          [moodId]: offeredQuests,
         },
       });
       return true;
@@ -96,12 +107,38 @@ function createQuestState(
       if (get().currentSession) return false;
       set({
         selectedMoodId: null,
-        offeredQuestIds: [],
+        offeredQuests: [],
       });
       return true;
     },
     refreshMoodWindow: () => {
       set((state) => moodWindowState(state, options.now()));
+    },
+    refreshLibraryOffers: () => {
+      const state = get();
+      const libraryRevision = options.getLibraryRevision();
+      if (state.offerLibraryRevision === libraryRevision) return;
+      if (state.currentSession) return;
+      if (!state.selectedMoodId) {
+        set({
+          offeredQuests: [],
+          offerSetsByMoodId: {},
+          offerLibraryRevision: libraryRevision,
+        });
+        return;
+      }
+      const offeredQuests = generateQuestOffers(
+        state.selectedMoodId,
+        options.getLibraryGames(),
+        options.random,
+      );
+      set({
+        offeredQuests,
+        offerSetsByMoodId: {
+          [state.selectedMoodId]: offeredQuests,
+        },
+        offerLibraryRevision: libraryRevision,
+      });
     },
     dealNewCards: () => {
       const state = get();
@@ -122,14 +159,15 @@ function createQuestState(
         return false;
       }
 
-      const offeredQuestIds = generateQuestOffers(
+      const offeredQuests = generateQuestOffers(
         state.selectedMoodId,
+        options.getLibraryGames(),
         options.random,
-        new Set(state.offeredQuestIds),
+        new Set(state.offeredQuests.map((offer) => offer.questId)),
       );
       if (
-        offeredQuestIds.length !== QUEST_OFFER_COUNT ||
-        sameStringArray(offeredQuestIds, state.offeredQuestIds)
+        offeredQuests.length !== QUEST_OFFER_COUNT ||
+        sameQuestOffers(offeredQuests, state.offeredQuests)
       ) {
         return false;
       }
@@ -139,15 +177,15 @@ function createQuestState(
           ...state.profile,
           points: state.profile.points - NEW_CARDS_COST,
         },
-        offeredQuestIds,
+        offeredQuests,
         offerSetsByMoodId: {
           ...state.offerSetsByMoodId,
-          [state.selectedMoodId]: offeredQuestIds,
+          [state.selectedMoodId]: offeredQuests,
         },
       });
       return true;
     },
-    revealQuest: (questId) => {
+    revealQuest: (offerId) => {
       const state = get();
       const now = options.now();
       if (
@@ -165,11 +203,15 @@ function createQuestState(
         return false;
       }
 
-      const quest = QUEST_CORES_BY_ID[questId];
+      const offer = state.offeredQuests.find(
+        (candidate) => candidate.id === offerId,
+      );
+      const quest = offer ? QUEST_CORES_BY_ID[offer.questId] : null;
       if (
+        !offer ||
         !quest ||
-        quest.moodId !== state.selectedMoodId ||
-        !state.offeredQuestIds.includes(questId)
+        !quest.moodIds.includes(state.selectedMoodId) ||
+        offer.moodId !== state.selectedMoodId
       ) {
         return false;
       }
@@ -178,7 +220,8 @@ function createQuestState(
         currentSession: {
           sessionId: options.createSessionId(),
           moodId: state.selectedMoodId,
-          questId,
+          questId: offer.questId,
+          game: offer.game,
           revealedAt: now,
           startedAt: null,
           pausedAt: null,
@@ -266,6 +309,7 @@ function createQuestState(
       const rotatedOffers = rotateSessionOffer(
         state,
         session,
+        options.getLibraryGames(),
         options.random,
       );
       set(
@@ -332,7 +376,7 @@ function createQuestState(
       }
 
       const quest = QUEST_CORES_BY_ID[session.questId];
-      if (!quest || quest.moodId !== session.moodId) return null;
+      if (!quest || !quest.moodIds.includes(session.moodId)) return null;
 
       const completedAt = options.now();
       const durationMs = activeSessionDurationMs(session, completedAt);
@@ -348,6 +392,7 @@ function createQuestState(
         id: session.sessionId,
         moodId: session.moodId,
         questId: session.questId,
+        game: session.game,
         durationMs,
         pointsAwarded,
         completedAt,
@@ -355,6 +400,7 @@ function createQuestState(
       const rotatedOffers = rotateSessionOffer(
         state,
         session,
+        options.getLibraryGames(),
         options.random,
       );
       const nextState = moodWindowState(
@@ -392,6 +438,11 @@ export function createQuestStore(
     now: storeOptions.now ?? Date.now,
     createSessionId:
       storeOptions.createSessionId ?? (() => crypto.randomUUID()),
+    getLibraryGames:
+      storeOptions.getLibraryGames ??
+      (() => libraryGamesFromState(libraryStore.getState())),
+    getLibraryRevision:
+      storeOptions.getLibraryRevision ?? (() => libraryStore.getState().revision),
   };
   const stateCreator = createQuestState(options);
   if (!storage) return createStore<QuestStore>()(stateCreator);
@@ -405,8 +456,9 @@ export function createQuestStore(
         profile,
         selectedMoodId,
         moodSelectedAt,
-        offeredQuestIds,
+        offeredQuests,
         offerSetsByMoodId,
+        offerLibraryRevision,
         currentSession,
         completedSessions,
         stats,
@@ -414,8 +466,9 @@ export function createQuestStore(
         profile,
         selectedMoodId,
         moodSelectedAt,
-        offeredQuestIds,
+        offeredQuests,
         offerSetsByMoodId,
+        offerLibraryRevision,
         currentSession,
         completedSessions,
         stats,
@@ -426,6 +479,7 @@ export function createQuestStore(
           version,
           options.now(),
           options.random,
+          options.getLibraryGames(),
         ),
       merge: (persistedState, currentState) => ({
         ...currentState,
@@ -433,6 +487,7 @@ export function createQuestStore(
           persistedState,
           options.now(),
           options.random,
+          options.getLibraryGames(),
         ),
       }),
     }),

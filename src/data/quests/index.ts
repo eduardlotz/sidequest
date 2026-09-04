@@ -1,11 +1,23 @@
 import {
   MOOD_IDS,
+  type AuthoredQuestDefinition,
   type MoodId,
   type MoodQuestDefinition,
   type QuestCoreDefinition,
   type QuestTranslation,
 } from "../questTypes";
-import { ALL_QUESTS } from "./catalog";
+import { challengeQuests } from "./challenge";
+import { connectQuests } from "./connect";
+import { createQuests } from "./create";
+import { curiousQuests } from "./curious";
+import { exploreQuests } from "./explore";
+import { focusedQuests } from "./focused";
+import { lowEnergyQuests } from "./low-energy";
+import { nostalgicQuests } from "./nostalgic";
+import { overwhelmedQuests } from "./overwhelmed";
+import { progressQuests } from "./progress";
+import { relaxQuests } from "./relax";
+import { restlessQuests } from "./restless";
 
 export type {
   AuthoredQuestDefinition,
@@ -15,30 +27,23 @@ export type {
   QuestTranslation,
 } from "../questTypes";
 
-type CatalogEntry = {
-  id: string;
-  moodId: MoodId;
-  minimumDurationMinutes: number;
-  suggestedDurationMinutes: number;
-  genres: readonly string[];
-  translations: Readonly<Record<"en" | "de", QuestTranslation>>;
-};
+const MOOD_QUESTS = {
+  relax: relaxQuests,
+  explore: exploreQuests,
+  progress: progressQuests,
+  create: createQuests,
+  challenge: challengeQuests,
+  connect: connectQuests,
+  nostalgic: nostalgicQuests,
+  overwhelmed: overwhelmedQuests,
+  restless: restlessQuests,
+  focused: focusedQuests,
+  curious: curiousQuests,
+  "low-energy": lowEnergyQuests,
+} satisfies Record<MoodId, readonly AuthoredQuestDefinition[]>;
 
-const moodQuestCounts = Object.fromEntries(
-  MOOD_IDS.map((moodId) => [moodId, 0]),
-) as Record<MoodId, number>;
-
-function generatedQuestId(moodId: MoodId): string {
-  moodQuestCounts[moodId] += 1;
-  return `${moodId}-${String(moodQuestCounts[moodId]).padStart(3, "0")}`;
-}
-
-export const QUEST_CATALOG: readonly CatalogEntry[] = ALL_QUESTS.map(
-  (quest) => ({
-    ...quest,
-    id: generatedQuestId(quest.moodId),
-  }),
-);
+export const QUEST_CATALOG: readonly AuthoredQuestDefinition[] =
+  MOOD_IDS.flatMap((moodId) => MOOD_QUESTS[moodId]);
 
 export const QUEST_TRANSLATIONS_BY_ID = Object.fromEntries(
   QUEST_CATALOG.map(({ id, translations }) => [id, translations]),
@@ -47,6 +52,16 @@ export const QUEST_TRANSLATIONS_BY_ID = Object.fromEntries(
 export const QUESTS: readonly MoodQuestDefinition[] = QUEST_CATALOG.map(
   ({ translations, ...quest }) => ({
     ...quest,
+    universal: quest.universal !== false,
+    gameBindable: Boolean(
+      translations.en.gameObjective && translations.de.gameObjective,
+    ),
+    customGameCompatibility: quest.customGameCompatibility
+      ? {
+          ...quest.customGameCompatibility,
+          match: quest.customGameCompatibility.match ?? "all",
+        }
+      : undefined,
     ...translations.en,
   }),
 );
@@ -58,16 +73,22 @@ export const QUESTS_BY_ID = Object.fromEntries(
 export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
   ({
     id,
-    moodId,
+    moodIds,
     minimumDurationMinutes,
     suggestedDurationMinutes,
     genres,
+    universal,
+    gameBindable,
+    customGameCompatibility,
   }) => ({
     id,
-    moodId,
+    moodIds,
     minimumDurationMinutes,
     suggestedDurationMinutes,
     genres,
+    universal,
+    gameBindable,
+    customGameCompatibility,
   }),
 );
 
@@ -77,7 +98,7 @@ export const QUEST_CORES_BY_ID = Object.fromEntries(
 
 export const QUESTS_BY_MOOD = MOOD_IDS.reduce(
   (decks, moodId) => {
-    decks[moodId] = QUESTS.filter((quest) => quest.moodId === moodId);
+    decks[moodId] = QUESTS.filter((quest) => quest.moodIds.includes(moodId));
     return decks;
   },
   {} as Record<MoodId, readonly MoodQuestDefinition[]>,
@@ -90,5 +111,5 @@ export function questsForMood(moodId: MoodId): readonly MoodQuestDefinition[] {
 export function questCoresForMood(
   moodId: MoodId,
 ): readonly QuestCoreDefinition[] {
-  return QUEST_CORES.filter((quest) => quest.moodId === moodId);
+  return QUEST_CORES.filter((quest) => quest.moodIds.includes(moodId));
 }

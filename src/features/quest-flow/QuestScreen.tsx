@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { NEW_CARDS_COST } from "../../domain/quest/model";
@@ -7,7 +7,6 @@ import { QuestScreenContent } from "./components/QuestScreenContent/QuestScreenC
 import {
   hydrateQuest,
   localizeMood,
-  localizeQuest,
 } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
 import { useQuestStore } from "../../stores/useQuestStore";
@@ -15,6 +14,8 @@ import styles from "./QuestFlowLayout.module.css";
 import { useIntroReady } from "../../app/hooks/useIntroReady";
 import { useMoodWindowRefresh } from "../../app/hooks/useMoodWindowRefresh";
 import type { CoinImpact } from "../active-quest/components/FlyingCoin/FlyingCoin";
+import { questOfferId } from "../../domain/quest/rules";
+import { useLibraryStore } from "../../stores/useLibraryStore";
 
 type Props = {
   reduceMotion: boolean;
@@ -35,11 +36,12 @@ export function QuestScreen({
     discardCurrentSession,
     editMood,
     moodSelectedAt,
-    offeredQuestIds,
+    offeredQuests,
     pauseQuest,
     profile,
     purchaseRedRopes,
     refreshMoodWindow,
+    refreshLibraryOffers,
     revealQuest,
     returnCurrentSessionToSelection,
     resumeQuest,
@@ -54,11 +56,12 @@ export function QuestScreen({
       discardCurrentSession: state.discardCurrentSession,
       editMood: state.editMood,
       moodSelectedAt: state.moodSelectedAt,
-      offeredQuestIds: state.offeredQuestIds,
+      offeredQuests: state.offeredQuests,
       pauseQuest: state.pauseQuest,
       profile: state.profile,
       purchaseRedRopes: state.purchaseRedRopes,
       refreshMoodWindow: state.refreshMoodWindow,
+      refreshLibraryOffers: state.refreshLibraryOffers,
       revealQuest: state.revealQuest,
       returnCurrentSessionToSelection: state.returnCurrentSessionToSelection,
       resumeQuest: state.resumeQuest,
@@ -69,21 +72,48 @@ export function QuestScreen({
     })),
   );
   const introReady = useIntroReady(reduceMotion);
+  const libraryRevision = useLibraryStore((state) => state.revision);
+  const hasCurrentSession = Boolean(currentSession);
   useMoodWindowRefresh(currentSession, moodSelectedAt, refreshMoodWindow);
 
+  useEffect(() => {
+    refreshLibraryOffers();
+  }, [hasCurrentSession, libraryRevision, refreshLibraryOffers]);
+
   const currentQuest = currentSession
-    ? hydrateQuest(currentSession.questId, language)
+    ? hydrateQuest(
+        currentSession.questId,
+        currentSession.moodId,
+        currentSession.game,
+        language,
+      )
     : null;
   const selectedMood = selectedMoodId
     ? localizeMood(selectedMoodId, language)
     : null;
-  const offeredQuests = useMemo(
+  const offeredQuestItems = useMemo(
     () =>
-      offeredQuestIds.flatMap((id) => {
-        const quest = localizeQuest(id, language);
-        return quest ? [quest] : [];
+      offeredQuests.flatMap((offer) => {
+        const quest = hydrateQuest(
+          offer.questId,
+          offer.moodId,
+          offer.game,
+          language,
+        );
+        return quest
+          ? [
+              {
+                ...quest,
+                offerId: questOfferId(
+                  offer.moodId,
+                  offer.questId,
+                  offer.game?.id ?? null,
+                ),
+              },
+            ]
+          : [];
       }),
-    [language, offeredQuestIds],
+    [language, offeredQuests],
   );
   return (
     <motion.div
@@ -98,7 +128,7 @@ export function QuestScreen({
         currentQuest={currentQuest}
         currentSession={currentSession}
         selectedMood={selectedMood}
-        offeredQuests={offeredQuests}
+        offeredQuests={offeredQuestItems}
         points={profile.points}
         redRopes={profile.redRopes}
         debugMode={profile.debugMode}

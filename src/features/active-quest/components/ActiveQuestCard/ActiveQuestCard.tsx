@@ -68,6 +68,7 @@ import {
   timerPullExtension,
   type Point,
 } from "../../model/activeQuestMath";
+import { questOfferId } from "../../../../domain/quest/rules";
 
 type Props = {
   quest: Quest;
@@ -872,7 +873,7 @@ export function ActiveQuestCard({
   return (
     <div
       className={styles.activeQuest}
-      style={getMoodAccentStyle(quest.moodId)}
+      style={getMoodAccentStyle(quest.mood.id)}
       data-card-focused={cardFocused ? "true" : undefined}
       data-phase={phase}
       data-reveal-complete={revealFinished ? "true" : undefined}
@@ -912,12 +913,16 @@ export function ActiveQuestCard({
 
       <div
         className={styles.activeCardStage}
-        style={getMoodAccentStyle(quest.moodId)}
+        style={getMoodAccentStyle(quest.mood.id)}
       >
         <motion.div
           ref={cardProjectionRef}
           className={styles.activeCardProjection}
-          layoutId={`quest-card-${layoutSessionId}-${quest.id}`}
+          layoutId={`quest-card-${layoutSessionId}-${questOfferId(
+            session.moodId,
+            quest.id,
+            session.game?.id ?? null,
+          )}`}
           layoutCrossfade={false}
           onLayoutAnimationStart={() => {
             onLayoutHandoffStart();
@@ -1054,12 +1059,14 @@ export function ActiveQuestCard({
                     aria-label={t("ui.quest.activeLabel", {
                       mood: quest.mood.title,
                       title: quest.name,
+                      game: quest.game?.name ?? "",
                     })}
                   >
                     <QuestCard
                       className={styles.activeQuestCard}
                       completed={showFinishedFace}
                       genres={quest.genres}
+                      game={quest.game}
                       minimumDurationMinutes={quest.minimumDurationMinutes}
                       moodTitle={quest.mood.title}
                       name={quest.name}

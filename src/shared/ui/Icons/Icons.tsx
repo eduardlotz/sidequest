@@ -1,4 +1,5 @@
 import { useId, type SVGProps } from "react";
+import type { GameIconId } from "../../../data/gameTypes";
 
 type IconProps = SVGProps<SVGSVGElement>;
 
@@ -167,4 +168,155 @@ export function SoundOffIcon(props: IconProps) {
       <path d="m15.5 10 4 4M19.5 10l-4 4" />
     </svg>
   );
+}
+
+export function GameGenreIcon({
+  icon,
+  ...props
+}: IconProps & { icon: GameIconId }) {
+  return (
+    <svg {...defaults} {...props}>
+      {gameGenreIconPaths(icon)}
+    </svg>
+  );
+}
+
+function gameGenreIconPaths(icon: GameIconId) {
+  switch (icon) {
+    case "action":
+      return <path d="m13 2-8 11h6l-1 9 9-12h-6V2Z" />;
+    case "adventure":
+      return (
+        <>
+          <circle cx="12" cy="12" r="9" />
+          <path d="m15.7 8.3-2.1 5.3-5.3 2.1 2.1-5.3 5.3-2.1Z" />
+        </>
+      );
+    case "arcade":
+      return (
+        <>
+          <path d="M7 5h10l2 16H5L7 5Z" />
+          <path d="M9 2h6M12 5V2M8 15h3M9.5 13.5v3M15.5 14.5h.01M17 17h.01" />
+        </>
+      );
+    case "building":
+      return (
+        <>
+          <path d="M4 21V8l8-5 8 5v13" />
+          <path d="M8 21v-6h8v6M8 10h.01M12 10h.01M16 10h.01" />
+        </>
+      );
+    case "cards":
+      return (
+        <>
+          <rect x="7" y="3" width="12" height="17" rx="2" />
+          <path d="m11 9 2-2 2 2-2 2-2-2ZM5 7 3.4 8.2a2 2 0 0 0-.4 2.7l5.4 7.2" />
+        </>
+      );
+    case "cozy":
+      return (
+        <>
+          <path d="M5 11a7 7 0 0 1 14 0v7H5v-7Z" />
+          <path d="M8 18v3M16 18v3M9 11h.01M15 11h.01M10 14h4" />
+        </>
+      );
+    case "exploration":
+      return (
+        <>
+          <path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Z" />
+          <path d="M9 3v15M15 6v15" />
+        </>
+      );
+    case "fighting":
+      return (
+        <>
+          <path d="m5 19 5-5M14 10l5-5M4 4l16 16M14 4l6 6M4 14l6 6" />
+        </>
+      );
+    case "horror":
+      return (
+        <>
+          <path d="M5 20V10a7 7 0 0 1 14 0v10l-3-2-2 2-2-2-2 2-2-2-3 2Z" />
+          <path d="M9 11h.01M15 11h.01M10 15h4" />
+        </>
+      );
+    case "multiplayer":
+      return (
+        <>
+          <circle cx="8" cy="9" r="3" />
+          <circle cx="16" cy="9" r="3" />
+          <path d="M2.5 20a5.5 5.5 0 0 1 11 0M10.5 20a5.5 5.5 0 0 1 11 0" />
+        </>
+      );
+    case "platformer":
+      return (
+        <>
+          <path d="M3 20h7M14 15h7M3 10h7M14 5h7" />
+          <circle cx="8" cy="6" r="2" />
+          <path d="m9.5 7.5 3 3" />
+        </>
+      );
+    case "puzzle":
+      return (
+        <path d="M4 4h6a2 2 0 1 0 4 0h6v6a2 2 0 1 1 0 4v6h-6a2 2 0 1 0-4 0H4v-6a2 2 0 1 0 0-4V4Z" />
+      );
+    case "racing":
+      return (
+        <>
+          <path d="M3 16h18l-2-6-4-3H9l-4 3-2 6Z" />
+          <path d="M6 16v3M18 16v3M7 12h10M2 8h3M19 8h3" />
+        </>
+      );
+    case "rhythm":
+      return (
+        <>
+          <path d="M9 18V5l10-2v13" />
+          <circle cx="6" cy="18" r="3" />
+          <circle cx="16" cy="16" r="3" />
+        </>
+      );
+    case "rpg":
+      return (
+        <>
+          <path d="m12 3 7 3v5c0 4.7-2.8 8.2-7 10-4.2-1.8-7-5.3-7-10V6l7-3Z" />
+          <path d="M9 12h6M12 9v6" />
+        </>
+      );
+    case "shooter":
+      return (
+        <>
+          <circle cx="12" cy="12" r="7" />
+          <circle cx="12" cy="12" r="2" />
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+        </>
+      );
+    case "simulation":
+      return (
+        <>
+          <rect x="3" y="4" width="18" height="13" rx="2" />
+          <path d="M8 21h8M12 17v4M7 13l3-3 3 2 4-5" />
+        </>
+      );
+    case "sports":
+      return (
+        <>
+          <circle cx="12" cy="12" r="9" />
+          <path d="m12 7 3 2v4l-3 2-3-2V9l3-2ZM5 8l4 1M15 9l4-1M9 13l-2 5M15 13l2 5" />
+        </>
+      );
+    case "strategy":
+      return (
+        <>
+          <path d="M4 20h16M7 20v-5h10v5M9 15V9h6v6M11 9V4h2v5" />
+          <path d="M4 4h4v4H4zM16 4h4v4h-4z" />
+        </>
+      );
+    case "survival":
+      return (
+        <>
+          <path d="M12 22c4-2.4 6-5.5 6-9a6 6 0 1 0-12 0c0 3.5 2 6.6 6 9Z" />
+          <path d="M12 17c-1.8-1.3-2.7-2.8-2.7-4.4A2.7 2.7 0 0 1 12 10a2.7 2.7 0 0 1 2.7 2.6c0 1.6-.9 3.1-2.7 4.4Z" />
+        </>
+      );
+  }
 }

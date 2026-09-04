@@ -1,0 +1,209 @@
+.collectionEditor {
+  display: grid;
+  gap: 30px;
+}
+
+.collectionSection {
+  display: grid;
+  gap: 14px;
+}
+
+.sectionIntro h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+.sectionIntro p {
+  max-width: 48ch;
+  margin: 4px 0 0;
+  color: var(--color-muted);
+  font-size: 0.73rem;
+  font-weight: 600;
+  line-height: 1.42;
+}
+
+.curatedGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.curatedGame {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  padding: 7px 7px 11px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  cursor: pointer;
+  gap: 9px;
+  text-align: left;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.curatedGame[aria-pressed="true"] {
+  border-color: var(--color-text);
+  box-shadow: 0 0 0 1px var(--color-text);
+}
+
+.curatedGameName {
+  padding: 0 5px;
+  overflow: hidden;
+  font-size: 0.77rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selectionMark {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgb(255 255 255 / 0.48);
+  border-radius: 50%;
+  place-items: center;
+  background: rgb(12 12 16 / 0.42);
+  color: transparent;
+  backdrop-filter: blur(8px);
+}
+
+.selectionMark svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.6;
+}
+
+.curatedGame[aria-pressed="true"] .selectionMark {
+  background: var(--color-success);
+  color: #0a3d1b;
+}
+
+.customHeadingRow {
+  display: grid;
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+}
+
+.emptyState {
+  padding: 16px;
+  margin: 0;
+  border-radius: 15px;
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.customGameList {
+  display: grid;
+  gap: 7px;
+}
+
+.customGameRow {
+  display: grid;
+  min-width: 0;
+  padding: 8px;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 15px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  background: var(--color-surface-soft);
+  gap: 10px;
+}
+
+.customGameRow > div:nth-child(2) {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.customGameRow strong {
+  overflow: hidden;
+  font-size: 0.76rem;
+  letter-spacing: -0.025em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.customGameRow > div:nth-child(2) span {
+  color: var(--color-muted);
+  font-size: 0.66rem;
+  font-weight: 650;
+}
+
+.customGameActions {
+  display: flex;
+  gap: 4px;
+}
+
+.customGameActions button {
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 9px;
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font-size: 0.66rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.customGameActions button:last-child {
+  color: var(--color-danger);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .curatedGame:hover {
+    transform: translateY(-2px);
+  }
+
+  .customGameActions button:hover {
+    color: var(--color-text);
+  }
+}
+
+@media (max-width: 600px) {
+  .curatedGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .curatedGame {
+    grid-template-columns: 112px minmax(0, 1fr);
+    align-items: center;
+    padding: 7px;
+  }
+
+  .curatedGame > :first-child {
+    border-radius: 14px;
+  }
+
+  .selectionMark {
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+  }
+
+  .curatedGameName {
+    padding-right: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .curatedGame {
+    transition: none;
+  }
+}

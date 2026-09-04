@@ -1,21 +1,31 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Drawer } from "vaul";
-import { visuallyHiddenClassName } from "../../../../shared/ui/VisuallyHidden/VisuallyHidden";
 import styles from "./ProfileDrawer.module.css";
 import { formatScore } from "../../../../lib/format";
 import { applySoundEnabled, readSoundEnabled } from "../../../../lib/sound";
 import { localizeMood } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
 import { THEME_CHOICES, type ThemeChoice } from "../../../../lib/theme";
-import type { QuestStats, UserProfile } from "../../../../domain/quest/model";
-import { InfoIcon } from "../../../../shared/ui/Icons/Icons";
+import type {
+  CompletedSession,
+  QuestStats,
+  UserProfile,
+} from "../../../../domain/quest/model";
+import {
+  ChevronLeftIcon,
+  InfoIcon,
+} from "../../../../shared/ui/Icons/Icons";
+import { ResponsiveNestedDrawer } from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
 import { RopePurchaseRow } from "../../../active-quest/components/RopePurchaseRow/RopePurchaseRow";
+import { GameLibraryDrawer } from "../GameLibraryDrawer/GameLibraryDrawer";
+import { QuestHistoryDrawer } from "../QuestHistoryDrawer/QuestHistoryDrawer";
+import { ProfilePanel } from "./ProfilePanel";
 
 type Props = {
   onDebugModeChange: (enabled: boolean) => void;
   onPurchaseRedRopes: () => boolean;
   onThemeChange: (theme: ThemeChoice) => void;
+  completedSessions: readonly CompletedSession[];
   profile: UserProfile;
   stats: QuestStats;
   totalCoinsCollected: number;
@@ -23,6 +33,7 @@ type Props = {
 };
 
 export function ProfileDrawer({
+  completedSessions,
   onDebugModeChange,
   onPurchaseRedRopes,
   onThemeChange,
@@ -44,23 +55,49 @@ export function ProfileDrawer({
   }
 
   return (
-    <section
-      className={styles.profileDrawer}
-      data-profile-drawer
-      aria-labelledby="profile-title"
+    <ProfilePanel
+      description={t("ui.profile.description")}
+      title={t("ui.profile.title")}
+      titleId="profile-title"
     >
-      <header className={styles.profileDrawerHeader} data-profile-drawer-header>
-        <div className={styles.profileDrawerTitleRow}>
-          <Drawer.Title asChild>
-            <h2 id="profile-title">{t("ui.profile.title")}</h2>
-          </Drawer.Title>
-        </div>
-        <Drawer.Description className={visuallyHiddenClassName}>
-          {t("ui.profile.description")}
-        </Drawer.Description>
-      </header>
+        <section className={styles.profileSection}>
+          <h3 className={styles.profileSectionLabel}>
+            {t("ui.profile.yourSidequests")}
+          </h3>
+          <div className={styles.profileNavigation}>
+            <ResponsiveNestedDrawer
+              trigger={
+                <button type="button">
+                  <span>
+                    <strong>{t("ui.library.drawerTitle")}</strong>
+                    <small>{t("ui.library.profileSummary")}</small>
+                  </span>
+                  <ChevronLeftIcon aria-hidden="true" />
+                </button>
+              }
+            >
+              <GameLibraryDrawer />
+            </ResponsiveNestedDrawer>
+            <ResponsiveNestedDrawer
+              trigger={
+                <button type="button">
+                  <span>
+                    <strong>{t("ui.history.title")}</strong>
+                    <small>
+                      {t("ui.history.profileSummary", {
+                        count: completedSessions.length,
+                      })}
+                    </small>
+                  </span>
+                  <ChevronLeftIcon aria-hidden="true" />
+                </button>
+              }
+            >
+              <QuestHistoryDrawer completedSessions={completedSessions} />
+            </ResponsiveNestedDrawer>
+          </div>
+        </section>
 
-      <div className={styles.profileDrawerBody}>
         <section className={styles.profileSection}>
           <h3 className={styles.profileSectionLabel}>
             {t("ui.profile.redRopes")}
@@ -169,8 +206,7 @@ export function ProfileDrawer({
             />
           </div>
         </section>
-      </div>
-    </section>
+    </ProfilePanel>
   );
 }
 
