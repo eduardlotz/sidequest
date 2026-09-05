@@ -37,14 +37,14 @@ export const exploreQuests = defineMoodQuests("explore", [
         objective:
           "Open an open-world game with an **unvisited marker** on the map. Travel there **without fast travel**, look around, and stop after the location name appears.",
         gameObjective:
-          "In **{{game}}**, choose an unvisited marker on the map. Travel there **without fast travel**, look around, and stop after the location name appears.",
+          "In **{{game}}**, choose a place you have not visited. Travel there **without fast travel**, look around, and find one detail worth remembering.",
       },
       de: {
         name: "Hinter der Karte",
         objective:
-          "Öffne ein Open-World-Spiel mit einem **unbesuchten Marker** auf der Karte. Reise **ohne Schnellreise** dorthin, sieh dich um und höre auf, sobald der Ortsname erscheint.",
+          "Starte ein Open-World-Spiel mit **einem markierten Ort, den du noch nicht besucht hast**. Reise **ohne Schnellreise** dorthin, sieh dich um und hör auf, sobald der Ortsname erscheint.",
         gameObjective:
-          "W\u00E4hle in **{{game}}** einen unbesuchten Marker auf der Karte. Reise **ohne Schnellreise** dorthin, sieh dich um und h\u00F6re auf, sobald der Ortsname erscheint.",
+          "Wähle in **{{game}}** einen noch unbekannten Ort. Reise **ohne Schnellreise** dorthin, sieh dich um und merke dir ein interessantes Detail.",
       },
     },
   },
@@ -98,7 +98,7 @@ export const exploreQuests = defineMoodQuests("explore", [
       de: {
         name: "Neuer Planet",
         objective:
-          "Nimm ein Weltraumspiel mit besuchbaren Planeten. Lande auf der **nächsten unerforschten Welt**, scanne oder sammle **drei Dinge** und fliege erst weiter, wenn du ihren Unterschied benennen kannst.",
+          "Wähle ein Weltraumspiel, in dem du Planeten besuchen kannst. Lande auf der **nächsten unerforschten Welt** und scanne oder sammle **drei Dinge**. Fliege erst weiter, wenn du sagen kannst, was diesen Ort besonders macht.",
       },
     },
   },
@@ -116,7 +116,7 @@ export const exploreQuests = defineMoodQuests("explore", [
       de: {
         name: "Versteckter Raum",
         objective:
-          "Öffne ein Adventure oder Rätselspiel mit optionalen Bereichen. Suche in einem vertrauten Gebiet nach **einer versteckten Tür, einem Raum oder Weg** und folge ihm bis zu **einer Belohnung oder Geschichte**.",
+          "Starte ein Adventure oder Rätselspiel mit optionalen Bereichen. Suche in einem vertrauten Gebiet nach **einer versteckten Tür, einem Raum oder einem Weg**. Erkunde deinen Fund, bis du **eine Belohnung oder ein Detail zur Geschichte** entdeckst.",
       },
     },
   },
@@ -150,9 +150,9 @@ export const exploreQuests = defineMoodQuests("explore", [
           "Continue a **game whose map shows unexplored room exits**. Go to the nearest open edge on the map, pass through it, and stop when **the new room appears on the map**.",
       },
       de: {
-        name: "Unkartierte Tür",
+        name: "Hinter der nächsten Tür",
         objective:
-          "Setze ein **Spiel fort, dessen Karte unerforschte Raumausgänge zeigt**. Geh zum nächsten offenen Kartenrand, nimm den Ausgang und hör auf, sobald **der neue Raum auf der Karte erscheint**.",
+          "Setze ein **Spiel fort, dessen Karte Ausgänge zu unerforschten Räumen zeigt**. Geh zum nächsten noch nicht erkundeten Ausgang und hindurch. Hör auf, sobald **der neue Raum auf der Karte erscheint**.",
       },
     },
   },
@@ -206,7 +206,7 @@ export const exploreQuests = defineMoodQuests("explore", [
       de: {
         name: "Erste Dungeon-Etage",
         objective:
-          "Starte einen **Dungeon-Crawler mit einzelnen Etagen und einem unbesuchten Eingang**. Betritt den nächsten neuen Dungeon, räume die erste Etage und **geh durch den Ausgang zur zweiten**.",
+          "Starte einen **Dungeon-Crawler mit mehreren Etagen und einem noch nicht besuchten Dungeon**. Betritt den nächstgelegenen neuen Dungeon, schaffe die erste Etage und **geh durch den Ausgang zur zweiten**.",
       },
     },
   },

@@ -1,265 +1,346 @@
 .editor {
   display: grid;
+  width: 100%;
+  min-width: 0;
   gap: 22px;
 }
-
-.previewRow {
-  display: grid;
-  align-items: end;
-  grid-template-columns: auto minmax(0, 1fr);
+.editorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
-
-.previewRow > :first-child {
-  width: 46px;
-  height: 46px;
-  border-radius: 13px;
+.editorHeader > span {
+  color: var(--color-muted);
+  font-size: 0.68rem;
+  white-space: nowrap;
 }
-
+.backButton {
+  display: flex;
+  padding: 6px 0;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.73rem;
+  cursor: pointer;
+}
+.backButton svg {
+  width: 14px;
+  height: 14px;
+  transform: rotate(180deg);
+}
 .nameField {
   display: grid;
-  gap: 7px;
-  color: var(--color-muted);
-  font-size: 0.72rem;
-  font-weight: 700;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
-
-.nameField input {
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--color-border-strong);
+  padding-bottom: 10px;
+}
+.inputRow input {
   width: 100%;
-  height: 42px;
-  padding: 0 13px;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 13px;
+  min-width: 0;
+  min-height: 34px;
+  padding: 5px 0;
   outline: none;
-  background: var(--color-surface-soft);
+  border: 0;
+  background: transparent;
   color: var(--color-text);
-  font-size: 0.86rem;
-  font-weight: 650;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
-
-.nameField input:focus {
+.inputRow:focus-within {
   border-color: var(--color-focus);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus) 18%, transparent);
 }
-
+.section {
+  min-width: 0;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+.disclosure {
+  display: flex;
+  width: 100%;
+  min-height: 36px;
+  padding: 0;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.disclosureDetail {
+  margin-left: auto;
+  color: var(--color-muted);
+  font-size: 0.67rem;
+  font-weight: 500;
+}
+.disclosure > svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--color-muted);
+  transition: transform 160ms ease;
+}
+.disclosure[aria-expanded="true"] > svg {
+  transform: rotate(90deg);
+}
+.appearance {
+  display: grid;
+  padding-top: 14px;
+  gap: 18px;
+}
 .pickerFieldset,
 .capabilityFieldset {
+  width: 100%;
   min-width: 0;
   padding: 0;
   margin: 0;
   border: 0;
 }
-
 .pickerFieldset legend,
 .capabilityFieldset legend {
-  padding: 0;
-  margin: 0 0 9px;
-  color: var(--color-muted);
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.capabilityFieldset > p,
-.questReview > p {
-  margin: -3px 0 11px;
-  color: var(--color-muted);
-  font-size: 0.7rem;
-  font-weight: 600;
-  line-height: 1.42;
-}
-
-.iconGrid {
-  display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-  gap: 5px;
-}
-
-.iconGrid button,
-.colorGrid button {
-  display: grid;
-  padding: 0;
-  border: 1px solid transparent;
-  place-items: center;
-  background: var(--color-surface-soft);
-  color: var(--color-muted);
-  cursor: pointer;
-  transition:
-    border-color 150ms ease,
-    color 150ms ease,
-    transform 150ms ease;
-}
-
-.iconGrid button {
   width: 100%;
-  border-radius: 9px;
-  aspect-ratio: 1;
-}
-
-.iconGrid svg {
-  width: 17px;
-  height: 17px;
-}
-
-.iconGrid button[aria-pressed="true"],
-.colorGrid button[aria-pressed="true"] {
-  border-color: var(--color-text);
+  padding: 0;
+  margin: 0 0 8px;
   color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 600;
 }
-
+.pickerFieldset legend {
+  color: var(--color-muted);
+  font-size: 0.68rem;
+}
+.iconGrid,
 .colorGrid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 6px;
-}
-
-.colorGrid button {
-  width: 100%;
-  border-radius: 999px;
-  aspect-ratio: 1;
-}
-
-.colorGrid button > span {
-  display: block;
-  width: 62%;
-  border-radius: inherit;
-  background: var(--swatch-color);
-  aspect-ratio: 1;
-}
-
-.capabilityGrid {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
-
-.capabilityGrid button {
-  min-height: 30px;
-  padding: 0 10px;
-  border-radius: 999px;
-  background: var(--color-surface-soft);
+.iconGrid button,
+.colorGrid button {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  padding: 5px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
   color: var(--color-muted);
-  font-size: 0.69rem;
-  font-weight: 700;
   cursor: pointer;
 }
-
-.capabilityGrid button[aria-pressed="true"] {
+.iconGrid svg {
+  width: 18px;
+  height: 18px;
+}
+.iconGrid button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--custom-color) 18%, transparent);
+  color: var(--color-text);
+  border-color: color-mix(in srgb, var(--custom-color) 55%, transparent);
+}
+.colorGrid button {
+  border-radius: 50%;
+}
+.colorGrid button[aria-pressed="true"] {
+  border-color: var(--color-text);
+}
+.colorGrid button > span {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  place-items: center;
+  background: var(--swatch-color);
+  color: #292d32;
+}
+.colorGrid svg {
+  width: 13px;
+  height: 13px;
+}
+.capabilityList {
+  display: grid;
+}
+.capabilityRow {
+  position: relative;
+  display: flex;
+  min-height: 40px;
+  padding: 8px 0;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+.capabilityRow > svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-muted);
+}
+.capabilityRow > span:first-of-type {
+  flex: 1;
+  font-size: 0.73rem;
+  line-height: 1.4;
+}
+.capabilityRow input,
+.questRow input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  opacity: 0;
+}
+.checkbox {
+  display: grid;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  place-items: center;
+  background: transparent;
+  color: transparent;
+}
+.checkbox svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.4;
+}
+input:checked + .checkbox {
+  border-color: transparent;
   background: var(--color-inverse-surface);
   color: var(--color-inverse-copy);
 }
-
-.reviewSection {
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-  border-radius: 15px;
+input:focus-visible + .checkbox {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
 }
-
-.reviewTrigger {
-  display: grid;
-  width: 100%;
-  min-height: 48px;
-  padding: 0 13px;
-  align-items: center;
-  grid-template-columns: minmax(0, 1fr) auto;
-  background: var(--color-surface-soft);
-  color: var(--color-text);
-  font-size: 0.73rem;
-  font-weight: 700;
-  text-align: left;
-  cursor: pointer;
-}
-
-.reviewTrigger strong {
-  color: var(--color-muted);
-  font-size: 0.68rem;
-}
-
 .questReview {
-  max-height: 310px;
-  padding: 13px;
-  overflow: auto;
-}
-
-.questReview > button {
   display: grid;
-  width: 100%;
-  min-height: 38px;
-  padding: 5px 0;
+  min-width: 0;
+  padding-top: 12px;
+  gap: 10px;
+  font-size: 0.72rem;
+}
+.searchField {
+  display: flex;
   align-items: center;
+  gap: 8px;
   border-bottom: 1px solid var(--color-border);
-  grid-template-columns: minmax(0, 1fr) auto;
+  color: var(--color-muted);
+}
+.searchField svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+.searchField input {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  border: 0;
+  outline: 0;
   background: transparent;
   color: var(--color-text);
   font-size: 0.72rem;
-  font-weight: 650;
-  text-align: left;
+}
+.searchField:focus-within {
+  border-color: var(--color-focus);
+}
+.reviewTools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+.reviewTools button {
+  padding: 6px 0;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.67rem;
   cursor: pointer;
 }
-
-.questReview > button:last-child {
-  border-bottom: 0;
+.questList {
+  max-height: 330px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
-
-.questReview > button > span:last-child {
+.questRow {
   position: relative;
-  width: 32px;
-  height: 19px;
-  border-radius: 999px;
-  background: var(--color-surface-pressed);
+  display: flex;
+  min-width: 0;
+  padding: 12px 4px 12px 0;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
 }
-
-.questReview > button > span:last-child::after {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: var(--color-surface);
-  box-shadow: 0 1px 2px rgb(var(--color-shadow-rgb) / 0.24);
-  content: "";
-  transition: transform 160ms ease;
+.questRow > span:first-child {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 5px;
 }
-
-.questReview > button[aria-checked="true"] > span:last-child {
-  background: var(--color-success);
+.questRow strong {
+  font-size: 0.72rem;
+  font-weight: 600;
 }
-
-.questReview > button[aria-checked="true"] > span:last-child::after {
-  transform: translateX(13px);
+.questRow > span:first-child > span {
+  color: var(--color-muted);
+  font-size: 0.67rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
-
+.emptyState {
+  margin: 10px 0;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
 .actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
-
+.cancel {
+  min-height: 36px;
+  padding: 8px 0;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.73rem;
+  cursor: pointer;
+}
+.editor button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
 @media (hover: hover) and (pointer: fine) {
-  .iconGrid button:hover,
-  .colorGrid button:hover {
-    transform: scale(1.08);
+  .iconGrid button:hover {
+    background: var(--color-surface-soft);
+    color: var(--color-text);
   }
-
-  .capabilityGrid button:hover {
-    filter: brightness(0.96);
+  .capabilityRow:hover,
+  .questRow:hover {
+    background: color-mix(in srgb, var(--color-surface-soft) 50%, transparent);
   }
-}
-
-@media (max-width: 480px) {
-  .iconGrid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
-  .colorGrid {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+  .reviewTools button:hover,
+  .backButton:hover,
+  .cancel:hover {
+    color: var(--color-text);
   }
 }
-
 @media (prefers-reduced-motion: reduce) {
-  .iconGrid button,
-  .colorGrid button,
-  .questReview > button > span:last-child::after {
+  .disclosure > svg {
     transition: none;
   }
 }

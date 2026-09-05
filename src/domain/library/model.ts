@@ -38,6 +38,8 @@ export type LibraryActions = {
   updateCustomGame: (gameId: string, input: CustomGameInput) => boolean;
   removeCustomGame: (gameId: string) => boolean;
   completeSetup: () => boolean;
+  startWithDevsCollection: () => void;
+  selectAllCuratedGames: (selected: boolean) => void;
 };
 
 export type LibraryStore = LibraryState & LibraryActions;

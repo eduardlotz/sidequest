@@ -1,89 +1,166 @@
 .setup {
-  width: min(920px, calc(100% - 40px));
-  padding: 112px 0 56px;
+  width: min(560px, calc(100% - 48px));
+  padding: 140px 0 56px;
   margin: 0 auto;
 }
-
 .intro {
-  max-width: 610px;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
-
-.intro > span {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--color-muted);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
 .intro h1 {
   margin: 0;
-  font-size: clamp(2rem, 6vw, 4rem);
-  font-weight: 500;
-  letter-spacing: -0.07em;
-  line-height: 0.94;
-  text-wrap: balance;
+  font-size: 1.35rem;
+  font-weight: 650;
+  letter-spacing: -0.045em;
 }
-
 .intro p {
-  max-width: 56ch;
-  margin: 16px 0 0;
+  max-width: 48ch;
+  margin: 8px 0 0;
   color: var(--color-muted);
-  font-size: 0.88rem;
-  font-weight: 600;
+  font-size: 0.8rem;
   line-height: 1.5;
-  text-wrap: pretty;
 }
-
-.panel {
-  padding: 25px;
-  border-radius: 24px;
+.choices {
+  display: grid;
+}
+.choiceCard {
+  padding: 0 22px;
+  border: 1px solid var(--color-border);
+  border-radius: 22px;
   background: var(--color-surface);
   box-shadow: var(--raised-shadow);
 }
-
+.choice {
+  display: flex;
+  width: 100%;
+  min-height: 104px;
+  padding: 20px 0;
+  align-items: center;
+  gap: 18px;
+  background: transparent;
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+}
+.choice + .choice {
+  border-top: 1px solid var(--color-border);
+}
+.choice > svg {
+  width: 18px;
+  height: 18px;
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--color-muted);
+}
+.choiceCopy {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+.choiceCopy strong {
+  font-size: 0.9rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+.choiceCopy > span {
+  color: var(--color-muted);
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+.gameStack {
+  display: flex;
+  width: 72px;
+  flex: 0 0 72px;
+  padding: 0 3px;
+}
+.gameStack > span {
+  width: 28px;
+  height: 24px;
+  flex-basis: 28px;
+  margin-left: -9px;
+  box-shadow: 0 0 0 2px var(--color-surface);
+  transform: rotate(-9deg);
+}
+.gameStack > span:first-child {
+  margin-left: 0;
+}
+.gameStack > span:nth-child(2) {
+  transform: rotate(0deg);
+}
+.gameStack > span:nth-child(3) {
+  transform: rotate(9deg);
+}
+.personalIcon {
+  display: grid;
+  width: 72px;
+  flex: 0 0 72px;
+  place-items: center;
+  color: var(--color-muted);
+}
+.personalIcon svg {
+  width: 28px;
+  height: 28px;
+}
+.skip,
+.back {
+  width: fit-content;
+  padding: 10px 0;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.73rem;
+  cursor: pointer;
+}
+.skip {
+  margin-top: 14px;
+  justify-self: center;
+  text-align: center;
+}
+.back {
+  margin-bottom: 12px;
+}
 .footer {
   display: flex;
+  margin-top: 28px;
   padding-top: 22px;
-  margin-top: 30px;
+  border-top: 1px solid var(--color-border);
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid var(--color-border);
-  gap: 16px;
+  gap: 12px;
 }
-
-.footer p {
-  margin: 0;
+.footer > span {
   color: var(--color-muted);
   font-size: 0.72rem;
-  font-weight: 650;
 }
-
+.choice:focus-visible,
+.skip:focus-visible,
+.back:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 5px;
+  border-radius: 4px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .choice:hover .choiceCopy strong,
+  .skip:hover,
+  .back:hover {
+    color: var(--color-focus);
+  }
+}
 @media (max-width: 600px) {
   .setup {
-    width: min(100% - 24px, 480px);
-    padding: 96px 0 32px;
+    padding-top: 110px;
   }
-
-  .intro {
-    padding: 0 8px;
-    margin-bottom: 22px;
+  .choice {
+    gap: 12px;
   }
-
-  .panel {
-    padding: 18px;
-    border-radius: 22px;
+  .choiceCard {
+    padding: 0 16px;
   }
-
+  .gameStack,
+  .personalIcon {
+    width: 58px;
+    flex-basis: 58px;
+  }
   .footer {
-    align-items: stretch;
+    align-items: flex-start;
     flex-direction: column;
-  }
-
-  .footer > button {
-    min-height: 42px;
   }
 }

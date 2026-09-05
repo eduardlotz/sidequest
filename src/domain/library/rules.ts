@@ -1,11 +1,8 @@
 import { CURATED_GAMES, CURATED_GAMES_BY_ID } from "../../data/games";
 import { QUEST_CORES } from "../../data/quests";
 import type { GameCapabilityId } from "../../data/gameTypes";
-import type {
-  CustomGame,
-  LibraryGame,
-  LibraryState,
-} from "./model";
+import { matchesGameCapabilities } from "../../data/gameCompatibility";
+import type { CustomGame, LibraryGame, LibraryState } from "./model";
 
 export function libraryGamesFromState(state: LibraryState): LibraryGame[] {
   const curatedGames = state.selectedCuratedGameIds.flatMap((gameId) => {
@@ -37,20 +34,18 @@ export function libraryGamesFromState(state: LibraryState): LibraryGame[] {
 export function customGameQuestIds(game: CustomGame): string[] {
   const capabilities = new Set<GameCapabilityId>(game.capabilityIds);
   return QUEST_CORES.filter((quest) => {
-    const override = game.questOverrides[quest.id];
-    if (override !== undefined) return override && quest.gameBindable;
     if (!quest.gameBindable || !quest.customGameCompatibility) return false;
-    const { capabilityIds, match } = quest.customGameCompatibility;
-    return match === "any"
-      ? capabilityIds.some((capability) => capabilities.has(capability))
-      : capabilityIds.every((capability) => capabilities.has(capability));
+    const override = game.questOverrides[quest.id];
+    if (override !== undefined) return override;
+    return matchesGameCapabilities(capabilities, quest.customGameCompatibility);
   }).map((quest) => quest.id);
 }
 
 export function hasLibraryGames(state: LibraryState) {
   return (
-    state.selectedCuratedGameIds.some((id) => Boolean(CURATED_GAMES_BY_ID[id])) ||
-    state.customGames.length > 0
+    state.selectedCuratedGameIds.some((id) =>
+      Boolean(CURATED_GAMES_BY_ID[id]),
+    ) || state.customGames.length > 0
   );
 }
 

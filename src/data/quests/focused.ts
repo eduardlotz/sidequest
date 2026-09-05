@@ -15,7 +15,7 @@ export const focusedQuests = defineMoodQuests("focused", [
       de: {
         name: "Sauberer Lauf",
         objective:
-          "Wähle ein Level, das du sicher beenden kannst. Spiele es **ohne Pause, Neustart oder Menü** zu Ende und akzeptiere das erste Ergebnis.",
+          "Wähle ein Level, das du gut genug kennst, um es zu schaffen. Spiele es **ohne Pause, Neustart oder Öffnen eines Menüs** zu Ende und lass das erste Ergebnis stehen.",
       },
     },
   },
@@ -33,7 +33,7 @@ export const focusedQuests = defineMoodQuests("focused", [
       de: {
         name: "Zwanzig Züge",
         objective:
-          "Öffne einen rundenbasierten Strategie-Spielstand und lege vor dem ersten Zug ein Ziel fest. Arbeite **genau zwanzig Züge** nur daran und speichere nach Zug zwanzig.",
+          "Setze einen Spielstand in einem rundenbasierten Strategiespiel fort. Lege vor dem ersten Zug ein Ziel fest, arbeite **genau zwanzig Züge** nur daran und speichere nach dem zwanzigsten Zug.",
       },
     },
   },
@@ -51,7 +51,7 @@ export const focusedQuests = defineMoodQuests("focused", [
       de: {
         name: "Ein Build",
         objective:
-          "Nimm ein Spiel mit Builds, Decks oder Ausrüstungen und lege vor dem Start **ein klares Setup** fest. Beende eine Mission oder einen Run, ohne seine Kernteile zu wechseln.",
+          "Wähle ein Spiel mit Builds, Decks oder wählbarer Ausrüstung. Lege dich vor dem Start auf **ein Setup** fest und beende damit eine Mission oder einen Run, ohne seine wichtigsten Bestandteile auszutauschen.",
       },
     },
   },
@@ -69,7 +69,7 @@ export const focusedQuests = defineMoodQuests("focused", [
       de: {
         name: "Kopfhörer auf",
         objective:
-          "Nimm ein narratives Spiel oder Rätselspiel, bei dem Ton wichtig ist. Setze Kopfhörer auf, schalte Benachrichtigungen stumm und beende **ein ganzes Kapitel oder eine Rätselsequenz** ohne App-Wechsel.",
+          "Wähle ein Story- oder Rätselspiel, bei dem der Ton eine wichtige Rolle spielt. Setz Kopfhörer auf, schalte Benachrichtigungen stumm und beende **ein ganzes Kapitel oder eine zusammenhängende Rätselreihe**, ohne die App zu wechseln.",
       },
     },
   },
@@ -85,14 +85,14 @@ export const focusedQuests = defineMoodQuests("focused", [
         objective:
           "Open a story game with a main mission ready. Start and finish **that one mission** without side activities, inventory cleanup, or collectible detours.",
         gameObjective:
-          "In **{{game}}**, continue the currently active main mission. Ignore side objectives and stop after **the next mission-complete screen or checkpoint**.",
+          "In **{{game}}**, continue one available mission or level. Ignore optional detours and stop after **the next completed objective or checkpoint**.",
       },
       de: {
         name: "Hauptmission",
         objective:
-          "Öffne ein Story-Spiel mit einer verfügbaren Hauptmission. Starte und beende **genau diese Mission** ohne Nebenaktivitäten, Inventararbeit oder Sammel-Umwege.",
+          "Starte ein Story-Spiel mit einer verfügbaren Hauptmission und beende **genau diese Mission**. Lass Nebenaktivitäten aus, räum kein Inventar auf und mach keine Umwege für Sammelobjekte.",
         gameObjective:
-          "Setze in **{{game}}** die aktuell aktive Hauptmission fort. Ignoriere Nebenziele und h\u00F6re beim **n\u00E4chsten Abschlussbildschirm oder Kontrollpunkt** auf.",
+          "Spiele in **{{game}}** eine verfügbare Mission oder ein Level weiter. Lass optionale Umwege aus und hör auf, sobald du **das nächste Ziel geschafft oder einen Kontrollpunkt erreicht hast**.",
       },
     },
   },
@@ -108,14 +108,14 @@ export const focusedQuests = defineMoodQuests("focused", [
         objective:
           "Choose one score-based challenge and lock its difficulty and character. Make **three uninterrupted attempts**, record the highest result, and stop after the third.",
         gameObjective:
-          "In **{{game}}**, play the same activity repeatedly until your score improves **three times**. Stop after the third improvement or six finished attempts.",
+          "In **{{game}}**, choose one result you can count, such as points or successful actions. Play **three rounds in the same mode**, record your best result, and stop after the third.",
       },
       de: {
-        name: "Punkteblock",
+        name: "Drei Versuche",
         objective:
-          "Wähle eine Punkte-Herausforderung und lege Schwierigkeit und Figur fest. Spiele **drei ununterbrochene Versuche**, behalte das höchste Ergebnis und höre nach dem dritten auf.",
+          "Wähle eine Herausforderung mit Punktewertung und lege Schwierigkeit und Figur fest. Spiele **drei Versuche ohne Unterbrechung**, merke dir das beste Ergebnis und hör nach dem dritten auf.",
         gameObjective:
-          "Spiele in **{{game}}** dieselbe Aktivit\u00E4t, bis du deinen Punktestand **dreimal** verbessert hast. H\u00F6re nach der dritten Verbesserung oder sechs beendeten Versuchen auf.",
+          "Wähle in **{{game}}** ein zählbares Ergebnis, etwa Punkte oder gelungene Aktionen. Spiele **drei Runden im selben Modus**, merke dir dein bestes Ergebnis und höre nach der dritten auf.",
       },
     },
   },
@@ -133,7 +133,7 @@ export const focusedQuests = defineMoodQuests("focused", [
       de: {
         name: "Engpass beheben",
         objective:
-          "Starte einen **Automatisierungsspielstand mit stillstehender Produktion**. Geh vom Ausgang rückwärts zur ersten Maschine ohne Material, versorge sie wieder und hör nach **drei fertigen Produkten am Ausgang** auf.",
+          "Setze einen Spielstand in einem **Automatisierungsspiel fort, in dem eine Produktionslinie stillsteht**. Folge ihr vom Ausgang zurück bis zur ersten Maschine, der Material fehlt. Sorge für Nachschub und hör nach **drei fertigen Produkten am Ausgang** auf.",
       },
     },
   },
@@ -151,7 +151,7 @@ export const focusedQuests = defineMoodQuests("focused", [
       de: {
         name: "Eine Rezeptkette",
         objective:
-          "Setze ein **Crafting-Spiel mit verfolgtem Rezeptbaum** fort. Stelle alle fehlenden Teile des aktuellen Rezepts in der angezeigten Reihenfolge selbst her und hör auf, sobald **der fertige Gegenstand im Inventar liegt**.",
+          "Setze ein **Crafting-Spiel fort, in dem du ein Rezept mit mehreren Herstellungsschritten verfolgst**. Stelle alle fehlenden Teile selbst in der angezeigten Reihenfolge her, ohne etwas zu kaufen. Hör auf, sobald **der fertige Gegenstand im Inventar liegt**.",
       },
     },
   },
@@ -167,14 +167,14 @@ export const focusedQuests = defineMoodQuests("focused", [
         objective:
           "Open a **competitive game with replays and event markers**. Watch your latest loss without fast-forwarding, mark the first three shown deaths, scores, or objective changes, and **continue to the result screen**.",
         gameObjective:
-          "In **{{game}}**, review your latest saved replay or training attempt. Identify **one repeated mistake**, then finish one new attempt while correcting it.",
+          "In **{{game}}**, review your last round from a replay or from memory. Identify **one repeated mistake**, then finish a new round focused on correcting it.",
       },
       de: {
         name: "Replay-Analyse",
         objective:
-          "Starte ein **kompetitives Spiel mit Replays und Ereignismarkern**. Sieh die letzte Niederlage ohne Vorspulen, markiere die ersten drei angezeigten Tode, Punkte oder Zielwechsel und **schau bis zum Ergebnis**.",
+          "Starte ein **Wettkampfspiel mit Replays und markierten Spielereignissen**. Sieh dir deine letzte Niederlage ohne Vorspulen an. Markiere die ersten drei angezeigten Tode, Punkte oder Wechsel bei Missionszielen und **schau bis zum Ergebnisbildschirm weiter**.",
         gameObjective:
-          "Sieh dir in **{{game}}** deine letzte gespeicherte Wiederholung oder Trainingsrunde an. Finde **einen wiederkehrenden Fehler** und beende danach einen neuen Versuch, in dem du ihn korrigierst.",
+          "Sieh dir in **{{game}}** die letzte Runde als Replay an oder geh sie im Kopf durch. Finde **einen Fehler, der sich wiederholt**, und spiele eine neue Runde bis zum Ende, in der du gezielt daran arbeitest.",
       },
     },
   },
@@ -210,7 +210,7 @@ export const focusedQuests = defineMoodQuests("focused", [
       de: {
         name: "Eine Linie",
         objective:
-          "Starte ein **Verkehrsspiel mit Routeneditor und unbedienten Haltestellen**. Verbinde die ersten beiden Haltestellen in der Liste, setze das vorgeschlagene Fahrzeug ein und **lass es eine ganze Runde fahren**.",
+          "Starte ein **Transportspiel mit Routeneditor und Haltestellen ohne Verbindung**. Verbinde die ersten beiden noch nicht angefahrenen Haltestellen in der Liste, setze das vorgeschlagene Fahrzeug ein und **lass es eine ganze Runde fahren**.",
       },
     },
   },

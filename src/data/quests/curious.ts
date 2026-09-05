@@ -33,7 +33,7 @@ export const curiousQuests = defineMoodQuests("curious", [
       de: {
         name: "Erster Spielstand",
         objective:
-          "Nimm ein installiertes Spiel, das du noch nie geöffnet hast. Starte mit den Vorgaben und spiele bis zum **ersten echten Speicherpunkt oder abgeschlossenen Ziel**, dann höre vor dem nächsten auf.",
+          "Wähle ein installiertes Spiel, das du noch nie gestartet hast. Behalte die Voreinstellungen und spiele bis zum **ersten regulären Speicherpunkt oder abgeschlossenen Ziel**. Hör dort auf, bevor du weiterspielst.",
       },
     },
   },
@@ -51,7 +51,7 @@ export const curiousQuests = defineMoodQuests("curious", [
       de: {
         name: "Gleiche Epoche",
         objective:
-          "Nimm ein Spiel aus **derselben historischen Epoche wie ein Film oder eine Serie, die du gesehen hast**. Beende eine Mission oder Szene und vergleiche ein unterschiedlich dargestelltes Detail.",
+          "Wähle ein Spiel, das in **derselben historischen Epoche spielt wie ein Film oder eine Serie, die du gesehen hast**. Beende eine Mission oder Szene und vergleiche ein Detail, das beide unterschiedlich darstellen.",
       },
     },
   },
@@ -85,9 +85,9 @@ export const curiousQuests = defineMoodQuests("curious", [
           "Open a game with a roster and choose the character you have used least. Play **three complete rounds or one mission** without switching away from them.",
       },
       de: {
-        name: "Seltenste Figur",
+        name: "Selten gespielt",
         objective:
-          "Öffne ein Spiel mit Figuren-Auswahl und nimm die von dir am seltensten gespielte Figur. Beende mit ihr **drei Runden oder eine Mission**, ohne zu wechseln.",
+          "Starte ein Spiel mit Charakterauswahl und nimm die Figur, die du am seltensten spielst. Beende mit ihr **drei Runden oder eine Mission**, ohne sie zu wechseln.",
       },
     },
   },
@@ -103,14 +103,14 @@ export const curiousQuests = defineMoodQuests("curious", [
         objective:
           "Open a game with a codex, journal, or archive and read **three related entries**. Then visit one place, person, or object mentioned in them inside the game.",
         gameObjective:
-          "In **{{game}}**, open the nearest unread lore entry. Follow **one person, place, or event** through three linked entries and stop after the third.",
+          "In **{{game}}**, read or listen to three pieces of dialogue or lore. Follow **one person, place, or event** mentioned in them and note one connection.",
       },
       de: {
         name: "Der Geschichte folgen",
         objective:
-          "Öffne ein Spiel mit Kodex, Journal oder Archiv und lies **drei zusammengehörige Einträge**. Besuche danach im Spiel einen darin erwähnten Ort, Menschen oder Gegenstand.",
+          "Starte ein Spiel mit Kodex, Journal oder Archiv und lies **drei zusammengehörige Einträge**. Suche danach im Spiel einen Ort, eine Person oder einen Gegenstand auf, der darin erwähnt wird.",
         gameObjective:
-          "\u00D6ffne in **{{game}}** den n\u00E4chsten ungelesenen Lore-Eintrag. Folge **einer Person, einem Ort oder Ereignis** durch drei verkn\u00FCpfte Eintr\u00E4ge und h\u00F6re nach dem dritten auf.",
+          "Lies oder höre dir in **{{game}}** drei Dialoge oder Texte zur Spielwelt an. Geh den Hinweisen zu **einer darin erwähnten Person, einem Ort oder einem Ereignis** nach und merke dir einen Zusammenhang.",
       },
     },
   },
@@ -128,7 +128,7 @@ export const curiousQuests = defineMoodQuests("curious", [
       de: {
         name: "Entwicklerkommentar",
         objective:
-          "Nimm ein **Spiel mit Entwicklerkommentar und wiederholbaren Leveln**. Schalte den Kommentar ein, starte das erste Level mit ungehörten Markierungen, löse alle aus und **beende das Level mit aktivem Kommentar**.",
+          "Wähle ein **Spiel mit Entwicklerkommentar und wiederholbaren Leveln**. Schalte den Kommentar ein und starte das erste Level, in dem du noch nicht alle Kommentare gehört hast. Aktiviere dort jede Kommentarstelle und **beende das Level mit eingeschaltetem Kommentar**.",
       },
     },
   },
@@ -146,7 +146,7 @@ export const curiousQuests = defineMoodQuests("curious", [
       de: {
         name: "Übersprungene Lektion",
         objective:
-          "Starte ein vertrautes **Strategie- oder Simulationsspiel mit optionalen Fortgeschrittenen-Tutorials**. Nimm die erste offene Lektion, behalte alle Vorgaben und **spiele sie bis zum Erfolgsbildschirm**.",
+          "Starte ein vertrautes **Strategie- oder Simulationsspiel mit optionalen Tutorials für Fortgeschrittene**. Nimm die erste noch nicht abgeschlossene Lektion, behalte alle Voreinstellungen und **spiele sie bis zum Erfolgsbildschirm**.",
       },
     },
   },
@@ -164,7 +164,7 @@ export const curiousQuests = defineMoodQuests("curious", [
       de: {
         name: "Aus dem Workshop",
         objective:
-          "Starte ein **Spiel mit eingebautem Mod-Workshop und direktem Start**. Installiere den obersten vorgestellten Mod, den du noch nicht kennst, starte mit den Vorgaben und **beende sein erstes Level oder Ziel**.",
+          "Starte ein **Spiel mit eingebautem Mod-Workshop und direkter Startfunktion**. Installiere die erste empfohlene Mod, die du noch nicht kennst, starte sie mit den Voreinstellungen und **beende ihr erstes Level oder Ziel**.",
       },
     },
   },
@@ -182,7 +182,7 @@ export const curiousQuests = defineMoodQuests("curious", [
       de: {
         name: "Eine Variable",
         objective:
-          "Nimm eine **Simulation mit zurücksetzbarem Szenario, Zahlenwerten und Ergebnis**. Starte mit den Vorgaben, verdopple danach den ersten Wert, der sich verdoppeln lässt, starte erneut und **vergleiche beide Ergebnisse**.",
+          "Wähle eine **Simulation mit wiederholbarem Szenario, einstellbaren Zahlenwerten und Ergebnisanzeige**. Lass das Szenario einmal mit den Voreinstellungen laufen. Verdopple dann den ersten Wert, bei dem das möglich ist, starte erneut und **vergleiche beide Ergebnisse**.",
       },
     },
   },

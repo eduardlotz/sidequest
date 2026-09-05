@@ -17,11 +17,11 @@ export const connectQuests = defineMoodQuests("connect", [
           "In **{{game}}** multiplayer, choose one class and stay with it for **one full round**. Complete five actions tied to that class before the result screen.",
       },
       de: {
-        name: "Klassendienst",
+        name: "Bei einer Klasse bleiben",
         objective:
-          "Wähle im Battlefield-Multiplayer eine Klasse und bleibe **eine vollständige Runde** bei ihr. Erledige vor dem Ergebnisbildschirm fünf Aktionen, die zu dieser Klasse gehören.",
+          "Wähle im Battlefield-Multiplayer eine Klasse und spiele sie **eine ganze Runde lang**. Nutze ihre Fähigkeiten oder Ausrüstung vor Rundenende für fünf passende Aktionen.",
         gameObjective:
-          "Wähle im Multiplayer von **{{game}}** eine Klasse und bleibe **eine vollständige Runde** bei ihr. Erledige vor dem Ergebnisbildschirm fünf Aktionen, die zu dieser Klasse gehören.",
+          "Wähle im Multiplayer von **{{game}}** eine Klasse und spiele sie **eine ganze Runde lang**. Nutze ihre Fähigkeiten oder Ausrüstung vor Rundenende für fünf passende Aktionen.",
       },
     },
   },
@@ -37,14 +37,14 @@ export const connectQuests = defineMoodQuests("connect", [
         objective:
           "Invite someone you have not played with recently to a game you both know. Complete **three rounds or one co-op mission** together before choosing another mode.",
         gameObjective:
-          "Invite someone you have not played with recently to **{{game}}**. Complete **three rounds or one co-op mission** together before changing modes.",
+          "Invite someone you have not played with recently to **{{game}}**. Work on **one shared goal for fifteen minutes** before choosing another activity.",
       },
       de: {
-        name: "Co-op-Check-in",
+        name: "Wieder zusammen spielen",
         objective:
-          "Lade jemanden, mit dem du lange nicht gespielt hast, in ein vertrautes Spiel ein. Beendet zusammen **drei Runden oder eine Co-op-Mission**, bevor ihr den Modus wechselt.",
+          "Lade jemanden, mit dem du länger nicht gespielt hast, zu einem Spiel ein, das ihr beide kennt. Beendet zusammen **drei Runden oder eine Koop-Mission**, bevor ihr den Modus wechselt.",
         gameObjective:
-          "Lade jemanden, mit dem du lange nicht gespielt hast, zu **{{game}}** ein. Beendet zusammen **drei Runden oder eine Co-op-Mission**, bevor ihr den Modus wechselt.",
+          "Lade jemanden, mit dem du länger nicht gespielt hast, zu **{{game}}** ein. Arbeitet **fünfzehn Minuten an einem gemeinsamen Ziel**, bevor ihr etwas anderes auswählt.",
       },
     },
   },
@@ -60,14 +60,14 @@ export const connectQuests = defineMoodQuests("connect", [
         objective:
           "Open an online game where players can assist each other. Help **one unfamiliar player** finish a fight, delivery, puzzle, or objective, and stay until their result is confirmed.",
         gameObjective:
-          "In **{{game}}**, help **one unfamiliar player** finish a fight, delivery, puzzle, or objective. Stay until their result is confirmed.",
+          "In **{{game}}**, help **another player** finish a fight, delivery, puzzle, or small goal. Help someone new if you can; a familiar teammate works too.",
       },
       de: {
         name: "Hilf jemandem",
         objective:
-          "Öffne ein Onlinespiel, in dem Spielende einander helfen können. Hilf **einer unbekannten Person** bei Kampf, Lieferung, Rätsel oder Ziel und bleib, bis ihr Ergebnis bestätigt ist.",
+          "Starte ein Onlinespiel, in dem ihr einander helfen könnt. Hilf **jemandem, den du noch nicht kennst**, einen Kampf, eine Lieferung, ein Rätsel oder ein Ziel abzuschließen. Bleib dabei, bis es geschafft ist.",
         gameObjective:
-          "Hilf in **{{game}}** **einer unbekannten Person** bei Kampf, Lieferung, R\u00E4tsel oder Ziel und bleib, bis ihr Ergebnis best\u00E4tigt ist.",
+          "Hilf in **{{game}}** **einer anderen Person**, einen Kampf, eine Lieferung, ein Rätsel oder ein kleines Ziel abzuschließen. Unterstütze möglichst jemanden, den du noch nicht kennst; jemand aus deinem Team geht auch.",
       },
     },
   },
@@ -85,7 +85,7 @@ export const connectQuests = defineMoodQuests("connect", [
       de: {
         name: "Controller weitergeben",
         objective:
-          "Nimm ein lokales Spiel mit kurzen Runden. Spielt ein **Best-of-three** und gebt den Controller nach jeder Runde weiter, unabhängig vom Ergebnis.",
+          "Wähle ein Spiel mit kurzen Runden, das ihr vor Ort spielen könnt. Spiel mit jemandem neben dir ein **Best-of-three** und gebt den Controller nach jeder Runde weiter, egal wie sie ausgeht.",
       },
     },
   },
@@ -103,13 +103,15 @@ export const connectQuests = defineMoodQuests("connect", [
       de: {
         name: "Ein guter Tausch",
         objective:
-          "Öffne ein Spiel, in dem Gegenstände getauscht werden können. Gib oder tausche **einen nützlichen hergestellten, übrigen oder doppelten Gegenstand** und warte, bis er angenommen wird.",
+          "Starte ein Spiel, in dem ihr Gegenstände untereinander tauschen könnt. Verschenke oder tausche **einen nützlichen Gegenstand, den du hergestellt hast, übrighast oder doppelt besitzt**. Warte, bis die andere Person ihn angenommen hat.",
       },
     },
   },
   {
     id: "support-round",
-    customGameCompatibility: { capabilityIds: ["online-teamplay"] },
+    customGameCompatibility: {
+      capabilityIds: ["online-teamplay", "rounds-or-matches"],
+    },
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 20,
     genres: ["Team", "Competitive"],
@@ -119,20 +121,22 @@ export const connectQuests = defineMoodQuests("connect", [
         objective:
           "Choose a team game with a support role and play **one complete match** in it. Create **five assists, heals, saves, or team opportunities** instead of chasing the final hit.",
         gameObjective:
-          "In **{{game}}**, choose a support-focused role for one full round. Help teammates **five times** and stay in that role until the result screen.",
+          "In **{{game}}**, choose one way to support your team for a full round. Help teammates **five times** and stay until the round ends.",
       },
       de: {
         name: "Support-Runde",
         objective:
-          "Nimm ein Teamspiel mit Support-Rolle und spiele darin **ein vollständiges Match**. Erzeuge **fünf Assists, Heilungen, Rettungen oder Teamchancen**, statt dem letzten Treffer nachzujagen.",
+          "Starte ein Teamspiel mit einer Support-Rolle und spiele damit **ein ganzes Match**. Unterstütze dein Team mit **fünf Assists, Heilungen, Rettungen oder herausgespielten Chancen**, statt selbst den letzten Treffer landen zu wollen.",
         gameObjective:
-          "W\u00E4hle in **{{game}}** f\u00FCr eine ganze Runde eine unterst\u00FCtzende Rolle. Hilf deinem Team **f\u00FCnfmal** und bleib bis zum Ergebnisbildschirm in dieser Rolle.",
+          "Entscheide in **{{game}}**, wie du dein Team eine ganze Runde lang unterstützen möchtest. Hilf deinen Teammitgliedern **fünfmal** und bleib bis zum Rundenende.",
       },
     },
   },
   {
     id: "old-rival",
-    customGameCompatibility: { capabilityIds: ["online-teamplay", "rounds-or-matches"] },
+    customGameCompatibility: {
+      capabilityIds: ["online-teamplay", "rounds-or-matches"],
+    },
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 25,
     genres: ["Multiplayer", "Nostalgic"],
@@ -142,14 +146,14 @@ export const connectQuests = defineMoodQuests("connect", [
         objective:
           "Open a game you used to play against a friend and invite that same person if you can. Play **one full match or three short rounds** with the rules you used back then.",
         gameObjective:
-          "Invite a familiar rival to **{{game}}** and play a **best-of-three** in the same mode. Finish the deciding round even if one player wins the first two.",
+          "Invite a familiar rival to **{{game}}** and play **three complete rounds** in the same mode. Keep the settings the same for all three.",
       },
       de: {
         name: "Alte Rivalität",
         objective:
-          "Öffne ein Spiel, das du früher gegen eine befreundete Person gespielt hast, und lade sie wenn möglich ein. Spielt **ein ganzes Match oder drei kurze Runden** nach euren damaligen Regeln.",
+          "Starte ein Spiel, in dem du früher gegen jemanden aus deinem Freundeskreis angetreten bist. Lade diese Person möglichst wieder ein und spielt **ein ganzes Match oder drei kurze Runden** nach euren damaligen Regeln.",
         gameObjective:
-          "Lade einen vertrauten Rivalen zu **{{game}}** ein und spielt ein **Best-of-three** im selben Modus. Beendet die Entscheidungsrunde auch dann, wenn jemand die ersten beiden gewinnt.",
+          "Lade jemanden, gegen den du schon öfter gespielt hast, zu **{{game}}** ein. Spielt **drei ganze Runden** im selben Modus und mit denselben Einstellungen.",
       },
     },
   },
@@ -201,9 +205,9 @@ export const connectQuests = defineMoodQuests("connect", [
           "Open a **public co-op game with a ping system** and queue for the first available mission. Mark the first three enemies or resources your team approaches and **stay until the mission ends**.",
       },
       de: {
-        name: "Teamzeichen",
+        name: "Zeig es dem Team",
         objective:
-          "Starte ein **öffentliches Co-op-Spiel mit Ping-System** und wähle die erste verfügbare Mission. Markiere die ersten drei Gegner oder Ressourcen, denen sich dein Team nähert, und **bleib bis zum Missionsende**.",
+          "Starte ein **Koop-Spiel mit öffentlichen Partien und Ping-System** und melde dich für die erste verfügbare Mission an. Markiere die ersten drei Gegner oder Ressourcen, denen sich dein Team nähert, und **bleib bis zum Missionsende**.",
       },
     },
   },
@@ -239,7 +243,7 @@ export const connectQuests = defineMoodQuests("connect", [
       de: {
         name: "Auf der Tribüne",
         objective:
-          "Nimm ein **Onlinespiel mit öffentlichen Matches zum Zuschauen und eingebauten Reaktionen**. Sieh das erste verfügbare Match bis zum Ergebnis an und **schick danach einer Person eine positive Reaktion**.",
+          "Wähle ein **Onlinespiel, in dem du öffentlichen Matches zuschauen und Reaktionen verschicken kannst**. Sieh dir das erste verfügbare Match von Anfang bis Ende an und **schicke danach einer Person eine positive Reaktion**.",
       },
     },
   },

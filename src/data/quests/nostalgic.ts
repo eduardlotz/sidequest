@@ -15,7 +15,7 @@ export const nostalgicQuests = defineMoodQuests("nostalgic", [
       de: {
         name: "Kindheitsspielstand",
         objective:
-          "Öffne ein Spiel, das du als Kind oft gespielt hast, und setze einen noch erreichbaren Spielstand fort. Erreiche **einen neuen Speicherpunkt**, ohne den nächsten Schritt nachzuschlagen.",
+          "Starte ein Spiel, das du als Kind oft gespielt hast, und lade einen Spielstand, den du noch hast. Erreiche **einen neuen Speicherpunkt**, ohne nachzuschlagen, wie es weitergeht.",
       },
     },
   },
@@ -33,7 +33,7 @@ export const nostalgicQuests = defineMoodQuests("nostalgic", [
       de: {
         name: "Erste Konsole",
         objective:
-          "Nimm ein Spiel von der frühesten Konsole oder dem ersten Gerät, an das du dich erinnerst. Starte von vorn und beende **das erste Level, Rennen oder Match**.",
+          "Wähle ein Spiel von der ersten Konsole oder dem frühesten Gerät, an das du dich erinnerst. Fang von vorn an und beende **das erste Level, Rennen oder Match**.",
       },
     },
   },
@@ -69,7 +69,7 @@ export const nostalgicQuests = defineMoodQuests("nostalgic", [
       de: {
         name: "Alter Highscore",
         objective:
-          "Kehre zu einem Arcade-Spiel zurück, dessen Punkte du noch verstehst. Spiele **drei vollständige Versuche** und behalte das beste Ergebnis, ohne einen schwachen Lauf neu zu starten.",
+          "Starte wieder ein Arcade-Spiel, dessen Punktewertung du noch kennst. Spiele **drei Versuche bis zum Ende** und merke dir das beste Ergebnis. Starte auch nach Fehlern nicht neu.",
       },
     },
   },
@@ -87,7 +87,7 @@ export const nostalgicQuests = defineMoodQuests("nostalgic", [
       de: {
         name: "Wie im Film",
         objective:
-          "Nimm ein Spiel, das **zur selben Zeit wie ein Film spielt, den du gesehen hast**. Beende eine Szene, Mission oder ein Kapitel, das neben diesen Film passen könnte.",
+          "Wähle ein Spiel, das **in derselben Zeit spielt wie ein Film, den du gesehen hast**. Beende eine Szene, Mission oder ein Kapitel, das auch in diesen Film passen würde.",
       },
     },
   },
@@ -105,7 +105,7 @@ export const nostalgicQuests = defineMoodQuests("nostalgic", [
       de: {
         name: "Wie damals",
         objective:
-          "Öffne ein Spiel, das du mit einer bestimmten Person verbindest, auch wenn du heute allein spielst. Stelle **einen damaligen Modus, eine Karte oder Regel** nach und beende eine Runde.",
+          "Starte ein Spiel, das du mit einer bestimmten Person verbindest, auch wenn du heute allein spielst. Wähle **einen Modus, eine Karte oder eine Regel von damals** und spiele damit eine Runde bis zum Ende.",
       },
     },
   },
@@ -159,7 +159,7 @@ export const nostalgicQuests = defineMoodQuests("nostalgic", [
       de: {
         name: "Alter Main",
         objective:
-          "Starte ein früher oft gespieltes **Spiel mit Figuren-, Team- oder Fahrzeugauswahl** und nimm deine damalige Wahl. Beende **drei Runden ohne Wechsel**.",
+          "Starte ein früher oft gespieltes **Spiel mit Charakter-, Team- oder Fahrzeugauswahl**. Nimm die Figur, das Team oder das Fahrzeug, das du damals gewählt hast, und beende **drei Runden, ohne zu wechseln**.",
       },
     },
   },

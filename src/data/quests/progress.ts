@@ -13,14 +13,14 @@ export const progressQuests = defineMoodQuests("progress", [
         objective:
           "Open an unfinished story save and continue the goal already in front of you. Reach the **next checkpoint or save point**, save, and stop there.",
         gameObjective:
-          "In **{{game}}**, continue the goal already in front of you. Reach the **next checkpoint or save point**, save, and stop there.",
+          "In **{{game}}**, continue the mission or level already in front of you. Reach the **next checkpoint or completed objective**, then stop at a safe break.",
       },
       de: {
         name: "Nächster Speicherpunkt",
         objective:
-          "Öffne einen unfertigen Story-Spielstand und verfolge das Ziel direkt vor dir. Erreiche den **nächsten Kontroll- oder Speicherpunkt**, speichere und höre dort auf.",
+          "Setze einen noch nicht beendeten Story-Spielstand fort und folge dem aktuellen Ziel. Erreiche den **nächsten Kontroll- oder Speicherpunkt**, speichere und hör dort auf.",
         gameObjective:
-          "Verfolge in **{{game}}** das Ziel direkt vor dir. Erreiche den **n\u00E4chsten Kontroll- oder Speicherpunkt**, speichere und h\u00F6re dort auf.",
+          "Spiele in **{{game}}** die aktuelle Mission oder das Level weiter. Hör an einer sicheren Stelle auf, sobald du **den nächsten Kontrollpunkt erreicht oder ein Ziel geschafft hast**.",
       },
     },
   },
@@ -38,7 +38,7 @@ export const progressQuests = defineMoodQuests("progress", [
       de: {
         name: "Zwei Level weiter",
         objective:
-          "Nimm ein Spiel mit kurzen einzelnen Abschnitten und spiele an deiner aktuellen Stelle weiter. Beende die **nächsten zwei Level**, ohne ein altes für mehr Punkte zu wiederholen.",
+          "Wähle ein Spiel mit kurzen, einzelnen Leveln und spiele an deiner aktuellen Stelle weiter. Beende die **nächsten zwei Level**, ohne ein früheres für mehr Punkte zu wiederholen.",
       },
     },
   },
@@ -72,14 +72,14 @@ export const progressQuests = defineMoodQuests("progress", [
         objective:
           "Open a game where your next useful upgrade is already visible. Earn the **remaining currency or materials**, buy **one upgrade**, and test it once.",
         gameObjective:
-          "In **{{game}}**, choose your next visible useful upgrade. Earn the **remaining currency or materials**, buy **one upgrade**, and test it once.",
+          "In **{{game}}**, improve one equipment slot using **an item or upgrade you can obtain now**. Equip it and try it for five minutes.",
       },
       de: {
         name: "Zeit fürs Upgrade",
         objective:
-          "Öffne ein Spiel, in dem dein nächstes sinnvolles Upgrade schon sichtbar ist. Verdiene die **fehlende Währung oder Materialien**, kaufe **ein Upgrade** und teste es einmal.",
+          "Starte ein Spiel, in dem du dein nächstes sinnvolles Upgrade schon sehen kannst. Besorge die **fehlende Währung oder Materialien**, kaufe **ein Upgrade** und probiere es einmal aus.",
         gameObjective:
-          "W\u00E4hle in **{{game}}** dein n\u00E4chstes sichtbares sinnvolles Upgrade. Verdiene die **fehlende W\u00E4hrung oder Materialien**, kaufe **ein Upgrade** und teste es einmal.",
+          "Verbessere in **{{game}}** deine Ausrüstung mit **einem Gegenstand oder Upgrade, das dir gerade zur Verfügung steht**. Rüste ihn aus oder wende das Upgrade an und probiere die Änderung fünf Minuten lang aus.",
       },
     },
   },
@@ -100,9 +100,9 @@ export const progressQuests = defineMoodQuests("progress", [
       de: {
         name: "Boss-Training",
         objective:
-          "Kehre zu einem Boss zurück, der deinen Fortschritt gestoppt hat. Gib ihm mit demselben Setup **drei ehrliche Versuche**; höre nach einem Sieg oder nach Versuch drei mit einer Erkenntnis auf.",
+          "Kehre zu einem Boss zurück, an dem du bisher nicht vorbeikommst. Versuche mit demselben Setup **dreimal, ihn zu besiegen**. Hör nach dem Sieg oder dem dritten Versuch auf und merke dir, was du gelernt hast.",
         gameObjective:
-          "Kehre in **{{game}}** zu einem Boss zur\u00FCck, der deinen Fortschritt gestoppt hat. Gib ihm mit demselben Setup **drei ehrliche Versuche** und h\u00F6re nach einem Sieg fr\u00FCher auf.",
+          "Kehre in **{{game}}** zu einem Boss zurück, an dem du bisher nicht vorbeikommst. Versuche mit demselben Setup **bis zu dreimal, ihn zu besiegen**, und hör nach einem Sieg sofort auf.",
       },
     },
   },
@@ -120,7 +120,7 @@ export const progressQuests = defineMoodQuests("progress", [
       de: {
         name: "Ältestes offenes Spiel",
         objective:
-          "Nimm das **älteste unfertige Spiel**, das noch installiert ist. Spiele den aktuellen Stand bis zum Ende **einer Mission, eines Kapitels oder Levels** und speichere, bevor du etwas anderes öffnest.",
+          "Starte das **älteste Spiel, das du noch nicht beendet hast** und das noch installiert ist. Spiele an deinem aktuellen Spielstand **eine Mission, ein Kapitel oder ein Level zu Ende**. Speichere, bevor du etwas anderes startest.",
       },
     },
   },
@@ -138,7 +138,7 @@ export const progressQuests = defineMoodQuests("progress", [
       de: {
         name: "Ein Level höher",
         objective:
-          "Starte ein **Spiel mit mindestens zu drei Vierteln gefüllter Levelanzeige**. Folge dem bereits markierten Ziel, bis die Figur **ein Level aufsteigt**, verteile einen möglichen Punkt und speichere.",
+          "Starte ein **Spiel, in dem der Erfahrungsbalken schon mindestens zu drei Vierteln gefüllt ist**. Folge dem markierten Ziel, bis deine Figur **ein Level aufsteigt**. Vergib einen erhaltenen Fähigkeitspunkt, falls es einen gibt, und speichere.",
       },
     },
   },
@@ -156,7 +156,7 @@ export const progressQuests = defineMoodQuests("progress", [
       de: {
         name: "Nächste Freischaltung",
         objective:
-          "Nimm ein **Spiel, in dem eine Figur oder ein Fahrzeug nur eine Herausforderung vor der Freischaltung steht**. Erfülle die Bedingung, **schalte die Auswahl frei** und nutze sie in einer Runde oder einem Rennen.",
+          "Wähle ein **Spiel, in dem dir noch eine Herausforderung fehlt, um eine Figur oder ein Fahrzeug freizuschalten**. Erfülle die angezeigte Bedingung, **hole dir die Freischaltung** und nutze sie in einer Runde oder einem Rennen.",
       },
     },
   },
@@ -174,7 +174,7 @@ export const progressQuests = defineMoodQuests("progress", [
       de: {
         name: "Letztes Teil",
         objective:
-          "Starte ein **Spiel mit einer Sammlung, der genau ein markierter Gegenstand fehlt**. Verfolge ihn, sammle ihn ein und hör auf, sobald **das vollständige Set oder seine Belohnung bestätigt wird**.",
+          "Starte ein **Spiel, in dem deiner Sammlung noch genau ein markierter Gegenstand fehlt**. Folge seiner Markierung und sammle ihn ein. Hör auf, sobald **das Set als vollständig angezeigt wird oder du seine Belohnung erhältst**.",
       },
     },
   },
@@ -192,7 +192,7 @@ export const progressQuests = defineMoodQuests("progress", [
       de: {
         name: "Außenposten erledigt",
         objective:
-          "Setze einen **Open-World-Spielstand mit offenen Außenposten auf der Karte** fort. Geh zum nächsten, beende den nötigen Kampf und hör auf, sobald **das Kartensymbol als erledigt erscheint**.",
+          "Setze ein **Open-World-Spiel mit noch nicht eroberten Außenposten auf der Karte** fort. Geh zum nächsten und schaffe den Kampf. Hör auf, sobald **der Außenposten auf der Karte als erledigt markiert ist**.",
       },
     },
   },
@@ -210,7 +210,7 @@ export const progressQuests = defineMoodQuests("progress", [
       de: {
         name: "Forschung abschließen",
         objective:
-          "Starte einen **Strategie- oder Simulationsspielstand mit laufender Forschung über 50 Prozent**. Ändere keine Prioritäten, spiel bis **zum Forschungsabschluss** und speichere, bevor du ein neues Projekt wählst.",
+          "Setze einen Spielstand in einem **Strategie- oder Simulationsspiel fort, in dem eine Forschung schon zu mehr als 50 Prozent fertig ist**. Ändere keine Prioritäten und spiele **bis die Forschung abgeschlossen ist**. Speichere, bevor du ein neues Projekt wählst.",
       },
     },
   },

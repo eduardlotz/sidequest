@@ -1,0 +1,44 @@
+.label {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 5px;
+}
+.trigger {
+  display: inline-grid;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+  border-radius: 50%;
+  place-items: center;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: help;
+}
+.trigger svg {
+  width: 15px;
+  height: 15px;
+}
+.trigger:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.bubble {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 5px);
+  left: 0;
+  width: min(100%, 320px);
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  box-shadow: var(--raised-shadow);
+  color: var(--color-text);
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: normal;
+}

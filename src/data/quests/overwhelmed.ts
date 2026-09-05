@@ -15,7 +15,7 @@ export const overwhelmedQuests = defineMoodQuests("overwhelmed", [
       de: {
         name: "Erstes Symbol",
         objective:
-          "Öffne dein zuletzt gespieltes Spiel und ignoriere die ganze Karte bis auf das **nächste sichtbare Zielsymbol**. Erreiche es, beende die dort startende Aufgabe und höre auf.",
+          "Starte dein zuletzt gespieltes Spiel und beachte auf der Karte nur das **nächste sichtbare Zielsymbol**. Geh dorthin, erledige die Aufgabe vor Ort und hör danach auf.",
       },
     },
   },
@@ -31,9 +31,9 @@ export const overwhelmedQuests = defineMoodQuests("overwhelmed", [
           "Choose a familiar game that can save almost anywhere. Do **one small action you can finish in ten minutes** and save immediately when it is done.",
       },
       de: {
-        name: "Zehn-Minuten-Spielstand",
+        name: "Kurz spielen und speichern",
         objective:
-          "Nimm ein vertrautes Spiel, das fast überall speichern kann. Erledige **eine kleine Aufgabe für höchstens zehn Minuten** und speichere direkt danach.",
+          "Wähle ein vertrautes Spiel, in dem du fast überall speichern kannst. Erledige **eine kleine Aufgabe, die du in zehn Minuten schaffen kannst**, und speichere direkt danach.",
       },
     },
   },
@@ -51,7 +51,7 @@ export const overwhelmedQuests = defineMoodQuests("overwhelmed", [
       de: {
         name: "Eine Ecke",
         objective:
-          "Öffne ein Bau- oder Lebensspiel mit einem unordentlichen Bereich. Wähle **eine Ecke, die auf den Bildschirm passt**, bewege oder entferne **zehn Dinge** und lass alles andere unberührt.",
+          "Starte ein Bau- oder Lebenssimulationsspiel mit einem unordentlichen Bereich. Nimm dir **eine Ecke vor, die auf den Bildschirm passt**. Versetze oder entferne dort **zehn Gegenstände** und lass den Rest unverändert.",
       },
     },
   },
@@ -90,14 +90,14 @@ export const overwhelmedQuests = defineMoodQuests("overwhelmed", [
         objective:
           "Open a save that already has a quest tracked. Follow **only that quest**, ignore optional loot and new markers, and stop when the game marks it complete.",
         gameObjective:
-          "In **{{game}}**, follow the objective that is already tracked. Complete **only that objective**, save, and stop before selecting another.",
+          "In **{{game}}**, choose one objective in the current mission or level. Complete **only that objective** before picking another.",
       },
       de: {
-        name: "Eine verfolgte Quest",
+        name: "Nur die markierte Quest",
         objective:
-          "Öffne einen Spielstand mit einer bereits verfolgten Aufgabe. Folge **nur dieser Quest**, ignoriere optionale Beute und neue Marker und höre auf, wenn das Spiel sie abschließt.",
+          "Setze einen Spielstand mit einer bereits markierten Quest fort. Folge **nur dieser Quest**, lass optionale Beute und neue Marker liegen und hör auf, sobald die Quest als abgeschlossen angezeigt wird.",
         gameObjective:
-          "Folge in **{{game}}** dem bereits markierten Ziel. Schlie\u00DFe **nur dieses Ziel** ab, speichere und h\u00F6re auf, bevor du ein neues ausw\u00E4hlst.",
+          "Wähle in **{{game}}** ein Ziel in der aktuellen Mission oder im Level. Erledige **nur dieses Ziel**, bevor du ein weiteres auswählst.",
       },
     },
   },
@@ -115,7 +115,7 @@ export const overwhelmedQuests = defineMoodQuests("overwhelmed", [
       de: {
         name: "Zurück ins Tutorial",
         objective:
-          "Nimm ein Spiel, das du verstehst, aber lange nicht geöffnet hast. Wiederhole **sein Tutorial oder erstes Level** vollständig und triff heute keine weitere Spielentscheidung.",
+          "Wähle ein Spiel, das du kennst, aber lange nicht gestartet hast. Wiederhole **das Tutorial oder das erste Level** vollständig und hör danach für heute auf.",
       },
     },
   },
@@ -169,7 +169,7 @@ export const overwhelmedQuests = defineMoodQuests("overwhelmed", [
       de: {
         name: "Drei Nachrichten",
         objective:
-          "Nimm ein **Spiel mit mindestens drei ungelesenen In-Game-Nachrichten in einer Liste**. Lies die obersten drei der Reihe nach, nimm vorhandene Anhänge an und hör auf, sobald **drei ungelesene Nachrichten verschwunden sind**.",
+          "Wähle ein **Spiel mit mindestens drei ungelesenen Nachrichten im Spielpostfach**. Lies die obersten drei der Reihe nach und hol enthaltene Belohnungen ab. Hör auf, sobald **die Zahl ungelesener Nachrichten um drei gesunken ist**.",
       },
     },
   },
@@ -187,7 +187,7 @@ export const overwhelmedQuests = defineMoodQuests("overwhelmed", [
       de: {
         name: "Automatisch ausgerüstet",
         objective:
-          "Starte dein zuletzt gespieltes **Spiel mit Ausrüstungsempfehlung und kurzen Kämpfen**. Nutze einmal die automatische Ausrüstung, geh zum nächsten markierten Kampf und **beende ihn, ohne das Inventar erneut zu öffnen**.",
+          "Starte dein zuletzt gespieltes **Spiel mit automatischer Ausrüstungswahl und kurzen Kämpfen**. Lass dich einmal automatisch ausrüsten, geh zum nächsten markierten Kampf und **beende ihn, ohne das Inventar erneut zu öffnen**.",
       },
     },
   },

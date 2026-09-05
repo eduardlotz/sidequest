@@ -47,6 +47,18 @@ export const GAME_ICON_IDS = [
   "sports",
   "strategy",
   "survival",
+  "boss",
+  "stealth",
+  "equipment",
+  "crafting",
+  "fishing",
+  "cooking",
+  "farming",
+  "customization",
+  "photography",
+  "local-co-op",
+  "collectibles",
+  "lore",
 ] as const;
 
 export type GameIconId = (typeof GAME_ICON_IDS)[number];
@@ -65,6 +77,7 @@ export type CuratedGameDefinition = {
   id: string;
   name: string;
   artwork: string;
+  isSeries?: boolean;
   compatibleQuestIds: readonly string[];
   exclusiveQuestIds: readonly string[];
 };

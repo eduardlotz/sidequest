@@ -77,9 +77,8 @@ function createQuestState(
       const expired = moodSelectionExpired(state.moodSelectedAt, now);
       const libraryRevision = options.getLibraryRevision();
       const libraryChanged = state.offerLibraryRevision !== libraryRevision;
-      const offerSetsByMoodId = expired || libraryChanged
-        ? {}
-        : { ...state.offerSetsByMoodId };
+      const offerSetsByMoodId =
+        expired || libraryChanged ? {} : { ...state.offerSetsByMoodId };
       const cachedOffers = offerSetsByMoodId[moodId];
       const offeredQuests =
         cachedOffers?.length === QUEST_OFFER_COUNT
@@ -147,7 +146,8 @@ function createQuestState(
         state.currentSession ||
         !state.selectedMoodId ||
         moodSelectionExpired(state.moodSelectedAt, now) ||
-        state.profile.points < NEW_CARDS_COST
+        (state.profile.points < NEW_CARDS_COST &&
+          state.profile.debugMode === false)
       ) {
         if (
           !state.currentSession &&
@@ -163,7 +163,7 @@ function createQuestState(
         state.selectedMoodId,
         options.getLibraryGames(),
         options.random,
-        new Set(state.offeredQuests.map((offer) => offer.questId)),
+        new Set(state.offeredQuests.map((offer) => offer.id)),
       );
       if (
         offeredQuests.length !== QUEST_OFFER_COUNT ||
@@ -175,7 +175,9 @@ function createQuestState(
       set({
         profile: {
           ...state.profile,
-          points: state.profile.points - NEW_CARDS_COST,
+          points: state.profile.debugMode
+            ? state.profile.points
+            : state.profile.points - NEW_CARDS_COST,
         },
         offeredQuests,
         offerSetsByMoodId: {
@@ -275,8 +277,7 @@ function createQuestState(
             ...session,
             pausedAt: null,
             pausedTotalMs:
-              session.pausedTotalMs +
-              Math.max(0, resumedAt - session.pausedAt),
+              session.pausedTotalMs + Math.max(0, resumedAt - session.pausedAt),
           },
         };
       });
@@ -326,10 +327,7 @@ function createQuestState(
             currentSession: null,
             stats: {
               ...state.stats,
-              cancelledQuestCount: safeAdd(
-                state.stats.cancelledQuestCount,
-                1,
-              ),
+              cancelledQuestCount: safeAdd(state.stats.cancelledQuestCount, 1),
             },
           },
           options.now(),
@@ -341,8 +339,7 @@ function createQuestState(
       const state = get();
       if (
         state.profile.points < RED_ROPE_BUNDLE_COST ||
-        state.profile.redRopes >
-          Number.MAX_SAFE_INTEGER - RED_ROPE_BUNDLE_SIZE
+        state.profile.redRopes > Number.MAX_SAFE_INTEGER - RED_ROPE_BUNDLE_SIZE
       ) {
         return false;
       }
@@ -367,11 +364,7 @@ function createQuestState(
     completeQuest: () => {
       const state = get();
       const session = state.currentSession;
-      if (
-        !session ||
-        session.startedAt === null ||
-        session.pausedAt === null
-      ) {
+      if (!session || session.startedAt === null || session.pausedAt === null) {
         return null;
       }
 
@@ -442,7 +435,8 @@ export function createQuestStore(
       storeOptions.getLibraryGames ??
       (() => libraryGamesFromState(libraryStore.getState())),
     getLibraryRevision:
-      storeOptions.getLibraryRevision ?? (() => libraryStore.getState().revision),
+      storeOptions.getLibraryRevision ??
+      (() => libraryStore.getState().revision),
   };
   const stateCreator = createQuestState(options);
   if (!storage) return createStore<QuestStore>()(stateCreator);

@@ -13,14 +13,14 @@ export const relaxQuests = defineMoodQuests("relax", [
         objective:
           "Open a game with a place you enjoy and take **a quiet walk** through it. Reach **one memorable landmark** without using fast travel.",
         gameObjective:
-          "In **{{game}}**, take a quiet walk through a place you enjoy. Reach **one memorable landmark** without using fast travel.",
+          "In **{{game}}**, take a quiet detour through a place you enjoy. Reach **one memorable landmark** without using fast travel.",
       },
       de: {
         name: "Ein kleiner Spaziergang",
         objective:
-          "Öffne ein Spiel mit einem Ort, den du magst, und mach dort **einen ruhigen Spaziergang**. Erreiche **einen besonderen Orientierungspunkt**, ohne Schnellreise zu nutzen.",
+          "Starte ein Spiel mit einem Ort, den du magst, und mach dort **einen ruhigen Spaziergang**. Geh ohne Schnellreise bis zu **einer markanten Stelle**.",
         gameObjective:
-          "Mach in **{{game}}** einen ruhigen Spaziergang durch einen Ort, den du magst. Erreiche **einen besonderen Orientierungspunkt**, ohne Schnellreise zu nutzen.",
+          "Mache in **{{game}}** einen ruhigen Abstecher durch einen Ort, den du magst. Erreiche **eine markante Stelle** ohne Schnellreise.",
       },
     },
   },
@@ -38,7 +38,7 @@ export const relaxQuests = defineMoodQuests("relax", [
       de: {
         name: "Weltraumdrift",
         objective:
-          "Öffne ein Spiel mit friedlicher Raumfahrt, setze ohne Schnellreise Kurs auf **die nächste Station** und **docke dort sicher an**.",
+          "Starte ein Spiel, in dem du friedlich durchs All fliegen kannst. Nimm ohne Schnellreise Kurs auf **die nächste Station** und **docke dort sicher an**.",
       },
     },
   },
@@ -59,9 +59,9 @@ export const relaxQuests = defineMoodQuests("relax", [
       de: {
         name: "Angelausflug",
         objective:
-          "Öffne ein Spiel mit Angelmechanik und geh zum nächsten Ort, an dem du die Leine auswerfen kannst. Fange **drei Fische** und höre auf, sobald der dritte sicher verstaut ist.",
+          "Starte ein Spiel, in dem du angeln kannst, und geh zur nächsten Angelstelle. Fange **drei Fische** und hör auf, sobald du den dritten verstaut hast.",
         gameObjective:
-          "Geh in **{{game}}** zum n\u00E4chsten Ort, an dem du die Leine auswerfen kannst. Fange **drei Fische** und h\u00F6re auf, sobald der dritte sicher verstaut ist.",
+          "Geh in **{{game}}** zur nächsten Angelstelle. Fange **drei Fische** und hör auf, sobald du den dritten verstaut hast.",
       },
     },
   },
@@ -97,7 +97,7 @@ export const relaxQuests = defineMoodQuests("relax", [
       de: {
         name: "Drei kleine Rätsel",
         objective:
-          "Öffne ein Rätselspiel mit einzelnen Leveln und wähle den ersten unfertigen Abschnitt. Löse **drei kleine Rätsel** ohne Hinweise und lass das nächste unberührt.",
+          "Starte ein Rätselspiel mit einzelnen Leveln und nimm den ersten noch nicht gelösten Abschnitt. Löse **drei kleine Rätsel** ohne Hinweise und lass das nächste für später liegen.",
       },
     },
   },
@@ -115,7 +115,7 @@ export const relaxQuests = defineMoodQuests("relax", [
       de: {
         name: "Vertrautes Level",
         objective:
-          "Öffne ein Spiel, das du früher gespielt hast, und wähle ein Level, an das du dich gut erinnerst. Beende **dieses eine vertraute Level** von vorn, ohne Sammelobjekte oder Punkte zu jagen.",
+          "Starte ein Spiel, das du früher gespielt hast, und wähle ein Level, an das du dich gut erinnerst. Spiele **dieses eine vertraute Level** von Anfang bis Ende, ohne gezielt Sammelobjekten oder Punkten nachzugehen.",
       },
     },
   },
@@ -156,7 +156,7 @@ export const relaxQuests = defineMoodQuests("relax", [
       de: {
         name: "Eine Station",
         objective:
-          "Starte ein **Spiel, in dem du Bus oder Bahn als Fahrgast nutzen kannst**. Steig an der nächsten Haltestelle ein, fahr genau eine benannte Station mit und **steig dort aus**.",
+          "Starte ein **Spiel, in dem du mit Bus oder Bahn mitfahren kannst**. Steig an der nächsten Haltestelle ein, fahr genau eine Station mit Namen weiter und **steig dort aus**.",
       },
     },
   },
@@ -174,7 +174,7 @@ export const relaxQuests = defineMoodQuests("relax", [
       de: {
         name: "Kleine Pflegerunde",
         objective:
-          "Starte dein zuletzt gespieltes **Spiel mit Tieren und sichtbaren Bedürfnissen**. Nimm das erste Tier in der Liste und fülle **seine am wenigsten gefüllte Anzeige** vollständig auf.",
+          "Starte dein zuletzt gespieltes **Spiel mit Tieren und sichtbaren Bedürfnisanzeigen**. Wähle das erste Tier in der Liste und kümmere dich um **das Bedürfnis mit dem niedrigsten Balken**, bis er ganz gefüllt ist.",
       },
     },
   },
@@ -192,7 +192,7 @@ export const relaxQuests = defineMoodQuests("relax", [
       de: {
         name: "Pause am Lagerfeuer",
         objective:
-          "Starte ein vertrautes **Spiel mit entdeckten Lagern oder Rastplätzen**. Geh ohne Schnellreise und ohne einen Kampf zu beginnen zum nächsten, **ruhe einmal** und hör auf, sobald du wieder steuern kannst.",
+          "Starte ein vertrautes **Spiel, in dem du schon Lager oder Rastplätze entdeckt hast**. Geh ohne Schnellreise zum nächsten und fang unterwegs keinen Kampf an. **Raste einmal** und hör auf, sobald du deine Figur wieder steuern kannst.",
       },
     },
   },

@@ -123,12 +123,7 @@ function offerSetsFromUnknown(
 
   for (const [moodId, offers] of Object.entries(value)) {
     if (!isMoodId(moodId) || !Array.isArray(offers)) continue;
-    offerSets[moodId] = sanitizedOfferSet(
-      moodId,
-      offers,
-      random,
-      libraryGames,
-    );
+    offerSets[moodId] = sanitizedOfferSet(moodId, offers, random, libraryGames);
   }
 
   return offerSets;
@@ -146,24 +141,35 @@ function sanitizedOfferSet(
         return offer ? [offer] : [];
       })
     : [];
-  const uniqueOffers = offeredQuests.filter(
-    (offer, index) =>
-      offeredQuests.findIndex((candidate) => candidate.id === offer.id) === index,
-  );
-  if (uniqueOffers.length < QUEST_OFFER_COUNT) {
-    const generated = generateQuestOffers(
-      moodId,
-      libraryGames,
-      random,
-      new Set(uniqueOffers.map((offer) => offer.questId)),
+  const validOffers = offeredQuests.flatMap((offer) => {
+    if (!offer.game) return [offer];
+    const game = libraryGames.find(
+      (candidate) => candidate.id === offer.game?.id,
     );
-    for (const offer of generated) {
-      if (uniqueOffers.some((candidate) => candidate.questId === offer.questId)) {
-        continue;
-      }
-      uniqueOffers.push(offer);
-      if (uniqueOffers.length === QUEST_OFFER_COUNT) break;
-    }
+    return game?.questIds.includes(offer.questId)
+      ? [createQuestOffer(moodId, offer.questId, game)]
+      : [];
+  });
+  const uniqueOffers = validOffers.filter(
+    (offer, index) =>
+      validOffers.findIndex(
+        (candidate) => candidate.questId === offer.questId,
+      ) === index,
+  );
+  const compatibleIds = new Set(
+    libraryGames
+      .flatMap((game) => game.questIds)
+      .filter((id) => {
+        const quest = QUEST_CORES_BY_ID[id];
+        return quest?.gameBindable && quest.moodIds.includes(moodId);
+      }),
+  );
+  const expectedBoundCount = Math.min(2, compatibleIds.size);
+  if (
+    uniqueOffers.length !== QUEST_OFFER_COUNT ||
+    uniqueOffers.filter((offer) => offer.game).length !== expectedBoundCount
+  ) {
+    return generateQuestOffers(moodId, libraryGames, random);
   }
   return uniqueOffers.slice(0, QUEST_OFFER_COUNT);
 }
@@ -293,7 +299,9 @@ function statsFromUnknown(
       1,
     );
   }
-  for (const [questId, historyCount] of Object.entries(historyCountsByQuestId)) {
+  for (const [questId, historyCount] of Object.entries(
+    historyCountsByQuestId,
+  )) {
     completionCountsByQuestId[questId] = Math.max(
       completionCountsByQuestId[questId] ?? 0,
       historyCount,
@@ -344,7 +352,8 @@ function statsFromUnknown(
       if (!isMoodId(moodId)) continue;
       const completedAt = finiteNumber(storedCompletedAt);
       if (completedAt !== null) {
-        latestCompletionAtByMoodId[moodId] = safeNonNegativeInteger(completedAt);
+        latestCompletionAtByMoodId[moodId] =
+          safeNonNegativeInteger(completedAt);
       }
     }
   }
@@ -367,7 +376,9 @@ function statsFromUnknown(
       safeNonNegativeInteger(storedStats.totalPlayedMs),
       historyDurationMs,
     ),
-    cancelledQuestCount: safeNonNegativeInteger(storedStats.cancelledQuestCount),
+    cancelledQuestCount: safeNonNegativeInteger(
+      storedStats.cancelledQuestCount,
+    ),
     repeatedCompletionCount,
     completionCountsByQuestId,
     completionCountsByMoodId,

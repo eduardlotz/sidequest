@@ -19,9 +19,9 @@ export const challengeQuests = defineMoodQuests("challenge", [
       de: {
         name: "Drei Arten zu kämpfen",
         objective:
-          "Besiege in Crimson Desert **drei Gegnergruppen** mit je einem anderen Hauptansatz: Nahkampf, Fernkampf und danach eine Umgebungs- oder Reittier-Option.",
+          "Besiege in Crimson Desert **drei Gegnergruppen** auf unterschiedliche Weise: die erste im Nahkampf, die zweite mit Fernangriffen und die dritte mithilfe der Umgebung oder vom Reittier aus.",
         gameObjective:
-          "Besiege in **{{game}}** **drei Gegnergruppen** mit je einem anderen Hauptansatz: Nahkampf, Fernkampf und danach eine Umgebungs- oder Reittier-Option.",
+          "Besiege in **{{game}}** **drei Gegnergruppen** auf unterschiedliche Weise: die erste im Nahkampf, die zweite mit Fernangriffen und die dritte mithilfe der Umgebung oder vom Reittier aus.",
       },
     },
   },
@@ -41,11 +41,11 @@ export const challengeQuests = defineMoodQuests("challenge", [
           "In **{{game}}**, finish **one full Conquest match** while helping capture or defend three objectives and completing five team actions such as revives, repairs, or resupplies.",
       },
       de: {
-        name: "Einsatz im Conquest",
+        name: "Einsatz in Conquest",
         objective:
-          "Beende in einem Battlefield mit Conquest **ein vollständiges Match**, hilf bei der Einnahme oder Verteidigung von drei Zielen und erledige fünf Teamaktionen wie Wiederbelebungen, Reparaturen oder Versorgungen.",
+          "Spiele in einem Battlefield mit Conquest **ein Match bis zum Ende**. Hilf dabei, drei Ziele einzunehmen oder zu verteidigen, und unterstütze dein Team fünfmal durch Wiederbeleben, Reparieren oder Nachschub.",
         gameObjective:
-          "Beende in **{{game}}** **ein vollständiges Conquest-Match**, hilf bei der Einnahme oder Verteidigung von drei Zielen und erledige fünf Teamaktionen wie Wiederbelebungen, Reparaturen oder Versorgungen.",
+          "Spiele in **{{game}}** **ein Conquest-Match bis zum Ende**. Hilf dabei, drei Ziele einzunehmen oder zu verteidigen, und unterstütze dein Team fünfmal durch Wiederbeleben, Reparieren oder Nachschub.",
       },
     },
   },
@@ -90,15 +90,17 @@ export const challengeQuests = defineMoodQuests("challenge", [
       de: {
         name: "Drei Siege",
         objective:
-          "Öffne ein kompetitives Spiel mit kurzen Runden. Spiele bis zu **drei Rundensiegen** oder bis **fünf Runden** beendet sind – je nachdem, was zuerst eintritt.",
+          "Starte ein Spiel, in dem du in kurzen Runden gegen andere antrittst. Spiele, bis du **drei Runden gewonnen** oder **fünf Runden beendet** hast – je nachdem, was zuerst passiert.",
         gameObjective:
-          "Spiele in **{{game}}** bis zu **drei Rundensiegen** oder bis **f\u00FCnf Runden** beendet sind \u2013 je nachdem, was zuerst eintritt.",
+          "Spiele in **{{game}}**, bis du **drei Runden gewonnen** oder **fünf Runden beendet** hast – je nachdem, was zuerst passiert.",
       },
     },
   },
   {
     id: "no-healing",
-    customGameCompatibility: { capabilityIds: ["combat", "missions-or-levels"] },
+    customGameCompatibility: {
+      capabilityIds: ["combat", "missions-or-levels"],
+    },
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 20,
     genres: ["Action", "Survival"],
@@ -113,9 +115,9 @@ export const challengeQuests = defineMoodQuests("challenge", [
       de: {
         name: "Ohne Heilung",
         objective:
-          "Nimm ein Actionspiel mit einem bekannten Level oder Kampf. Beende **einen ganzen Abschnitt ohne Heilung**; defensive Fähigkeiten sind erlaubt, Neuladen nach Schaden nicht.",
+          "Starte ein Actionspiel mit einem Level oder Kampf, den du schon kennst. Schaffe **einen ganzen Abschnitt ohne Heilung**. Defensive Fähigkeiten sind erlaubt. Lade keinen Spielstand neu, nachdem du Schaden genommen hast.",
         gameObjective:
-          "Beende in **{{game}}** **einen vertrauten Kampfabschnitt ohne Heilung**. Defensive F\u00E4higkeiten sind erlaubt, Neuladen nach Schaden nicht.",
+          "Schaffe in **{{game}}** **einen bekannten Kampfabschnitt ohne Heilung**. Defensive Fähigkeiten sind erlaubt. Lade keinen Spielstand neu, nachdem du Schaden genommen hast.",
       },
     },
   },
@@ -131,14 +133,14 @@ export const challengeQuests = defineMoodQuests("challenge", [
         objective:
           "Open a game with selectable equipment and equip only its **starter or common gear**. Complete **one mission or match** without switching to a stronger item.",
         gameObjective:
-          "In **{{game}}**, equip only starter or common gear. Complete **one mission or match** without switching to a stronger item.",
+          "In **{{game}}**, equip starter or basic gear you still have access to. Play for **ten minutes without switching to stronger equipment**.",
       },
       de: {
         name: "Startausrüstung",
         objective:
-          "Öffne ein Spiel mit wählbarer Ausrüstung und nutze nur **Start- oder gewöhnliche Ausrüstung**. Beende **eine Mission oder ein Match**, ohne zu einem stärkeren Gegenstand zu wechseln.",
+          "Starte ein Spiel, in dem du deine Ausrüstung wählen kannst, und nutze nur **Startausrüstung oder gewöhnliche Gegenstände**. Beende **eine Mission oder ein Match**, ohne zu stärkerer Ausrüstung zu wechseln.",
         gameObjective:
-          "Nutze in **{{game}}** nur Start- oder gew\u00F6hnliche Ausr\u00FCstung. Beende **eine Mission oder ein Match**, ohne zu einem st\u00E4rkeren Gegenstand zu wechseln.",
+          "Nutze in **{{game}}** Start- oder Basisausrüstung, die dir noch zur Verfügung steht. Spiele **zehn Minuten, ohne zu stärkerer Ausrüstung zu wechseln**.",
       },
     },
   },
@@ -156,7 +158,7 @@ export const challengeQuests = defineMoodQuests("challenge", [
       de: {
         name: "Ein Leben",
         objective:
-          "Starte einen neuen Run in einem Spiel mit wiederholten Versuchen. Räume **ein vollständiges Gebiet mit einem Leben** und ohne Wiederbelebung; die Quest endet beim Erfolg oder der ersten Niederlage.",
+          "Starte einen neuen Run in einem Spiel, in dem du nach einer Niederlage von vorn beginnst. Schaffe **ein ganzes Gebiet mit nur einem Leben**, ohne Wiederbelebung. Die Quest endet, sobald du das Gebiet geschafft hast oder zum ersten Mal besiegt wirst.",
       },
     },
   },
@@ -174,7 +176,7 @@ export const challengeQuests = defineMoodQuests("challenge", [
       de: {
         name: "Drei schnelle Runden",
         objective:
-          "Nimm ein Rennspiel und eine bekannte Strecke. Fahre mit demselben Fahrzeug **drei gezeitete Runden** zu Ende, auch nach Fehlern, und behalte die schnellste saubere Zeit.",
+          "Starte ein Rennspiel und wähle eine bekannte Strecke. Fahre mit demselben Fahrzeug **drei Runden auf Zeit** und bring jede zu Ende, auch nach einem Fehler. Merke dir die beste gültige Rundenzeit.",
       },
     },
   },
@@ -192,7 +194,7 @@ export const challengeQuests = defineMoodQuests("challenge", [
       de: {
         name: "Full-Combo-Versuch",
         objective:
-          "Wähle einen Rhythmus-Abschnitt, den du fast fehlerfrei schaffst. Gib ihm auf demselben Grad **drei Versuche** und spiele nach Fehlern weiter; höre nach der Full Combo oder Versuch drei auf.",
+          "Wähle in einem Rhythmusspiel einen Abschnitt, den du fast fehlerfrei schaffst. Spiele ihn auf derselben Schwierigkeit **bis zu dreimal** und mach nach Fehlern weiter. Hör nach einer Full Combo oder dem dritten Versuch auf.",
       },
     },
   },
@@ -210,7 +212,7 @@ export const challengeQuests = defineMoodQuests("challenge", [
       de: {
         name: "Parierserie",
         objective:
-          "Starte dein letztes **Actionspiel mit parierbaren Gegnerangriffen**. Lass jeden einfachen Gegner angreifen, pariere jeden Schlag und besiege **drei hintereinander**. Bei einem Treffer beginnt die Zählung bei null.",
+          "Starte dein zuletzt gespieltes **Actionspiel, in dem du Gegnerangriffe parieren kannst**. Lass jeden normalen Gegner zuerst angreifen, pariere jeden Schlag und besiege so **drei Gegner hintereinander**. Wirst du getroffen, zählst du wieder von null.",
       },
     },
   },
@@ -228,7 +230,7 @@ export const challengeQuests = defineMoodQuests("challenge", [
       de: {
         name: "Stiller Außenposten",
         objective:
-          "Nimm ein **Schleichspiel mit wiederholbaren Außenposten** und starte den ersten verfügbaren. Räume ihn vollständig, **ohne Alarm auszulösen**; sobald Alarm beginnt, startest du den Außenposten neu.",
+          "Starte ein **Schleichspiel mit wiederholbaren Außenposten** und nimm den ersten verfügbaren. Schalte dort alle Gegner aus, **ohne Alarm auszulösen**. Geht der Alarm los, beginnst du den Außenposten von vorn.",
       },
     },
   },
@@ -246,7 +248,7 @@ export const challengeQuests = defineMoodQuests("challenge", [
       de: {
         name: "Nur Schwachstellen",
         objective:
-          "Starte ein **Actionspiel oder einen Shooter mit markierten Schwachstellen**. Räume den ersten wiederholbaren Kampf und verletze Gegner nur dort; **nach jedem Treffer an anderer Stelle beginnt der Kampf neu**.",
+          "Starte ein **Actionspiel oder einen Shooter mit markierten Schwachstellen an Gegnern**. Schaffe den ersten wiederholbaren Kampf und füge Gegnern nur an diesen Stellen Schaden zu. **Triffst du woanders, startest du den Kampf neu**.",
       },
     },
   },
@@ -262,9 +264,9 @@ export const challengeQuests = defineMoodQuests("challenge", [
           "Open a **puzzle game with separate levels, hints, and undo**. Start the next unfinished puzzle and **solve it without hints or undo**; restart the level if you use either one.",
       },
       de: {
-        name: "Ohne Rückgängig",
+        name: "Kein Zug zurück",
         objective:
-          "Starte ein **Rätselspiel mit einzelnen Leveln, Hinweisen und Rückgängig-Funktion**. Nimm das nächste offene Rätsel und **löse es ohne Hinweise oder Rückgängig-Funktion**; nutzt du eines davon, beginnt das Level neu.",
+          "Starte ein **Rätselspiel mit einzelnen Leveln, Hinweisen und Rückgängig-Funktion**. Nimm das nächste ungelöste Rätsel und **löse es ohne Hinweise und ohne Züge rückgängig zu machen**. Nutzt du eine der beiden Hilfen, startest du das Level neu.",
       },
     },
   },
@@ -282,7 +284,7 @@ export const challengeQuests = defineMoodQuests("challenge", [
       de: {
         name: "Combo im Match",
         objective:
-          "Starte ein **Kampfspiel mit Combo-Training und CPU-Matches**. Lerne die erste offene Combo und spiel danach höchstens drei CPU-Matches. Hör auf, sobald du **die Combo einmal im Match landest**, sonst nach Match drei.",
+          "Starte ein **Kampfspiel mit Combo-Training und Matches gegen den Computer**. Lerne die erste noch nicht geschaffte Combo und spiele danach bis zu drei Matches gegen den Computer. Hör auf, sobald du **die Combo einmal im Match triffst**, sonst nach dem dritten Match.",
       },
     },
   },

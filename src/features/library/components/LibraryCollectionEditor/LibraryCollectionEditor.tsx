@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { CURATED_GAMES } from "../../../../data/games";
@@ -6,16 +6,29 @@ import type {
   CustomGame,
   CustomGameInput,
 } from "../../../../domain/library/model";
+import { customGameQuestIds } from "../../../../domain/library/rules";
 import { GameVisual } from "../../../../shared/ui/GameVisual/GameVisual";
 import { CheckIcon } from "../../../../shared/ui/Icons/Icons";
-import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import { useLibraryStore } from "../../../../stores/useLibraryStore";
 import { CustomGameEditor } from "../CustomGameEditor/CustomGameEditor";
+import { EditIcon, PlusIcon, RemoveIcon, SearchIcon } from "../LibraryIcons";
+import { SectionLabel } from "../SectionLabel/SectionLabel";
 import styles from "./LibraryCollectionEditor.module.css";
 
 type EditorTarget = "new" | string | null;
 
-export function LibraryCollectionEditor() {
+function searchableGameName(value: string) {
+  return value
+    .normalize("NFKD")
+    .toLocaleLowerCase()
+    .replace(/[^\p{L}\p{N}]/gu, "");
+}
+
+export function LibraryCollectionEditor({
+  onEditingChange,
+}: {
+  onEditingChange?: (editing: boolean) => void;
+}) {
   const { t } = useTranslation();
   const {
     addCustomGame,
@@ -23,6 +36,7 @@ export function LibraryCollectionEditor() {
     removeCustomGame,
     selectedCuratedGameIds,
     toggleCuratedGame,
+    selectAllCuratedGames,
     updateCustomGame,
   } = useLibraryStore(
     useShallow((state) => ({
@@ -31,33 +45,78 @@ export function LibraryCollectionEditor() {
       removeCustomGame: state.removeCustomGame,
       selectedCuratedGameIds: state.selectedCuratedGameIds,
       toggleCuratedGame: state.toggleCuratedGame,
+      selectAllCuratedGames: state.selectAllCuratedGames,
       updateCustomGame: state.updateCustomGame,
     })),
   );
   const [editorTarget, setEditorTarget] = useState<EditorTarget>(null);
+  useEffect(() => {
+    onEditingChange?.(editorTarget !== null);
+  }, [editorTarget, onEditingChange]);
+  const [search, setSearch] = useState("");
   const editingGame =
     editorTarget && editorTarget !== "new"
       ? customGames.find((game) => game.id === editorTarget)
       : undefined;
+  const allSelected = CURATED_GAMES.every((game) =>
+    selectedCuratedGameIds.includes(game.id),
+  );
+  const filteredGames = CURATED_GAMES.filter((game) =>
+    [game.name, game.id].some((name) =>
+      searchableGameName(name).includes(searchableGameName(search)),
+    ),
+  );
 
   function saveCustomGame(input: CustomGameInput) {
-    if (editingGame) {
-      updateCustomGame(editingGame.id, input);
-    } else {
-      addCustomGame(input);
-    }
-    setEditorTarget(null);
+    const saved = editingGame
+      ? updateCustomGame(editingGame.id, input)
+      : addCustomGame(input);
+    if (saved) setEditorTarget(null);
   }
+
+  if (editorTarget)
+    return (
+      <CustomGameEditor
+        key={editingGame?.id ?? "new"}
+        game={editingGame}
+        onCancel={() => setEditorTarget(null)}
+        onSave={saveCustomGame}
+      />
+    );
 
   return (
     <div className={styles.collectionEditor}>
       <section className={styles.collectionSection}>
-        <div className={styles.sectionIntro}>
-          <h3>{t("ui.library.curatedHeading")}</h3>
-          <p>{t("ui.library.curatedDescription")}</p>
+        <div className={styles.sectionHeader}>
+          <h3>
+            <SectionLabel
+              label={t("ui.library.curatedHeading")}
+              hint={t("ui.library.collectionHint")}
+            />
+          </h3>
+          <button
+            className={styles.quietAction}
+            type="button"
+            onClick={() => selectAllCuratedGames(!allSelected)}
+          >
+            {t(allSelected ? "ui.library.removeAll" : "ui.library.addAll")}
+          </button>
         </div>
-        <div className={styles.curatedGrid}>
-          {CURATED_GAMES.map((game) => {
+        <label className={styles.searchField}>
+          <SearchIcon />
+          <input
+            type="search"
+            value={search}
+            placeholder={t("ui.library.searchGames")}
+            aria-label={t("ui.library.searchGames")}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+          <span>
+            {selectedCuratedGameIds.length}/{CURATED_GAMES.length}
+          </span>
+        </label>
+        <div className={styles.curatedList}>
+          {filteredGames.map((game) => {
             const selected = selectedCuratedGameIds.includes(game.id);
             return (
               <button
@@ -69,43 +128,42 @@ export function LibraryCollectionEditor() {
               >
                 <GameVisual
                   game={{ id: game.id, name: game.name, source: "curated" }}
-                  size="tile"
                 />
-                <span className={styles.curatedGameName}>{game.name}</span>
+                <span className={styles.gameName}>{game.name}</span>
+                <span className={styles.gameKind}>
+                  {t(game.isSeries ? "ui.library.series" : "ui.library.game")}
+                </span>
                 <span className={styles.selectionMark} aria-hidden="true">
-                  <CheckIcon />
+                  {selected ? <CheckIcon /> : <PlusIcon />}
                 </span>
               </button>
             );
           })}
-        </div>
-      </section>
-
-      <section className={styles.collectionSection}>
-        <div className={styles.customHeadingRow}>
-          <div className={styles.sectionIntro}>
-            <h3>{t("ui.library.customHeading")}</h3>
-            <p>{t("ui.library.customDescription")}</p>
-          </div>
-          {editorTarget === null ? (
-            <SolidButton
-              type="button"
-              variant="soft"
-              onClick={() => setEditorTarget("new")}
-            >
-              {t("ui.library.addGame")}
-            </SolidButton>
+          {filteredGames.length === 0 ? (
+            <p className={styles.emptyState}>
+              {t("ui.library.noSearchResults")}
+            </p>
           ) : null}
         </div>
-
-        {editorTarget ? (
-          <CustomGameEditor
-            key={editingGame?.id ?? "new"}
-            game={editingGame}
-            onCancel={() => setEditorTarget(null)}
-            onSave={saveCustomGame}
-          />
-        ) : customGames.length > 0 ? (
+      </section>
+      <section className={styles.collectionSection}>
+        <div className={styles.sectionHeader}>
+          <h3>
+            <SectionLabel
+              label={t("ui.library.customHeading")}
+              hint={t("ui.library.customDescription")}
+            />
+          </h3>
+          <button
+            className={styles.addButton}
+            type="button"
+            onClick={() => setEditorTarget("new")}
+          >
+            <PlusIcon />
+            {t("ui.library.addGame")}
+          </button>
+        </div>
+        {customGames.length ? (
           <div className={styles.customGameList}>
             {customGames.map((game) => (
               <CustomGameRow
@@ -134,24 +192,55 @@ function CustomGameRow({
   onRemove: () => void;
 }) {
   const { t } = useTranslation();
+  const [confirming, setConfirming] = useState(false);
   return (
-    <div className={styles.customGameRow}>
+    <div
+      className={styles.customGameRow}
+      data-confirming={confirming || undefined}
+    >
       <GameVisual game={{ ...game, source: "custom" }} />
-      <div>
+      <div className={styles.customCopy}>
         <strong>{game.name}</strong>
         <span>
-          {t("ui.library.capabilityCount", {
-            count: game.capabilityIds.length,
+          {t("ui.library.questCount", {
+            count: customGameQuestIds(game).length,
           })}
         </span>
       </div>
       <div className={styles.customGameActions}>
-        <button type="button" onClick={onEdit}>
-          {t("ui.library.edit")}
-        </button>
-        <button type="button" onClick={onRemove}>
-          {t("ui.library.remove")}
-        </button>
+        {confirming ? (
+          <>
+            <button
+              type="button"
+              className={styles.removeConfirmation}
+              onClick={onRemove}
+            >
+              {t("ui.library.confirmRemove")}
+            </button>
+            <button type="button" onClick={() => setConfirming(false)}>
+              {t("ui.library.cancel")}
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={onEdit}
+              aria-label={t("ui.library.editGame", { game: game.name })}
+              title={t("ui.library.edit")}
+            >
+              <EditIcon />
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirming(true)}
+              aria-label={t("ui.library.removeGame", { game: game.name })}
+              title={t("ui.library.remove")}
+            >
+              <RemoveIcon />
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

@@ -17,11 +17,11 @@ export const createQuests = defineMoodQuests("create", [
           "Build a new **{{game}}** preset around **one body, decal, or color you rarely use**. Equip it and finish one complete online or exhibition match.",
       },
       de: {
-        name: "Frisches Preset",
+        name: "Ein neuer Look",
         objective:
-          "Baue ein neues Rocket-League-Preset um **eine selten genutzte Karosserie, Lackierung oder Farbe**. Rüste es aus und beende ein vollständiges Online- oder Ausstellungsmatch.",
+          "Gestalte in Rocket League ein neues Preset mit **einer Karosserie, Lackierung oder Farbe, die du selten nutzt**. Wähle es aus und spiele damit ein Online- oder Schaukampf-Match bis zum Ende.",
         gameObjective:
-          "Baue ein neues Preset in **{{game}}** um **eine selten genutzte Karosserie, Lackierung oder Farbe**. Rüste es aus und beende ein vollständiges Online- oder Ausstellungsmatch.",
+          "Gestalte in **{{game}}** ein neues Preset mit **einer Karosserie, Lackierung oder Farbe, die du selten nutzt**. Wähle es aus und spiele damit ein Online- oder Schaukampf-Match bis zum Ende.",
       },
     },
   },
@@ -39,7 +39,7 @@ export const createQuests = defineMoodQuests("create", [
       de: {
         name: "Kleines Zuhause",
         objective:
-          "Öffne ein Bauspiel und errichte ein Zuhause, das in eine Ansicht passt. Gib ihm **ein Bett, ein Licht und Stauraum** und führe danach einmal eine Figur hindurch.",
+          "Starte ein Bauspiel und errichte ein kleines Zuhause, das vollständig auf den Bildschirm passt. Richte es mit **einem Bett, einer Lichtquelle und Stauraum** ein und geh danach einmal mit einer Figur hindurch.",
       },
     },
   },
@@ -57,7 +57,7 @@ export const createQuests = defineMoodQuests("create", [
       de: {
         name: "Neues Outfit",
         objective:
-          "Nimm ein Spiel mit Kleidung oder Charaktergestaltung. Baue **ein vollständiges Outfit** um ein selten genutztes Teil und beschränke den ganzen Look auf **drei Farben**.",
+          "Wähle ein Spiel, in dem du Kleidung oder das Aussehen deiner Figur anpassen kannst. Stelle **ein vollständiges Outfit** mit einem Teil zusammen, das du nie trägst, und nutze dabei höchstens **drei Farben**.",
       },
     },
   },
@@ -75,7 +75,7 @@ export const createQuests = defineMoodQuests("create", [
       de: {
         name: "Ein Raum",
         objective:
-          "Öffne ein Spiel mit einem dekorierbaren Raum und wähle ein vorhandenes Objekt darin. Gestalte **nur diesen Raum** darum herum neu und bewege oder ergänze mindestens **sieben Dinge**.",
+          "Starte ein Spiel, in dem du Räume einrichten kannst, und wähle einen Gegenstand in einem bestehenden Raum. Gestalte **nur diesen Raum** passend dazu um. Versetze oder ergänze dabei mindestens **sieben Gegenstände**.",
       },
     },
   },
@@ -93,7 +93,7 @@ export const createQuests = defineMoodQuests("create", [
       de: {
         name: "Acht Takte",
         objective:
-          "Öffne ein Spiel oder ein Werkzeug im Spiel, mit dem du Musik machen kannst. Erstelle einen **Loop aus acht Takten** mit Beat, Bass und einer Melodie und spiele ihn ganz ab.",
+          "Starte ein Spiel, in dem du Musik machen kannst. Erstelle einen **Loop aus acht Takten** mit Beat, Bass und einer Melodie und spiele ihn einmal vollständig ab.",
       },
     },
   },
@@ -129,7 +129,7 @@ export const createQuests = defineMoodQuests("create", [
       de: {
         name: "Ein kleiner Garten",
         objective:
-          "Nimm ein Farming- oder Sandbox-Spiel mit Pflanzen. Lege einen **Garten aus drei mal drei Feldern** mit mindestens **drei Pflanzenarten** und einem Weg oder Rand an.",
+          "Starte ein Farming- oder Sandbox-Spiel, in dem du etwas anpflanzen kannst. Lege einen **Garten mit drei mal drei Feldern** an, mit mindestens **drei Pflanzenarten** und einem Weg oder einer Umrandung.",
       },
     },
   },
@@ -147,7 +147,7 @@ export const createQuests = defineMoodQuests("create", [
       de: {
         name: "Galerie-Remix",
         objective:
-          "Starte dein letztes **Spiel zum Gestalten und Veröffentlichen von Bannern oder Bildern**. Übernimm Farbe, Form oder Aufbau aus den ersten drei Galeriewerken, gestalte ein neues Motiv zur Spielwelt und **veröffentliche es**.",
+          "Starte dein zuletzt gespieltes **Spiel, in dem du Banner oder Bilder gestalten und veröffentlichen kannst**. Sieh dir die ersten drei Werke in der Galerie an. Lass dich von Farbe, Form oder Aufbau inspirieren, gestalte ein eigenes Motiv zur Spielwelt und **veröffentliche es**.",
       },
     },
   },
@@ -165,13 +165,15 @@ export const createQuests = defineMoodQuests("create", [
       de: {
         name: "Kleine Produktionslinie",
         objective:
-          "Starte ein **Bauspiel mit verbindbaren Produktionsstationen**. Baue eine kleine Linie aus zwei Stationen sowie Ein- und Ausgangslager und lass sie laufen, bis **drei fertige Gegenstände im Ausgang liegen**.",
+          "Starte ein **Bauspiel mit Produktionsstationen, die sich verbinden lassen**. Verbinde zwei Stationen mit je einem Lager für Material und fertige Produkte. Lass die Anlage laufen, bis **drei fertige Gegenstände im Ausgangslager liegen**.",
       },
     },
   },
   {
     id: "signature-vehicle",
-    customGameCompatibility: { capabilityIds: ["customization"] },
+    customGameCompatibility: {
+      capabilityIds: ["customization", "driving-or-racing"],
+    },
     minimumDurationMinutes: 8,
     suggestedDurationMinutes: 25,
     genres: ["Racing"],
@@ -188,7 +190,7 @@ export const createQuests = defineMoodQuests("create", [
         objective:
           "Starte dein zuletzt gespieltes **Rennspiel mit Lackierungseditor**. Behalte das aktuelle Fahrzeug, gestalte es mit drei Farben und einer Zahl oder einem Symbol und **beende damit ein Rennen**.",
         gameObjective:
-          "Erstelle in **{{game}}** ein Fahrzeug-Preset rund um eine selten genutzte Farbe oder ein selten genutztes Teil. R\u00FCste es aus und beende damit **eine vollst\u00E4ndige Fahrt, ein Rennen oder Match**.",
+          "Gestalte in **{{game}}** ein Fahrzeug-Preset passend zu einer Farbe oder einem Teil, das du selten nutzt. Wähle es aus und beende damit **eine ganze Fahrt, ein Rennen oder ein Match**.",
       },
     },
   },
@@ -206,7 +208,7 @@ export const createQuests = defineMoodQuests("create", [
       de: {
         name: "Neues Gesicht",
         objective:
-          "Nimm ein **Spiel mit speicherbarer Figurenerstellung und Zufallsfunktion**. Übernimm den ersten Vorschlag, ändere Gesicht, Haare und Kleidung, **speichere die Figur und starte die erste spielbare Szene**.",
+          "Wähle ein **Spiel mit Charaktereditor, Zufallsfunktion und Speicherfunktion**. Übernimm den ersten Zufallsvorschlag und ändere Gesicht, Haare und Kleidung. **Speichere die Figur und starte die erste spielbare Szene**.",
       },
     },
   },

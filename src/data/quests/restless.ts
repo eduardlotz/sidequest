@@ -15,7 +15,7 @@ export const restlessQuests = defineMoodQuests("restless", [
       de: {
         name: "Immer weiter",
         objective:
-          "Öffne ein Spiel mit viel Bewegung und plane eine Route durch **fünf benannte Orte oder Wahrzeichen**. Bleib ohne Schnellreise in Bewegung und höre am fünften auf.",
+          "Starte ein Spiel, in dem du viel unterwegs bist, und plane eine Route über **fünf benannte Orte oder Wahrzeichen**. Bleib ohne Schnellreise in Bewegung und hör am fünften Ort auf.",
       },
     },
   },
@@ -36,9 +36,9 @@ export const restlessQuests = defineMoodQuests("restless", [
       de: {
         name: "Schnelle Matches",
         objective:
-          "Nimm ein Onlinespiel mit Runden unter zehn Minuten. Spiele im selben Modus **drei vollständige Runden** und akzeptiere jedes Ergebnis, ohne die Warteschlange zu wechseln.",
+          "Wähle ein Onlinespiel mit Runden unter zehn Minuten. Spiele **drei ganze Runden** im selben Modus und nimm jedes Ergebnis hin, ohne zwischendurch die Warteschlange zu wechseln.",
         gameObjective:
-          "Starte in **{{game}}** den k\u00FCrzesten Standard-Matchtyp. Beende **drei Matches hintereinander**, ohne dazwischen Modus oder Loadout zu wechseln.",
+          "Wähle in **{{game}}** den kürzesten regulären Matchmodus. Spiele **drei Matches hintereinander**, ohne dazwischen den Modus oder deine Ausrüstung zu wechseln.",
       },
     },
   },
@@ -56,7 +56,7 @@ export const restlessQuests = defineMoodQuests("restless", [
       de: {
         name: "Parkour-Linie",
         objective:
-          "Nimm ein Spiel mit Klettern, Springen oder Parkour und wähle ein sichtbares Ziel. Erreiche es mit **fünf verschiedenen Bewegungsaktionen**, ohne dazwischen am Boden stehen zu bleiben.",
+          "Wähle ein Spiel mit Klettern, Springen oder Parkour und such dir ein sichtbares Ziel. Erreiche es mit **fünf verschiedenen Bewegungsaktionen**, ohne zwischendurch am Boden stehen zu bleiben.",
       },
     },
   },
@@ -74,7 +74,7 @@ export const restlessQuests = defineMoodQuests("restless", [
       de: {
         name: "Vollgasrennen",
         objective:
-          "Öffne ein Rennspiel, wähle eine kurze Strecke und das schnellste kontrollierbare Fahrzeug. Beende **ein Rennen mit mindestens drei Runden** ohne Zurückspulen.",
+          "Starte ein Rennspiel und wähle eine kurze Strecke sowie das schnellste Fahrzeug, das du noch sicher steuern kannst. Beende **ein Rennen mit mindestens drei Runden**, ohne zurückzuspulen.",
       },
     },
   },
@@ -95,9 +95,9 @@ export const restlessQuests = defineMoodQuests("restless", [
       de: {
         name: "Zwanzig Gegner",
         objective:
-          "Nimm ein Actionspiel mit Wellen oder dichten Kämpfen. Besiege in einer zusammenhängenden Session **zwanzig Gegner** und höre direkt nach dem zwanzigsten auf.",
+          "Wähle ein Actionspiel mit Gegnerwellen oder vielen Gegnern in kurzer Folge. Besiege am Stück **zwanzig Gegner** und hör direkt nach dem zwanzigsten auf.",
         gameObjective:
-          "Starte in **{{game}}** die erste wiederholbare Kampfaktivit\u00E4t. Besiege **zwanzig Gegner** und h\u00F6re direkt nach Nummer zwanzig auf.",
+          "Starte in **{{game}}** den ersten Kampf, den du wiederholen kannst. Besiege **zwanzig Gegner** und hör direkt nach dem zwanzigsten auf.",
       },
     },
   },
@@ -133,7 +133,7 @@ export const restlessQuests = defineMoodQuests("restless", [
       de: {
         name: "Greifhaken-Route",
         objective:
-          "Nimm ein **Spiel mit kurzen Abschnitten rund um einen Greifhaken**. Starte den ersten offenen Abschnitt, nutze den Haken mindestens fünfmal und **erreiche ohne Schnellreise den nächsten Speicherpunkt**.",
+          "Wähle ein **Spiel mit kurzen Abschnitten, in denen du einen Greifhaken nutzt**. Starte den ersten noch nicht geschafften Abschnitt, nutze den Haken mindestens fünfmal und **erreiche ohne Schnellreise den nächsten Speicherpunkt**.",
       },
     },
   },
@@ -149,9 +149,9 @@ export const restlessQuests = defineMoodQuests("restless", [
           "Open a **skating game with a visible combo counter**. Use the first open area and land one line containing **five different tricks**, then stop when the score is banked.",
       },
       de: {
-        name: "Fünf-Trick-Linie",
+        name: "Fünf Tricks am Stück",
         objective:
-          "Starte ein **Skate-Spiel mit sichtbarem Combo-Zähler**. Nutze das erste offene Gebiet und lande eine Linie mit **fünf verschiedenen Tricks**. Hör auf, sobald die Punkte gezählt wurden.",
+          "Starte ein **Skatespiel mit sichtbarem Combo-Zähler**. Nutze das erste verfügbare Gebiet und lande eine zusammenhängende Folge aus **fünf verschiedenen Tricks**. Hör auf, sobald das Spiel die Punkte dafür zählt.",
       },
     },
   },
@@ -205,7 +205,7 @@ export const restlessQuests = defineMoodQuests("restless", [
       de: {
         name: "Klettern auf Zeit",
         objective:
-          "Starte ein **Kletter- oder Plattformspiel mit kurzen Zeitstrecken**. Gib der ersten offenen Strecke mit den Vorgaben höchstens drei Versuche und hör nach **dem ersten Erfolg oder dem dritten Ergebnis** auf.",
+          "Starte ein **Kletter- oder Plattformspiel mit kurzen Strecken auf Zeit**. Versuche die erste noch nicht geschaffte Strecke mit den Voreinstellungen bis zu dreimal. Hör auf, sobald du **die Zeitvorgabe geschafft oder drei Versuche beendet hast**.",
       },
     },
   },

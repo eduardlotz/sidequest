@@ -18,6 +18,8 @@ import { overwhelmedQuests } from "./overwhelmed";
 import { progressQuests } from "./progress";
 import { relaxQuests } from "./relax";
 import { restlessQuests } from "./restless";
+import { reusableQuests } from "./reusable";
+import { exclusiveQuests } from "./exclusive";
 
 export type {
   AuthoredQuestDefinition,
@@ -42,8 +44,11 @@ const MOOD_QUESTS = {
   "low-energy": lowEnergyQuests,
 } satisfies Record<MoodId, readonly AuthoredQuestDefinition[]>;
 
-export const QUEST_CATALOG: readonly AuthoredQuestDefinition[] =
-  MOOD_IDS.flatMap((moodId) => MOOD_QUESTS[moodId]);
+export const QUEST_CATALOG: readonly AuthoredQuestDefinition[] = [
+  ...MOOD_IDS.flatMap((moodId) => MOOD_QUESTS[moodId]),
+  ...reusableQuests,
+  ...exclusiveQuests,
+];
 
 export const QUEST_TRANSLATIONS_BY_ID = Object.fromEntries(
   QUEST_CATALOG.map(({ id, translations }) => [id, translations]),

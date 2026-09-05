@@ -1,13 +1,13 @@
 import type { CSSProperties } from "react";
 import type { GameReference } from "../../../data/gameTypes";
 import { resolveGameVisual } from "../../../data/gameVisuals";
-import { GameGenreIcon } from "../Icons/Icons";
+import { GameIcon } from "../Icons/GameIcon";
 import styles from "./GameVisual.module.css";
 
 type Props = {
   className?: string;
   game: GameReference;
-  size?: "card" | "row" | "tile";
+  size?: "card" | "row";
 };
 
 type GameVisualStyle = CSSProperties & {
@@ -22,7 +22,13 @@ export function GameVisual({ className, game, size = "row" }: Props) {
   if (visual.kind === "artwork") {
     return (
       <span className={classes} data-size={size} data-visual="artwork">
-        <img src={visual.src} alt="" aria-hidden="true" />
+        <img
+          src={visual.src}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          decoding="async"
+        />
       </span>
     );
   }
@@ -39,7 +45,7 @@ export function GameVisual({ className, game, size = "row" }: Props) {
         } as GameVisualStyle
       }
     >
-      <GameGenreIcon icon={visual.iconId} />
+      <GameIcon icon={visual.iconId} />
     </span>
   );
 }

@@ -5,7 +5,7 @@ import {
   type PersistStorage,
 } from "zustand/middleware";
 import { createStore, type StateCreator } from "zustand/vanilla";
-import { CURATED_GAMES_BY_ID } from "../data/games";
+import { CURATED_GAMES, CURATED_GAMES_BY_ID } from "../data/games";
 import {
   LIBRARY_STORE_KEY,
   LIBRARY_STORE_VERSION,
@@ -20,7 +20,6 @@ import {
   sanitizedGameName,
   sanitizePersistedLibraryState,
 } from "../domain/library/persistence";
-import { hasLibraryGames } from "../domain/library/rules";
 
 type StoreOptions = {
   createGameId?: () => string;
@@ -31,6 +30,21 @@ function createLibraryState(
 ): StateCreator<LibraryStore> {
   return (set, get) => ({
     ...DEFAULT_LIBRARY_STATE,
+    startWithDevsCollection: () => {
+      set((state) => ({
+        selectedCuratedGameIds: CURATED_GAMES.map((game) => game.id),
+        setupCompleted: true,
+        revision: state.revision + 1,
+      }));
+    },
+    selectAllCuratedGames: (selected) => {
+      set((state) => ({
+        selectedCuratedGameIds: selected
+          ? CURATED_GAMES.map((game) => game.id)
+          : [],
+        revision: state.revision + 1,
+      }));
+    },
     toggleCuratedGame: (gameId) => {
       if (!CURATED_GAMES_BY_ID[gameId]) return;
       set((state) => ({
@@ -52,7 +66,10 @@ function createLibraryState(
     },
     updateCustomGame: (gameId, input) => {
       const normalized = normalizedCustomGameInput(input);
-      if (!normalized || !get().customGames.some((game) => game.id === gameId)) {
+      if (
+        !normalized ||
+        !get().customGames.some((game) => game.id === gameId)
+      ) {
         return false;
       }
       set((state) => ({
@@ -72,8 +89,6 @@ function createLibraryState(
       return true;
     },
     completeSetup: () => {
-      const state = get();
-      if (!hasLibraryGames(state)) return false;
       set({ setupCompleted: true });
       return true;
     },

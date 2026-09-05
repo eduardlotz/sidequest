@@ -13,9 +13,9 @@ export const lowEnergyQuests = defineMoodQuests("low-energy", [
           "Open an idle game that has progressed without you. Collect **everything waiting**, buy **one useful upgrade**, and leave the rest for next time.",
       },
       de: {
-        name: "Idle-Check-in",
+        name: "Kurz einsammeln",
         objective:
-          "Öffne ein Idle Game, das ohne dich weitergelaufen ist. Sammle **alles Wartende** ein, kaufe **ein sinnvolles Upgrade** und lass den Rest fürs nächste Mal liegen.",
+          "Starte ein Idle-Spiel, das ohne dich weitergelaufen ist. Sammle **alles ein, was sich angesammelt hat**, kaufe **ein sinnvolles Upgrade** und heb dir den Rest fürs nächste Mal auf.",
       },
     },
   },
@@ -33,7 +33,7 @@ export const lowEnergyQuests = defineMoodQuests("low-energy", [
       de: {
         name: "Eine Solitaire-Runde",
         objective:
-          "Öffne ein digitales Solitaire-Spiel und akzeptiere die erste Verteilung. Spiele **eine vollständige Runde** ohne Neustart für eine bessere Lage und akzeptiere das Ergebnis.",
+          "Starte ein digitales Solitaire-Spiel und nimm die erste Kartenverteilung. Spiele **eine ganze Runde**, ohne für bessere Karten neu zu starten, und lass das Ergebnis stehen.",
       },
     },
   },
@@ -51,7 +51,7 @@ export const lowEnergyQuests = defineMoodQuests("low-energy", [
       de: {
         name: "Ein Gespräch",
         objective:
-          "Nimm ein narratives Spiel mit einem anstehenden Gespräch im aktuellen Spielstand. Erlebe **ein vollständiges Gespräch oder eine Szene**, entscheide nach Gefühl und speichere danach.",
+          "Wähle ein Story-Spiel, in dem als Nächstes ein Gespräch ansteht. Spiele **ein ganzes Gespräch oder eine Szene**, entscheide nach Gefühl und speichere danach.",
       },
     },
   },
@@ -69,7 +69,7 @@ export const lowEnergyQuests = defineMoodQuests("low-energy", [
       de: {
         name: "Auto-Battle",
         objective:
-          "Öffne einen Auto-Battler und stelle vor dem Kampf **eine Aufstellung** fest. Lass den Kampf ohne Teamwechsel laufen und beende die Runde.",
+          "Starte einen Auto-Battler und lege vor dem Kampf **eine Teamaufstellung** fest. Lass den Kampf laufen, ohne zwischendurch das Team zu ändern, und spiele die Runde zu Ende.",
       },
     },
   },
@@ -87,7 +87,7 @@ export const lowEnergyQuests = defineMoodQuests("low-energy", [
       de: {
         name: "Drei gemütliche Aufgaben",
         objective:
-          "Öffne einen Farming- oder Lebenssimulations-Spielstand und bleib in der Nähe deines Zuhauses. Erledige **drei kleine Tagesaufgaben** wie Gießen, Füttern, Kochen oder Sammeln und schlafe oder speichere danach.",
+          "Setze einen Spielstand in einem Farming-Spiel oder einer Lebenssimulation fort und bleib in der Nähe deines Zuhauses. Erledige **drei kleine Tagesaufgaben** wie Gießen, Füttern, Kochen oder Sammeln. Geh danach schlafen oder speichere.",
       },
     },
   },
@@ -105,7 +105,7 @@ export const lowEnergyQuests = defineMoodQuests("low-energy", [
       de: {
         name: "Wimmelbildszene",
         objective:
-          "Öffne eine Wimmelbildszene und arbeite von einem Rand zum anderen. Finde **jeden Gegenstand auf der benötigten Liste**, ohne die Szene zu wechseln.",
+          "Starte eine Wimmelbildszene und suche sie von einer Seite zur anderen ab. Finde **alle Gegenstände auf der Suchliste**, ohne die Szene zu wechseln.",
       },
     },
   },
@@ -177,7 +177,7 @@ export const lowEnergyQuests = defineMoodQuests("low-energy", [
       de: {
         name: "Eine Ausmalseite",
         objective:
-          "Starte ein **Ausmalspiel mit umrandeten Bildern und vorgegebener Palette**. Nimm die erste offene Seite, fülle alle Flächen nur mit diesen Farben und **speichere das fertige Bild**.",
+          "Starte ein **Ausmalspiel mit vorgezeichneten Bildern und fester Farbpalette**. Nimm die erste noch nicht fertige Seite, male alle Flächen nur mit diesen Farben aus und **speichere das fertige Bild**.",
       },
     },
   },
