@@ -1,10 +1,9 @@
 export const englishLibrary = {
   setupEyebrow: "Your game shelf",
   setupTitle: "Welcome to sidesidequest",
-  setupDescription:
-    "Start with the my games collection or make your own collection.",
-  curatedHeading: "Eddie'sCollection",
-  curatedDescription: "20 games and series, with quests made for them.",
+  setupDescription: "Start with a curated games collection or make your own.",
+  curatedHeading: "Curated collection",
+  curatedDescription: "8 games and series, with quests made for them.",
   customHeading: "Your games",
   customDescription:
     "Add a game or a whole series. Choose the features you play with; Sidequest finds matching quests automatically.",
@@ -142,9 +141,9 @@ export const germanLibrary = {
   setupEyebrow: "Dein Spieleregal",
   setupTitle: "Willkommen auf sidesidequest",
   setupDescription:
-    "Starte mit meiner Spielesammlung oder erstelle deine eigene.",
-  curatedHeading: "Eddie's Sammlung",
-  curatedDescription: "20 Spiele und Reihen mit eigenen Quests.",
+    "Starte mit einer ausgewählten Spielesammlung oder erstelle deine eigene.",
+  curatedHeading: "Ausgewählte Sammlung",
+  curatedDescription: "8 Spiele und Reihen mit eigenen Quests.",
   customHeading: "Deine Spiele",
   customDescription:
     "Füge ein Spiel oder eine ganze Reihe hinzu. Wähle die Features, die du nutzt; Sidequest findet automatisch passende Quests.",
