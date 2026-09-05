@@ -1,18 +1,18 @@
 import type { GameCapabilityId } from "./gameTypes";
 
 export const MOOD_IDS = [
+  "low-energy",
   "relax",
   "explore",
   "progress",
-  "create",
   "challenge",
-  "connect",
-  "nostalgic",
-  "overwhelmed",
   "restless",
+  "connect",
   "focused",
+  "nostalgic",
+  "create",
+  "overwhelmed",
   "curious",
-  "low-energy",
 ] as const;
 
 export type MoodId = (typeof MOOD_IDS)[number];

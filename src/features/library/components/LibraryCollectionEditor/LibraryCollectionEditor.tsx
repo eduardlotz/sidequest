@@ -102,7 +102,7 @@ export function LibraryCollectionEditor({
             {t(allSelected ? "ui.library.removeAll" : "ui.library.addAll")}
           </button>
         </div>
-        <label className={styles.searchField}>
+        {/* <label className={styles.searchField}>
           <SearchIcon />
           <input
             type="search"
@@ -114,7 +114,7 @@ export function LibraryCollectionEditor({
           <span>
             {selectedCuratedGameIds.length}/{CURATED_GAMES.length}
           </span>
-        </label>
+        </label> */}
         <div className={styles.curatedList}>
           {filteredGames.map((game) => {
             const selected = selectedCuratedGameIds.includes(game.id);
@@ -210,15 +210,15 @@ function CustomGameRow({
       <div className={styles.customGameActions}>
         {confirming ? (
           <>
+            <button type="button" onClick={() => setConfirming(false)}>
+              {t("ui.library.cancel")}
+            </button>
             <button
               type="button"
               className={styles.removeConfirmation}
               onClick={onRemove}
             >
               {t("ui.library.confirmRemove")}
-            </button>
-            <button type="button" onClick={() => setConfirming(false)}>
-              {t("ui.library.cancel")}
             </button>
           </>
         ) : (
