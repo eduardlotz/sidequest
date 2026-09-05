@@ -12,7 +12,7 @@ export const englishLibrary = {
   cancel: "Cancel",
   edit: "Edit",
   remove: "Remove",
-  untitledGame: "Untitled game",
+  untitledGame: "XY",
   gameName: "Game or series name",
   gameNamePlaceholder: "e.g. Hades or Final Fantasy",
   gameIcon: "Icon",
@@ -21,10 +21,10 @@ export const englishLibrary = {
   colorChoice: "Use the {{color}} color",
   capabilities: "What does your game have?",
   capabilitiesHint:
-    "Choose the features available in the version or mode you play. Each adds matching quests. Leave uncertain ones off; a small set of flexible quests is always included.",
+    "Choose the features available your game, each adds matching quests. A small set of flexible quests is always included.",
   reviewQuests: "Review quests",
   reviewQuestsHint:
-    "Turn off any quest that does not fit. You can also browse all reusable quests and add individual ones. These choices apply only to this game and stay in place when you change its features.",
+    "Turn off any quest that does not fit. You can also browse all flexible quests and only add individual ones.",
   questCount_one: "{{count}} quest",
   questCount_other: "{{count}} quests",
   capabilityCount_one: "{{count}} feature",
@@ -152,7 +152,7 @@ export const germanLibrary = {
   cancel: "Abbrechen",
   edit: "Bearbeiten",
   remove: "Entfernen",
-  untitledGame: "Unbenanntes Spiel",
+  untitledGame: "XY",
   gameName: "Name des Spiels oder der Reihe",
   gameNamePlaceholder: "z. B. Hades oder Final Fantasy",
   gameIcon: "Icon",
@@ -161,10 +161,10 @@ export const germanLibrary = {
   colorChoice: "Farbe {{color}} verwenden",
   capabilities: "Was bietet dein Spiel?",
   capabilitiesHint:
-    "Wähle die Features deiner Version oder deines Spielmodus. Jedes ergänzt passende Quests. Lass unsichere Optionen aus; einige flexible Quests sind immer dabei.",
+    "Wähle die Features deines Spiels, womit passende Quests hinzugefügt werden. Einige flexible Quests sind immer dabei.",
   reviewQuests: "Quests ansehen",
   reviewQuestsHint:
-    "Schalte unpassende Quests aus. Du kannst auch alle wiederverwendbaren Quests durchsuchen und einzelne hinzufügen. Deine Auswahl gilt nur für dieses Spiel und bleibt bei Feature-Änderungen erhalten.",
+    "Entferne unpassende Quests für dieses Spiel. Du kannst auch alle flexiblen Quests durchsuchen und nur einzelne hinzufügen.",
   questCount_one: "{{count}} Quest",
   questCount_other: "{{count}} Quests",
   capabilityCount_one: "{{count}} Feature",
