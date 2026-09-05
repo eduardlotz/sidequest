@@ -6,11 +6,7 @@
 }
 
 .screen {
-  --quest-card-inline-size: clamp(
-    255px,
-    calc(36.111cqw - 41.111px),
-    320px
-  );
+  --quest-card-inline-size: clamp(255px, calc(36.111cqw - 41.111px), 320px);
   --quest-card-width: var(--quest-card-inline-size);
   position: relative;
   container-type: inline-size;
@@ -101,6 +97,7 @@
     var(--quest-screen-bottom-height)
   );
   display: grid;
+  gap: 2rem;
   min-height: 100svh;
   grid-template-rows: auto minmax(0, 1fr);
   align-items: start;
@@ -212,10 +209,7 @@
 
 @media (max-height: 640px) {
   .screen {
-    --quest-card-width: min(
-      var(--quest-card-inline-size),
-      calc(70svh - 133px)
-    );
+    --quest-card-width: min(var(--quest-card-inline-size), calc(70svh - 133px));
   }
 
   .questSelectionScreen {

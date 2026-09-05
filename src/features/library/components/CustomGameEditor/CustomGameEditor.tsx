@@ -132,7 +132,7 @@ export function CustomGameEditor({ game, onCancel, onSave }: Props) {
         </span>
       </header>
       <label className={styles.nameField}>
-        <span>{t("ui.library.gameName")}</span>
+        {/* <span>{t("ui.library.gameName")}</span> */}
         <span className={styles.inputRow}>
           <GameVisual game={{ ...draftGame, source: "custom" }} />
           <input
@@ -164,7 +164,7 @@ export function CustomGameEditor({ game, onCancel, onSave }: Props) {
         {appearanceOpen ? (
           <div id={`${id}-appearance`} className={styles.appearance}>
             <fieldset className={styles.pickerFieldset}>
-              <legend>{t("ui.library.gameIcon")}</legend>
+              {/* <legend>{t("ui.library.gameIcon")}</legend> */}
               <div className={styles.iconGrid}>
                 {GAME_ICON_IDS.map((candidate) => (
                   <button
@@ -183,7 +183,7 @@ export function CustomGameEditor({ game, onCancel, onSave }: Props) {
               </div>
             </fieldset>
             <fieldset className={styles.pickerFieldset}>
-              <legend>{t("ui.library.gameColor")}</legend>
+              {/* <legend>{t("ui.library.gameColor")}</legend> */}
               <div className={styles.colorGrid}>
                 {GAME_COLOR_IDS.map((candidate) => (
                   <button
@@ -252,11 +252,11 @@ export function CustomGameEditor({ game, onCancel, onSave }: Props) {
         </button>
         {reviewOpen ? (
           <div className={styles.questReview} id={`${id}-review`}>
-            <SectionLabel
+            {/* <SectionLabel
               label={t("ui.library.reviewSelection")}
               hint={t("ui.library.reviewQuestsHint")}
-            />
-            <label className={styles.searchField}>
+            /> */}
+            {/* <label className={styles.searchField}>
               <SearchIcon />
               <input
                 type="search"
@@ -268,7 +268,7 @@ export function CustomGameEditor({ game, onCancel, onSave }: Props) {
                 placeholder={t("ui.library.searchQuests")}
                 aria-label={t("ui.library.searchQuests")}
               />
-            </label>
+            </label> */}
             <div className={styles.reviewTools}>
               <button
                 type="button"

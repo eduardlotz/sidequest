@@ -14,10 +14,8 @@ export function formatRunningDuration(milliseconds: number) {
 export function formatCompletedAt(timestamp: number, locale?: string) {
   return new Intl.DateTimeFormat(locale, {
     day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
   }).format(timestamp);
 }
 

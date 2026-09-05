@@ -11,10 +11,7 @@ import type {
   QuestStats,
   UserProfile,
 } from "../../../../domain/quest/model";
-import {
-  ChevronLeftIcon,
-  InfoIcon,
-} from "../../../../shared/ui/Icons/Icons";
+import { ChevronLeftIcon, InfoIcon } from "../../../../shared/ui/Icons/Icons";
 import { ResponsiveNestedDrawer } from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
 import { RopePurchaseRow } from "../../../active-quest/components/RopePurchaseRow/RopePurchaseRow";
 import { GameLibraryDrawer } from "../GameLibraryDrawer/GameLibraryDrawer";
@@ -60,152 +57,149 @@ export function ProfileDrawer({
       title={t("ui.profile.title")}
       titleId="profile-title"
     >
-        <section className={styles.profileSection}>
-          <h3 className={styles.profileSectionLabel}>
-            {t("ui.profile.yourSidequests")}
-          </h3>
-          <div className={styles.profileNavigation}>
-            <ResponsiveNestedDrawer
-              trigger={
-                <button type="button">
-                  <span>
-                    <strong>{t("ui.library.drawerTitle")}</strong>
-                    <small>{t("ui.library.profileSummary")}</small>
-                  </span>
-                  <ChevronLeftIcon aria-hidden="true" />
-                </button>
-              }
-            >
-              <GameLibraryDrawer />
-            </ResponsiveNestedDrawer>
-            <ResponsiveNestedDrawer
-              trigger={
-                <button type="button">
-                  <span>
-                    <strong>{t("ui.history.title")}</strong>
-                    <small>
-                      {t("ui.history.profileSummary", {
-                        count: completedSessions.length,
-                      })}
-                    </small>
-                  </span>
-                  <ChevronLeftIcon aria-hidden="true" />
-                </button>
-              }
-            >
-              <QuestHistoryDrawer completedSessions={completedSessions} />
-            </ResponsiveNestedDrawer>
-          </div>
-        </section>
-
-        <section className={styles.profileSection}>
-          <h3 className={styles.profileSectionLabel}>
-            {t("ui.profile.redRopes")}
-          </h3>
-          <dl className={styles.profileMetrics}>
-            <ProfileMetric
-              label={t("ui.profile.owned")}
-              value={formatScore(profile.redRopes, language)}
-            />
-          </dl>
-          <RopePurchaseRow
-            coins={profile.points}
-            onPurchase={onPurchaseRedRopes}
-          />
-        </section>
-
-        <section className={styles.profileSection}>
-          <h3 className={styles.profileSectionLabel}>
-            {t("ui.profile.statistics")}
-          </h3>
-          <dl className={styles.profileMetrics}>
-            <ProfileMetric
-              label={t("ui.profile.completedQuests")}
-              value={formatScore(stats.completedQuestCount, language)}
-            />
-            <ProfileMetric
-              label={t("ui.profile.timePlayed")}
-              value={formatPlayedTime(stats.totalPlayedMs, t, language)}
-            />
-            <ProfileMetric
-              label={t("ui.profile.coinsCollected")}
-              value={formatScore(totalCoinsCollected, language)}
-            />
-            <ProfileMetric
-              label={t("ui.profile.cancelledQuests")}
-              value={formatScore(stats.cancelledQuestCount, language)}
-            />
-            <ProfileMetric
-              label={t("ui.profile.repeatedQuests")}
-              value={formatScore(stats.repeatedCompletionCount, language)}
-            />
-            <ProfileMetric
-              label={t("ui.profile.favoriteMood")}
-              value={favoriteMood?.title ?? t("ui.profile.noFavoriteMood")}
-            />
-          </dl>
-        </section>
-
-        <section className={styles.profileSection}>
-          <h3 className={styles.profileSectionLabel}>
-            {t("ui.profile.settings")}
-          </h3>
-          <div className={styles.profileSettingRow}>
-            <span>{t("ui.profile.theme")}</span>
-            <div
-              className={styles.themeSegmentedControl}
-              role="group"
-              aria-label={t("ui.profile.theme")}
-            >
-              {THEME_CHOICES.map((choice) => (
-                <button
-                  type="button"
-                  aria-pressed={themeChoice === choice}
-                  key={choice}
-                  onClick={() => onThemeChange(choice)}
-                >
-                  {t(`ui.profile.theme${capitalize(choice)}`)}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className={styles.profileSettingRow}>
-            <span>{t("ui.profile.sound")}</span>
-            <SettingToggle
-              checked={soundEnabled}
-              label={t("ui.profile.soundLabel")}
-              onChange={changeSound}
-            />
-          </div>
-          <div
-            className={`${styles.profileSettingRow} ${styles.profileSettingRowWithTooltip}`}
+      <section className={styles.profileSection}>
+        <div className={styles.profileNavigation}>
+          <ResponsiveNestedDrawer
+            trigger={
+              <button type="button">
+                <span>
+                  <strong>{t("ui.library.drawerTitle")}</strong>
+                  <small>{t("ui.library.profileSummary")}</small>
+                </span>
+                <ChevronLeftIcon aria-hidden="true" />
+              </button>
+            }
           >
-            <span className={styles.settingLabelWithInfo}>
-              {t("ui.profile.debugMode")}
-              <span className={styles.infoPopover}>
-                <button
-                  type="button"
-                  aria-label={t("ui.profile.debugModeInfoLabel")}
-                  aria-describedby="debug-mode-info"
-                >
-                  <InfoIcon />
-                </button>
-              </span>
-            </span>
-            <span
-              className={styles.settingInfoTooltip}
-              id="debug-mode-info"
-              role="tooltip"
-            >
-              {t("ui.profile.debugModeDescription")}
-            </span>
-            <SettingToggle
-              checked={profile.debugMode}
-              label={t("ui.profile.debugModeLabel")}
-              onChange={onDebugModeChange}
-            />
+            <GameLibraryDrawer />
+          </ResponsiveNestedDrawer>
+          <ResponsiveNestedDrawer
+            trigger={
+              <button type="button">
+                <span>
+                  <strong>{t("ui.history.title")}</strong>
+                  <small>
+                    {t("ui.history.profileSummary", {
+                      count: completedSessions.length,
+                    })}
+                  </small>
+                </span>
+                <ChevronLeftIcon aria-hidden="true" />
+              </button>
+            }
+          >
+            <QuestHistoryDrawer completedSessions={completedSessions} />
+          </ResponsiveNestedDrawer>
+        </div>
+      </section>
+
+      <section className={styles.profileSection}>
+        <h3 className={styles.profileSectionLabel}>
+          {t("ui.profile.redRopes")}
+        </h3>
+        <dl className={styles.profileMetrics}>
+          <ProfileMetric
+            label={t("ui.profile.owned")}
+            value={formatScore(profile.redRopes, language)}
+          />
+        </dl>
+        <RopePurchaseRow
+          coins={profile.points}
+          onPurchase={onPurchaseRedRopes}
+        />
+      </section>
+
+      <section className={styles.profileSection}>
+        <h3 className={styles.profileSectionLabel}>
+          {t("ui.profile.statistics")}
+        </h3>
+        <dl className={styles.profileMetrics}>
+          <ProfileMetric
+            label={t("ui.profile.completedQuests")}
+            value={formatScore(stats.completedQuestCount, language)}
+          />
+          <ProfileMetric
+            label={t("ui.profile.timePlayed")}
+            value={formatPlayedTime(stats.totalPlayedMs, t, language)}
+          />
+          <ProfileMetric
+            label={t("ui.profile.coinsCollected")}
+            value={formatScore(totalCoinsCollected, language)}
+          />
+          <ProfileMetric
+            label={t("ui.profile.cancelledQuests")}
+            value={formatScore(stats.cancelledQuestCount, language)}
+          />
+          <ProfileMetric
+            label={t("ui.profile.repeatedQuests")}
+            value={formatScore(stats.repeatedCompletionCount, language)}
+          />
+          <ProfileMetric
+            label={t("ui.profile.favoriteMood")}
+            value={favoriteMood?.title ?? t("ui.profile.noFavoriteMood")}
+          />
+        </dl>
+      </section>
+
+      <section className={styles.profileSection}>
+        <h3 className={styles.profileSectionLabel}>
+          {t("ui.profile.settings")}
+        </h3>
+        <div className={styles.profileSettingRow}>
+          <span>{t("ui.profile.theme")}</span>
+          <div
+            className={styles.themeSegmentedControl}
+            role="group"
+            aria-label={t("ui.profile.theme")}
+          >
+            {THEME_CHOICES.map((choice) => (
+              <button
+                type="button"
+                aria-pressed={themeChoice === choice}
+                key={choice}
+                onClick={() => onThemeChange(choice)}
+              >
+                {t(`ui.profile.theme${capitalize(choice)}`)}
+              </button>
+            ))}
           </div>
-        </section>
+        </div>
+        <div className={styles.profileSettingRow}>
+          <span>{t("ui.profile.sound")}</span>
+          <SettingToggle
+            checked={soundEnabled}
+            label={t("ui.profile.soundLabel")}
+            onChange={changeSound}
+          />
+        </div>
+        <div
+          className={`${styles.profileSettingRow} ${styles.profileSettingRowWithTooltip}`}
+        >
+          <span className={styles.settingLabelWithInfo}>
+            {t("ui.profile.debugMode")}
+            <span className={styles.infoPopover}>
+              <button
+                type="button"
+                aria-label={t("ui.profile.debugModeInfoLabel")}
+                aria-describedby="debug-mode-info"
+              >
+                <InfoIcon />
+              </button>
+            </span>
+          </span>
+          <span
+            className={styles.settingInfoTooltip}
+            id="debug-mode-info"
+            role="tooltip"
+          >
+            {t("ui.profile.debugModeDescription")}
+          </span>
+          <SettingToggle
+            checked={profile.debugMode}
+            label={t("ui.profile.debugModeLabel")}
+            onChange={onDebugModeChange}
+          />
+        </div>
+      </section>
     </ProfilePanel>
   );
 }

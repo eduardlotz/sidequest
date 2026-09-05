@@ -32,13 +32,14 @@
 }
 
 .visual[data-visual="icon"] {
-  background:
+  /* background:
     radial-gradient(
       circle at 30% 20%,
       rgb(255 255 255 / 0.26),
       transparent 46%
     ),
-    rgb(var(--game-color-rgb) / 0.2);
+    rgb(var(--game-color-rgb) / 0.2); */
+  background: var(--game-color);
   color: var(--game-color);
 }
 
@@ -47,7 +48,9 @@
 }
 
 .visual[data-visual="icon"] svg {
-  width: 52%;
-  height: 52%;
+  width: 80%;
+  height: 80%;
   stroke-width: 1.8;
+  /* mix-blend-mode: plus-lighter; */
+  color: var(--color-text);
 }

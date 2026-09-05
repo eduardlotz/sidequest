@@ -10,6 +10,7 @@ import { normalizeLanguage } from "../../../../localization/i18n";
 import { GameVisual } from "../../../../shared/ui/GameVisual/GameVisual";
 import { ProfilePanel } from "../ProfileDrawer/ProfilePanel";
 import styles from "./QuestHistoryDrawer.module.css";
+import { CoinIcon } from "../../../../shared/ui/Icons/Icons";
 
 export function QuestHistoryDrawer({
   completedSessions,
@@ -44,19 +45,24 @@ export function QuestHistoryDrawer({
             return (
               <li key={completion.id}>
                 <div className={styles.historyIdentity}>
-                  {completion.game ? (
+                  {/* {completion.game ? (
                     <GameVisual game={completion.game} />
                   ) : (
                     <span className={styles.universalMark} aria-hidden="true">
                       {quest.mood.title.charAt(0)}
                     </span>
-                  )}
+                  )} */}
                   <div>
                     <strong>{quest.name}</strong>
                     <span>
                       {completion.game?.name ?? t("ui.history.anyGame")}
                     </span>
                   </div>
+                  <time
+                    dateTime={new Date(completion.completedAt).toISOString()}
+                  >
+                    {formatCompletedAt(completion.completedAt, language)}
+                  </time>
                 </div>
                 <dl className={styles.historyMeta}>
                   <div>
@@ -65,20 +71,16 @@ export function QuestHistoryDrawer({
                   </div>
                   <div>
                     <dt>{t("ui.history.duration")}</dt>
-                    <dd>{formatRunningDuration(completion.durationMs)}</dd>
+                    <dd>{formatRunningDuration(completion.durationMs)} min</dd>
                   </div>
                   <div>
                     <dt>{t("ui.history.reward")}</dt>
                     <dd>
-                      {t("ui.history.coins", {
-                        count: formatScore(completion.pointsAwarded, language),
-                      })}
+                      {completion.pointsAwarded}
+                      <CoinIcon />
                     </dd>
                   </div>
                 </dl>
-                <time dateTime={new Date(completion.completedAt).toISOString()}>
-                  {formatCompletedAt(completion.completedAt, language)}
-                </time>
               </li>
             );
           })}

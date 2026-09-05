@@ -3,16 +3,20 @@
   padding: 0;
   margin: 0;
   list-style: none;
-  gap: 9px;
+  gap: 0px;
 }
 
 .historyList > li {
   display: grid;
-  padding: 13px;
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  background: var(--color-surface-soft);
+  padding: 24px 0px;
+  /* border: 1px solid var(--color-border); */
+  /* border-radius: 16px; */
+  /* background: var(--color-surface-soft); */
   gap: 12px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--color-border);
+  }
 }
 
 .historyIdentity {
@@ -20,7 +24,7 @@
   min-width: 0;
   align-items: center;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 10px;
+  gap: 12px;
 }
 
 .historyIdentity > div {
@@ -62,9 +66,9 @@
 
 .historyMeta {
   display: grid;
-  padding: 9px 0 0;
+  /* padding: 9px 0 0; */
   margin: 0;
-  border-top: 1px solid var(--color-border);
+  /* border-top: 1px solid var(--color-border); */
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
@@ -83,19 +87,27 @@
 
 .historyMeta dd {
   margin: 0;
-  overflow: hidden;
   color: var(--color-text);
   font-size: 0.67rem;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.historyMeta svg {
+  height: 16px;
+  width: 16px;
 }
 
 .historyList time {
   color: var(--color-muted);
   font-size: 0.61rem;
   font-weight: 600;
+  text-align: right;
 }
 
 .emptyState {
