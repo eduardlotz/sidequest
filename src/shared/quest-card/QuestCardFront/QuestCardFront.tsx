@@ -2,8 +2,10 @@ import styles from "../QuestCard/QuestCard.module.css";
 import { WordmarkLogo } from "../../../assets/wordmark";
 import { QuestCardMeta } from "../QuestCardMeta/QuestCardMeta";
 import { QuestObjectiveText } from "../QuestObjectiveText/QuestObjectiveText";
+import type { GameReference } from "../../../data/gameTypes";
 
 type Props = {
+  game: GameReference | null;
   genres: readonly string[];
   minimumDurationMinutes: number;
   moodTitle: string;
@@ -13,6 +15,7 @@ type Props = {
 };
 
 export function QuestCardFront({
+  game,
   genres,
   minimumDurationMinutes,
   moodTitle,
@@ -25,6 +28,7 @@ export function QuestCardFront({
       <span className={styles.questCardFrontContent}>
         <QuestCardMeta
           durationFormat="long"
+          game={game}
           minimumDurationMinutes={minimumDurationMinutes}
           moodTitle={moodTitle}
           suggestedDurationMinutes={suggestedDurationMinutes}

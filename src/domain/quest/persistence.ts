@@ -1,6 +1,14 @@
 import { MOODS_BY_ID, type MoodId } from "../../data/moods";
 import { QUEST_CORES_BY_ID } from "../../data/quests";
 import {
+  GAME_ICON_IDS,
+  type GameColorId,
+  type GameIconId,
+  type GameReference,
+} from "../../data/gameTypes";
+import { GAME_COLOR_IDS } from "../../data/gameVisuals";
+import type { LibraryGame } from "../library/model";
+import {
   AVATAR_THEMES,
   DEFAULT_PROFILE,
   INITIAL_RED_ROPES,
@@ -10,19 +18,20 @@ import {
   type AvatarTheme,
   type CompletedSession,
   type PersistedQuestState,
+  type QuestOffer,
   type QuestSession,
   type QuestStats,
   type UserProfile,
 } from "./model";
 import {
   createDefaultQuestState,
+  createQuestOffer,
   favoriteMoodId,
   finiteNumber,
   generateQuestOffers,
   moodSelectionExpired,
   safeAdd,
   safeNonNegativeInteger,
-  uniqueStrings,
 } from "./rules";
 
 export function migratePersistedQuestState(
@@ -30,9 +39,10 @@ export function migratePersistedQuestState(
   version: number,
   now: number = Date.now(),
   random: () => number = Math.random,
+  libraryGames: readonly LibraryGame[] = [],
 ): PersistedQuestState {
   return version === STORE_VERSION
-    ? sanitizePersistedQuestState(persistedState, now, random)
+    ? sanitizePersistedQuestState(persistedState, now, random, libraryGames)
     : createDefaultQuestState();
 }
 
@@ -40,6 +50,7 @@ export function sanitizePersistedQuestState(
   value: unknown,
   now: number = Date.now(),
   random: () => number = Math.random,
+  libraryGames: readonly LibraryGame[] = [],
 ): PersistedQuestState {
   if (!isRecord(value)) return createDefaultQuestState();
 
@@ -63,23 +74,29 @@ export function sanitizePersistedQuestState(
       profile,
       selectedMoodId: null,
       moodSelectedAt: null,
-      offeredQuestIds: [],
+      offeredQuests: [],
       offerSetsByMoodId: {},
+      offerLibraryRevision: safeNonNegativeInteger(value.offerLibraryRevision),
       currentSession,
       completedSessions,
       stats,
     };
   }
 
-  const offerSetsByMoodId = offerSetsFromUnknown(value.offerSetsByMoodId, random);
+  const offerSetsByMoodId = offerSetsFromUnknown(
+    value.offerSetsByMoodId,
+    random,
+    libraryGames,
+  );
   if (selectedMoodId && !offerSetsByMoodId[selectedMoodId]) {
     offerSetsByMoodId[selectedMoodId] = sanitizedOfferSet(
       selectedMoodId,
-      value.offeredQuestIds,
+      value.offeredQuests,
       random,
+      libraryGames,
     );
   }
-  const offeredQuestIds = selectedMoodId
+  const offeredQuests = selectedMoodId
     ? [...(offerSetsByMoodId[selectedMoodId] ?? [])]
     : [];
 
@@ -87,8 +104,9 @@ export function sanitizePersistedQuestState(
     profile,
     selectedMoodId,
     moodSelectedAt,
-    offeredQuestIds,
+    offeredQuests,
     offerSetsByMoodId,
+    offerLibraryRevision: safeNonNegativeInteger(value.offerLibraryRevision),
     currentSession,
     completedSessions,
     stats,
@@ -98,13 +116,14 @@ export function sanitizePersistedQuestState(
 function offerSetsFromUnknown(
   value: unknown,
   random: () => number,
-): Partial<Record<MoodId, string[]>> {
+  libraryGames: readonly LibraryGame[],
+): Partial<Record<MoodId, QuestOffer[]>> {
   if (!isRecord(value)) return {};
-  const offerSets: Partial<Record<MoodId, string[]>> = {};
+  const offerSets: Partial<Record<MoodId, QuestOffer[]>> = {};
 
   for (const [moodId, offers] of Object.entries(value)) {
     if (!isMoodId(moodId) || !Array.isArray(offers)) continue;
-    offerSets[moodId] = sanitizedOfferSet(moodId, offers, random);
+    offerSets[moodId] = sanitizedOfferSet(moodId, offers, random, libraryGames);
   }
 
   return offerSets;
@@ -114,23 +133,57 @@ function sanitizedOfferSet(
   moodId: MoodId,
   value: unknown,
   random: () => number,
+  libraryGames: readonly LibraryGame[],
 ) {
-  const offeredQuestIds = uniqueStrings(value).filter(
-    (questId) => QUEST_CORES_BY_ID[questId]?.moodId === moodId,
-  );
-  if (offeredQuestIds.length < QUEST_OFFER_COUNT) {
-    const generated = generateQuestOffers(
-      moodId,
-      random,
-      new Set(offeredQuestIds),
+  const offeredQuests = Array.isArray(value)
+    ? value.flatMap((entry) => {
+        const offer = questOfferFromUnknown(entry, moodId);
+        return offer ? [offer] : [];
+      })
+    : [];
+  const validOffers = offeredQuests.flatMap((offer) => {
+    if (!offer.game) return [offer];
+    const game = libraryGames.find(
+      (candidate) => candidate.id === offer.game?.id,
     );
-    for (const questId of generated) {
-      if (offeredQuestIds.includes(questId)) continue;
-      offeredQuestIds.push(questId);
-      if (offeredQuestIds.length === QUEST_OFFER_COUNT) break;
-    }
+    return game?.questIds.includes(offer.questId)
+      ? [createQuestOffer(moodId, offer.questId, game)]
+      : [];
+  });
+  const uniqueOffers = validOffers.filter(
+    (offer, index) =>
+      validOffers.findIndex(
+        (candidate) => candidate.questId === offer.questId,
+      ) === index,
+  );
+  const compatibleIds = new Set(
+    libraryGames
+      .flatMap((game) => game.questIds)
+      .filter((id) => {
+        const quest = QUEST_CORES_BY_ID[id];
+        return quest?.gameBindable && quest.moodIds.includes(moodId);
+      }),
+  );
+  const expectedBoundCount = Math.min(2, compatibleIds.size);
+  if (
+    uniqueOffers.length !== QUEST_OFFER_COUNT ||
+    uniqueOffers.filter((offer) => offer.game).length !== expectedBoundCount
+  ) {
+    return generateQuestOffers(moodId, libraryGames, random);
   }
-  return offeredQuestIds.slice(0, QUEST_OFFER_COUNT);
+  return uniqueOffers.slice(0, QUEST_OFFER_COUNT);
+}
+
+function questOfferFromUnknown(
+  value: unknown,
+  moodId: MoodId,
+): QuestOffer | null {
+  if (!isRecord(value) || typeof value.questId !== "string") return null;
+  const quest = QUEST_CORES_BY_ID[value.questId];
+  if (!quest || !quest.moodIds.includes(moodId)) return null;
+  const game = gameReferenceFromUnknown(value.game);
+  if ((game && !quest.gameBindable) || (!game && !quest.universal)) return null;
+  return createQuestOffer(moodId, value.questId, game);
 }
 
 function profileFromUnknown(value: unknown): UserProfile {
@@ -158,7 +211,9 @@ function sessionFromUnknown(value: unknown): QuestSession | null {
     return null;
   }
   const quest = QUEST_CORES_BY_ID[value.questId];
-  if (!quest || quest.moodId !== value.moodId) return null;
+  if (!quest || !quest.moodIds.includes(value.moodId)) return null;
+  const game = gameReferenceFromUnknown(value.game);
+  if ((game && !quest.gameBindable) || (!game && !quest.universal)) return null;
 
   const revealedAt = finiteNumber(value.revealedAt);
   if (revealedAt === null) return null;
@@ -171,6 +226,7 @@ function sessionFromUnknown(value: unknown): QuestSession | null {
     sessionId: value.sessionId,
     moodId: value.moodId,
     questId: value.questId,
+    game,
     revealedAt,
     startedAt,
     pausedAt:
@@ -198,7 +254,9 @@ function completionsFromUnknown(value: unknown): CompletedSession[] {
       continue;
     }
     const quest = QUEST_CORES_BY_ID[entry.questId];
-    if (!quest || quest.moodId !== entry.moodId) continue;
+    if (!quest || !quest.moodIds.includes(entry.moodId)) continue;
+    const game = gameReferenceFromUnknown(entry.game);
+    if ((game && !quest.gameBindable) || (!game && !quest.universal)) continue;
 
     const completedAt = finiteNumber(entry.completedAt);
     if (completedAt === null) continue;
@@ -207,6 +265,7 @@ function completionsFromUnknown(value: unknown): CompletedSession[] {
       id: entry.id,
       moodId: entry.moodId,
       questId: entry.questId,
+      game,
       durationMs: safeNonNegativeInteger(entry.durationMs),
       pointsAwarded: safeNonNegativeInteger(entry.pointsAwarded),
       completedAt: safeNonNegativeInteger(completedAt),
@@ -240,7 +299,9 @@ function statsFromUnknown(
       1,
     );
   }
-  for (const [questId, historyCount] of Object.entries(historyCountsByQuestId)) {
+  for (const [questId, historyCount] of Object.entries(
+    historyCountsByQuestId,
+  )) {
     completionCountsByQuestId[questId] = Math.max(
       completionCountsByQuestId[questId] ?? 0,
       historyCount,
@@ -248,6 +309,15 @@ function statsFromUnknown(
   }
 
   const completionCountsByMoodId: Partial<Record<MoodId, number>> = {};
+  if (isRecord(storedStats.completionCountsByMoodId)) {
+    for (const [moodId, storedCount] of Object.entries(
+      storedStats.completionCountsByMoodId,
+    )) {
+      if (!isMoodId(moodId)) continue;
+      const count = safeNonNegativeInteger(storedCount);
+      if (count > 0) completionCountsByMoodId[moodId] = count;
+    }
+  }
   let completedQuestCount = 0;
   let repeatedCompletionCount = 0;
   for (const [questId, count] of Object.entries(completionCountsByQuestId)) {
@@ -258,9 +328,19 @@ function statsFromUnknown(
       repeatedCompletionCount,
       Math.max(0, count - 1),
     );
-    completionCountsByMoodId[quest.moodId] = safeAdd(
-      completionCountsByMoodId[quest.moodId] ?? 0,
-      count,
+  }
+  const historyCountsByMoodId: Partial<Record<MoodId, number>> = {};
+  for (const completion of completedSessions) {
+    historyCountsByMoodId[completion.moodId] = safeAdd(
+      historyCountsByMoodId[completion.moodId] ?? 0,
+      1,
+    );
+  }
+  for (const [moodId, historyCount] of Object.entries(historyCountsByMoodId)) {
+    if (!isMoodId(moodId)) continue;
+    completionCountsByMoodId[moodId] = Math.max(
+      completionCountsByMoodId[moodId] ?? 0,
+      historyCount ?? 0,
     );
   }
 
@@ -272,7 +352,8 @@ function statsFromUnknown(
       if (!isMoodId(moodId)) continue;
       const completedAt = finiteNumber(storedCompletedAt);
       if (completedAt !== null) {
-        latestCompletionAtByMoodId[moodId] = safeNonNegativeInteger(completedAt);
+        latestCompletionAtByMoodId[moodId] =
+          safeNonNegativeInteger(completedAt);
       }
     }
   }
@@ -295,7 +376,9 @@ function statsFromUnknown(
       safeNonNegativeInteger(storedStats.totalPlayedMs),
       historyDurationMs,
     ),
-    cancelledQuestCount: safeNonNegativeInteger(storedStats.cancelledQuestCount),
+    cancelledQuestCount: safeNonNegativeInteger(
+      storedStats.cancelledQuestCount,
+    ),
     repeatedCompletionCount,
     completionCountsByQuestId,
     completionCountsByMoodId,
@@ -305,6 +388,42 @@ function statsFromUnknown(
       latestCompletionAtByMoodId,
     ),
   };
+}
+
+function gameReferenceFromUnknown(value: unknown): GameReference | null {
+  if (!isRecord(value)) return null;
+  if (
+    typeof value.id !== "string" ||
+    !value.id ||
+    typeof value.name !== "string" ||
+    !value.name.trim() ||
+    (value.source !== "curated" && value.source !== "custom")
+  ) {
+    return null;
+  }
+  const iconId = isGameIconId(value.iconId) ? value.iconId : undefined;
+  const colorId = isGameColorId(value.colorId) ? value.colorId : undefined;
+  return {
+    id: value.id,
+    name: value.name.trim().slice(0, 80),
+    source: value.source,
+    ...(iconId ? { iconId } : {}),
+    ...(colorId ? { colorId } : {}),
+  };
+}
+
+function isGameIconId(value: unknown): value is GameIconId {
+  return (
+    typeof value === "string" &&
+    (GAME_ICON_IDS as readonly string[]).includes(value)
+  );
+}
+
+function isGameColorId(value: unknown): value is GameColorId {
+  return (
+    typeof value === "string" &&
+    (GAME_COLOR_IDS as readonly string[]).includes(value)
+  );
 }
 
 function isMoodId(value: unknown): value is MoodId {

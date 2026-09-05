@@ -18,8 +18,25 @@
 .profileDrawerTitleRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   gap: 12px;
+}
+
+.profileBackButton {
+  display: grid;
+  width: 29px;
+  height: 29px;
+  padding: 0;
+  border-radius: 50%;
+  place-items: center;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.profileBackButton svg {
+  width: 16px;
+  height: 16px;
 }
 
 .profileDrawerHeader h2 {
@@ -67,6 +84,63 @@
   font-size: 0.73rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+}
+
+.profileNavigation {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface-soft);
+}
+
+.profileNavigation > button {
+  display: grid;
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 11px;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  grid-template-columns: minmax(0, 1fr) auto;
+  background: transparent;
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.profileNavigation > button:last-child {
+  border-bottom: 0;
+}
+
+.profileNavigation > button > span {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.profileNavigation strong,
+.profileNavigation small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profileNavigation strong {
+  font-size: 0.73rem;
+  letter-spacing: -0.02em;
+}
+
+.profileNavigation small {
+  color: var(--color-muted);
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.profileNavigation > button > svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-muted);
+  transform: rotate(180deg);
 }
 
 .profileMetrics {

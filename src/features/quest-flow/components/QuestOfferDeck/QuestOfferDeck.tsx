@@ -1,7 +1,7 @@
 import { animate, motion, useMotionValue } from "motion/react";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
-import type { QuestDefinition } from "../../../../data/quests";
+import type { Quest } from "../../../../domain/quest/model";
 import { getMoodAccentStyle } from "../../../../data/questColors";
 import { useTiltEffect } from "../../../../hooks/useTiltEffect";
 import { CARD_LAYOUT_TRANSITION } from "../../../../lib/cardMotion";
@@ -14,7 +14,7 @@ import { plainObjectiveText } from "../../../../shared/quest-card/QuestObjective
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
 import { usePlayLayout } from "../../usePlayLayout";
 
-export type QuestOfferItem = QuestDefinition;
+export type QuestOfferItem = Quest & { offerId: string };
 export type NewCardsPhase = "idle" | "outgoing" | "incoming";
 type QuestEntryMotion = "bottom" | "shared";
 
@@ -86,13 +86,13 @@ export function QuestOfferDeck({
   onSelect,
 }: Props) {
   const { t } = useTranslation();
-  const itemKey = items.map((item) => item.id).join("-");
+  const itemKey = items.map((item) => item.offerId).join("-");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activeCardIndex, setActiveCardIndex] = useState(() =>
     returningQuestId
       ? Math.max(
           0,
-          items.findIndex((item) => item.id === returningQuestId),
+          items.findIndex((item) => item.offerId === returningQuestId),
         )
       : 0,
   );
@@ -115,7 +115,7 @@ export function QuestOfferDeck({
       returningQuestId
         ? Math.max(
             0,
-            items.findIndex((item) => item.id === returningQuestId),
+            items.findIndex((item) => item.offerId === returningQuestId),
           )
         : 0,
     );
@@ -180,8 +180,10 @@ export function QuestOfferDeck({
               index === 0 ? "left" : index === 2 ? "right" : "center"
             }
             data-stack-position={stackPosition}
-            data-swipe-exiting={swipingIds.has(item.id) || undefined}
-            data-swipe-returning={returningSwipeIds.has(item.id) || undefined}
+            data-swipe-exiting={swipingIds.has(item.offerId) || undefined}
+            data-swipe-returning={
+              returningSwipeIds.has(item.offerId) || undefined
+            }
             key={`quest-offer-slot-${index}`}
           >
             <QuestOfferCard
@@ -196,7 +198,7 @@ export function QuestOfferDeck({
               returningToMoods={returningToMoods}
               newCardsSequence={newCardsSequence}
               newCardsPhase={newCardsPhase}
-              selected={selectedId === item.id}
+              selected={selectedId === item.offerId}
               selectionStarted={selectedId !== null}
               onCycle={cycleCard}
               onSelect={selectCard}
@@ -234,7 +236,7 @@ export function QuestOfferDeck({
           : selectedId
             ? t("ui.offers.opening", {
                 title:
-                  items.find((item) => item.id === selectedId)?.name ??
+                  items.find((item) => item.offerId === selectedId)?.name ??
                   t("ui.offers.hiddenQuest"),
               })
             : ""}
@@ -323,7 +325,7 @@ function QuestOfferCard({
       data-position={index === 0 ? "left" : index === 2 ? "right" : "center"}
       data-selected={selected || undefined}
       data-stack-position={stackPosition}
-      layoutId={`quest-card-${layoutSessionId}-${item.id}`}
+      layoutId={`quest-card-${layoutSessionId}-${item.offerId}`}
       layoutCrossfade={false}
       initial={
         reduceMotion || newCardsSequence > 0
@@ -439,15 +441,16 @@ function QuestOfferCard({
         data-flow-focus={(isCompact ? isTopCard : index === 1) || undefined}
         data-sound-card
         data-quest-id={item.id}
+        data-offer-id={item.offerId}
         data-selected={selected || undefined}
         type="button"
         disabled={dealingNewCards}
         tabIndex={isCompact && !isTopCard ? -1 : undefined}
-        style={getMoodAccentStyle(item.moodId)}
+        style={getMoodAccentStyle(item.mood.id)}
         onClick={() => {
           if (suppressClickRef.current || (isCompact && !isTopCard)) return;
           resetTilt();
-          onSelect(item.id, CARD_ROTATIONS[index]);
+          onSelect(item.offerId, CARD_ROTATIONS[index]);
         }}
         onKeyDown={(event) => {
           if (!isCompact || !isTopCard) return;
@@ -499,12 +502,12 @@ function QuestOfferCard({
                 Math.abs(info.offset.x) + 140,
               );
 
-              onSwipeStart(item.id);
+              onSwipeStart(item.offerId);
               onCycle(1);
 
               if (reduceMotion) {
                 swipeX.set(0);
-                onSwipeComplete(item.id);
+                onSwipeComplete(item.offerId);
               } else {
                 swipeAnimationRef.current?.stop();
                 swipeAnimationRef.current = animate(
@@ -514,7 +517,7 @@ function QuestOfferCard({
                     duration: 0.2,
                     ease: [0.22, 0.8, 0.24, 1],
                     onComplete: () => {
-                      onSwipeReturnStart(item.id);
+                      onSwipeReturnStart(item.offerId);
                       swipeAnimationRef.current = animate(swipeX, 0, {
                         type: "spring",
                         stiffness: 420,
@@ -522,7 +525,7 @@ function QuestOfferCard({
                         mass: 0.58,
                         restDelta: 0.5,
                         restSpeed: 25,
-                        onComplete: () => onSwipeComplete(item.id),
+                        onComplete: () => onSwipeComplete(item.offerId),
                       });
                     },
                   },
@@ -570,8 +573,9 @@ function QuestOfferCard({
             <QuestCard
               className={`${styles.questSelectionCard} ${styles.newCardsCardFront}`}
               genres={item.genres}
+              game={item.game}
               minimumDurationMinutes={item.minimumDurationMinutes}
-              moodTitle={t(`moods.${item.moodId}.title`)}
+              moodTitle={item.mood.title}
               name={item.name}
               objective={item.objective}
               suggestedDurationMinutes={item.suggestedDurationMinutes}

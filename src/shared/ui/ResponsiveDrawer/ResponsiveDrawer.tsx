@@ -1,4 +1,10 @@
-import { useState, type ReactElement, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { Drawer } from "vaul";
 import { playSound } from "../../../lib/sound";
 import {
@@ -17,6 +23,14 @@ type Props = {
   trigger: ReactElement;
   variant: "about" | "profile";
 };
+
+type DrawerEnvironment = {
+  desktop: boolean;
+  desktopDirection: "left" | "right";
+  mobileContainer: HTMLDivElement | null;
+};
+
+const DrawerEnvironmentContext = createContext<DrawerEnvironment | null>(null);
 
 export function ResponsiveDrawer({
   children,
@@ -39,15 +53,69 @@ export function ResponsiveDrawer({
   }
 
   return (
-    <Drawer.Root
-      activeSnapPoint={desktop ? undefined : snapPoint}
-      setActiveSnapPoint={desktop ? undefined : setSnapPoint}
+    <DrawerEnvironmentContext.Provider
+      value={{ desktop, desktopDirection, mobileContainer }}
+    >
+      <Drawer.Root
+        activeSnapPoint={desktop ? undefined : snapPoint}
+        setActiveSnapPoint={desktop ? undefined : setSnapPoint}
+        container={desktop ? undefined : mobileContainer}
+        direction={desktop ? desktopDirection : "bottom"}
+        open={open}
+        onOpenChange={changeOpen}
+        snapPoints={desktop ? undefined : MOBILE_SNAP_POINTS}
+        shouldScaleBackground={false}
+      >
+        <Drawer.Trigger asChild>{trigger}</Drawer.Trigger>
+        <Drawer.Portal>
+          <Drawer.Overlay className={styles.drawerOverlay} />
+          <Drawer.Content
+            className={styles.drawerContent}
+            data-direction={desktop ? desktopDirection : "bottom"}
+            data-drawer-variant={variant}
+            data-mobile-snap={
+              desktop ? undefined : snapPoint === 1 ? "full" : "default"
+            }
+          >
+            {!desktop && <Drawer.Handle className={styles.drawerHandle} />}
+            {children}
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+    </DrawerEnvironmentContext.Provider>
+  );
+}
+
+export function ResponsiveNestedDrawer({
+  children,
+  trigger,
+}: {
+  children: ReactNode;
+  trigger: ReactElement;
+}) {
+  const environment = useContext(DrawerEnvironmentContext);
+  const [open, setOpen] = useState(false);
+
+  if (!environment) {
+    throw new Error("ResponsiveNestedDrawer must be inside ResponsiveDrawer");
+  }
+
+  const { desktop, desktopDirection, mobileContainer } = environment;
+
+  function changeOpen(nextOpen: boolean) {
+    if (nextOpen === open) return;
+    playSound(nextOpen ? "drawerOpen" : "drawerClose");
+    setOpen(nextOpen);
+  }
+
+  return (
+    <Drawer.NestedRoot
+      activeSnapPoint={desktop ? undefined : 1}
       container={desktop ? undefined : mobileContainer}
       direction={desktop ? desktopDirection : "bottom"}
       open={open}
       onOpenChange={changeOpen}
-      snapPoints={desktop ? undefined : MOBILE_SNAP_POINTS}
-      shouldScaleBackground={false}
+      snapPoints={desktop ? undefined : [1]}
     >
       <Drawer.Trigger asChild>{trigger}</Drawer.Trigger>
       <Drawer.Portal>
@@ -55,16 +123,14 @@ export function ResponsiveDrawer({
         <Drawer.Content
           className={styles.drawerContent}
           data-direction={desktop ? desktopDirection : "bottom"}
-          data-drawer-variant={variant}
-          data-mobile-snap={
-            desktop ? undefined : snapPoint === 1 ? "full" : "default"
-          }
+          data-drawer-variant="profile"
+          data-mobile-snap={desktop ? undefined : "full"}
         >
           {!desktop && <Drawer.Handle className={styles.drawerHandle} />}
           {children}
         </Drawer.Content>
       </Drawer.Portal>
-    </Drawer.Root>
+    </Drawer.NestedRoot>
   );
 }
 

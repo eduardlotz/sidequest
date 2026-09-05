@@ -1,8 +1,11 @@
 import { useTranslation } from "react-i18next";
 import styles from "../QuestCard/QuestCard.module.css";
+import type { GameReference } from "../../../data/gameTypes";
+import { GameVisual } from "../../ui/GameVisual/GameVisual";
 
 type Props = {
   durationFormat?: "long" | "short";
+  game?: GameReference | null;
   minimumDurationMinutes: number;
   moodTitle: string;
   name?: string;
@@ -11,6 +14,7 @@ type Props = {
 
 export function QuestCardMeta({
   durationFormat = "short",
+  game = null,
   minimumDurationMinutes,
   moodTitle,
   name,
@@ -42,6 +46,12 @@ export function QuestCardMeta({
       <span className={styles.questCardMeta}>
         <span className={styles.questCardIdentity}>
           <strong className={styles.questCardMood}>{moodTitle}</strong>
+          {game ? (
+            <span className={styles.questCardGame}>
+              <GameVisual game={game} size="card" />
+              <span>{game.name}</span>
+            </span>
+          ) : null}
           {name ? (
             <span className={styles.questCardName}>{name}</span>
           ) : null}

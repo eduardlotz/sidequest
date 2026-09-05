@@ -1,3 +1,4 @@
+import { englishLibrary, germanLibrary } from "./library";
 import type { MoodDefinition } from "../data/questTypes";
 
 export const englishUi = {
@@ -18,17 +19,34 @@ export const englishUi = {
     description: "A small companion app for people with too many video games.",
     stepsHeading: "Three steps to your game",
     step1: "Choose a mood that fits",
-    step2: "Pick a quest that makes you think of a specific game",
+    step2: "Pick a quest shaped around a game in your library",
     step3: "Complete the quest at your own pace and earn coins",
     mismatchHeading: "The quest isn't right for you?",
     mismatchBody: "Cut the red rope, draw a new card, and try another quest.",
     difficultyBody:
       "How difficult a quest ultimately is also depends on the game you choose.",
+    libraryHeading: "Your library, your quests",
+    libraryBody:
+      "Choose from the curated games or add your own. Sidequest combines game-specific cards with universal quests that work across your collection.",
     coinsHeading: "What do I do with the coins?",
     coinEarning: "The longer you spend on a quest, the more coins you earn.",
     coinSpending:
       "New quests and cancelling a sidequest cost coins. To ease the agony of choice, sooner or later you will have to choose a quest that may not have appealed to you right away.",
     madeBy: "Made by",
+  },
+  library: englishLibrary,
+  history: {
+    title: "Quest history",
+    description: "Your completed sidequests, newest first.",
+    profileSummary_one: "{{count}} completed quest",
+    profileSummary_other: "{{count}} completed quests",
+    emptyTitle: "No completed sidequests yet",
+    emptyBody: "Completed quests will appear here with their game and result.",
+    anyGame: "Any game",
+    mood: "Mood",
+    duration: "Time",
+    reward: "Reward",
+    coins: "{{count}} coins",
   },
   task: {
     currentQuest: "Current quest",
@@ -111,6 +129,8 @@ export const englishUi = {
     pointsLabel: "{{points}} coins",
     points: "Coins",
     description: "Your coins, settings, and completed sidequests.",
+    back: "Back to profile",
+    yourSidequests: "Your sidequests",
     redRopes: "Cancellation ropes",
     owned: "Owned",
     buyRopeInline: "Buy rope",
@@ -172,19 +192,36 @@ export const germanUi = {
     stepsHeading: "In drei Schritten zu deinem Spiel",
     step1: "Wähle eine passende Stimmung",
     step2:
-      "Such dir eine Quest aus, die dich an ein bestimmtes Spiel denken lässt",
+      "Such dir eine Quest aus, die zu einem Spiel in deiner Bibliothek passt",
     step3: "Schließe die Quest in deinem Tempo ab und verdiene Münzen",
     mismatchHeading: "Die Aufgabe passt doch nicht?",
     mismatchBody:
       "Schneide das rote Seil durch, ziehe eine neue Karte und probier eine andere Aufgabe aus.",
     difficultyBody:
       "Wie schwer eine Aufgabe am Ende ist, hängt auch von deinem gewählten Spiel ab.",
+    libraryHeading: "Deine Bibliothek, deine Quests",
+    libraryBody:
+      "Wähle Spiele aus der kuratierten Sammlung oder füge eigene hinzu. Sidequest mischt spielspezifische Karten mit universellen Quests für deine ganze Sammlung.",
     coinsHeading: "Was mache ich mit den Münzen?",
     coinEarning:
       "Je länger du an einer Quest sitzt, desto mehr Münzen gibt es dafür.",
     coinSpending:
       "Neue Quests und der Abbruch einer sidequest kosten Münzen. Um die Qual der Wahl etwas zu dämpfen musst du dich früher oder später auch mal für eine Quest entscheiden, die dich vielleicht nicht sofort angesprochen hat.",
     madeBy: "Von",
+  },
+  library: germanLibrary,
+  history: {
+    title: "Quest-Verlauf",
+    description: "Deine abgeschlossenen Sidequests, die neuesten zuerst.",
+    profileSummary_one: "{{count}} abgeschlossene Quest",
+    profileSummary_other: "{{count}} abgeschlossene Quests",
+    emptyTitle: "Noch keine Sidequest abgeschlossen",
+    emptyBody: "Abgeschlossene Quests erscheinen hier mit Spiel und Ergebnis.",
+    anyGame: "Beliebiges Spiel",
+    mood: "Stimmung",
+    duration: "Zeit",
+    reward: "Belohnung",
+    coins: "{{count}} Münzen",
   },
   task: {
     currentQuest: "Aktuelle Quest",
@@ -268,6 +305,8 @@ export const germanUi = {
     pointsLabel: "{{points}} Münzen",
     points: "Münzen",
     description: "Deine Münzen, Einstellungen und abgeschlossenen Sidequests.",
+    back: "Zurück zum Profil",
+    yourSidequests: "Deine Sidequests",
     redRopes: "Abbruch-Seile",
     owned: "Im Besitz",
     buyRopeInline: "Seil kaufen",

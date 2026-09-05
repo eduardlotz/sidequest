@@ -45,6 +45,11 @@ export function AboutPanel({ reduceMotion }: Props) {
         </section>
 
         <section className={styles.aboutSection}>
+          <h3>{t("ui.about.libraryHeading")}</h3>
+          <p>{t("ui.about.libraryBody")}</p>
+        </section>
+
+        <section className={styles.aboutSection}>
           <h3>{t("ui.about.coinsHeading")}</h3>
           <p>{t("ui.about.coinEarning")}</p>
           <p>{t("ui.about.coinSpending")}</p>

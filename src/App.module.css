@@ -38,6 +38,10 @@
   overflow: auto;
 }
 
+.app[data-screen="setup"] {
+  overflow: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .app {
     transition: none;

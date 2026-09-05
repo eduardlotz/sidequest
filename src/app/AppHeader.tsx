@@ -216,6 +216,7 @@ export function AppHeader({
               }
             >
               <ProfileDrawer
+                completedSessions={completedSessions}
                 onDebugModeChange={setDebugMode}
                 onPurchaseRedRopes={purchaseRedRopes}
                 onThemeChange={changeTheme}

@@ -5,6 +5,7 @@ import {
   type QuestDefinition,
 } from "../data/quests";
 import type { Quest } from "../domain/quest/model";
+import type { GameReference } from "../data/gameTypes";
 import i18n, { normalizeLanguage, type AppLanguage } from "./i18n";
 
 function translator(language: AppLanguage) {
@@ -41,15 +42,23 @@ export function localizeQuest(
 
 export function hydrateQuest(
   questId: string,
+  moodId: MoodId,
+  game: GameReference | null,
   language: AppLanguage,
 ): Quest | null {
   const quest = localizeQuest(questId, language);
   if (!quest) return null;
-  const mood = localizeMood(quest.moodId, language);
+  if (!quest.moodIds.includes(moodId)) return null;
+  const mood = localizeMood(moodId, language);
   if (!mood) return null;
+  if (game && !quest.gameObjective) return null;
 
   return {
     ...quest,
+    objective: game
+      ? quest.gameObjective!.replaceAll("{{game}}", game.name)
+      : quest.objective,
     mood,
+    game,
   };
 }

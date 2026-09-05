@@ -1,8 +1,9 @@
 import type { MoodDefinition, MoodId } from "../../data/moods";
 import type { QuestDefinition } from "../../data/quests";
+import type { GameReference } from "../../data/gameTypes";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 10;
+export const STORE_VERSION = 11;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const NEW_CARDS_COST = 25;
 export const QUEST_OFFER_COUNT = 3;
@@ -41,6 +42,7 @@ export type QuestSession = {
   sessionId: string;
   moodId: MoodId;
   questId: string;
+  game: GameReference | null;
   revealedAt: number;
   startedAt: number | null;
   pausedAt: number | null;
@@ -51,9 +53,17 @@ export type CompletedSession = {
   id: string;
   moodId: MoodId;
   questId: string;
+  game: GameReference | null;
   durationMs: number;
   pointsAwarded: number;
   completedAt: number;
+};
+
+export type QuestOffer = {
+  id: string;
+  moodId: MoodId;
+  questId: string;
+  game: GameReference | null;
 };
 
 export type QuestStats = {
@@ -72,8 +82,9 @@ export type QuestState = {
   profile: UserProfile;
   selectedMoodId: MoodId | null;
   moodSelectedAt: number | null;
-  offeredQuestIds: string[];
-  offerSetsByMoodId: Partial<Record<MoodId, string[]>>;
+  offeredQuests: QuestOffer[];
+  offerSetsByMoodId: Partial<Record<MoodId, QuestOffer[]>>;
+  offerLibraryRevision: number;
   currentSession: QuestSession | null;
   completedSessions: CompletedSession[];
   stats: QuestStats;
@@ -83,8 +94,9 @@ export type QuestActions = {
   selectMood: (moodId: MoodId) => boolean;
   editMood: () => boolean;
   refreshMoodWindow: () => void;
+  refreshLibraryOffers: () => void;
   dealNewCards: () => boolean;
-  revealQuest: (questId: string) => boolean;
+  revealQuest: (offerId: string) => boolean;
   startQuest: (startedAt: number) => void;
   pauseQuest: (pausedAt: number) => void;
   resumeQuest: (resumedAt: number) => void;
@@ -102,14 +114,18 @@ export type PersistedQuestState = Pick<
   | "profile"
   | "selectedMoodId"
   | "moodSelectedAt"
-  | "offeredQuestIds"
+  | "offeredQuests"
   | "offerSetsByMoodId"
+  | "offerLibraryRevision"
   | "currentSession"
   | "completedSessions"
   | "stats"
 >;
 
-export type Quest = QuestDefinition & { mood: MoodDefinition };
+export type Quest = QuestDefinition & {
+  mood: MoodDefinition;
+  game: GameReference | null;
+};
 
 export const DEFAULT_PROFILE: UserProfile = {
   points: 0,

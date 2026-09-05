@@ -2,11 +2,13 @@ import { motion, type HTMLMotionProps } from "motion/react";
 import type { ReactNode } from "react";
 import styles from "./QuestCard.module.css";
 import { QuestCardFront } from "../QuestCardFront/QuestCardFront";
+import type { GameReference } from "../../../data/gameTypes";
 
 type Props = {
   children?: ReactNode;
   className?: string;
   completed?: boolean;
+  game?: GameReference | null;
   genres: readonly string[];
   minimumDurationMinutes: number;
   moodTitle: string;
@@ -20,6 +22,7 @@ export function QuestCard({
   children,
   className,
   completed = false,
+  game = null,
   genres,
   minimumDurationMinutes,
   moodTitle,
@@ -36,6 +39,7 @@ export function QuestCard({
     >
       <span className={styles.cardShimmer} aria-hidden="true" />
       <QuestCardFront
+        game={game}
         genres={genres}
         minimumDurationMinutes={minimumDurationMinutes}
         moodTitle={moodTitle}

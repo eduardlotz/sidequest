@@ -5,8 +5,10 @@ import { useShallow } from "zustand/react/shallow";
 import { AppHeader } from "./app/AppHeader";
 import { useCoinBalanceAnimation } from "./app/hooks/useCoinBalanceAnimation";
 import { QuestScreen } from "./features/quest-flow/QuestScreen";
+import { LibrarySetup } from "./features/library/LibrarySetup";
 import { InteractiveDotBackground } from "./shared/ui/InteractiveDotBackground/InteractiveDotBackground";
 import { useQuestStore } from "./stores/useQuestStore";
+import { useLibraryStore } from "./stores/useLibraryStore";
 import styles from "./App.module.css";
 
 export function App() {
@@ -21,12 +23,19 @@ export function App() {
     })),
   );
   const coinBalanceAnimation = useCoinBalanceAnimation(points);
+  const setupCompleted = useLibraryStore((state) => state.setupCompleted);
 
   return (
     <div
       className={styles.app}
       data-screen={
-        currentSession ? "active" : selectedMoodId ? "quests" : "moods"
+        !setupCompleted
+          ? "setup"
+          : currentSession
+            ? "active"
+            : selectedMoodId
+              ? "quests"
+              : "moods"
       }
     >
       <InteractiveDotBackground />
@@ -44,11 +53,15 @@ export function App() {
       />
 
       <main className={styles.main} id="main-content">
-        <QuestScreen
-          reduceMotion={reduceMotion}
-          onCoinFlightStart={coinBalanceAnimation.startFlight}
-          onCoinHit={coinBalanceAnimation.receivePoints}
-        />
+        {setupCompleted ? (
+          <QuestScreen
+            reduceMotion={reduceMotion}
+            onCoinFlightStart={coinBalanceAnimation.startFlight}
+            onCoinHit={coinBalanceAnimation.receivePoints}
+          />
+        ) : (
+          <LibrarySetup reduceMotion={reduceMotion} />
+        )}
       </main>
     </div>
   );

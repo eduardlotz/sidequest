@@ -1,0 +1,237 @@
+.collectionEditor {
+  display: grid;
+  min-width: 0;
+  gap: 28px;
+}
+.collectionSection {
+  display: grid;
+  min-width: 0;
+  gap: 10px;
+}
+.collectionSection + .collectionSection {
+  padding-top: 22px;
+  border-top: 1px solid var(--color-border);
+}
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sectionHeader h3 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.82rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+.quietAction,
+.addButton {
+  display: inline-flex;
+  min-height: 32px;
+  padding: 4px 0;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.71rem;
+  font-weight: 650;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.addButton svg {
+  width: 15px;
+  height: 15px;
+}
+.searchField {
+  display: flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-muted);
+}
+.searchField svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.searchField input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.75rem;
+}
+.searchField:focus-within {
+  border-color: var(--color-focus);
+}
+.searchField > span {
+  font-size: 0.66rem;
+  font-variant-numeric: tabular-nums;
+}
+.curatedList {
+  max-height: 320px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+.curatedGame {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 8px 4px;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+}
+.curatedGame:last-child {
+  border-bottom: 0;
+}
+.gameName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gameKind {
+  color: var(--color-muted);
+  font-size: 0.63rem;
+}
+.selectionMark {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  border-radius: 50%;
+  place-items: center;
+  color: var(--color-muted);
+}
+.selectionMark svg {
+  width: 15px;
+  height: 15px;
+}
+.curatedGame[aria-pressed="true"] .selectionMark {
+  background: color-mix(in srgb, var(--color-success) 24%, transparent);
+  color: var(--color-text);
+}
+.emptyState {
+  padding: 10px 0;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+.customGameList {
+  display: grid;
+}
+.customGameRow {
+  display: flex;
+  min-height: 52px;
+  min-width: 0;
+  padding: 8px 0;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  gap: 10px;
+}
+.customGameRow:last-child {
+  border-bottom: 0;
+}
+.customCopy {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 3px;
+}
+.customCopy strong {
+  overflow: hidden;
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.customCopy > span {
+  color: var(--color-muted);
+  font-size: 0.65rem;
+}
+.customGameActions {
+  display: flex;
+  gap: 4px;
+}
+.customGameActions button {
+  display: inline-grid;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 6px;
+  place-items: center;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.67rem;
+  cursor: pointer;
+}
+.customGameActions svg {
+  width: 16px;
+  height: 16px;
+}
+.customGameActions .removeConfirmation {
+  color: var(--color-danger);
+}
+.collectionEditor button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .customGameActions,
+  .quietAction,
+  .curatedGame[aria-pressed="false"] .selectionMark {
+    opacity: 0;
+    transition: opacity 140ms ease;
+  }
+  .customGameActions {
+    pointer-events: none;
+  }
+  .customGameRow:hover .customGameActions,
+  .customGameRow:focus-within .customGameActions,
+  .customGameRow[data-confirming] .customGameActions,
+  .collectionSection:hover .quietAction,
+  .collectionSection:focus-within .quietAction,
+  .curatedGame:hover .selectionMark,
+  .curatedGame:focus-visible .selectionMark {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .curatedGame:hover {
+    background: var(--color-surface-soft);
+  }
+  .customGameActions button:hover {
+    background: var(--color-surface-soft);
+    color: var(--color-text);
+  }
+  .addButton:hover,
+  .quietAction:hover {
+    color: var(--color-text);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .customGameActions,
+  .quietAction,
+  .selectionMark {
+    transition: none;
+  }
+}

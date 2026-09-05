@@ -168,3 +168,5 @@ export function SoundOffIcon(props: IconProps) {
     </svg>
   );
 }
+
+export { GameIcon as GameGenreIcon } from "./GameIcon";

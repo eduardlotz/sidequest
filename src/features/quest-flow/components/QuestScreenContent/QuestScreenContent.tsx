@@ -1,17 +1,11 @@
-import {
-  AnimatePresence,
-  LayoutGroup,
-  motion,
-} from "motion/react";
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { AnimatePresence, LayoutGroup, motion } from "motion/react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MOODS, type MoodDefinition, type MoodId } from "../../../../data/moods";
-import type { QuestDefinition } from "../../../../data/quests";
+import {
+  MOODS,
+  type MoodDefinition,
+  type MoodId,
+} from "../../../../data/moods";
 import { formatScore } from "../../../../lib/format";
 import { localizeMood } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
@@ -24,13 +18,13 @@ import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import {
   QuestOfferDeck,
   type NewCardsPhase,
+  type QuestOfferItem,
 } from "../QuestOfferDeck/QuestOfferDeck";
 import { VisuallyHidden } from "../../../../shared/ui/VisuallyHidden/VisuallyHidden";
 import { PlayLayout } from "../../PlayLayout";
 import styles from "../../QuestFlowLayout.module.css";
-import {
-  NAV_ENTRY_SPRING,
-} from "../../../../shared/motion/transitions";
+import { NAV_ENTRY_SPRING } from "../../../../shared/motion/transitions";
+import { questOfferId } from "../../../../domain/quest/rules";
 import {
   SelectionLayer,
   SELECTION_LAYER_EXIT_DURATION,
@@ -47,7 +41,7 @@ type Props = {
   currentQuest: Quest | null;
   currentSession: QuestSession | null;
   selectedMood: MoodDefinition | null;
-  offeredQuests: readonly QuestDefinition[];
+  offeredQuests: readonly QuestOfferItem[];
   points: number;
   redRopes: number;
   debugMode: boolean;
@@ -56,7 +50,7 @@ type Props = {
   reduceMotion: boolean;
   onSelectMood: (moodId: MoodId) => boolean;
   onEditMood: () => void;
-  onRevealQuest: (questId: string) => void;
+  onRevealQuest: (offerId: string) => void;
   onReturnToSelection: () => boolean;
   onNewCards: () => boolean;
   onDiscard: () => boolean;
@@ -100,15 +94,23 @@ export function QuestScreenContent({
   const wasActiveRef = useRef(isActive);
   const returnedFromActive = wasActiveRef.current && !isActive;
   const lastActiveSessionIdRef = useRef(currentSession?.sessionId ?? "initial");
-  const lastActiveQuestIdRef = useRef(currentQuest?.id);
+  const currentOfferId =
+    currentQuest && currentSession
+      ? questOfferId(
+          currentSession.moodId,
+          currentSession.questId,
+          currentSession.game?.id ?? null,
+        )
+      : undefined;
+  const lastActiveQuestIdRef = useRef(currentOfferId);
   const layoutSessionIdRef = useRef(
     currentSession ? `active-${currentSession.sessionId}` : "initial",
   );
   if (currentSession?.sessionId) {
     lastActiveSessionIdRef.current = currentSession.sessionId;
   }
-  if (currentQuest?.id) {
-    lastActiveQuestIdRef.current = currentQuest.id;
+  if (currentOfferId) {
+    lastActiveQuestIdRef.current = currentOfferId;
   }
   if (returnedFromActive) {
     layoutSessionIdRef.current = `deck-after-${lastActiveSessionIdRef.current}`;
@@ -125,8 +127,7 @@ export function QuestScreenContent({
       ? "bottom"
       : "shared";
   const [newCardsSequence, setNewCardsSequence] = useState(0);
-  const [newCardsPhase, setNewCardsPhase] =
-    useState<NewCardsPhase>("idle");
+  const [newCardsPhase, setNewCardsPhase] = useState<NewCardsPhase>("idle");
   const isDealingNewCards = newCardsPhase !== "idle";
   const [editingMood, setEditingMood] = useState(false);
   const [selectionPresenceGeneration, setSelectionPresenceGeneration] =
@@ -136,8 +137,7 @@ export function QuestScreenContent({
   const [activeHandoffStarted, setActiveHandoffStarted] = useState(isActive);
   const [activeEntryRotation, setActiveEntryRotation] = useState(0);
   const selectionLayoutSessionId = `${layoutSessionIdRef.current}-selection`;
-  const questLayoutSessionId =
-    `${layoutSessionIdRef.current}-quests-${questDeckGeneration}`;
+  const questLayoutSessionId = `${layoutSessionIdRef.current}-quests-${questDeckGeneration}`;
   const editMoodFrameRef = useRef<number | null>(null);
   const newCardsSwapTimeoutRef = useRef<number | null>(null);
   const newCardsCompletionTimeoutRef = useRef<number | null>(null);
@@ -228,11 +228,7 @@ export function QuestScreenContent({
   }
 
   function editMood() {
-    if (
-      editingMood ||
-      isDealingNewCards ||
-      editMoodFrameRef.current !== null
-    ) {
+    if (editingMood || isDealingNewCards || editMoodFrameRef.current !== null) {
       return;
     }
     setEditingMood(true);
@@ -435,9 +431,15 @@ export function QuestScreenContent({
                           <CoinPriceButton
                             data-sound-click-skip
                             type="button"
-                            disabled={isDealingNewCards || points < newCardsCost}
+                            disabled={
+                              isDealingNewCards ||
+                              (points < newCardsCost && debugMode === false)
+                            }
                             label={t("ui.task.newCards")}
-                            price={formatScore(newCardsCost, language)}
+                            price={formatScore(
+                              debugMode ? 0 : newCardsCost,
+                              language,
+                            )}
                             aria-label={t("ui.task.newCardsLabel", {
                               cost: formatScore(newCardsCost, language),
                               available: formatScore(points, language),

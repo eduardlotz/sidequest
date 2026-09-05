@@ -161,6 +161,24 @@
   hyphens: auto;
 }
 
+.questCardGame {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  color: #d8d8df;
+  font-size: clamp(0.68rem, 3cqw, 0.92rem);
+  font-weight: 700;
+  gap: clamp(5px, 1.6cqw, 8px);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.questCardGame > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .questCardDuration {
   flex: 0 0 auto;
   color: #c7c7cd;
