@@ -1,0 +1,110 @@
+.frame {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  --flow-background: var(--color-canvas);
+}
+.heading {
+  flex: none;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 0 25px 28px;
+}
+.viewport {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+.scroll {
+  height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+.content {
+  padding: 12px 10px 36px;
+}
+.viewport::before,
+.viewport::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 65px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.viewport::before {
+  top: 0;
+  background: linear-gradient(
+    var(--flow-background),
+    color-mix(in srgb, var(--flow-background) 70%, transparent) 35%,
+    transparent
+  );
+}
+.viewport::after {
+  bottom: 0;
+  background: linear-gradient(
+    0deg,
+    var(--flow-background),
+    color-mix(in srgb, var(--flow-background) 70%, transparent) 35%,
+    transparent
+  );
+}
+.viewport[data-top="true"]::before,
+.viewport[data-bottom="true"]::after {
+  opacity: 1;
+}
+.floating {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.down {
+  position: absolute;
+  bottom: 8px;
+  left: calc(50% - 20px);
+  z-index: 3;
+  width: 40px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 30px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 7px 16px #17172b12;
+  cursor: pointer;
+}
+.down svg {
+  width: 14px;
+  height: 14px;
+}
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  flex: none;
+  padding: 14px 10px 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .viewport::before,
+  .viewport::after {
+    transition: none;
+  }
+}

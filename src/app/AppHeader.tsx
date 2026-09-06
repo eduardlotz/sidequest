@@ -6,6 +6,7 @@ import { Logo } from "../assets/logo";
 import { formatScore } from "../lib/format";
 import { normalizeLanguage } from "../localization/i18n";
 import { ProfileDrawer } from "../features/profile/components/ProfileDrawer/ProfileDrawer";
+import { useLibraryStore } from "../stores/useLibraryStore";
 import { useQuestStore } from "../stores/useQuestStore";
 import { NAV_ENTRY_SPRING } from "../shared/motion/transitions";
 import { CoinIcon } from "../shared/ui/Icons/Icons";
@@ -35,6 +36,7 @@ export function AppHeader({
   reduceMotion,
 }: Props) {
   const { i18n, t } = useTranslation();
+  const setupCompleted = useLibraryStore(s=>s.setupCompleted);
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const {
     completedSessions,
@@ -91,6 +93,7 @@ export function AppHeader({
     <>
       <header
         className={styles.topNavigation}
+        data-setup={!setupCompleted}
         aria-label={t("ui.nav.mainNavigation")}
       >
         <motion.div

@@ -7,7 +7,7 @@ import styles from "./GameVisual.module.css";
 type Props = {
   className?: string;
   game: GameReference;
-  size?: "card" | "row";
+  size?: "card" | "row" | "picker" | "hero";
 };
 
 type GameVisualStyle = CSSProperties & {

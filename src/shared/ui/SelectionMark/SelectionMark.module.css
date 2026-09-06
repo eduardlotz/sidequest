@@ -1,0 +1,1 @@
+.mark { width:20px; height:20px; flex:none; color:var(--color-muted); }.mark[data-selected=true] { color:#168cff; filter:drop-shadow(0 2px 4px #168cff40); }

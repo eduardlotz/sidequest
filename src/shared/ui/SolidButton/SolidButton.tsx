@@ -8,7 +8,7 @@ import styles from "./SolidButton.module.css";
 type SolidButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
-  variant?: "surface" | "soft";
+  variant?: "surface" | "soft" | "primary";
 };
 
 export const SolidButton = forwardRef<HTMLButtonElement, SolidButtonProps>(

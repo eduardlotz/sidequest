@@ -31,7 +31,7 @@
 .button:disabled {
   color: var(--color-muted);
   cursor: not-allowed;
-  opacity: 0.62;
+  opacity: 0.25;
 }
 
 .button[data-variant="soft"] {
@@ -90,4 +90,18 @@
   .button:active:not(:disabled) {
     transform: none;
   }
+}
+
+.button[data-variant="primary"] {
+  min-height: 40px;
+  padding: 0 20px;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(#41445f, #0d0e28);
+  border: 1px solid #17182e;
+  box-shadow:
+    inset 0 1px 2px #ffffffa0,
+    inset 0 -2px 4px #ffffff40,
+    0 2px 5px #11132d66;
+  letter-spacing: -0.025em;
 }

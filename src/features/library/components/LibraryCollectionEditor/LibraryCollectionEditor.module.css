@@ -1,293 +1,174 @@
 .collectionEditor {
   display: grid;
   min-width: 0;
-  gap: 28px;
+  gap: 32px;
 }
 .collectionSection {
-  display: grid;
   min-width: 0;
-  gap: 10px;
-}
-.collectionSection + .collectionSection {
-  padding-top: 22px;
-  border-top: 1px solid var(--color-border);
+  padding: 12px 4px 4px 4px;
+  border-radius: 16px;
+  background: rgba(33, 33, 33, 0.05);
 }
 .sectionHeader {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 12px 18px;
 }
 .sectionHeader h3 {
-  flex: 1;
-  min-width: 0;
   margin: 0;
-  color: var(--color-text);
-  font-size: 0.82rem;
-  font-weight: 650;
-  letter-spacing: -0.025em;
+  font-size: 14px;
+  font-weight: 600;
 }
-.quietAction,
+.optional {
+  font-size: 14px;
+  color: var(--color-muted);
+}
 .addButton {
   display: inline-flex;
-  min-height: 32px;
-  padding: 4px 0;
   align-items: center;
   gap: 5px;
-  background: transparent;
-  color: var(--color-muted);
-  font-size: 0.71rem;
-  font-weight: 650;
+  padding: 6px 12px 6px 8px;
+  border-radius: 30px;
+  background: rgba(41, 45, 50, 0.05);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -2%;
+  color: var(--color-text);
   cursor: pointer;
-  white-space: nowrap;
 }
 .addButton svg {
   width: 15px;
   height: 15px;
 }
-.searchField {
-  display: flex;
-  min-height: 38px;
-  align-items: center;
-  gap: 8px;
-  border-bottom: 1px solid var(--color-border);
-  color: var(--color-muted);
-}
-.searchField svg {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-.searchField input {
-  width: 100%;
-  min-width: 0;
-  padding: 8px 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--color-text);
-  font: inherit;
-  font-size: 1rem;
-  font-weight: 500;
-}
-.searchField:focus-within {
-  border-color: var(--color-focus);
-}
-.searchField > span {
-  font-size: 0.66rem;
-  font-variant-numeric: tabular-nums;
+.curatedList,
+.customGameList {
+  padding: 4px 12px;
+  border-radius: 22px;
+  background: var(--color-surface);
+  box-shadow: 0 8px 16px #17172b0b;
 }
 .curatedList {
-  max-height: 320px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  max-height: 288px;
+  overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border-strong) transparent;
-}
-.curatedEntry + .curatedEntry {
-  border-top: 1px solid var(--color-border);
-}
-.curatedOptions {
-  display: grid;
-  min-width: 0;
-  gap: 12px;
-  padding: 0 4px 14px 42px;
-}
-.questMode,
-.installments {
-  display: flex;
-  min-width: 0;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-}
-.questMode legend {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-}
-.installments legend {
-  padding: 0 0 8px;
-  font-size: 0.69rem;
-  color: var(--color-muted);
-}
-.questMode label,
-.installments label {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.69rem;
-  line-height: 1.45;
-  cursor: pointer;
-}
-.questMode input,
-.installments input {
-  width: 14px;
-  height: 14px;
-  margin: 0;
-  flex-shrink: 0;
-  accent-color: var(--color-text);
-}
-.selectionHint {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: 0.65rem;
-  line-height: 1.5;
+  scrollbar-color: var(--color-border) transparent;
+  overscroll-behavior: contain;
 }
 .curatedGame {
   display: flex;
-  width: 100%;
-  min-width: 0;
-  min-height: 48px;
-  padding: 8px 4px;
   align-items: center;
-  gap: 10px;
-  /* border-bottom: 1px solid var(--color-border); */
-  border-radius: 0;
-  background: transparent;
-  color: var(--color-text);
-  text-align: left;
+  gap: 12px;
+  min-height: 56px;
+  width: 100%;
+  padding: 8px 0;
+  background: none;
+  color: var(--color-muted);
   cursor: pointer;
+  text-align: left;
 }
-.curatedGame:last-child {
-  border-bottom: 0;
+.curatedGame[aria-pressed="true"] {
+  color: var(--color-text);
 }
 .gameName {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  font-size: 0.76rem;
+  font-size: 14px;
   font-weight: 600;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .gameKind {
+  display: block;
+  font-weight: 500;
   color: var(--color-muted);
-  font-size: 0.63rem;
 }
-.selectionMark {
+.curatedOptions {
+  padding: 0 0 12px 52px;
+  color: var(--color-muted);
+  font-size: 12px;
+}
+.curatedOptions summary {
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+.questMode,
+.installments {
+  border: 0;
+  padding: 0;
+  margin: 0 0 12px;
   display: grid;
-  width: 24px;
-  height: 24px;
-  flex: 0 0 24px;
-  border-radius: 50%;
-  place-items: center;
-  color: var(--color-muted);
+  gap: 8px;
 }
-.selectionMark svg {
-  width: 15px;
-  height: 15px;
+.questMode legend {
+  display: none;
 }
-.curatedGame[aria-pressed="true"] .selectionMark {
-  /* background: var(--color-surface); */
-  color: var(--color-text);
+.installments legend {
+  padding: 4px 0 8px;
 }
-.emptyState {
-  padding: 10px 0;
-  margin: 0;
-  color: var(--color-muted);
-  font-size: 0.72rem;
-  line-height: 1.5;
+.questMode label,
+.installments label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
-.customGameList {
-  display: grid;
+.questMode input,
+.installments input {
+  accent-color: #168cff;
+}
+.selectionHint {
+  margin: 8px 0 0;
+  line-height: 1.4;
 }
 .customGameRow {
   display: flex;
-  min-height: 52px;
-  min-width: 0;
-  padding: 8px 0;
   align-items: center;
-  border-bottom: 1px solid var(--color-border);
-  gap: 10px;
-}
-.customGameRow:last-child {
-  border-bottom: 0;
+  gap: 12px;
+  min-height: 56px;
+  padding: 8px 0;
 }
 .customCopy {
-  display: grid;
   flex: 1;
   min-width: 0;
-  gap: 3px;
+  font-size: 14px;
 }
 .customCopy strong {
+  display: block;
   overflow: hidden;
-  font-size: 0.76rem;
-  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 600;
 }
 .customCopy > span {
   color: var(--color-muted);
-  font-size: 0.65rem;
 }
 .customGameActions {
   display: flex;
   gap: 4px;
 }
 .customGameActions button {
-  display: inline-grid;
-  min-width: 32px;
-  min-height: 32px;
   padding: 6px;
-  place-items: center;
   border-radius: 8px;
-  background: transparent;
+  background: none;
   color: var(--color-muted);
-  font-size: 0.67rem;
   cursor: pointer;
+  font-size: 12px;
 }
 .customGameActions svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
 }
-.customGameActions .removeConfirmation {
+.customGameActions button:last-child,
+.removeConfirmation {
   color: var(--color-danger);
+}
+.emptyState {
+  padding: 12px;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.4;
 }
 .collectionEditor button:focus-visible {
   outline: 2px solid var(--color-focus);
-  outline-offset: -2px;
-}
-@media (hover: hover) and (pointer: fine) {
-  .customGameActions,
-  .quietAction,
-  .curatedGame[aria-pressed="false"] .selectionMark {
-    opacity: 0;
-    transition: opacity 140ms ease;
-  }
-  .customGameActions {
-    pointer-events: none;
-  }
-  .customGameRow:hover .customGameActions,
-  .customGameRow:focus-within .customGameActions,
-  .customGameRow[data-confirming] .customGameActions,
-  .collectionSection:hover .quietAction,
-  .collectionSection:focus-within .quietAction,
-  .curatedGame:hover .selectionMark,
-  .curatedGame:focus-visible .selectionMark {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  .curatedGame:hover {
-    background: var(--color-surface-soft);
-  }
-  .customGameActions button:hover {
-    background: var(--color-surface-soft);
-    color: var(--color-text);
-  }
-  .addButton:hover,
-  .quietAction:hover {
-    color: var(--color-text);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .customGameActions,
-  .quietAction,
-  .selectionMark {
-    transition: none;
-  }
+  outline-offset: 3px;
 }

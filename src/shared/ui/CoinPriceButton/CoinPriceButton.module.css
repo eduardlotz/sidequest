@@ -46,6 +46,7 @@
 
 .button:disabled {
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .button[data-tone="inverse"]:disabled {
@@ -54,11 +55,7 @@
     var(--color-inverse-surface),
     var(--color-canvas) 90%
   );
-  color: color-mix(
-    in srgb,
-    var(--color-inverse-copy),
-    var(--color-text) 90%
-  );
+  color: color-mix(in srgb, var(--color-inverse-copy), var(--color-text) 90%);
 }
 
 .button:active:not(:disabled) {
