@@ -10,6 +10,7 @@ import {
   LIBRARY_STORE_KEY,
   LIBRARY_STORE_VERSION,
   DEFAULT_LIBRARY_STATE,
+  DEFAULT_CURATED_PREFERENCES,
   type CustomGameInput,
   type LibraryState,
   type LibraryStore,
@@ -30,6 +31,31 @@ function createLibraryState(
 ): StateCreator<LibraryStore> {
   return (set, get) => ({
     ...DEFAULT_LIBRARY_STATE,
+    setCuratedQuestMode: (gameId, questMode) => {
+      if (!CURATED_GAMES_BY_ID[gameId]) return;
+      set((state) => ({
+        curatedGamePreferences: {
+          ...state.curatedGamePreferences,
+          [gameId]: { ...(state.curatedGamePreferences[gameId] ?? DEFAULT_CURATED_PREFERENCES), questMode },
+        },
+        revision: state.revision + 1,
+      }));
+    },
+    toggleCuratedInstallment: (gameId, installmentId) => {
+      if (!CURATED_GAMES_BY_ID[gameId]?.installments.some((entry) => entry.id === installmentId)) return;
+      set((state) => {
+        const previous = state.curatedGamePreferences[gameId] ?? DEFAULT_CURATED_PREFERENCES;
+        return {
+          curatedGamePreferences: {
+            ...state.curatedGamePreferences,
+            [gameId]: { ...previous, installmentIds: previous.installmentIds.includes(installmentId)
+              ? previous.installmentIds.filter((id) => id !== installmentId)
+              : [...previous.installmentIds, installmentId] },
+          },
+          revision: state.revision + 1,
+        };
+      });
+    },
     startWithDevsCollection: () => {
       set((state) => ({
         selectedCuratedGameIds: CURATED_GAMES.map((game) => game.id),
@@ -126,11 +152,13 @@ export function createLibraryStore(
       partialize: ({
         setupCompleted,
         selectedCuratedGameIds,
+        curatedGamePreferences,
         customGames,
         revision,
       }) => ({
         setupCompleted,
         selectedCuratedGameIds,
+        curatedGamePreferences,
         customGames,
         revision,
       }),

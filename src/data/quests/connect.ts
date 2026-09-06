@@ -2,30 +2,6 @@ import { defineMoodQuests } from "./defineMoodQuests";
 
 export const connectQuests = defineMoodQuests("connect", [
   {
-    id: "battlefield-class-duty",
-    additionalMoodIds: ["focused"],
-    universal: false,
-    minimumDurationMinutes: 10,
-    suggestedDurationMinutes: 25,
-    genres: ["Shooter", "Multiplayer"],
-    translations: {
-      en: {
-        name: "Class Duty",
-        objective:
-          "In Battlefield multiplayer, choose one class and stay with it for **one full round**. Complete five actions tied to that class before the result screen.",
-        gameObjective:
-          "In **{{game}}** multiplayer, choose one class and stay with it for **one full round**. Complete five actions tied to that class before the result screen.",
-      },
-      de: {
-        name: "Bei einer Klasse bleiben",
-        objective:
-          "Wähle im Battlefield-Multiplayer eine Klasse und spiele sie **eine ganze Runde lang**. Nutze ihre Fähigkeiten oder Ausrüstung vor Rundenende für fünf passende Aktionen.",
-        gameObjective:
-          "Wähle im Multiplayer von **{{game}}** eine Klasse und spiele sie **eine ganze Runde lang**. Nutze ihre Fähigkeiten oder Ausrüstung vor Rundenende für fünf passende Aktionen.",
-      },
-    },
-  },
-  {
     id: "co-op-check-in",
     customGameCompatibility: { capabilityIds: ["online-teamplay"] },
     minimumDurationMinutes: 5,

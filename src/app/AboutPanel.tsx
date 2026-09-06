@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { WordmarkLogo } from "../assets/wordmark";
 import { useTiltEffect } from "../hooks/useTiltEffect";
+import { ResponsiveNestedDrawer } from "../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
+import { QuestSourcesPanel } from "./QuestSourcesPanel";
 import styles from "./AboutPanel.module.css";
 
 type Props = {
@@ -47,6 +49,17 @@ export function AboutPanel({ reduceMotion }: Props) {
         <section className={styles.aboutSection}>
           <h3>{t("ui.about.libraryHeading")}</h3>
           <p>{t("ui.about.libraryBody")}</p>
+          <p>{t("ui.about.libraryChoice")}</p>
+        </section>
+
+        <section className={styles.aboutSection}>
+          <h3>{t("ui.about.sourcesHeading")}</h3>
+          <p>{t("ui.about.sourcesBody")}</p>
+          <ResponsiveNestedDrawer variant="about" trigger={
+            <button type="button" className={styles.sourcesButton}>{t("ui.about.sourcesButton")}</button>
+          }>
+            <QuestSourcesPanel />
+          </ResponsiveNestedDrawer>
         </section>
 
         <section className={styles.aboutSection}>

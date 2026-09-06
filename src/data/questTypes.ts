@@ -29,6 +29,12 @@ export type QuestTranslation = {
   gameObjective?: string;
 };
 
+export type CuratedQuestDetails = {
+  gameId: string;
+  installmentIds: readonly string[];
+  sourceIds: readonly string[];
+};
+
 export type AuthoredQuestDefinition = {
   id: string;
   moodIds: readonly MoodId[];
@@ -36,6 +42,7 @@ export type AuthoredQuestDefinition = {
   suggestedDurationMinutes: number;
   genres: readonly string[];
   universal?: boolean;
+  curated?: CuratedQuestDetails;
   customGameCompatibility?: {
     capabilityIds: readonly GameCapabilityId[];
     match?: "all" | "any";
@@ -54,6 +61,7 @@ export type MoodQuestDefinition = {
   genres: readonly string[];
   universal: boolean;
   gameBindable: boolean;
+  curated?: CuratedQuestDetails;
   customGameCompatibility?: {
     capabilityIds: readonly GameCapabilityId[];
     match: "all" | "any";
@@ -70,4 +78,5 @@ export type QuestCoreDefinition = Pick<
   | "universal"
   | "gameBindable"
   | "customGameCompatibility"
+  | "curated"
 >;

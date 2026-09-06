@@ -1,326 +1,74 @@
-import { useId, useState, type CSSProperties, type FormEvent } from "react";
+import { useId, useMemo, useState, type CSSProperties, type FormEvent } from "react";
+import { AnimatePresence } from "motion/react";
 import { useTranslation } from "react-i18next";
-import {
-  GAME_CAPABILITY_IDS,
-  GAME_ICON_IDS,
-  type GameCapabilityId,
-  type GameColorId,
-  type GameIconId,
-} from "../../../../data/gameTypes";
+import { GAME_CAPABILITY_IDS, GAME_ICON_IDS, type GameCapabilityId, type GameColorId, type GameIconId } from "../../../../data/gameTypes";
 import { GAME_COLOR_IDS, gameColor } from "../../../../data/gameVisuals";
 import { QUEST_CORES } from "../../../../data/quests";
-import type {
-  CustomGame,
-  CustomGameInput,
-  QuestOverrides,
-} from "../../../../domain/library/model";
+import { matchesGameCapabilities } from "../../../../data/gameCompatibility";
+import type { CustomGame, CustomGameInput } from "../../../../domain/library/model";
 import { customGameQuestIds } from "../../../../domain/library/rules";
 import { localizeQuest } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
 import { plainObjectiveText } from "../../../../shared/quest-card/QuestObjectiveText/QuestObjectiveText";
 import { GameVisual } from "../../../../shared/ui/GameVisual/GameVisual";
-import { CheckIcon } from "../../../../shared/ui/Icons/Icons";
-import { GameIcon } from "../../../../shared/ui/Icons/GameIcon";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
+import { PillButton } from "../../../../shared/ui/PillButton/PillButton";
+import { SelectionMark } from "../../../../shared/ui/SelectionMark/SelectionMark";
+import { FlowFrame } from "../../../../shared/ui/FlowFrame/FlowFrame";
 import { CapabilityIcon, ChevronIcon, SearchIcon } from "../LibraryIcons";
 import { SectionLabel } from "../SectionLabel/SectionLabel";
+import { LibraryStep } from "../LibraryStep";
 import styles from "./CustomGameEditor.module.css";
 
-type Props = {
-  game?: CustomGame;
-  onCancel: () => void;
-  onSave: (input: CustomGameInput) => void;
-};
-type ColorStyle = CSSProperties & {
-  "--swatch-color"?: string;
-  "--custom-color"?: string;
-};
-export function CustomGameEditor({ game, onCancel, onSave }: Props) {
+const bindableQuests = QUEST_CORES.filter(q => q.gameBindable && q.customGameCompatibility);
+const activityCounts = Object.fromEntries(GAME_CAPABILITY_IDS.map(id => [id, bindableQuests.filter(q => q.customGameCompatibility!.capabilityIds.length && matchesGameCapabilities(new Set([id]), q.customGameCompatibility)).length]));
+export function CustomGameEditor({ game, onCancel, onSave }: { game?: CustomGame; onCancel: () => void; onSave: (input: CustomGameInput) => void }) {
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
-  const id = useId();
+  const formId = useId();
   const [name, setName] = useState(game?.name ?? "");
-  const [iconId, setIconId] = useState<GameIconId>(game?.iconId ?? "adventure");
-  const [colorId, setColorId] = useState<GameColorId>(
-    game?.colorId ?? "explore",
-  );
-  const [capabilityIds, setCapabilityIds] = useState<GameCapabilityId[]>(
-    game?.capabilityIds ?? [],
-  );
-  const [questOverrides, setQuestOverrides] = useState<QuestOverrides>(
-    game?.questOverrides ?? {},
-  );
-  const [appearanceOpen, setAppearanceOpen] = useState(false);
-  const [reviewOpen, setReviewOpen] = useState(false);
-  const [reviewAll, setReviewAll] = useState(false);
-  const [questSearch, setQuestSearch] = useState("");
-  const draftGame: CustomGame = {
-    id: game?.id ?? "custom-game-preview",
-    name: name.trim() || t("ui.library.untitledGame"),
-    iconId,
-    colorId,
-    capabilityIds,
-    questOverrides,
-  };
-  const automaticQuestIds = new Set(
-    customGameQuestIds({ ...draftGame, questOverrides: {} }),
-  );
-  const enabledQuestIds = new Set(customGameQuestIds(draftGame));
-  const reviewQuests = QUEST_CORES.filter(
-    (quest) => quest.gameBindable && quest.customGameCompatibility,
-  )
-    .filter(
-      (quest) =>
-        reviewAll ||
-        automaticQuestIds.has(quest.id) ||
-        questOverrides[quest.id] !== undefined,
-    )
-    .flatMap((quest) => {
-      const localized = localizeQuest(quest.id, language);
-      if (!localized) return [];
-      const objective = plainObjectiveText(
-        localized.gameObjective!.replaceAll("{{game}}", draftGame.name),
-      );
-      return `${localized.name} ${objective}`
-        .toLocaleLowerCase()
-        .includes(questSearch.trim().toLocaleLowerCase())
-        ? [{ ...localized, objective }]
-        : [];
-    });
-
-  function toggleCapability(capabilityId: GameCapabilityId) {
-    setCapabilityIds((current) =>
-      current.includes(capabilityId)
-        ? current.filter((candidate) => candidate !== capabilityId)
-        : [...current, capabilityId],
-    );
-  }
-  function toggleQuest(questId: string) {
-    const nextEnabled = !enabledQuestIds.has(questId);
-    setQuestOverrides((current) => {
-      const next = { ...current };
-      if (nextEnabled === automaticQuestIds.has(questId)) delete next[questId];
-      else next[questId] = nextEnabled;
-      return next;
-    });
-  }
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (name.trim())
-      onSave({
-        name: name.trim(),
-        iconId,
-        colorId,
-        capabilityIds,
-        questOverrides,
-      });
-  }
-
-  return (
-    <form
-      className={styles.editor}
-      onSubmit={submit}
-      style={{ "--custom-color": gameColor(colorId).color } as ColorStyle}
-    >
-      <header className={styles.editorHeader}>
-        <button type="button" className={styles.backButton} onClick={onCancel}>
-          <ChevronIcon />
-          {t("ui.library.backToLibrary")}
-        </button>
-        <span aria-live="polite">
-          {t("ui.library.questCount", { count: enabledQuestIds.size })}
-        </span>
-      </header>
-      <label className={styles.nameField}>
-        {/* <span>{t("ui.library.gameName")}</span> */}
-        <span className={styles.inputRow}>
-          <GameVisual game={{ ...draftGame, source: "custom" }} />
-          <input
-            autoFocus
-            required
-            maxLength={80}
-            autoComplete="off"
-            placeholder={t("ui.library.gameNamePlaceholder")}
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-          />
-        </span>
-      </label>
-      <section className={styles.section}>
-        <button
-          className={styles.disclosure}
-          type="button"
-          aria-expanded={appearanceOpen}
-          aria-controls={`${id}-appearance`}
-          onClick={() => setAppearanceOpen((open) => !open)}
-        >
-          <span>{t("ui.library.appearance")}</span>
-          <span className={styles.disclosureDetail}>
-            {t(`ui.library.icons.${iconId}`)} ·{" "}
-            {t(`ui.library.colorNames.${colorId}`)}
-          </span>
-          <ChevronIcon />
-        </button>
-        {appearanceOpen ? (
-          <div id={`${id}-appearance`} className={styles.appearance}>
-            <fieldset className={styles.pickerFieldset}>
-              {/* <legend>{t("ui.library.gameIcon")}</legend> */}
-              <div className={styles.iconGrid}>
-                {GAME_ICON_IDS.map((candidate) => (
-                  <button
-                    key={candidate}
-                    type="button"
-                    title={t(`ui.library.icons.${candidate}`)}
-                    aria-label={t("ui.library.iconChoice", {
-                      icon: t(`ui.library.icons.${candidate}`),
-                    })}
-                    aria-pressed={iconId === candidate}
-                    onClick={() => setIconId(candidate)}
-                  >
-                    <GameIcon icon={candidate} />
-                  </button>
-                ))}
-              </div>
-            </fieldset>
-            <fieldset className={styles.pickerFieldset}>
-              {/* <legend>{t("ui.library.gameColor")}</legend> */}
-              <div className={styles.colorGrid}>
-                {GAME_COLOR_IDS.map((candidate) => (
-                  <button
-                    key={candidate}
-                    type="button"
-                    title={t(`ui.library.colorNames.${candidate}`)}
-                    aria-label={t("ui.library.colorChoice", {
-                      color: t(`ui.library.colorNames.${candidate}`),
-                    })}
-                    aria-pressed={colorId === candidate}
-                    onClick={() => setColorId(candidate)}
-                  >
-                    <span
-                      style={
-                        {
-                          "--swatch-color": gameColor(candidate).color,
-                        } as ColorStyle
-                      }
-                    >
-                      {colorId === candidate ? <CheckIcon /> : null}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </fieldset>
-          </div>
-        ) : null}
-      </section>
-      <fieldset className={styles.capabilityFieldset}>
-        <legend>
-          <SectionLabel
-            label={t("ui.library.capabilities")}
-            hint={t("ui.library.capabilitiesHint")}
-          />
-        </legend>
-        <div className={styles.capabilityList}>
-          {GAME_CAPABILITY_IDS.map((capabilityId) => (
-            <label key={capabilityId} className={styles.capabilityRow}>
-              <CapabilityIcon capability={capabilityId} />
-              <span>{t(`ui.library.capabilityLabels.${capabilityId}`)}</span>
-              <input
-                type="checkbox"
-                checked={capabilityIds.includes(capabilityId)}
-                onChange={() => toggleCapability(capabilityId)}
-              />
-              <span className={styles.checkbox} aria-hidden="true">
-                <CheckIcon />
-              </span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-      <section className={styles.section}>
-        <button
-          className={styles.disclosure}
-          type="button"
-          aria-expanded={reviewOpen}
-          aria-controls={`${id}-review`}
-          onClick={() => setReviewOpen((open) => !open)}
-        >
-          <span>{t("ui.library.reviewQuests")}</span>
-          <span className={styles.disclosureDetail} aria-live="polite">
-            {t("ui.library.questCount", { count: enabledQuestIds.size })}
-          </span>
-          <ChevronIcon />
-        </button>
-        {reviewOpen ? (
-          <div className={styles.questReview} id={`${id}-review`}>
-            {/* <SectionLabel
-              label={t("ui.library.reviewSelection")}
-              hint={t("ui.library.reviewQuestsHint")}
-            /> */}
-            {/* <label className={styles.searchField}>
-              <SearchIcon />
-              <input
-                type="search"
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") event.preventDefault();
-                }}
-                value={questSearch}
-                onChange={(event) => setQuestSearch(event.target.value)}
-                placeholder={t("ui.library.searchQuests")}
-                aria-label={t("ui.library.searchQuests")}
-              />
-            </label> */}
-            <div className={styles.reviewTools}>
-              <button
-                type="button"
-                aria-pressed={reviewAll}
-                onClick={() => setReviewAll((all) => !all)}
-              >
-                {t(
-                  reviewAll
-                    ? "ui.library.showMatched"
-                    : "ui.library.showAllReusable",
-                )}
-              </button>
-              {Object.keys(questOverrides).length ? (
-                <button type="button" onClick={() => setQuestOverrides({})}>
-                  {t("ui.library.resetMatches")}
-                </button>
-              ) : null}
-            </div>
-            <div className={styles.questList}>
-              {reviewQuests.map((quest) => (
-                <label key={quest.id} className={styles.questRow}>
-                  <span>
-                    <strong>{quest.name}</strong>
-                    <span>{quest.objective}</span>
-                  </span>
-                  <input
-                    type="checkbox"
-                    checked={enabledQuestIds.has(quest.id)}
-                    onChange={() => toggleQuest(quest.id)}
-                  />
-                  <span className={styles.checkbox} aria-hidden="true">
-                    <CheckIcon />
-                  </span>
-                </label>
-              ))}
-              {reviewQuests.length === 0 ? (
-                <p className={styles.emptyState}>
-                  {t("ui.library.noQuestResults")}
-                </p>
-              ) : null}
-            </div>
-          </div>
-        ) : null}
-      </section>
-      <footer className={styles.actions}>
-        <button className={styles.cancel} type="button" onClick={onCancel}>
-          {t("ui.library.cancel")}
-        </button>
-        <SolidButton type="submit" disabled={!name.trim()}>
-          {t(game ? "ui.library.saveGame" : "ui.library.addGame")}
-        </SolidButton>
-      </footer>
-    </form>
-  );
+  const [iconId, setIconId] = useState<GameIconId>(game?.iconId ?? "sports");
+  const [colorId, setColorId] = useState<GameColorId>(game?.colorId ?? "challenge");
+  const [capabilityIds, setCapabilityIds] = useState<GameCapabilityId[]>(game?.capabilityIds ?? []);
+  const [pendingActivities, setPendingActivities] = useState(capabilityIds);
+  const [questOverrides, setQuestOverrides] = useState(game?.questOverrides ?? {});
+  const [page, setPage] = useState<"appearance" | "activities" | "quests">("appearance");
+  const [iconPage, setIconPage] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
+  const [search, setSearch] = useState("");
+  const draft: CustomGame = { id: game?.id ?? "preview", name: name.trim() || t("ui.library.untitledGame"), iconId, colorId, capabilityIds, questOverrides };
+  const enabled = new Set(customGameQuestIds(draft));
+  const pendingCount = customGameQuestIds({ ...draft, capabilityIds: pendingActivities }).length;
+  const query = search.trim().toLocaleLowerCase(language);
+  const activities = GAME_CAPABILITY_IDS.filter(id => t(`ui.library.capabilityLabels.${id}`).toLocaleLowerCase(language).includes(query));
+  const reviewed = useMemo(() => bindableQuests.flatMap(q => {
+    const localized = localizeQuest(q.id, language); if (!localized) return [];
+    const objective = plainObjectiveText(localized.gameObjective!.replaceAll("{{game}}", name.trim() || t("ui.library.untitledGame")));
+    return [{ id:q.id, name:localized.name, objective }];
+  }), [language, name, t]);
+  function changePage(next: typeof page) { setSearch(""); setScrollTop(0); setPage(next); }
+  function submit(event: FormEvent) { event.preventDefault(); if (page === "appearance" && name.trim()) onSave({ name:name.trim(), iconId, colorId, capabilityIds, questOverrides }); }
+  const pageCount = Math.ceil(GAME_ICON_IDS.length / 10);
+  const footer = page === "appearance" ? <><PillButton className={styles.back} onClick={onCancel}><ChevronIcon />{t("ui.library.cancel")}</PillButton><SolidButton variant="primary" type="submit" form={formId} disabled={!name.trim()}>{t("ui.library.saveGame")}</SolidButton></> : <><PillButton className={styles.back} onClick={() => changePage("appearance")}><ChevronIcon />{t("ui.library.back")}</PillButton><SolidButton variant="primary" onClick={() => { if(page === "activities") setCapabilityIds(pendingActivities); changePage("appearance"); }}>{t(page === "activities" ? "ui.library.saveActivities" : "ui.library.done")}</SolidButton></>;
+  return <form id={formId} className={styles.editor} onSubmit={submit}>
+    <AnimatePresence mode="wait" initial={false}><LibraryStep key={page}>
+      <FlowFrame title={page === "appearance" ? t("ui.library.editorIntro") : page === "activities" ? <>{t("ui.library.activitiesIntro")}<br/><strong>{draft.name}</strong></> : t("ui.library.reviewQuests")} footer={footer} onScrollChange={setScrollTop} floating={page === "appearance" && scrollTop > 115 ? <span className={styles.badge}><GameVisual game={{...draft,source:"custom"}} size="card"/><strong>{draft.name}</strong></span> : undefined}>
+      {page === "appearance" ? <>
+        <div className={styles.identity}><GameVisual game={{...draft,source:"custom"}} size="hero"/><input required maxLength={80} aria-label={t("ui.library.gameName")} placeholder={t("ui.library.gameNamePlaceholder")} value={name} onChange={e => setName(e.target.value)} autoComplete="off" /></div>
+        <fieldset className={styles.picker}><legend>{t("ui.library.gameIcon")}</legend><div className={styles.iconGrid}>{GAME_ICON_IDS.slice(iconPage * 10, iconPage * 10 + 10).map(icon => <button key={icon} type="button" aria-label={t("ui.library.iconChoice", {icon:t(`ui.library.icons.${icon}`)})} aria-pressed={iconId === icon} onClick={() => setIconId(icon)}><GameVisual size="picker" game={{id:"preview", name:"", source:"custom", iconId:icon, colorId}}/></button>)}</div></fieldset>
+        <nav className={styles.pagination} aria-label={t("ui.library.gameIcon")}><PillButton disabled={iconPage === 0} aria-label={t("ui.library.previousIcons")} onClick={() => setIconPage(p => p - 1)}><ChevronIcon className={styles.previous}/></PillButton>{Array.from({length:pageCount},(_,p) => <button type="button" key={p} aria-label={t("ui.library.iconPage",{page:p+1})} aria-current={p === iconPage ? "page" : undefined} onClick={() => setIconPage(p)} />)}<PillButton disabled={iconPage === pageCount - 1} aria-label={t("ui.library.nextIcons")} onClick={() => setIconPage(p => p + 1)}><ChevronIcon/></PillButton></nav>
+        <fieldset className={styles.colors}><legend>{t("ui.library.gameColor")}</legend>{GAME_COLOR_IDS.map(color => <button key={color} type="button" style={{"--swatch":gameColor(color).color} as CSSProperties} aria-label={t("ui.library.colorChoice",{color:t(`ui.library.colorNames.${color}`)})} aria-pressed={colorId === color} onClick={() => setColorId(color)} />)}</fieldset>
+        <section className={styles.activities}><div className={styles.sectionHeading}><SectionLabel label={t("ui.library.possibleActivities")} hint={t("ui.library.capabilitiesHint")}/><PillButton onClick={() => { setPendingActivities(capabilityIds); changePage("activities"); }}>{t("ui.library.adjust")}</PillButton></div>
+        {capabilityIds.length ? capabilityIds.map(id => <div className={styles.summaryRow} key={id}><CapabilityIcon capability={id}/><span>{t(`ui.library.capabilityLabels.${id}`)}<small>{t("ui.library.questCount",{count:activityCounts[id]})}</small></span></div>) : <button type="button" className={styles.empty} onClick={() => {setPendingActivities(capabilityIds);changePage("activities");}}>{t("ui.library.chooseActivities")}</button>}
+        <PillButton onClick={() => changePage("quests")}>{t("ui.library.reviewQuests")} · {enabled.size}</PillButton></section>
+      </> : <>
+        <div className={styles.stats}><strong>{page === "activities" ? t("ui.library.selectedActivities",{count:pendingActivities.length}) : t("ui.library.reviewQuests")}</strong><span aria-live="polite">{page === "activities" ? pendingCount : enabled.size}/{bindableQuests.length} sidequests</span></div>
+        <label className={styles.search}><SearchIcon/><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={t("ui.library.searchActivities")} aria-label={t("ui.library.searchActivities")} onKeyDown={e=>{if(e.key === "Enter")e.preventDefault();}}/><span>{page === "activities" ? activities.length : reviewed.filter(q=>`${q.name} ${q.objective}`.toLocaleLowerCase(language).includes(query)).length}</span></label>
+        <div className={styles.activityList}>{page === "activities" ? activities.map(id => <button type="button" className={styles.activityRow} key={id} aria-pressed={pendingActivities.includes(id)} onClick={() => setPendingActivities(ids => ids.includes(id) ? ids.filter(candidate=>candidate!==id) : [...ids,id])}><CapabilityIcon capability={id}/><span>{t(`ui.library.capabilityLabels.${id}`)}<small>{t("ui.library.questCount",{count:activityCounts[id]})}</small></span><SelectionMark selected={pendingActivities.includes(id)}/></button>) : reviewed.filter(q=>`${q.name} ${q.objective}`.toLocaleLowerCase(language).includes(query)).map(q=><button key={q.id} className={styles.activityRow} type="button" aria-pressed={enabled.has(q.id)} onClick={()=>setQuestOverrides(current=>({...current,[q.id]:!enabled.has(q.id)}))}><span>{q.name}<small>{q.objective}</small></span><SelectionMark selected={enabled.has(q.id)}/></button>)}</div>
+        {page === "activities" && !activities.length && <p className={styles.empty}>{t("ui.library.noSearchResults")}</p>}
+        {page === "quests" && <PillButton onClick={()=>setQuestOverrides({})}>{t("ui.library.resetMatches")}</PillButton>}
+      </>}
+      </FlowFrame>
+    </LibraryStep></AnimatePresence>
+  </form>;
 }

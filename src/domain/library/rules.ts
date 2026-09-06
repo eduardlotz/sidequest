@@ -1,8 +1,26 @@
 import { CURATED_GAMES, CURATED_GAMES_BY_ID } from "../../data/games";
-import { QUEST_CORES } from "../../data/quests";
+import { QUEST_CORES, QUEST_CORES_BY_ID } from "../../data/quests";
 import type { GameCapabilityId } from "../../data/gameTypes";
 import { matchesGameCapabilities } from "../../data/gameCompatibility";
-import type { CustomGame, LibraryGame, LibraryState } from "./model";
+import { DEFAULT_CURATED_PREFERENCES, type CustomGame, type LibraryGame, type LibraryState } from "./model";
+
+export function curatedGameQuestIds(state: LibraryState, gameId: string): string[] {
+  const game = CURATED_GAMES_BY_ID[gameId];
+  if (!game) return [];
+  const preferences = state.curatedGamePreferences[gameId] ?? DEFAULT_CURATED_PREFERENCES;
+  // Do not guess which installment someone owns.
+  if (game.installments.length && !preferences.installmentIds.length) return [];
+  const dedicated = game.exclusiveQuestIds.filter((id) => {
+    const curated = QUEST_CORES_BY_ID[id]?.curated;
+    return curated?.gameId === gameId && (
+      !curated.installmentIds.length ||
+      curated.installmentIds.some((id) => preferences.installmentIds.includes(id))
+    );
+  });
+  return preferences.questMode === "curated-and-flexible"
+    ? Array.from(new Set([...dedicated, ...game.compatibleQuestIds]))
+    : dedicated;
+}
 
 export function libraryGamesFromState(state: LibraryState): LibraryGame[] {
   const curatedGames = state.selectedCuratedGameIds.flatMap((gameId) => {
@@ -13,9 +31,7 @@ export function libraryGamesFromState(state: LibraryState): LibraryGame[] {
             id: game.id,
             name: game.name,
             source: "curated" as const,
-            questIds: Array.from(
-              new Set([...game.compatibleQuestIds, ...game.exclusiveQuestIds]),
-            ),
+            questIds: curatedGameQuestIds(state, gameId),
           },
         ]
       : [];

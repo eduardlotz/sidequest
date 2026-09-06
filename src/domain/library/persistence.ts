@@ -14,6 +14,7 @@ import {
   type CustomGame,
   type LibraryState,
   type PersistedLibraryState,
+  type CuratedGamePreferences,
 } from "./model";
 
 export function migratePersistedLibraryState(
@@ -38,9 +39,23 @@ export function sanitizePersistedLibraryState(
       })
     : [];
 
+  const curatedGamePreferences: Record<string, CuratedGamePreferences> = {};
+  if (isRecord(value.curatedGamePreferences)) {
+    for (const [gameId, stored] of Object.entries(value.curatedGamePreferences)) {
+      const game = CURATED_GAMES_BY_ID[gameId];
+      if (!game || !isRecord(stored)) continue;
+      curatedGamePreferences[gameId] = {
+        questMode: stored.questMode === "curated-and-flexible" ? "curated-and-flexible" : "curated-only",
+        installmentIds: uniqueStrings(stored.installmentIds).filter((id) =>
+          game.installments.some((entry) => entry.id === id)),
+      };
+    }
+  }
+
   return {
     setupCompleted: value.setupCompleted === true,
     selectedCuratedGameIds,
+    curatedGamePreferences,
     customGames: uniqueCustomGames(customGames),
     revision: safeNonNegativeInteger(value.revision),
   };

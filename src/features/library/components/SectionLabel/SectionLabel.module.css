@@ -4,6 +4,7 @@
   width: 100%;
   align-items: center;
   gap: 5px;
+  font-weight: 600;
 }
 .trigger {
   display: inline-grid;

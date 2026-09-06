@@ -85,6 +85,7 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     universal,
     gameBindable,
     customGameCompatibility,
+    curated,
   }) => ({
     id,
     moodIds,
@@ -94,6 +95,7 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     universal,
     gameBindable,
     customGameCompatibility,
+    curated,
   }),
 );
 

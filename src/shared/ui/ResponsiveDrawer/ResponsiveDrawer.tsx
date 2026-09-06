@@ -89,9 +89,11 @@ export function ResponsiveDrawer({
 export function ResponsiveNestedDrawer({
   children,
   trigger,
+  variant = "profile",
 }: {
   children: ReactNode;
   trigger: ReactElement;
+  variant?: "about" | "profile";
 }) {
   const environment = useContext(DrawerEnvironmentContext);
   const [open, setOpen] = useState(false);
@@ -123,7 +125,7 @@ export function ResponsiveNestedDrawer({
         <Drawer.Content
           className={styles.drawerContent}
           data-direction={desktop ? desktopDirection : "bottom"}
-          data-drawer-variant="profile"
+          data-drawer-variant={variant}
           data-mobile-snap={desktop ? undefined : "full"}
         >
           {!desktop && <Drawer.Handle className={styles.drawerHandle} />}

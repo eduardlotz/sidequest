@@ -5,6 +5,13 @@ export const GAME_CAPABILITY_IDS = [
   "missions-or-levels",
   "rounds-or-matches",
   "combat",
+  "pistols",
+  "rifles",
+  "bows",
+  "melee-weapons",
+  "fist-fights",
+  "space-exploration",
+  "swimming",
   "boss-fights",
   "stealth",
   "equipment-loadouts",
@@ -78,6 +85,7 @@ export type CuratedGameDefinition = {
   name: string;
   artwork: string;
   isSeries?: boolean;
+  installments: readonly { id: string; name: string }[];
   compatibleQuestIds: readonly string[];
   exclusiveQuestIds: readonly string[];
 };

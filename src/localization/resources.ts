@@ -19,19 +19,33 @@ export const englishUi = {
     description: "A small companion app for people with too many video games.",
     stepsHeading: "Three steps to your game",
     step1: "Choose a mood that fits",
-    step2: "Pick a quest shaped around a game in your library",
+    step2: "Pick a quest for one of your games, or try a flexible one",
     step3: "Complete the quest at your own pace and earn coins",
     mismatchHeading: "The quest isn't right for you?",
     mismatchBody: "Cut the red rope, draw a new card, and try another quest.",
     difficultyBody:
-      "How difficult a quest ultimately is also depends on the game you choose.",
+      "Some quests need a certain game mode, item, or skill. Check the objective before you start. Your save and difficulty settings matter too.",
     libraryHeading: "Your library, your quests",
     libraryBody:
-      "Choose from the curated games or add your own. Sidequest combines game-specific cards with universal quests that work across your collection.",
+      "Choose from the starter collection or add your own games. The collection has quests built around each game's features, from camera tricks to living off your next hunt.",
+    libraryChoice:
+      "For each game, choose curated quests only or add flexible quests too. For a series, pick the entries you play. You can change this in your profile. Cards without a named game can still appear for any library.",
+    sourcesHeading: "Where do the ideas come from?",
+    sourcesBody:
+      "Some quests started with things players shared on Reddit. We check the idea, turn it into a small session, and write the steps ourselves. Others come from exploring what a game lets you do.",
+    sourcesButton: "Reddit sources",
+    sourcesTitle: "Reddit sources",
+    sourcesDescription:
+      "The threads behind our research, grouped by game. Each note explains what we took from it. The players did not write or approve our quests.",
+    sourcesBack: "Back to Info",
+    sourcesOpen: "Open Reddit thread",
+    sourcesQuestNames: "Inspired quests",
+    sourcesResearchOnly: "Used for background research",
+    sourcesLinkHint: "Links open Reddit in a new tab. Original thread titles are kept as written.",
     coinsHeading: "What do I do with the coins?",
     coinEarning: "The longer you spend on a quest, the more coins you earn.",
     coinSpending:
-      "New quests and cancelling a sidequest cost coins. To ease the agony of choice, sooner or later you will have to choose a quest that may not have appealed to you right away.",
+      "New cards and extra red ropes cost coins. The idea is to spend a little less time picking and a little more time playing.",
     madeBy: "Made by",
   },
   library: englishLibrary,
@@ -192,21 +206,35 @@ export const germanUi = {
     stepsHeading: "In drei Schritten zu deinem Spiel",
     step1: "Wähle eine passende Stimmung",
     step2:
-      "Such dir eine Quest aus, die zu einem Spiel in deiner Bibliothek passt",
+      "Such dir eine Quest für eines deiner Spiele aus oder probier eine flexible",
     step3: "Schließe die Quest in deinem Tempo ab und verdiene Münzen",
     mismatchHeading: "Die Aufgabe passt doch nicht?",
     mismatchBody:
       "Schneide das rote Seil durch, ziehe eine neue Karte und probier eine andere Aufgabe aus.",
     difficultyBody:
-      "Wie schwer eine Aufgabe am Ende ist, hängt auch von deinem gewählten Spiel ab.",
+      "Manche Quests brauchen einen bestimmten Modus, Gegenstand oder Skill. Lies die Aufgabe vor dem Start. Dein Spielstand und Schwierigkeitsgrad spielen auch eine Rolle.",
     libraryHeading: "Deine Bibliothek, deine Quests",
     libraryBody:
-      "Wähle Spiele aus der kuratierten Sammlung oder füge eigene hinzu. Sidequest mischt spielspezifische Karten mit universellen Quests für deine ganze Sammlung.",
+      "Wähle aus der Starter-Sammlung oder füge eigene Spiele hinzu. Die Sammlung hat Quests für die Funktionen jedes Spiels, von Kameratricks bis zum Leben von der nächsten Jagd.",
+    libraryChoice:
+      "Wähle pro Spiel nur kuratierte Quests oder nimm flexible dazu. Bei einer Reihe wählst du die Teile, die du spielst. Das kannst du im Profil ändern. Karten ohne festes Spiel können weiterhin in jeder Bibliothek auftauchen.",
+    sourcesHeading: "Woher kommen die Ideen?",
+    sourcesBody:
+      "Manche Quests haben mit Ideen angefangen, die Spieler auf Reddit geteilt haben. Wir prüfen die Idee, machen eine kleine Session daraus und schreiben die Schritte selbst. Andere entstehen aus dem, was ein Spiel möglich macht.",
+    sourcesButton: "Reddit-Quellen",
+    sourcesTitle: "Reddit-Quellen",
+    sourcesDescription:
+      "Die Threads hinter unserer Recherche, nach Spiel sortiert. Bei jedem steht, was wir daraus mitgenommen haben. Die Spieler haben unsere Quests weder geschrieben noch freigegeben.",
+    sourcesBack: "Zurück zur Info",
+    sourcesOpen: "Reddit-Thread öffnen",
+    sourcesQuestNames: "Davon inspirierte Quests",
+    sourcesResearchOnly: "Für die Hintergrundrecherche genutzt",
+    sourcesLinkHint: "Links öffnen Reddit in einem neuen Tab. Die Originaltitel bleiben so, wie sie geschrieben wurden.",
     coinsHeading: "Was mache ich mit den Münzen?",
     coinEarning:
       "Je länger du an einer Quest sitzt, desto mehr Münzen gibt es dafür.",
     coinSpending:
-      "Neue Quests und der Abbruch einer sidequest kosten Münzen. Um die Qual der Wahl etwas zu dämpfen musst du dich früher oder später auch mal für eine Quest entscheiden, die dich vielleicht nicht sofort angesprochen hat.",
+      "Neue Karten und zusätzliche rote Seile kosten Münzen. Die Idee: etwas weniger aussuchen und etwas mehr spielen.",
     madeBy: "Von",
   },
   library: germanLibrary,
