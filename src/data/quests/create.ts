@@ -2,30 +2,6 @@ import { defineMoodQuests } from "./defineMoodQuests";
 
 export const createQuests = defineMoodQuests("create", [
   {
-    id: "rocket-league-fresh-preset",
-    additionalMoodIds: ["curious"],
-    universal: false,
-    minimumDurationMinutes: 5,
-    suggestedDurationMinutes: 15,
-    genres: ["Sports", "Customization"],
-    translations: {
-      en: {
-        name: "Fresh Preset",
-        objective:
-          "Build a new Rocket League preset around **one body, decal, or color you rarely use**. Equip it and finish one complete online or exhibition match.",
-        gameObjective:
-          "Build a new **{{game}}** preset around **one body, decal, or color you rarely use**. Equip it and finish one complete online or exhibition match.",
-      },
-      de: {
-        name: "Ein neuer Look",
-        objective:
-          "Gestalte in Rocket League ein neues Preset mit **einer Karosserie, Lackierung oder Farbe, die du selten nutzt**. Wähle es aus und spiele damit ein Online- oder Schaukampf-Match bis zum Ende.",
-        gameObjective:
-          "Gestalte in **{{game}}** ein neues Preset mit **einer Karosserie, Lackierung oder Farbe, die du selten nutzt**. Wähle es aus und spiele damit ein Online- oder Schaukampf-Match bis zum Ende.",
-      },
-    },
-  },
-  {
     id: "tiny-home",
     minimumDurationMinutes: 8,
     suggestedDurationMinutes: 25,

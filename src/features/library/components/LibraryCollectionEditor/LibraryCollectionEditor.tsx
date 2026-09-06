@@ -6,12 +6,13 @@ import type {
   CustomGame,
   CustomGameInput,
 } from "../../../../domain/library/model";
-import { customGameQuestIds } from "../../../../domain/library/rules";
+import { DEFAULT_CURATED_PREFERENCES } from "../../../../domain/library/model";
+import { customGameQuestIds, curatedGameQuestIds } from "../../../../domain/library/rules";
 import { GameVisual } from "../../../../shared/ui/GameVisual/GameVisual";
 import { CheckIcon } from "../../../../shared/ui/Icons/Icons";
 import { useLibraryStore } from "../../../../stores/useLibraryStore";
 import { CustomGameEditor } from "../CustomGameEditor/CustomGameEditor";
-import { EditIcon, PlusIcon, RemoveIcon, SearchIcon } from "../LibraryIcons";
+import { EditIcon, PlusIcon, RemoveIcon } from "../LibraryIcons";
 import { SectionLabel } from "../SectionLabel/SectionLabel";
 import styles from "./LibraryCollectionEditor.module.css";
 
@@ -35,6 +36,9 @@ export function LibraryCollectionEditor({
     customGames,
     removeCustomGame,
     selectedCuratedGameIds,
+    curatedGamePreferences,
+    setCuratedQuestMode,
+    toggleCuratedInstallment,
     toggleCuratedGame,
     selectAllCuratedGames,
     updateCustomGame,
@@ -44,6 +48,9 @@ export function LibraryCollectionEditor({
       customGames: state.customGames,
       removeCustomGame: state.removeCustomGame,
       selectedCuratedGameIds: state.selectedCuratedGameIds,
+      curatedGamePreferences: state.curatedGamePreferences,
+      setCuratedQuestMode: state.setCuratedQuestMode,
+      toggleCuratedInstallment: state.toggleCuratedInstallment,
       toggleCuratedGame: state.toggleCuratedGame,
       selectAllCuratedGames: state.selectAllCuratedGames,
       updateCustomGame: state.updateCustomGame,
@@ -53,7 +60,10 @@ export function LibraryCollectionEditor({
   useEffect(() => {
     onEditingChange?.(editorTarget !== null);
   }, [editorTarget, onEditingChange]);
-  const [search, setSearch] = useState("");
+  const [search] = useState("");
+  const questCounts = useLibraryStore(useShallow((state) =>
+    CURATED_GAMES.map((game) => curatedGameQuestIds(state, game.id).length),
+  ));
   const editingGame =
     editorTarget && editorTarget !== "new"
       ? customGames.find((game) => game.id === editorTarget)
@@ -118,7 +128,9 @@ export function LibraryCollectionEditor({
         <div className={styles.curatedList}>
           {filteredGames.map((game) => {
             const selected = selectedCuratedGameIds.includes(game.id);
+            const preferences = curatedGamePreferences[game.id] ?? DEFAULT_CURATED_PREFERENCES;
             return (
+              <div className={styles.curatedEntry} key={game.id}>
               <button
                 className={styles.curatedGame}
                 key={game.id}
@@ -137,6 +149,38 @@ export function LibraryCollectionEditor({
                   {selected ? <CheckIcon /> : <PlusIcon />}
                 </span>
               </button>
+              {selected ? (
+                <div className={styles.curatedOptions}>
+                  <fieldset className={styles.questMode}>
+                    <legend>{t("ui.library.questMode", { game: game.name })}</legend>
+                    {(["curated-only", "curated-and-flexible"] as const).map((mode) => (
+                      <label key={mode}>
+                        <input type="radio" name={`quest-mode-${game.id}`} checked={preferences.questMode === mode}
+                          onChange={() => setCuratedQuestMode(game.id, mode)} />
+                        {t(mode === "curated-only" ? "ui.library.curatedOnly" : "ui.library.curatedAndFlexible")}
+                      </label>
+                    ))}
+                  </fieldset>
+                  {game.installments.length ? (
+                    <fieldset className={styles.installments}>
+                      <legend>{t("ui.library.installments")}</legend>
+                      {game.installments.map((entry) => (
+                        <label key={entry.id}>
+                          <input type="checkbox" checked={preferences.installmentIds.includes(entry.id)}
+                            onChange={() => toggleCuratedInstallment(game.id, entry.id)} />
+                          {entry.name}
+                        </label>
+                      ))}
+                    </fieldset>
+                  ) : null}
+                  <p className={styles.selectionHint}>
+                    {game.installments.length && !preferences.installmentIds.length
+                      ? t("ui.library.chooseInstallment")
+                      : t("ui.library.questCount", { count: questCounts[CURATED_GAMES.indexOf(game)] })}
+                  </p>
+                </div>
+              ) : null}
+              </div>
             );
           })}
           {filteredGames.length === 0 ? (

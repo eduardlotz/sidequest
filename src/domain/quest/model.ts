@@ -3,7 +3,7 @@ import type { QuestDefinition } from "../../data/quests";
 import type { GameReference } from "../../data/gameTypes";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 11;
+export const STORE_VERSION = 12;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const NEW_CARDS_COST = 25;
 export const QUEST_OFFER_COUNT = 3;

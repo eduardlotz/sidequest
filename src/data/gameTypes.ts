@@ -78,6 +78,7 @@ export type CuratedGameDefinition = {
   name: string;
   artwork: string;
   isSeries?: boolean;
+  installments: readonly { id: string; name: string }[];
   compatibleQuestIds: readonly string[];
   exclusiveQuestIds: readonly string[];
 };

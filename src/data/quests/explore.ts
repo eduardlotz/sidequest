@@ -2,30 +2,6 @@ import { defineMoodQuests } from "./defineMoodQuests";
 
 export const exploreQuests = defineMoodQuests("explore", [
   {
-    id: "crimson-desert-pywel-detour",
-    additionalMoodIds: ["restless"],
-    universal: false,
-    minimumDurationMinutes: 8,
-    suggestedDurationMinutes: 25,
-    genres: ["Action adventure", "Open world"],
-    translations: {
-      en: {
-        name: "Pywel Detour",
-        objective:
-          "In Crimson Desert, leave the nearest marked route and reach **one visible landmark** using the traversal tools you have unlocked. Return to a road or settlement without fast travel.",
-        gameObjective:
-          "In **{{game}}**, leave the nearest marked route and reach **one visible landmark** using the traversal tools you have unlocked. Return to a road or settlement without fast travel.",
-      },
-      de: {
-        name: "Umweg durch Pywel",
-        objective:
-          "Verlasse in Crimson Desert die nächste markierte Route und erreiche mit deinen freigeschalteten Fortbewegungsmöglichkeiten **einen sichtbaren Orientierungspunkt**. Kehre ohne Schnellreise zu einer Straße oder Siedlung zurück.",
-        gameObjective:
-          "Verlasse in **{{game}}** die nächste markierte Route und erreiche mit deinen freigeschalteten Fortbewegungsmöglichkeiten **einen sichtbaren Orientierungspunkt**. Kehre ohne Schnellreise zu einer Straße oder Siedlung zurück.",
-      },
-    },
-  },
-  {
     id: "beyond-the-map",
     customGameCompatibility: { capabilityIds: ["open-world"] },
     minimumDurationMinutes: 5,
