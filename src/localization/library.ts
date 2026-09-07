@@ -72,6 +72,15 @@ export const englishLibrary = {
   drawerDescription: "Your games, series, and the quests that fit them.",
   profileSummary: "Choose and configure your games",
   icons: {
+    zombie: "Zombie",
+    vampire: "Vampire",
+    "slasher-mask": "Slasher mask",
+    "haunted-house": "Haunted house",
+    ghost: "Ghost",
+    castle: "Castle",
+    space: "Space",
+    radiation: "Radiation",
+
     action: "action",
     adventure: "adventure",
     arcade: "arcade",
@@ -163,6 +172,7 @@ export const englishLibrary = {
   showMatched: "Show matched quests",
   showAllReusable: "Browse all reusable quests",
   resetMatches: "Reset to feature matches",
+  noActivityResults: "No activities match this search.",
   noQuestResults: "No quests match this search.",
   colorNames: {
     relax: "Mint",
@@ -257,6 +267,15 @@ export const germanLibrary = {
   drawerDescription: "Deine Spiele, Reihen und die passenden Quests.",
   profileSummary: "Spiele auswählen und einrichten",
   icons: {
+    zombie: "Zombie",
+    vampire: "Vampir",
+    "slasher-mask": "Horrormaske",
+    "haunted-house": "Spukhaus",
+    ghost: "Geist",
+    castle: "Burg",
+    space: "Weltraum",
+    radiation: "Radioaktivität",
+
     action: "Action",
     adventure: "Abenteuer",
     arcade: "Arcade",
@@ -347,6 +366,7 @@ export const germanLibrary = {
   showMatched: "Passende Quests zeigen",
   showAllReusable: "Alle wiederverwendbaren Quests",
   resetMatches: "Nach Features zurücksetzen",
+  noActivityResults: "Keine Aktivitäten für diese Suche.",
   noQuestResults: "Keine Quests für diese Suche.",
   colorNames: {
     relax: "Mint",

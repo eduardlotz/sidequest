@@ -1,4 +1,4 @@
-import { useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
@@ -53,15 +53,25 @@ export function App() {
       />
 
       <main className={styles.main} id="main-content">
-        {setupCompleted ? (
-          <QuestScreen
-            reduceMotion={reduceMotion}
-            onCoinFlightStart={coinBalanceAnimation.startFlight}
-            onCoinHit={coinBalanceAnimation.receivePoints}
-          />
-        ) : (
-          <LibrarySetup reduceMotion={reduceMotion} />
-        )}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={setupCompleted ? "play" : "setup"}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.22 }}
+          >
+            {setupCompleted ? (
+              <QuestScreen
+                reduceMotion={reduceMotion}
+                onCoinFlightStart={coinBalanceAnimation.startFlight}
+                onCoinHit={coinBalanceAnimation.receivePoints}
+              />
+            ) : (
+              <LibrarySetup reduceMotion={reduceMotion} />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
     </div>
   );

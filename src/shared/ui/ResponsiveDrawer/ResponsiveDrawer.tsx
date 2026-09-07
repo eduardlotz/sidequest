@@ -16,6 +16,13 @@ import styles from "./ResponsiveDrawer.module.css";
 const MOBILE_SNAP_POINTS = [0.78, 1];
 const MOBILE_DEFAULT_SNAP_POINT = MOBILE_SNAP_POINTS[0];
 
+function dismissPopoverFirst(event: KeyboardEvent) {
+  const popover = document.querySelector<HTMLElement>("[popover]:popover-open");
+  if (!popover) return;
+  event.preventDefault();
+  popover.hidePopover();
+}
+
 type Props = {
   children: ReactNode;
   desktopDirection: "left" | "right";
@@ -70,6 +77,7 @@ export function ResponsiveDrawer({
         <Drawer.Portal>
           <Drawer.Overlay className={styles.drawerOverlay} />
           <Drawer.Content
+            onEscapeKeyDown={dismissPopoverFirst}
             className={styles.drawerContent}
             data-direction={desktop ? desktopDirection : "bottom"}
             data-drawer-variant={variant}
@@ -123,6 +131,7 @@ export function ResponsiveNestedDrawer({
       <Drawer.Portal>
         <Drawer.Overlay className={styles.drawerOverlay} />
         <Drawer.Content
+          onEscapeKeyDown={dismissPopoverFirst}
           className={styles.drawerContent}
           data-direction={desktop ? desktopDirection : "bottom"}
           data-drawer-variant={variant}

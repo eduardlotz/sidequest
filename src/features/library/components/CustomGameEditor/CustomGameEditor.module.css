@@ -55,7 +55,7 @@
   cursor: pointer;
 }
 .iconGrid button[aria-pressed="true"] {
-  outline: 2px solid var(--color-focus);
+  outline: 2px solid var(--custom-color);
   outline-offset: 4px;
 }
 .pagination {
@@ -145,7 +145,7 @@
   flex: none;
 }
 .summaryRow span,
-.activityRow span {
+.activityRow > span:not([aria-hidden="true"]) {
   flex: 1;
   min-width: 0;
 }
@@ -168,7 +168,7 @@
   padding: 8px 12px;
   border-radius: 30px;
   background: var(--color-surface);
-  box-shadow: 0 6px 15px #17172b16;
+  box-shadow: 0 6px 15px rgb(var(--color-shadow-rgb) / .1);
   font-size: 14px;
 }
 .badge strong {
@@ -234,7 +234,7 @@
   border-radius: 21px;
   background: var(--color-surface);
   color: var(--color-text);
-  box-shadow: 0 6px 12px #17172b09;
+  box-shadow: 0 6px 12px rgb(var(--color-shadow-rgb) / .045);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -272,3 +272,8 @@
     height: 21px;
   }
 }
+
+.activityRow { transition:background-color .18s ease,transform .15s ease; }
+.activityRow:active { transform:scale(.985); }
+.identity > div { display:flex; }
+@media(prefers-reduced-motion:reduce) { .activityRow { transition:none; }.activityRow:active { transform:none; } }

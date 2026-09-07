@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type ButtonHTMLAttributes,
-  type ReactNode,
-} from "react";
+import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 import styles from "./SolidButton.module.css";
 
 type SolidButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -19,6 +15,7 @@ export const SolidButton = forwardRef<HTMLButtonElement, SolidButtonProps>(
       iconLeft,
       iconRight,
       variant = "surface",
+      type = "button",
       ...props
     },
     ref,
@@ -26,6 +23,7 @@ export const SolidButton = forwardRef<HTMLButtonElement, SolidButtonProps>(
     return (
       <button
         {...props}
+        type={type}
         className={[styles.button, className].filter(Boolean).join(" ")}
         data-variant={variant}
         ref={ref}

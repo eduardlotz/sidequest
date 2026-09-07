@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { CURATED_GAMES } from "../../../../data/games";
@@ -7,7 +7,10 @@ import type {
   CustomGameInput,
 } from "../../../../domain/library/model";
 import { DEFAULT_CURATED_PREFERENCES } from "../../../../domain/library/model";
-import { customGameQuestIds, curatedGameQuestIds } from "../../../../domain/library/rules";
+import {
+  customGameQuestIds,
+  curatedGameQuestIds,
+} from "../../../../domain/library/rules";
 import { GameVisual } from "../../../../shared/ui/GameVisual/GameVisual";
 import { SelectionMark } from "../../../../shared/ui/SelectionMark/SelectionMark";
 import { FlowFrame } from "../../../../shared/ui/FlowFrame/FlowFrame";
@@ -20,13 +23,6 @@ import { SectionLabel } from "../SectionLabel/SectionLabel";
 import styles from "./LibraryCollectionEditor.module.css";
 
 type EditorTarget = "new" | string | null;
-
-function searchableGameName(value: string) {
-  return value
-    .normalize("NFKD")
-    .toLocaleLowerCase()
-    .replace(/[^\p{L}\p{N}]/gu, "");
-}
 
 export function LibraryCollectionEditor({
   onEditingChange,
@@ -65,19 +61,17 @@ export function LibraryCollectionEditor({
   useEffect(() => {
     onEditingChange?.(editorTarget !== null);
   }, [editorTarget, onEditingChange]);
-  const [search] = useState("");
-  const questCounts = useLibraryStore(useShallow((state) =>
-    CURATED_GAMES.map((game) => curatedGameQuestIds(state, game.id).length),
-  ));
+  const overviewScroll = useRef(0);
+  const questCounts = useLibraryStore(
+    useShallow((state) =>
+      CURATED_GAMES.map((game) => curatedGameQuestIds(state, game.id).length),
+    ),
+  );
   const editingGame =
     editorTarget && editorTarget !== "new"
       ? customGames.find((game) => game.id === editorTarget)
       : undefined;
-  const filteredGames = CURATED_GAMES.filter((game) =>
-    [game.name, game.id].some((name) =>
-      searchableGameName(name).includes(searchableGameName(search)),
-    ),
-  );
+
 
   function saveCustomGame(input: CustomGameInput) {
     const saved = editingGame
@@ -86,115 +80,173 @@ export function LibraryCollectionEditor({
     if (saved) setEditorTarget(null);
   }
 
-  return <AnimatePresence mode="wait" initial={false}><LibraryStep key={editorTarget ?? "collection"}>
-    {editorTarget ? <CustomGameEditor key={editingGame?.id ?? "new"} game={editingGame} onCancel={() => setEditorTarget(null)} onSave={saveCustomGame}/> : <FlowFrame title={title} footer={footer}>
-    <div className={styles.collectionEditor}>
-      <section className={styles.collectionSection}>
-        <div className={styles.sectionHeader}>
-          <h3>
-            <SectionLabel
-              label={t("ui.library.curatedHeading")}
-              hint={t("ui.library.collectionHint")}
-            />
-          </h3>
-          <span className={styles.optional}>{t("ui.library.optional")}</span>
-        </div>
-        <div className={styles.curatedList}>
-          {filteredGames.map((game) => {
-            const selected = selectedCuratedGameIds.includes(game.id);
-            const preferences = curatedGamePreferences[game.id] ?? DEFAULT_CURATED_PREFERENCES;
-            return (
-              <div className={styles.curatedEntry} key={game.id}>
-              <button
-                className={styles.curatedGame}
-                key={game.id}
-                type="button"
-                aria-pressed={selected}
-                onClick={() => toggleCuratedGame(game.id)}
-              >
-                <GameVisual
-                  game={{ id: game.id, name: game.name, source: "curated" }}
-                />
-                <span className={styles.gameName}>{game.name}<span className={styles.gameKind}>
-                  {t(game.isSeries ? "ui.library.series" : "ui.library.game")}
-                </span>
-                </span><SelectionMark selected={selected}/>
-              </button>
-              {selected ? (
-                <details className={styles.curatedOptions}><summary>{t("ui.library.configureGame")}</summary>
-                  <fieldset className={styles.questMode}>
-                    <legend>{t("ui.library.questMode", { game: game.name })}</legend>
-                    {(["curated-only", "curated-and-flexible"] as const).map((mode) => (
-                      <label key={mode}>
-                        <input type="radio" name={`quest-mode-${game.id}`} checked={preferences.questMode === mode}
-                          onChange={() => setCuratedQuestMode(game.id, mode)} />
-                        {t(mode === "curated-only" ? "ui.library.curatedOnly" : "ui.library.curatedAndFlexible")}
-                      </label>
-                    ))}
-                  </fieldset>
-                  {game.installments.length ? (
-                    <fieldset className={styles.installments}>
-                      <legend>{t("ui.library.installments")}</legend>
-                      {game.installments.map((entry) => (
-                        <label key={entry.id}>
-                          <input type="checkbox" checked={preferences.installmentIds.includes(entry.id)}
-                            onChange={() => toggleCuratedInstallment(game.id, entry.id)} />
-                          {entry.name}
-                        </label>
-                      ))}
-                    </fieldset>
-                  ) : null}
-                  <p className={styles.selectionHint}>
-                    {game.installments.length && !preferences.installmentIds.length
-                      ? t("ui.library.chooseInstallment")
-                      : t("ui.library.questCount", { count: questCounts[CURATED_GAMES.indexOf(game)] })}
-                  </p>
-                </details>
-              ) : null}
-              </div>
-            );
-          })}
-          {filteredGames.length === 0 ? (
-            <p className={styles.emptyState}>
-              {t("ui.library.noSearchResults")}
-            </p>
-          ) : null}
-        </div>
-      </section>
-      <section className={styles.collectionSection}>
-        <div className={styles.sectionHeader}>
-          <h3>
-            <SectionLabel
-              label={t("ui.library.customHeading")}
-              hint={t("ui.library.customDescription")}
-            />
-          </h3>
-          <button
-            className={styles.addButton}
-            type="button"
-            onClick={() => setEditorTarget("new")}
-          >
-            <PlusIcon />
-            {t("ui.library.addGame")}
-          </button>
-        </div>
-        {customGames.length ? (
-          <div className={styles.customGameList}>
-            {customGames.map((game) => (
-              <CustomGameRow
-                game={game}
-                key={game.id}
-                onEdit={() => setEditorTarget(game.id)}
-                onRemove={() => removeCustomGame(game.id)}
-              />
-            ))}
-          </div>
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <LibraryStep key={editorTarget ?? "collection"}>
+        {editorTarget ? (
+          <CustomGameEditor
+            key={editingGame?.id ?? "new"}
+            game={editingGame}
+            onCancel={() => setEditorTarget(null)}
+            onSave={saveCustomGame}
+          />
         ) : (
-          <p className={styles.emptyState}>{t("ui.library.noCustomGames")}</p>
+          <FlowFrame title={title} footer={footer} initialScrollTop={overviewScroll.current} onScrollPositionChange={top => {overviewScroll.current=top;}}>
+            <div className={styles.collectionEditor}>
+              <section className={styles.collectionSection}>
+                <div className={styles.sectionHeader}>
+                  <h3>
+                    <SectionLabel
+                      label={t("ui.library.curatedHeading")}
+                      hint={t("ui.library.collectionHint")}
+                    />
+                  </h3>
+                  <span className={styles.optional}>
+                    {t("ui.library.optional")}
+                  </span>
+                </div>
+                <div className={styles.curatedList}>
+                  {CURATED_GAMES.map((game) => {
+                    const selected = selectedCuratedGameIds.includes(game.id);
+                    const preferences =
+                      curatedGamePreferences[game.id] ??
+                      DEFAULT_CURATED_PREFERENCES;
+                    return (
+                      <div className={styles.curatedEntry} key={game.id}>
+                        <button
+                          className={styles.curatedGame}
+                          key={game.id}
+                          type="button"
+                          aria-pressed={selected}
+                          onClick={() => toggleCuratedGame(game.id)}
+                        >
+                          <GameVisual
+                            game={{
+                              id: game.id,
+                              name: game.name,
+                              source: "curated",
+                            }}
+                          />
+                          <span className={styles.gameName}>
+                            {game.name}
+                            <span className={styles.gameKind}>
+                              {t(
+                                game.isSeries
+                                  ? "ui.library.series"
+                                  : "ui.library.game",
+                              )}
+                            </span>
+                          </span>
+                          <SelectionMark selected={selected} />
+                        </button>
+                        {selected ? (
+                          <details className={styles.curatedOptions} ref={node => { if(node && !node.dataset.initialized) { node.open = Boolean(game.installments.length && !preferences.installmentIds.length); node.dataset.initialized = "true"; } }}>
+                            <summary>{t("ui.library.configureGame")}</summary>
+                            <fieldset className={styles.questMode}>
+                              <legend>
+                                {t("ui.library.questMode", { game: game.name })}
+                              </legend>
+                              {(
+                                [
+                                  "curated-only",
+                                  "curated-and-flexible",
+                                ] as const
+                              ).map((mode) => (
+                                <label key={mode}>
+                                  <input
+                                    type="radio"
+                                    name={`quest-mode-${game.id}`}
+                                    checked={preferences.questMode === mode}
+                                    onChange={() =>
+                                      setCuratedQuestMode(game.id, mode)
+                                    }
+                                  />
+                                  {t(
+                                    mode === "curated-only"
+                                      ? "ui.library.curatedOnly"
+                                      : "ui.library.curatedAndFlexible",
+                                  )}
+                                </label>
+                              ))}
+                            </fieldset>
+                            {game.installments.length ? (
+                              <fieldset className={styles.installments}>
+                                <legend>{t("ui.library.installments")}</legend>
+                                {game.installments.map((entry) => (
+                                  <label key={entry.id}>
+                                    <input
+                                      type="checkbox"
+                                      checked={preferences.installmentIds.includes(
+                                        entry.id,
+                                      )}
+                                      onChange={() =>
+                                        toggleCuratedInstallment(
+                                          game.id,
+                                          entry.id,
+                                        )
+                                      }
+                                    />
+                                    {entry.name}
+                                  </label>
+                                ))}
+                              </fieldset>
+                            ) : null}
+                            <p className={styles.selectionHint}>
+                              {game.installments.length &&
+                              !preferences.installmentIds.length
+                                ? t("ui.library.chooseInstallment")
+                                : t("ui.library.questCount", {
+                                    count:
+                                      questCounts[CURATED_GAMES.indexOf(game)],
+                                  })}
+                            </p>
+                          </details>
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+              <section className={styles.collectionSection}>
+                <div className={styles.sectionHeader}>
+                  <h3>
+                    <SectionLabel
+                      label={t("ui.library.customHeading")}
+                      hint={t("ui.library.customDescription")}
+                    />
+                  </h3>
+                  <button
+                    className={styles.addButton}
+                    type="button"
+                    onClick={() => setEditorTarget("new")}
+                  >
+                    <PlusIcon />
+                    {t("ui.library.addGame")}
+                  </button>
+                </div>
+                {customGames.length ? (
+                  <div className={styles.customGameList}>
+                    {customGames.map((game) => (
+                      <CustomGameRow
+                        game={game}
+                        key={game.id}
+                        onEdit={() => setEditorTarget(game.id)}
+                        onRemove={() => removeCustomGame(game.id)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p className={styles.emptyState}>
+                    {t("ui.library.noCustomGames")}
+                  </p>
+                )}
+              </section>
+            </div>
+          </FlowFrame>
         )}
-      </section>
-    </div></FlowFrame>}
-  </LibraryStep></AnimatePresence>;
+      </LibraryStep>
+    </AnimatePresence>
+  );
 }
 
 function CustomGameRow({

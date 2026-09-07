@@ -1,1 +1,27 @@
-.pill { display:inline-flex; align-items:center; justify-content:center; gap:5px; border-radius:30px; padding:6px 12px; background:var(--color-surface-soft); color:var(--color-text); font-size:14px; font-weight:600; cursor:pointer; }.pill svg { width:16px; height:16px; color:var(--color-muted); }.pill:focus-visible { outline:2px solid var(--color-focus); outline-offset:3px; }
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border-radius: 30px;
+  padding: 6px 12px;
+  background: var(--color-surface-pressed);
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pill svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-muted);
+}
+.pill:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.pill { transition:background-color .18s ease,transform .15s ease,opacity .15s ease; }
+.pill:active:not(:disabled) { transform:scale(.96); }
+.pill:disabled { cursor:default; opacity:.4; }
+@media(prefers-reduced-motion:reduce) { .pill { transition:none; }.pill:active:not(:disabled) { transform:none; } }

@@ -36,23 +36,18 @@ export function AppHeader({
   reduceMotion,
 }: Props) {
   const { i18n, t } = useTranslation();
-  const setupCompleted = useLibraryStore(s=>s.setupCompleted);
+  const setupCompleted = useLibraryStore((s) => s.setupCompleted);
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
-  const {
-    completedSessions,
-    profile,
-    purchaseRedRopes,
-    setDebugMode,
-    stats,
-  } = useQuestStore(
-    useShallow((state) => ({
-      completedSessions: state.completedSessions,
-      profile: state.profile,
-      purchaseRedRopes: state.purchaseRedRopes,
-      setDebugMode: state.setDebugMode,
-      stats: state.stats,
-    })),
-  );
+  const { completedSessions, profile, purchaseRedRopes, setDebugMode, stats } =
+    useQuestStore(
+      useShallow((state) => ({
+        completedSessions: state.completedSessions,
+        profile: state.profile,
+        purchaseRedRopes: state.purchaseRedRopes,
+        setDebugMode: state.setDebugMode,
+        stats: state.stats,
+      })),
+    );
   const { changeTheme, themeChoice } = useThemeChoice();
   const [mobileDrawerContainer, setMobileDrawerContainer] =
     useState<HTMLDivElement | null>(null);
@@ -101,7 +96,9 @@ export function AppHeader({
           initial={reduceMotion ? false : { opacity: 0, y: -14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={
-            reduceMotion ? { duration: 0 } : { ...NAV_ENTRY_SPRING, delay: 0.04 }
+            reduceMotion
+              ? { duration: 0 }
+              : { ...NAV_ENTRY_SPRING, delay: 0.04 }
           }
         >
           <div className={styles.navActionGroup}>
@@ -110,10 +107,7 @@ export function AppHeader({
               mobileContainer={mobileDrawerContainer}
               variant="about"
               trigger={
-                <SolidButton
-                  data-sound-click-skip
-                  type="button"
-                >
+                <SolidButton data-sound-click-skip type="button">
                   {t("ui.nav.about")}
                 </SolidButton>
               }

@@ -7,7 +7,7 @@
   min-width: 0;
   padding: 12px 4px 4px 4px;
   border-radius: 16px;
-  background: rgba(33, 33, 33, 0.05);
+  background: rgb(var(--color-text-rgb) / 0.05);
 }
 .sectionHeader {
   display: flex;
@@ -31,10 +31,10 @@
   gap: 5px;
   padding: 6px 12px 6px 8px;
   border-radius: 30px;
-  background: rgba(41, 45, 50, 0.05);
+  background: rgb(var(--color-text-rgb) / 0.05);
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: -2%;
+  letter-spacing: -.02em;
   color: var(--color-text);
   cursor: pointer;
 }

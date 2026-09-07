@@ -4,10 +4,12 @@
   min-height: 0;
   height: 100%;
   width: 100%;
-  --flow-background: var(--color-canvas);
 }
 .heading {
+  position: relative;
   flex: none;
+  min-height: 62px;
+  box-sizing: border-box;
   text-align: center;
   color: var(--color-muted);
   font-size: 14px;
@@ -25,55 +27,30 @@
   overflow: auto;
   overscroll-behavior: contain;
   scrollbar-width: none;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--fade-top, 0px),
+    #000 calc(100% - var(--fade-bottom, 0px)),
+    transparent
+  );
 }
 .scroll::-webkit-scrollbar {
   display: none;
 }
 .content {
-  padding: 12px 10px 36px;
-}
-.viewport::before,
-.viewport::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 65px;
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.viewport::before {
-  top: 0;
-  background: linear-gradient(
-    var(--flow-background),
-    color-mix(in srgb, var(--flow-background) 70%, transparent) 35%,
-    transparent
-  );
-}
-.viewport::after {
-  bottom: 0;
-  background: linear-gradient(
-    0deg,
-    var(--flow-background),
-    color-mix(in srgb, var(--flow-background) 70%, transparent) 35%,
-    transparent
-  );
-}
-.viewport[data-top="true"]::before,
-.viewport[data-bottom="true"]::after {
-  opacity: 1;
+  padding: 12px 10px 48px;
 }
 .floating {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 8px;
+  left: 10px;
+  right: 10px;
   z-index: 3;
   display: flex;
   justify-content: center;
   pointer-events: none;
+  color: var(--color-text);
 }
 .down {
   position: absolute;
@@ -87,24 +64,33 @@
   border-radius: 30px;
   background: var(--color-surface);
   color: var(--color-text);
-  box-shadow: 0 7px 16px #17172b12;
+  box-shadow: var(--control-shadow);
   cursor: pointer;
 }
 .down svg {
   width: 14px;
   height: 14px;
 }
+.down:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
 .footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
   flex: none;
   padding: 14px 10px 4px;
 }
-@media (prefers-reduced-motion: reduce) {
-  .viewport::before,
-  .viewport::after {
-    transition: none;
+.footer > button {
+  flex-shrink: 0;
+}
+@media (max-width: 360px) {
+  .footer {
+    gap: 12px;
+  }
+  .footer > button {
+    font-size: 13px;
   }
 }

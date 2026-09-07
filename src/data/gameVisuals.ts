@@ -1,8 +1,20 @@
+import { MOOD_IDS } from "./questTypes";
 import { CURATED_GAMES_BY_ID } from "./games";
 import { QUEST_ACCENT_BY_MOOD } from "./questColors";
 import type { GameColorId, GameIconId, GameReference } from "./gameTypes";
 
-export const GAME_COLOR_IDS: readonly GameColorId[] = ["challenge", "low-energy", "curious", "connect", "progress", "create", "restless", "relax", "nostalgic"];
+export const GAME_COLOR_IDS: readonly GameColorId[] = MOOD_IDS;
+export const GAME_PICKER_COLOR_IDS: readonly GameColorId[] = [
+  "challenge",
+  "low-energy",
+  "curious",
+  "connect",
+  "progress",
+  "create",
+  "restless",
+  "relax",
+  "nostalgic",
+];
 
 export type ResolvedGameVisual =
   | { kind: "artwork"; src: string }
