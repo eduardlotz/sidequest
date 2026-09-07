@@ -4,10 +4,12 @@
   min-height: 0;
   height: 100%;
   width: 100%;
-  --flow-background: var(--color-canvas);
 }
 .heading {
+  position: relative;
   flex: none;
+  min-height: 62px;
+  box-sizing: border-box;
   text-align: center;
   color: var(--color-muted);
   font-size: 14px;
@@ -25,55 +27,33 @@
   overflow: auto;
   overscroll-behavior: contain;
   scrollbar-width: none;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--fade-top, 0px),
+    #000 calc(100% - var(--fade-bottom, 0px)),
+    transparent
+  );
 }
 .scroll::-webkit-scrollbar {
   display: none;
 }
 .content {
-  padding: 12px 10px 36px;
+  padding: 12px 10px 48px;
 }
-.viewport::before,
-.viewport::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 65px;
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.viewport::before {
-  top: 0;
-  background: linear-gradient(
-    var(--flow-background),
-    color-mix(in srgb, var(--flow-background) 70%, transparent) 35%,
-    transparent
-  );
-}
-.viewport::after {
-  bottom: 0;
-  background: linear-gradient(
-    0deg,
-    var(--flow-background),
-    color-mix(in srgb, var(--flow-background) 70%, transparent) 35%,
-    transparent
-  );
-}
-.viewport[data-top="true"]::before,
-.viewport[data-bottom="true"]::after {
-  opacity: 1;
+.viewport[data-selection] .content {
+  padding-bottom: 96px;
 }
 .floating {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 8px;
+  left: 10px;
+  right: 10px;
   z-index: 3;
   display: flex;
   justify-content: center;
   pointer-events: none;
+  color: var(--color-text);
 }
 .down {
   position: absolute;
@@ -87,24 +67,60 @@
   border-radius: 30px;
   background: var(--color-surface);
   color: var(--color-text);
-  box-shadow: 0 7px 16px #17172b12;
+  box-shadow: var(--control-shadow);
   cursor: pointer;
+}
+.selectionIndicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  z-index: 3;
+  display: inline-flex;
+  min-height: 34px;
+  padding: 0 13px;
+  border-radius: 30px;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  box-shadow: var(--control-shadow);
+  color: var(--color-text);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+  translate: -50% 0;
+  white-space: nowrap;
+}
+.selectionIndicator[data-above-scroll] {
+  bottom: 50px;
 }
 .down svg {
   width: 14px;
   height: 14px;
 }
+.down:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
 .footer {
   display: flex;
+  width: 100%;
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  flex-direction: column;
+  gap: 8px;
   flex: none;
   padding: 14px 10px 4px;
 }
-@media (prefers-reduced-motion: reduce) {
-  .viewport::before,
-  .viewport::after {
-    transition: none;
+.footer > button {
+  width: 100%;
+  flex-shrink: 0;
+}
+@media (max-width: 360px) {
+  .footer {
+    gap: 8px;
+  }
+  .footer > button {
+    font-size: 13px;
   }
 }

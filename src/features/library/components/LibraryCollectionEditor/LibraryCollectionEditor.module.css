@@ -4,10 +4,9 @@
   gap: 32px;
 }
 .collectionSection {
-  min-width: 0;
-  padding: 12px 4px 4px 4px;
-  border-radius: 16px;
-  background: rgba(33, 33, 33, 0.05);
+  composes: section from "../LibrarySection.module.css";
+  padding: 12px 4px 4px;
+  background: transparent;
 }
 .sectionHeader {
   display: flex;
@@ -31,10 +30,10 @@
   gap: 5px;
   padding: 6px 12px 6px 8px;
   border-radius: 30px;
-  background: rgba(41, 45, 50, 0.05);
+  background: rgb(var(--color-text-rgb) / 0.05);
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: -2%;
+  letter-spacing: -0.02em;
   color: var(--color-text);
   cursor: pointer;
 }
@@ -42,7 +41,6 @@
   width: 15px;
   height: 15px;
 }
-.curatedList,
 .customGameList {
   padding: 4px 12px;
   border-radius: 22px;
@@ -50,19 +48,50 @@
   box-shadow: 0 8px 16px #17172b0b;
 }
 .curatedList {
-  max-height: 288px;
+  max-height: 340px;
+  padding: 4px 0;
   overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--color-border) transparent;
   overscroll-behavior: contain;
 }
+.curatedEntry {
+  position: relative;
+}
+.curatedEntry:not([data-selected]) {
+  background: var(--color-surface);
+}
+.curatedEntry:not([data-selected]):first-child,
+.curatedEntry[data-selected] + .curatedEntry:not([data-selected]) {
+  border-start-start-radius: 22px;
+  border-start-end-radius: 22px;
+}
+.curatedEntry:not([data-selected]):last-child,
+.curatedEntry:not([data-selected]):has(+ .curatedEntry[data-selected]) {
+  border-end-start-radius: 22px;
+  border-end-end-radius: 22px;
+}
+.curatedEntry:not([data-selected]):only-child {
+  border-radius: 22px;
+}
+.curatedEntry[data-selected] {
+  margin: 10px 0;
+  border-radius: 22px;
+  background: var(--color-surface);
+}
+.curatedEntry[data-selected]:first-child {
+  margin-top: 0;
+}
+.curatedEntry[data-selected]:last-child {
+  margin-bottom: 0;
+}
 .curatedGame {
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 56px;
+  min-height: 64px;
   width: 100%;
-  padding: 8px 0;
+  padding: 10px 16px 10px 12px;
   background: none;
   color: var(--color-muted);
   cursor: pointer;
@@ -70,6 +99,28 @@
 }
 .curatedGame[aria-pressed="true"] {
   color: var(--color-text);
+}
+.curatedEntry[data-selected] .curatedGame {
+  padding-bottom: 6px;
+}
+.curatedVisual {
+  width: 42px;
+  height: 42px;
+  padding: 3px;
+  border: 2px solid transparent;
+  border-radius: 13px;
+  background: var(--color-surface);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    border-radius 160ms ease;
+}
+.curatedEntry[data-selected] .curatedVisual {
+  border-color: var(--color-focus);
+  box-shadow: 0 3px 8px rgb(var(--color-focus-rgb, 10 132 255) / 0.2);
+}
+.curatedVisual img {
+  border-radius: 8px;
 }
 .gameName {
   flex: 1;
@@ -83,41 +134,40 @@
   color: var(--color-muted);
 }
 .curatedOptions {
-  padding: 0 0 12px 52px;
+  padding: 0 12px 14px;
   color: var(--color-muted);
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
 }
-.curatedOptions summary {
-  cursor: pointer;
+.curatedOptions > span {
+  display: block;
   margin-bottom: 8px;
 }
-.questMode,
-.installments {
-  border: 0;
-  padding: 0;
-  margin: 0 0 12px;
-  display: grid;
-  gap: 8px;
+.installmentChips {
+  display: flex;
+  overflow-x: auto;
+  align-items: center;
+  gap: 7px;
+  padding: 2px 2px 4px;
+  scrollbar-width: none;
 }
-.questMode legend {
+.installmentChips::-webkit-scrollbar {
   display: none;
 }
-.installments legend {
-  padding: 4px 0 8px;
+.installmentChips button {
+  min-height: 36px;
+  padding: 0 13px;
+  border-radius: 18px;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
 }
-.questMode label,
-.installments label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.questMode input,
-.installments input {
-  accent-color: #168cff;
-}
-.selectionHint {
-  margin: 8px 0 0;
-  line-height: 1.4;
+.installmentChips button[aria-pressed="true"] {
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-copy);
 }
 .customGameRow {
   display: flex;
@@ -162,12 +212,28 @@
   color: var(--color-danger);
 }
 .emptyState {
-  padding: 12px;
-  margin: 0;
-  color: var(--color-muted);
+  display: flex;
+  padding: 22px 12px 14px;
+  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--color-text);
   font-size: 14px;
   line-height: 1.4;
+  text-align: center;
 }
+.emptyState > svg {
+  width: 34px;
+  height: 34px;
+  color: var(--color-muted);
+}
+.emptyState strong {
+  font-weight: 700;
+}
+/* .emptyState button {
+  width: min(100%, 240px);
+} */
+
 .collectionEditor button:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 3px;

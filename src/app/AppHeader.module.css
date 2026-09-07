@@ -119,4 +119,6 @@
   }
 }
 
-.topNavigation[data-setup=true] .navActionSlot { display:none; }
+.topNavigation[data-setup="true"] .navActionSlot {
+  display: none;
+}

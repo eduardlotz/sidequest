@@ -46,4 +46,4 @@ export function ChevronIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export { GameCapabilityIcon as CapabilityIcon } from "../../../shared/ui/Icons/GameIcon";
+export { GameActivityIcon as CapabilityIcon } from "../../../shared/ui/Icons/GameActivityIcon";

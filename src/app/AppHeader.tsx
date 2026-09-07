@@ -6,7 +6,6 @@ import { Logo } from "../assets/logo";
 import { formatScore } from "../lib/format";
 import { normalizeLanguage } from "../localization/i18n";
 import { ProfileDrawer } from "../features/profile/components/ProfileDrawer/ProfileDrawer";
-import { useLibraryStore } from "../stores/useLibraryStore";
 import { useQuestStore } from "../stores/useQuestStore";
 import { NAV_ENTRY_SPRING } from "../shared/motion/transitions";
 import { CoinIcon } from "../shared/ui/Icons/Icons";
@@ -16,9 +15,9 @@ import {
   ResponsiveDrawerContainer,
 } from "../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
 import styles from "./AppHeader.module.css";
-import { useThemeChoice } from "./hooks/useThemeChoice";
 import { AboutPanel } from "./AboutPanel";
 import type { CoinImpact } from "../features/active-quest/components/FlyingCoin/FlyingCoin";
+import type { ThemeChoice } from "../lib/theme";
 
 type Props = {
   coinImpact: CoinImpact | null;
@@ -26,6 +25,9 @@ type Props = {
   profileTriggerRef: RefObject<HTMLButtonElement | null>;
   coinPulse: number;
   reduceMotion: boolean;
+  setup: boolean;
+  themeChoice: ThemeChoice;
+  onThemeChange: (choice: ThemeChoice) => void;
 };
 
 export function AppHeader({
@@ -34,26 +36,22 @@ export function AppHeader({
   profileTriggerRef,
   coinPulse,
   reduceMotion,
+  setup,
+  themeChoice,
+  onThemeChange,
 }: Props) {
   const { i18n, t } = useTranslation();
-  const setupCompleted = useLibraryStore(s=>s.setupCompleted);
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
-  const {
-    completedSessions,
-    profile,
-    purchaseRedRopes,
-    setDebugMode,
-    stats,
-  } = useQuestStore(
-    useShallow((state) => ({
-      completedSessions: state.completedSessions,
-      profile: state.profile,
-      purchaseRedRopes: state.purchaseRedRopes,
-      setDebugMode: state.setDebugMode,
-      stats: state.stats,
-    })),
-  );
-  const { changeTheme, themeChoice } = useThemeChoice();
+  const { completedSessions, profile, purchaseRedRopes, setDebugMode, stats } =
+    useQuestStore(
+      useShallow((state) => ({
+        completedSessions: state.completedSessions,
+        profile: state.profile,
+        purchaseRedRopes: state.purchaseRedRopes,
+        setDebugMode: state.setDebugMode,
+        stats: state.stats,
+      })),
+    );
   const [mobileDrawerContainer, setMobileDrawerContainer] =
     useState<HTMLDivElement | null>(null);
   const [brandRotation, setBrandRotation] = useState(0);
@@ -93,7 +91,7 @@ export function AppHeader({
     <>
       <header
         className={styles.topNavigation}
-        data-setup={!setupCompleted}
+        data-setup={setup}
         aria-label={t("ui.nav.mainNavigation")}
       >
         <motion.div
@@ -101,7 +99,9 @@ export function AppHeader({
           initial={reduceMotion ? false : { opacity: 0, y: -14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={
-            reduceMotion ? { duration: 0 } : { ...NAV_ENTRY_SPRING, delay: 0.04 }
+            reduceMotion
+              ? { duration: 0 }
+              : { ...NAV_ENTRY_SPRING, delay: 0.04 }
           }
         >
           <div className={styles.navActionGroup}>
@@ -110,10 +110,7 @@ export function AppHeader({
               mobileContainer={mobileDrawerContainer}
               variant="about"
               trigger={
-                <SolidButton
-                  data-sound-click-skip
-                  type="button"
-                >
+                <SolidButton data-sound-click-skip type="button">
                   {t("ui.nav.about")}
                 </SolidButton>
               }
@@ -222,7 +219,7 @@ export function AppHeader({
                 completedSessions={completedSessions}
                 onDebugModeChange={setDebugMode}
                 onPurchaseRedRopes={purchaseRedRopes}
-                onThemeChange={changeTheme}
+                onThemeChange={onThemeChange}
                 profile={profile}
                 stats={stats}
                 totalCoinsCollected={totalCoinsCollected}

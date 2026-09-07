@@ -1,11 +1,13 @@
 export const THEME_STORAGE_KEY = "sidequest.theme";
 export const DARK_THEME_MEDIA_QUERY = "(prefers-color-scheme: dark)";
 
-export const THEME_CHOICES = ["light", "dark"] as const;
+export const THEME_CHOICES = ["auto", "light", "dark"] as const;
 
 export type ThemeChoice = (typeof THEME_CHOICES)[number];
 
-export function deviceTheme(prefersDark = false): ThemeChoice {
+export type ResolvedTheme = "light" | "dark";
+
+export function deviceTheme(prefersDark = false): ResolvedTheme {
   return prefersDark ? "dark" : "light";
 }
 
@@ -19,19 +21,15 @@ export function normalizeThemeChoice(
 }
 
 export function readThemeChoice(): ThemeChoice {
-  if (typeof window === "undefined") return "light";
-
-  const fallback = deviceTheme(
-    window.matchMedia(DARK_THEME_MEDIA_QUERY).matches,
-  );
+  if (typeof window === "undefined") return "auto";
 
   try {
     return normalizeThemeChoice(
       window.localStorage.getItem(THEME_STORAGE_KEY),
-      fallback,
+      "auto",
     );
   } catch {
-    return fallback;
+    return "auto";
   }
 }
 
@@ -43,13 +41,21 @@ export function saveThemeChoice(choice: ThemeChoice) {
   }
 }
 
+export function resolveThemeChoice(
+  choice: ThemeChoice,
+  prefersDark = window.matchMedia(DARK_THEME_MEDIA_QUERY).matches,
+): ResolvedTheme {
+  return choice === "auto" ? deviceTheme(prefersDark) : choice;
+}
+
 export function applyThemeChoice(choice: ThemeChoice) {
   const root = document.documentElement;
-  root.dataset.theme = choice;
+  const resolved = resolveThemeChoice(choice);
+  root.dataset.theme = resolved;
   root.dataset.themeChoice = choice;
-  root.style.colorScheme = choice;
+  root.style.colorScheme = resolved;
 
   document
     .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-    ?.setAttribute("content", choice === "dark" ? "#111118" : "#F2F2F9");
+    ?.setAttribute("content", resolved === "dark" ? "#111118" : "#F2F2F9");
 }

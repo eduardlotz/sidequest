@@ -10,6 +10,18 @@
   overscroll-behavior: contain;
 }
 
+.aboutContent[data-presentation="page"] {
+  width: min(100%, 720px);
+  min-height: 100%;
+  height: auto;
+  padding: 20px 0 40px;
+  margin: 0 auto;
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 .aboutIntro {
   padding-bottom: 28px;
   border-bottom: 1px solid var(--color-border);

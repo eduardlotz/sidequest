@@ -16,32 +16,34 @@ export const englishUi = {
   },
   about: {
     title: "Welcome to sidesidequest.",
-    description: "A small companion app for people with too many video games.",
-    stepsHeading: "Three steps to your game",
-    step1: "Choose a mood that fits",
-    step2: "Pick a quest for one of your games, or try a flexible one",
-    step3: "Complete the quest at your own pace and earn coins",
+    description: "A small starting point for people with too many video games.",
+    stepsHeading: "From choice to play in three steps",
+    step1: "Choose how you want to feel while playing",
+    step2: "Pick one of three quests for your library or any game",
+    step3: "Start the timer, finish the quest, and collect coins",
     mismatchHeading: "The quest isn't right for you?",
-    mismatchBody: "Cut the red rope, draw a new card, and try another quest.",
+    mismatchBody:
+      "Before starting, return to the cards for free. Once the timer is running, cut a red rope to cancel the quest.",
     difficultyBody:
-      "Some quests need a certain game mode, item, or skill. Check the objective before you start. Your save and difficulty settings matter too.",
+      "Read the full objective before you start. Some quests require a mode, item, mechanic, or a save with enough progress.",
     libraryHeading: "Your library, your quests",
     libraryBody:
-      "Choose from the starter collection or add your own games. The collection has quests built around each game's features, from camera tricks to living off your next hunt.",
+      "Choose from the starter collection or add any game yourself. Starter games receive their own curated quests plus flexible quests that fit their features.",
     libraryChoice:
-      "For each game, choose curated quests only or add flexible quests too. For a series, pick the entries you play. You can change this in your profile. Cards without a named game can still appear for any library.",
+      "For a series, select the entries you actually play so installment-specific quests stay accurate. You can edit the library later from your profile. Cards without a named game still work with any library.",
     sourcesHeading: "Where do the ideas come from?",
     sourcesBody:
-      "Some quests started with things players shared on Reddit. We check the idea, turn it into a small session, and write the steps ourselves. Others come from exploring what a game lets you do.",
+      "Some quests started with things players shared on Reddit. I check the idea, turn it into a small session, and write the sidequests myself. Others come from exploring what a game lets you do.",
     sourcesButton: "Reddit sources",
     sourcesTitle: "Reddit sources",
     sourcesDescription:
-      "The threads behind our research, grouped by game. Each note explains what we took from it. The players did not write or approve our quests.",
+      "The threads behind our research, grouped by game. Each note explains what I took from it. The players did not write or approve our quests.",
     sourcesBack: "Back to Info",
     sourcesOpen: "Open Reddit thread",
     sourcesQuestNames: "Inspired quests",
     sourcesResearchOnly: "Used for background research",
-    sourcesLinkHint: "Links open Reddit in a new tab. Original thread titles are kept as written.",
+    sourcesLinkHint:
+      "Links open Reddit in a new tab. Original thread titles are kept as written.",
     coinsHeading: "What do I do with the coins?",
     coinEarning: "The longer you spend on a quest, the more coins you earn.",
     coinSpending:
@@ -175,6 +177,7 @@ export const englishUi = {
     debugModeOff: "Off",
     settings: "Settings",
     theme: "Theme",
+    themeAuto: "Auto",
     themeLight: "Light",
     themeDark: "Dark",
     sound: "Sound",
@@ -202,34 +205,35 @@ export const germanUi = {
   about: {
     title: "Willkommen bei sidesidequest.",
     description:
-      "Eine kleine Companion-App für Menschen mit zu vielen Videospielen.",
-    stepsHeading: "In drei Schritten zu deinem Spiel",
-    step1: "Wähle eine passende Stimmung",
+      "Eine kleine Starthilfe für Menschen mit zu vielen Videospielen.",
+    stepsHeading: "In drei Schritten vom Aussuchen zum Spielen",
+    step1: "Wähle, wie du dich beim Spielen fühlen möchtest",
     step2:
-      "Such dir eine Quest für eines deiner Spiele aus oder probier eine flexible",
-    step3: "Schließe die Quest in deinem Tempo ab und verdiene Münzen",
+      "Such dir eine von drei Quests für deine Bibliothek oder ein beliebiges Spiel aus",
+    step3: "Starte den Timer, schließe die Quest ab und sammle Münzen",
     mismatchHeading: "Die Aufgabe passt doch nicht?",
     mismatchBody:
-      "Schneide das rote Seil durch, ziehe eine neue Karte und probier eine andere Aufgabe aus.",
+      "Vor dem Start kannst du kostenlos zu den Karten zurück. Läuft der Timer schon, brichst du die Quest mit einem roten Seil ab.",
     difficultyBody:
-      "Manche Quests brauchen einen bestimmten Modus, Gegenstand oder Skill. Lies die Aufgabe vor dem Start. Dein Spielstand und Schwierigkeitsgrad spielen auch eine Rolle.",
+      "Lies die ganze Aufgabe vor dem Start. Manche Quests brauchen einen Modus, Gegenstand, eine Mechanik oder einen ausreichend fortgeschrittenen Spielstand.",
     libraryHeading: "Deine Bibliothek, deine Quests",
     libraryBody:
-      "Wähle aus der Starter-Sammlung oder füge eigene Spiele hinzu. Die Sammlung hat Quests für die Funktionen jedes Spiels, von Kameratricks bis zum Leben von der nächsten Jagd.",
+      "Wähle aus der Starter-Sammlung oder füge selbst ein beliebiges Spiel hinzu. Spiele aus der Sammlung bekommen eigene kuratierte Quests und flexible Quests, die zu ihren Features passen.",
     libraryChoice:
-      "Wähle pro Spiel nur kuratierte Quests oder nimm flexible dazu. Bei einer Reihe wählst du die Teile, die du spielst. Das kannst du im Profil ändern. Karten ohne festes Spiel können weiterhin in jeder Bibliothek auftauchen.",
+      "Bei einer Reihe wählst du die Teile, die du wirklich spielst, damit Quests für einzelne Teile stimmen. Die Bibliothek kannst du später im Profil ändern. Karten ohne festes Spiel funktionieren weiterhin mit jeder Bibliothek.",
     sourcesHeading: "Woher kommen die Ideen?",
     sourcesBody:
-      "Manche Quests haben mit Ideen angefangen, die Spieler auf Reddit geteilt haben. Wir prüfen die Idee, machen eine kleine Session daraus und schreiben die Schritte selbst. Andere entstehen aus dem, was ein Spiel möglich macht.",
+      "Manche Quests haben mit Ideen angefangen, die Spieler auf Reddit geteilt haben. Ich prüfe die Idee, mache eine kleine Session daraus und schreib die sidequests selbst. Andere entstehen aus dem, was ein Spiel möglich macht.",
     sourcesButton: "Reddit-Quellen",
     sourcesTitle: "Reddit-Quellen",
     sourcesDescription:
-      "Die Threads hinter unserer Recherche, nach Spiel sortiert. Bei jedem steht, was wir daraus mitgenommen haben. Die Spieler haben unsere Quests weder geschrieben noch freigegeben.",
+      "Die Threads hinter meiner Recherche, nach Spiel sortiert. Bei jedem steht, was ich daraus mitgenommen haben.",
     sourcesBack: "Zurück zur Info",
     sourcesOpen: "Reddit-Thread öffnen",
     sourcesQuestNames: "Davon inspirierte Quests",
     sourcesResearchOnly: "Für die Hintergrundrecherche genutzt",
-    sourcesLinkHint: "Links öffnen Reddit in einem neuen Tab. Die Originaltitel bleiben so, wie sie geschrieben wurden.",
+    sourcesLinkHint:
+      "Links öffnen Reddit in einem neuen Tab. Die Originaltitel bleiben so, wie sie geschrieben wurden.",
     coinsHeading: "Was mache ich mit den Münzen?",
     coinEarning:
       "Je länger du an einer Quest sitzt, desto mehr Münzen gibt es dafür.",
@@ -365,6 +369,7 @@ export const germanUi = {
     debugModeOff: "Aus",
     settings: "Einstellungen",
     theme: "Theme",
+    themeAuto: "Auto",
     themeLight: "Hell",
     themeDark: "Dunkel",
     sound: "Sound",

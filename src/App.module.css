@@ -8,6 +8,23 @@
   transition:
     background-color 180ms ease,
     color 180ms ease;
+
+  &::after {
+    content: "";
+    position: fixed;
+    min-height: 100%;
+    min-width: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+
+    background: linear-gradient(
+      90deg,
+      #f2f2f900,
+      var(--color-canvas),
+      #f2f2f900
+    );
+  }
 }
 
 .skipLink {

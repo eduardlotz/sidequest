@@ -1,8 +1,9 @@
-import { useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { AppHeader } from "./app/AppHeader";
+import { useThemeChoice } from "./app/hooks/useThemeChoice";
 import { useCoinBalanceAnimation } from "./app/hooks/useCoinBalanceAnimation";
 import { QuestScreen } from "./features/quest-flow/QuestScreen";
 import { LibrarySetup } from "./features/library/LibrarySetup";
@@ -24,12 +25,14 @@ export function App() {
   );
   const coinBalanceAnimation = useCoinBalanceAnimation(points);
   const setupCompleted = useLibraryStore((state) => state.setupCompleted);
+  const { changeTheme, themeChoice } = useThemeChoice();
+  const showSetup = !setupCompleted;
 
   return (
     <div
       className={styles.app}
       data-screen={
-        !setupCompleted
+        showSetup
           ? "setup"
           : currentSession
             ? "active"
@@ -40,9 +43,9 @@ export function App() {
     >
       <InteractiveDotBackground />
 
-      <a className={styles.skipLink} href="#main-content">
+      {/* <a className={styles.skipLink} href="#main-content">
         {t("ui.nav.skipToContent")}
-      </a>
+      </a> */}
 
       <AppHeader
         coinImpact={coinBalanceAnimation.impact}
@@ -50,18 +53,35 @@ export function App() {
         displayedCoins={coinBalanceAnimation.displayedBalance}
         profileTriggerRef={profileTriggerRef}
         reduceMotion={reduceMotion}
+        setup={showSetup}
+        themeChoice={themeChoice}
+        onThemeChange={changeTheme}
       />
 
       <main className={styles.main} id="main-content">
-        {setupCompleted ? (
-          <QuestScreen
-            reduceMotion={reduceMotion}
-            onCoinFlightStart={coinBalanceAnimation.startFlight}
-            onCoinHit={coinBalanceAnimation.receivePoints}
-          />
-        ) : (
-          <LibrarySetup reduceMotion={reduceMotion} />
-        )}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={showSetup ? "setup" : "play"}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.22 }}
+          >
+            {!showSetup ? (
+              <QuestScreen
+                reduceMotion={reduceMotion}
+                onCoinFlightStart={coinBalanceAnimation.startFlight}
+                onCoinHit={coinBalanceAnimation.receivePoints}
+              />
+            ) : (
+              <LibrarySetup
+                reduceMotion={reduceMotion}
+                themeChoice={themeChoice}
+                onThemeChange={changeTheme}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
     </div>
   );

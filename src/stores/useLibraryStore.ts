@@ -11,14 +11,13 @@ import {
   LIBRARY_STORE_VERSION,
   DEFAULT_LIBRARY_STATE,
   DEFAULT_CURATED_PREFERENCES,
-  type CustomGameInput,
   type LibraryState,
   type LibraryStore,
   type PersistedLibraryState,
 } from "../domain/library/model";
 import {
   migratePersistedLibraryState,
-  sanitizedGameName,
+  sanitizeCustomGameInput,
   sanitizePersistedLibraryState,
 } from "../domain/library/persistence";
 
@@ -31,26 +30,25 @@ function createLibraryState(
 ): StateCreator<LibraryStore> {
   return (set, get) => ({
     ...DEFAULT_LIBRARY_STATE,
-    setCuratedQuestMode: (gameId, questMode) => {
-      if (!CURATED_GAMES_BY_ID[gameId]) return;
-      set((state) => ({
-        curatedGamePreferences: {
-          ...state.curatedGamePreferences,
-          [gameId]: { ...(state.curatedGamePreferences[gameId] ?? DEFAULT_CURATED_PREFERENCES), questMode },
-        },
-        revision: state.revision + 1,
-      }));
-    },
     toggleCuratedInstallment: (gameId, installmentId) => {
-      if (!CURATED_GAMES_BY_ID[gameId]?.installments.some((entry) => entry.id === installmentId)) return;
+      if (
+        !CURATED_GAMES_BY_ID[gameId]?.installments.some(
+          (entry) => entry.id === installmentId,
+        )
+      )
+        return;
       set((state) => {
-        const previous = state.curatedGamePreferences[gameId] ?? DEFAULT_CURATED_PREFERENCES;
+        const previous =
+          state.curatedGamePreferences[gameId] ?? DEFAULT_CURATED_PREFERENCES;
         return {
           curatedGamePreferences: {
             ...state.curatedGamePreferences,
-            [gameId]: { ...previous, installmentIds: previous.installmentIds.includes(installmentId)
-              ? previous.installmentIds.filter((id) => id !== installmentId)
-              : [...previous.installmentIds, installmentId] },
+            [gameId]: {
+              ...previous,
+              installmentIds: previous.installmentIds.includes(installmentId)
+                ? previous.installmentIds.filter((id) => id !== installmentId)
+                : [...previous.installmentIds, installmentId],
+            },
           },
           revision: state.revision + 1,
         };
@@ -81,7 +79,7 @@ function createLibraryState(
       }));
     },
     addCustomGame: (input) => {
-      const normalized = normalizedCustomGameInput(input);
+      const normalized = sanitizeCustomGameInput(input);
       if (!normalized) return null;
       const id = createGameId();
       set((state) => ({
@@ -91,7 +89,7 @@ function createLibraryState(
       return id;
     },
     updateCustomGame: (gameId, input) => {
-      const normalized = normalizedCustomGameInput(input);
+      const normalized = sanitizeCustomGameInput(input);
       if (
         !normalized ||
         !get().customGames.some((game) => game.id === gameId)
@@ -119,20 +117,6 @@ function createLibraryState(
       return true;
     },
   });
-}
-
-function normalizedCustomGameInput(
-  input: CustomGameInput,
-): CustomGameInput | null {
-  const name = sanitizedGameName(input.name);
-  if (!name) return null;
-  return {
-    name,
-    iconId: input.iconId,
-    colorId: input.colorId,
-    capabilityIds: Array.from(new Set(input.capabilityIds)),
-    questOverrides: { ...input.questOverrides },
-  };
 }
 
 export function createLibraryStore(

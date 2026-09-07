@@ -8,27 +8,31 @@
       (() => {
         try {
           const stored = localStorage.getItem("sidequest.theme");
-          const choice = ["light", "dark"].includes(stored)
+          const choice = ["auto", "light", "dark"].includes(stored)
             ? stored
-            : matchMedia("(prefers-color-scheme: dark)").matches
-              ? "dark"
-              : "light";
-          document.documentElement.dataset.theme = choice;
+            : "auto";
+          const resolved =
+            choice === "auto"
+              ? matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : choice;
+          document.documentElement.dataset.theme = resolved;
           document.documentElement.dataset.themeChoice = choice;
-          document.documentElement.style.colorScheme = choice;
+          document.documentElement.style.colorScheme = resolved;
           document
             .querySelector('meta[name="theme-color"]')
-            .setAttribute("content", choice === "dark" ? "#111118" : "#F2F2F9");
+            .setAttribute("content", resolved === "dark" ? "#111118" : "#F2F2F9");
         } catch {
-          const choice = matchMedia("(prefers-color-scheme: dark)").matches
+          const resolved = matchMedia("(prefers-color-scheme: dark)").matches
             ? "dark"
             : "light";
-          document.documentElement.dataset.theme = choice;
-          document.documentElement.dataset.themeChoice = choice;
-          document.documentElement.style.colorScheme = choice;
+          document.documentElement.dataset.theme = resolved;
+          document.documentElement.dataset.themeChoice = "auto";
+          document.documentElement.style.colorScheme = resolved;
           document
             .querySelector('meta[name="theme-color"]')
-            .setAttribute("content", choice === "dark" ? "#111118" : "#F2F2F9");
+            .setAttribute("content", resolved === "dark" ? "#111118" : "#F2F2F9");
         }
       })();
     </script>

@@ -6,19 +6,50 @@ import { QUEST_SOURCES } from "../data/questSources";
 import { ChevronLeftIcon } from "../shared/ui/Icons/Icons";
 import styles from "./AboutPanel.module.css";
 
-export function QuestSourcesPanel() {
+export function QuestSourcesPanel({
+  onBack,
+  presentation = "drawer",
+}: {
+  onBack?: () => void;
+  presentation?: "drawer" | "page";
+} = {}) {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage?.startsWith("de") ? "de" : "en";
   return (
-    <section className={styles.aboutContent} aria-labelledby="quest-sources-title">
+    <section
+      className={styles.aboutContent}
+      data-presentation={presentation}
+      aria-labelledby="quest-sources-title"
+    >
       <header className={styles.aboutIntro}>
-        <Drawer.Close asChild>
-          <button className={styles.sourcesButton} type="button">
-            <ChevronLeftIcon />{t("ui.about.sourcesBack")}
+        {presentation === "drawer" ? (
+          <Drawer.Close asChild>
+            <button className={styles.sourcesButton} type="button">
+              <ChevronLeftIcon />
+              {t("ui.about.sourcesBack")}
+            </button>
+          </Drawer.Close>
+        ) : (
+          <button className={styles.sourcesButton} type="button" onClick={onBack}>
+            <ChevronLeftIcon />
+            {t("ui.about.sourcesBack")}
           </button>
-        </Drawer.Close>
-        <Drawer.Title asChild><h2 id="quest-sources-title">{t("ui.about.sourcesTitle")}</h2></Drawer.Title>
-        <Drawer.Description>{t("ui.about.sourcesDescription")}</Drawer.Description>
+        )}
+        {presentation === "drawer" ? (
+          <>
+            <Drawer.Title asChild>
+              <h2 id="quest-sources-title">{t("ui.about.sourcesTitle")}</h2>
+            </Drawer.Title>
+            <Drawer.Description>
+              {t("ui.about.sourcesDescription")}
+            </Drawer.Description>
+          </>
+        ) : (
+          <>
+            <h2 id="quest-sources-title">{t("ui.about.sourcesTitle")}</h2>
+            <p>{t("ui.about.sourcesDescription")}</p>
+          </>
+        )}
       </header>
       <div className={styles.aboutBody}>
         <p className={styles.sourcesHint}>{t("ui.about.sourcesLinkHint")}</p>

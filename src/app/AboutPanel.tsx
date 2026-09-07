@@ -1,33 +1,51 @@
-import { motion } from "motion/react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { WordmarkLogo } from "../assets/wordmark";
-import { useTiltEffect } from "../hooks/useTiltEffect";
 import { ResponsiveNestedDrawer } from "../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
+import { TiltedElement } from "../shared/ui/TiltedElement/TiltedElement";
 import { QuestSourcesPanel } from "./QuestSourcesPanel";
 import styles from "./AboutPanel.module.css";
 
 type Props = {
+  presentation?: "drawer" | "page";
   reduceMotion: boolean;
 };
 
-export function AboutPanel({ reduceMotion }: Props) {
+export function AboutPanel({ presentation = "drawer", reduceMotion }: Props) {
   const { t } = useTranslation();
-  const {
-    handlePointerEnter,
-    handlePointerLeave,
-    handlePointerMove,
-    rotateX,
-    rotateY,
-  } = useTiltEffect({ maxGlare: 0, maxTilt: 14, reduceMotion });
+  const [sourcesOpen, setSourcesOpen] = useState(false);
+
+  if (presentation === "page" && sourcesOpen) {
+    return (
+      <QuestSourcesPanel
+        presentation="page"
+        onBack={() => setSourcesOpen(false)}
+      />
+    );
+  }
+
+  const title = <h2 id="about-title">{t("ui.about.title")}</h2>;
+  const description = <p>{t("ui.about.description")}</p>;
 
   return (
-    <section className={styles.aboutContent} aria-labelledby="about-title">
+    <section
+      className={styles.aboutContent}
+      data-presentation={presentation}
+      aria-labelledby="about-title"
+    >
       <header className={styles.aboutIntro}>
-        <Drawer.Title asChild>
-          <h2 id="about-title">{t("ui.about.title")}</h2>
-        </Drawer.Title>
-        <Drawer.Description>{t("ui.about.description")}</Drawer.Description>
+        {presentation === "drawer" ? (
+          <>
+            <Drawer.Title asChild>{title}</Drawer.Title>
+            <Drawer.Description asChild>{description}</Drawer.Description>
+          </>
+        ) : (
+          <>
+            {title}
+            {description}
+          </>
+        )}
       </header>
 
       <div className={styles.aboutBody}>
@@ -55,11 +73,26 @@ export function AboutPanel({ reduceMotion }: Props) {
         <section className={styles.aboutSection}>
           <h3>{t("ui.about.sourcesHeading")}</h3>
           <p>{t("ui.about.sourcesBody")}</p>
-          <ResponsiveNestedDrawer variant="about" trigger={
-            <button type="button" className={styles.sourcesButton}>{t("ui.about.sourcesButton")}</button>
-          }>
-            <QuestSourcesPanel />
-          </ResponsiveNestedDrawer>
+          {presentation === "drawer" ? (
+            <ResponsiveNestedDrawer
+              variant="about"
+              trigger={
+                <button type="button" className={styles.sourcesButton}>
+                  {t("ui.about.sourcesButton")}
+                </button>
+              }
+            >
+              <QuestSourcesPanel />
+            </ResponsiveNestedDrawer>
+          ) : (
+            <button
+              type="button"
+              className={styles.sourcesButton}
+              onClick={() => setSourcesOpen(true)}
+            >
+              {t("ui.about.sourcesButton")}
+            </button>
+          )}
         </section>
 
         <section className={styles.aboutSection}>
@@ -76,32 +109,13 @@ export function AboutPanel({ reduceMotion }: Props) {
             Eduard Lotz
           </a>
         </span>
-        <motion.span
-          aria-hidden="true"
+        <TiltedElement
           className={styles.aboutWordmarkTilt}
-          initial="rest"
-          animate="rest"
-          whileHover="hover"
-          onPointerEnter={handlePointerEnter}
-          onPointerMove={handlePointerMove}
-          onPointerLeave={handlePointerLeave}
+          innerClassName={styles.aboutWordmarkVisual}
+          reduceMotion={reduceMotion}
         >
-          <motion.span
-            className={styles.aboutWordmarkVisual}
-            style={{ rotateX, rotateY, transformPerspective: 600 }}
-            variants={{
-              rest: { scale: 1 },
-              hover: { scale: 1.05 },
-            }}
-            transition={
-              reduceMotion
-                ? { duration: 0 }
-                : { type: "spring", stiffness: 280, damping: 23, mass: 0.7 }
-            }
-          >
-            <WordmarkLogo width={80} />
-          </motion.span>
-        </motion.span>
+          <WordmarkLogo width={80} />
+        </TiltedElement>
       </footer>
     </section>
   );

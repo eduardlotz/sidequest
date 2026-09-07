@@ -1,14 +1,272 @@
-.setup { position:relative; width:min(360px,calc(100% - 32px)); height:100svh; padding:122px 0 36px; margin:0 auto; box-sizing:border-box; }
-.welcome { display:flex; flex-direction:column; align-items:center; text-align:center; }
-.welcome h1 { font-size:32px; line-height:1; letter-spacing:-.055em; margin:0; font-weight:750; }
-.wordmark { width:260px; filter:drop-shadow(0 5px 5px #17172b20); }
-.wordmark svg { width:100%; height:auto; display:block; }
-.welcome p { color:var(--color-muted); font-size:14px; font-weight:600; line-height:1.2; max-width:240px; margin:30px 0 16px; }
-.links { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; }
-.links button { font-size:13px; padding:6px 10px; }
-.start { display:flex; align-items:center; flex-direction:column; gap:16px; margin-top:40px; }
-.previews { display:flex; width:min(520px,100vw); justify-content:center; height:170px; margin-top:54px; overflow:clip; padding:8px 10px 0; pointer-events:none; }
-.previews > span { width:280px; flex:0 0 280px; height:370px; transform:rotate(-5deg); container-type:inline-size; }
-.previews > span + span { transform:translate(-30px,20px) rotate(5deg); }
-@media(max-width:600px) { .setup { padding-top:110px; padding-bottom:max(20px,env(safe-area-inset-bottom)); }.links { gap:5px; }.welcome h1 { font-size:30px; } }
-@media(max-height:650px) { .setup { padding-top:90px; padding-bottom:16px; }.welcome p { margin-top:16px; }.start { margin-top:24px; } }
+.setup {
+  position: relative;
+  width: min(360px, calc(100% - 32px));
+  height: 100svh;
+  padding: 122px 0 36px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow-y: clip;
+}
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  min-height: 0;
+}
+
+.welcome h1 {
+  font-size: clamp(2rem, 15vw, 3rem);
+  line-height: 1;
+  letter-spacing: -4%;
+  margin: 0;
+  font-weight: 700;
+  rotate: -2deg;
+}
+.wordmark {
+  width: min(260px, 50svh);
+  /* filter: drop-shadow(0 5px 5px #17172b20); */
+  rotate: 3deg;
+  margin-top: -5%;
+}
+.wordmark svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+.welcome p {
+  color: var(--color-muted);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  max-width: 240px;
+  margin: 30px 0 16px;
+}
+.links {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.links button {
+  font-size: 13px;
+  padding: 6px 10px;
+}
+.start {
+  display: flex;
+  width: min(100%, 320px);
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 40px;
+}
+.start > button {
+  width: 100%;
+}
+.welcome > :not(.previews) {
+  flex-shrink: 0;
+}
+.previews {
+  --shine-opacity: 0;
+
+  display: grid;
+  grid-template-columns: repeat(2, 240px);
+  width: 100vw;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  margin-top: 40px;
+  padding: 18px 0 0;
+  pointer-events: none;
+}
+.previewCard {
+  position: relative;
+  display: block;
+  width: 280px;
+  aspect-ratio: 0.7;
+  z-index: 1;
+  transform: translateX(-20px) rotate(-5deg);
+  container-type: inline-size;
+  pointer-events: auto;
+}
+.previewCard + .previewCard {
+  transform: translate(-20px, 20px) rotate(5deg);
+}
+
+.previewProjection,
+.previewTilt,
+.previewTiltInner,
+.previewButton {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+}
+
+.previewProjection {
+  z-index: 201;
+}
+
+.previewProjection,
+.previewTiltInner {
+  transform-style: preserve-3d;
+}
+
+.previewButton {
+  padding: 0;
+  border-radius: clamp(30px, 10cqw, 49px);
+  background: transparent;
+  color: inherit;
+  cursor: zoom-in;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.previewButton:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 8px;
+}
+
+.previewFocusPortal {
+  position: fixed;
+  z-index: 200;
+  inset: 0;
+}
+
+.previewCard[data-focused] {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 201;
+  width: min(76vw, 360px);
+  transform: translate(-50%, -50%);
+}
+
+.previewCard[data-focused] .previewProjection {
+  cursor: grab;
+  touch-action: none;
+}
+
+.informationPage {
+  position: fixed;
+  z-index: 130;
+  padding: 76px clamp(24px, 7vw, 72px) 32px;
+  overflow: auto;
+  background: var(--color-canvas);
+  color: var(--color-text);
+  inset: 0;
+  overscroll-behavior: contain;
+}
+
+.scroll {
+  height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--fade-top, 0px),
+    #000 calc(100% - var(--fade-bottom, 0px)),
+    transparent
+  );
+}
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.informationClose {
+  position: fixed;
+  bottom: 40px;
+  /* right: clamp(24px, 20vw, 320px); */
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  z-index: 2;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  place-items: center;
+  background: var(--color-surface);
+  box-shadow: var(--control-shadow);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.informationClose svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (min-width: 1000px) and (max-height: 820px) {
+  .previews {
+    position: fixed;
+    display: block;
+    padding: 0;
+    margin: 0;
+    inset: 0;
+  }
+
+  .previewCard {
+    position: absolute;
+    top: max(490px, calc(100svh - 250px));
+    left: clamp(24px, calc((100vw - 960px) / 2), 112px);
+    transform: rotate(-5deg);
+  }
+
+  .previewCard + .previewCard {
+    right: clamp(24px, calc((100vw - 960px) / 2), 112px);
+    left: auto;
+    transform: translateY(4px) rotate(5deg);
+  }
+
+  .previewCard[data-focused] {
+    position: fixed;
+    top: 50%;
+    right: auto;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+@media (max-width: 600px) {
+  .setup {
+    padding-top: 110px;
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+  .links {
+    gap: 5px;
+  }
+  .welcome h1 {
+    font-size: 30px;
+  }
+
+  .previewCard[data-focused] {
+    width: min(82vw, 320px);
+  }
+
+  .informationPage {
+    padding: 72px 22px 24px;
+  }
+
+  .informationClose {
+    top: 18px;
+    right: 18px;
+  }
+}
+@media (max-height: 650px) {
+  .setup {
+    padding-top: 90px;
+    padding-bottom: 16px;
+  }
+  .welcome p {
+    margin-top: 16px;
+  }
+  .start {
+    margin-top: 24px;
+  }
+}
