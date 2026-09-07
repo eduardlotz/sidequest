@@ -46,19 +46,53 @@ export function GameVisual({ className, game, size = "row" }: Props) {
         } as GameVisualStyle
       }
     >
-      <GameIcon icon={visual.iconId} style={{ fill: `url(#${effectId}-fill)`, filter: `url(#${effectId}-relief)` }}>
+      <GameIcon
+        icon={visual.iconId}
+        style={{
+          fill: `url(#${effectId}-fill)`,
+          filter: `url(#${effectId}-relief)`,
+        }}
+      >
         <defs>
-          <linearGradient id={`${effectId}-fill`} x1="0" y1="0" x2="0.65" y2="1">
+          <linearGradient
+            id={`${effectId}-fill`}
+            x1="0"
+            y1="0"
+            x2="0.65"
+            y2="1"
+          >
             <stop stopColor="white" />
             <stop offset="1" stopColor="currentColor" />
           </linearGradient>
-          <filter id={`${effectId}-relief`} x="-25%" y="-25%" width="150%" height="160%" colorInterpolationFilters="sRGB">
-            <feDropShadow dx="0" dy="5" stdDeviation="3" floodColor="#24101a" floodOpacity=".3" result="shadow" />
+          <filter
+            id={`${effectId}-relief`}
+            x="-25%"
+            y="-25%"
+            width="150%"
+            height="160%"
+            colorInterpolationFilters="sRGB"
+          >
+            <feDropShadow
+              dx="0"
+              dy="5"
+              stdDeviation="3"
+              floodColor="#24101a"
+              floodOpacity=".3"
+              result="shadow"
+            />
             <feOffset in="SourceAlpha" dy="-2" result="shifted" />
-            <feComposite in="SourceAlpha" in2="shifted" operator="out" result="rim" />
+            <feComposite
+              in="SourceAlpha"
+              in2="shifted"
+              operator="out"
+              result="rim"
+            />
             <feFlood floodColor={visual.color} floodOpacity=".45" />
             <feComposite in2="rim" operator="in" result="inner" />
-            <feMerge><feMergeNode in="shadow" /><feMergeNode in="inner" /></feMerge>
+            <feMerge>
+              <feMergeNode in="shadow" />
+              <feMergeNode in="inner" />
+            </feMerge>
           </filter>
         </defs>
       </GameIcon>

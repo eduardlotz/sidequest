@@ -1,15 +1,19 @@
 import type { MoodId } from "./questTypes";
 
-export const GAME_CAPABILITY_IDS = [
-  "open-world",
-  "missions-or-levels",
-  "rounds-or-matches",
-  "combat",
+export const COMBAT_CAPABILITY_IDS = [
   "pistols",
   "rifles",
   "bows",
   "melee-weapons",
   "fist-fights",
+] as const;
+
+export const GAME_CAPABILITY_IDS = [
+  "open-world",
+  "missions-or-levels",
+  "rounds-or-matches",
+  "combat",
+  ...COMBAT_CAPABILITY_IDS,
   "space-exploration",
   "swimming",
   "boss-fights",

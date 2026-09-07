@@ -56,7 +56,7 @@ export const englishLibrary = {
   colorChoice: "Use the {{color}} color",
   capabilities: "What can you do in-game?",
   capabilitiesHint:
-    "Choose what your game supports. Each feature adds matching quests. A small set of flexible quests is always included.",
+    "Choose what your game supports. Activities can share quests; the total counts each quest once. A small set of flexible quests is always included.",
   reviewQuests: "Review quests",
   reviewQuestsHint:
     "Turn off any quest that does not fit. You can also browse all flexible quests and only add individual ones.",
@@ -251,7 +251,7 @@ export const germanLibrary = {
   colorChoice: "Farbe {{color}} verwenden",
   capabilities: "Was kann man im Spiel machen?",
   capabilitiesHint:
-    "Wähle die Features deines Spiels, womit passende Quests hinzugefügt werden. Einige flexible Quests sind immer dabei.",
+    "Wähle die Aktivitäten deines Spiels. Aktivitäten können sich Quests teilen; insgesamt zählt jede Quest nur einmal. Einige flexible Quests sind immer dabei.",
   reviewQuests: "Quests ansehen",
   reviewQuestsHint:
     "Entferne unpassende Quests für dieses Spiel. Du kannst auch alle flexiblen Quests durchsuchen und nur einzelne hinzufügen.",

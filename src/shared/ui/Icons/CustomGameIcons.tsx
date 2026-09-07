@@ -5,6 +5,7 @@ function FilledSymbol({
   size = 24,
   color = "currentColor",
   mirrored,
+  style,
   weight: _weight,
   ...props
 }: IconProps & { children: ReactNode }) {
@@ -15,8 +16,8 @@ function FilledSymbol({
       viewBox="0 0 256 256"
       fill={color}
       aria-hidden="true"
-      style={mirrored ? { transform: "scaleX(-1)" } : undefined}
       {...props}
+      style={{ ...style, ...(mirrored ? { transform: "scaleX(-1)" } : {}) }}
     >
       {children}
     </svg>

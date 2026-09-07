@@ -12,6 +12,7 @@ import {
   DEFAULT_LIBRARY_STATE,
   LIBRARY_STORE_VERSION,
   type CustomGame,
+  type CustomGameInput,
   type LibraryState,
   type PersistedLibraryState,
   type CuratedGamePreferences,
@@ -30,8 +31,9 @@ export function sanitizePersistedLibraryState(
   value: unknown,
 ): PersistedLibraryState {
   if (!isRecord(value)) return { ...DEFAULT_LIBRARY_STATE };
-  const selectedCuratedGameIds = uniqueStrings(value.selectedCuratedGameIds)
-    .filter((id) => Boolean(CURATED_GAMES_BY_ID[id]));
+  const selectedCuratedGameIds = uniqueStrings(
+    value.selectedCuratedGameIds,
+  ).filter((id) => Object.hasOwn(CURATED_GAMES_BY_ID, id));
   const customGames = Array.isArray(value.customGames)
     ? value.customGames.flatMap((entry) => {
         const game = customGameFromUnknown(entry);
@@ -41,13 +43,20 @@ export function sanitizePersistedLibraryState(
 
   const curatedGamePreferences: Record<string, CuratedGamePreferences> = {};
   if (isRecord(value.curatedGamePreferences)) {
-    for (const [gameId, stored] of Object.entries(value.curatedGamePreferences)) {
+    for (const [gameId, stored] of Object.entries(
+      value.curatedGamePreferences,
+    )) {
+      if (!Object.hasOwn(CURATED_GAMES_BY_ID, gameId)) continue;
       const game = CURATED_GAMES_BY_ID[gameId];
       if (!game || !isRecord(stored)) continue;
       curatedGamePreferences[gameId] = {
-        questMode: stored.questMode === "curated-and-flexible" ? "curated-and-flexible" : "curated-only",
+        questMode:
+          stored.questMode === "curated-and-flexible"
+            ? "curated-and-flexible"
+            : "curated-only",
         installmentIds: uniqueStrings(stored.installmentIds).filter((id) =>
-          game.installments.some((entry) => entry.id === id)),
+          game.installments.some((entry) => entry.id === id),
+        ),
       };
     }
   }
@@ -62,18 +71,32 @@ export function sanitizePersistedLibraryState(
 }
 
 function customGameFromUnknown(value: unknown): CustomGame | null {
-  if (!isRecord(value) || typeof value.id !== "string" || !value.id) return null;
+  if (!isRecord(value) || typeof value.id !== "string" || !value.id)
+    return null;
+  const input = sanitizeCustomGameInput(value);
+  return input ? { id: value.id, ...input } : null;
+}
+
+export function sanitizeCustomGameInput(
+  value: unknown,
+): CustomGameInput | null {
+  if (!isRecord(value)) return null;
   const name = sanitizedGameName(value.name);
   if (!name) return null;
   const questOverrides: Record<string, boolean> = {};
   if (isRecord(value.questOverrides)) {
     for (const [questId, enabled] of Object.entries(value.questOverrides)) {
-      if (typeof enabled !== "boolean" || !QUEST_CORES_BY_ID[questId]) continue;
+      if (
+        typeof enabled !== "boolean" ||
+        !Object.hasOwn(QUEST_CORES_BY_ID, questId)
+      )
+        continue;
+      const quest = QUEST_CORES_BY_ID[questId];
+      if (!quest.gameBindable || !quest.customGameCompatibility) continue;
       questOverrides[questId] = enabled;
     }
   }
   return {
-    id: value.id,
     name,
     iconId: isGameIconId(value.iconId) ? value.iconId : "adventure",
     colorId: isGameColorId(value.colorId) ? value.colorId : "explore",
@@ -132,5 +155,5 @@ function safeNonNegativeInteger(value: unknown) {
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }

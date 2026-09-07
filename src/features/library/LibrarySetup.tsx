@@ -3,7 +3,7 @@ import { AnimatePresence } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { GlobeIcon } from "@phosphor-icons/react/dist/csr/Globe";
 import { InfoIcon } from "@phosphor-icons/react/dist/csr/Info";
-import { WordmarkLogo } from "../../assets/wordmark";
+
 import { SolidButton } from "../../shared/ui/SolidButton/SolidButton";
 import { PillButton } from "../../shared/ui/PillButton/PillButton";
 import { useLibraryStore } from "../../stores/useLibraryStore";
@@ -18,6 +18,8 @@ import { QuestCard } from "../../shared/quest-card/QuestCard/QuestCard";
 import { localizeQuest } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
 import styles from "./LibrarySetup.module.css";
+import { WordmarkSkewedLogo } from "../../assets/wordmark-skewed";
+import { TiltedElement } from "../../shared/ui/TiltedElement/TiltedElement";
 
 export function LibrarySetup({ reduceMotion }: { reduceMotion: boolean }) {
   const { t, i18n } = useTranslation();
@@ -26,8 +28,9 @@ export function LibrarySetup({ reduceMotion }: { reduceMotion: boolean }) {
   const completeSetup = useLibraryStore((s) => s.completeSetup);
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const previews = [
-    localizeQuest("familiar-fight", language),
-    localizeQuest("one-new-thing", language),
+    // localizeQuest("village-payday", language),
+    localizeQuest("back-then", language),
+    localizeQuest("a-little-walk", language),
   ].filter((q) => q !== null && q !== undefined);
   return (
     <section
@@ -54,7 +57,9 @@ export function LibrarySetup({ reduceMotion }: { reduceMotion: boolean }) {
             <div className={styles.welcome}>
               <h1>{t("ui.library.welcome")}</h1>
               <div className={styles.wordmark} aria-label="sidesidequest">
-                <WordmarkLogo width={260} sticker />
+                <TiltedElement>
+                  <WordmarkSkewedLogo width={260} />
+                </TiltedElement>
               </div>
               <p>{t("ui.library.welcomeDescription")}</p>
               <div className={styles.links}>
@@ -64,7 +69,7 @@ export function LibrarySetup({ reduceMotion }: { reduceMotion: boolean }) {
                   variant="about"
                   trigger={
                     <PillButton>
-                      <InfoIcon weight="duotone" />
+                      <InfoIcon weight="bold" />
                       {t("ui.library.moreInformation")}
                     </PillButton>
                   }
@@ -76,7 +81,7 @@ export function LibrarySetup({ reduceMotion }: { reduceMotion: boolean }) {
                     void i18n.changeLanguage(language === "en" ? "de" : "en")
                   }
                 >
-                  <GlobeIcon weight="duotone" />
+                  <GlobeIcon weight="bold" />
                   {t("ui.library.changeLanguage")}
                 </PillButton>
               </div>
@@ -94,24 +99,29 @@ export function LibrarySetup({ reduceMotion }: { reduceMotion: boolean }) {
               <div className={styles.previews} aria-hidden="true">
                 {previews.map((q, index) => (
                   <span key={q.id} className={styles.previewCard}>
-                  <QuestCard
-                    genres={[]}
-                    minimumDurationMinutes={q.minimumDurationMinutes}
-                    suggestedDurationMinutes={q.suggestedDurationMinutes}
-                    moodTitle={t(
-                      index
-                        ? "ui.library.previewRelax"
-                        : "ui.library.previewNostalgia",
-                    )}
-                    name={q.name}
-                    objective={q.objective}
-                    style={
-                      {
-                        "--accent": index ? "#55eadc" : "#c38cff",
-                        "--accent-rgb": index ? "85 234 220" : "195 140 255",
-                      } as React.CSSProperties
-                    }
-                  />
+                    <QuestCard
+                      genres={[]}
+                      // game={{
+                      //   id: "minecraft",
+                      //   name: "Minecraft",
+                      //   source: "curated",
+                      // }}
+                      minimumDurationMinutes={q.minimumDurationMinutes}
+                      suggestedDurationMinutes={q.suggestedDurationMinutes}
+                      moodTitle={t(
+                        index
+                          ? "ui.library.previewRelax"
+                          : "ui.library.previewNostalgia",
+                      )}
+                      name={q.name}
+                      objective={q.objective}
+                      style={
+                        {
+                          "--accent": index ? "#55eadc" : "#c38cff",
+                          "--accent-rgb": index ? "85 234 220" : "195 140 255",
+                        } as React.CSSProperties
+                      }
+                    />
                   </span>
                 ))}
               </div>

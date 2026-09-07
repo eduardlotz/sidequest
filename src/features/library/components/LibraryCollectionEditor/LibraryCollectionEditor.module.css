@@ -4,10 +4,8 @@
   gap: 32px;
 }
 .collectionSection {
-  min-width: 0;
+  composes: section from "../LibrarySection.module.css";
   padding: 12px 4px 4px 4px;
-  border-radius: 16px;
-  background: rgb(var(--color-text-rgb) / 0.05);
 }
 .sectionHeader {
   display: flex;
@@ -34,7 +32,7 @@
   background: rgb(var(--color-text-rgb) / 0.05);
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: -.02em;
+  letter-spacing: -0.02em;
   color: var(--color-text);
   cursor: pointer;
 }

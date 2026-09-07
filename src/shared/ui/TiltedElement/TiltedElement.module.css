@@ -1,0 +1,20 @@
+.tiltedOuter {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  perspective: 600px;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover .tiltedInner {
+      filter: drop-shadow(0 8px 10px rgb(var(--color-shadow-rgb) / 0.2));
+    }
+  }
+}
+
+.tiltedInner {
+  display: block;
+  filter: drop-shadow(0 3px 5px rgb(var(--color-shadow-rgb) / 0));
+  transform-style: preserve-3d;
+  transition: filter 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, filter;
+}

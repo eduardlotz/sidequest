@@ -1,4 +1,4 @@
-import type { GameCapabilityId } from "./gameTypes";
+import { COMBAT_CAPABILITY_IDS, type GameCapabilityId } from "./gameTypes";
 
 export function matchesGameCapabilities(
   capabilities: ReadonlySet<GameCapabilityId>,
@@ -8,11 +8,7 @@ export function matchesGameCapabilities(
   },
 ) {
   const expanded = new Set(capabilities);
-  if (
-    ["pistols", "rifles", "bows", "melee-weapons", "fist-fights"].some((id) =>
-      capabilities.has(id as GameCapabilityId),
-    )
-  )
+  if (COMBAT_CAPABILITY_IDS.some((id) => capabilities.has(id)))
     expanded.add("combat");
   if (!compatibility) return false;
   return compatibility.match === "any"

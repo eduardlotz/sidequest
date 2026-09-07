@@ -56,7 +56,7 @@ export function hydrateQuest(
   return {
     ...quest,
     objective: game
-      ? quest.gameObjective!.replaceAll("{{game}}", game.name)
+      ? quest.gameObjective!.replaceAll("{{game}}", () => game.name)
       : quest.objective,
     mood,
     game,

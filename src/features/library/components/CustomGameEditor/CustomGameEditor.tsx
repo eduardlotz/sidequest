@@ -16,13 +16,15 @@ import {
   type GameIconId,
 } from "../../../../data/gameTypes";
 import { GAME_PICKER_COLOR_IDS, gameColor } from "../../../../data/gameVisuals";
-import { QUEST_CORES } from "../../../../data/quests";
 import { matchesGameCapabilities } from "../../../../data/gameCompatibility";
 import type {
   CustomGame,
   CustomGameInput,
 } from "../../../../domain/library/model";
-import { customGameQuestIds } from "../../../../domain/library/rules";
+import {
+  CUSTOM_GAME_QUESTS,
+  customGameQuestIds,
+} from "../../../../domain/library/rules";
 import { localizeQuest } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
 import { plainObjectiveText } from "../../../../shared/quest-card/QuestObjectiveText/QuestObjectiveText";
@@ -32,19 +34,17 @@ import { PillButton } from "../../../../shared/ui/PillButton/PillButton";
 import { SelectionMark } from "../../../../shared/ui/SelectionMark/SelectionMark";
 import { FlowFrame } from "../../../../shared/ui/FlowFrame/FlowFrame";
 import { CapabilityIcon, ChevronIcon, SearchIcon } from "../LibraryIcons";
-import { SectionLabel } from "../SectionLabel/SectionLabel";
+import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
 import { LibraryStep } from "../LibraryStep";
 import styles from "./CustomGameEditor.module.css";
 
-const bindableQuests = QUEST_CORES.filter(
-  (q) => q.gameBindable && q.customGameCompatibility,
-);
+const ICONS_PER_PAGE = 10;
 const activityCounts = Object.fromEntries(
   GAME_CAPABILITY_IDS.map((id) => [
     id,
-    bindableQuests.filter(
+    CUSTOM_GAME_QUESTS.filter(
       (q) =>
-        q.customGameCompatibility!.capabilityIds.length &&
+        q.customGameCompatibility?.capabilityIds.length &&
         matchesGameCapabilities(new Set([id]), q.customGameCompatibility),
     ).length,
   ]),
@@ -80,7 +80,9 @@ export function CustomGameEditor({
     "appearance",
   );
   const [iconPage, setIconPage] = useState(() =>
-    Math.floor(GAME_ICON_IDS.indexOf(game?.iconId ?? "sports") / 10),
+    Math.floor(
+      GAME_ICON_IDS.indexOf(game?.iconId ?? "sports") / ICONS_PER_PAGE,
+    ),
   );
   const [pendingOverrides, setPendingOverrides] = useState(questOverrides);
   const [search, setSearch] = useState("");
@@ -93,6 +95,9 @@ export function CustomGameEditor({
     questOverrides,
   };
   const enabled = new Set(customGameQuestIds(draft));
+  const automaticQuestIds = new Set(
+    customGameQuestIds({ ...draft, questOverrides: {} }),
+  );
   const reviewedEnabled = new Set(
     customGameQuestIds({ ...draft, questOverrides: pendingOverrides }),
   );
@@ -108,18 +113,23 @@ export function CustomGameEditor({
   );
   const reviewed = useMemo(
     () =>
-      bindableQuests.flatMap((q) => {
+      CUSTOM_GAME_QUESTS.flatMap((q) => {
         const localized = localizeQuest(q.id, language);
-        if (!localized) return [];
+        if (!localized?.gameObjective) return [];
         const objective = plainObjectiveText(
-          localized.gameObjective!.replaceAll(
+          localized.gameObjective.replaceAll(
             "{{game}}",
-            name.trim() || t("ui.library.untitledGame"),
+            () => name.trim() || t("ui.library.untitledGame"),
           ),
         );
         return [{ id: q.id, name: localized.name, objective }];
       }),
     [language, name, t],
+  );
+  const filteredQuests = reviewed.filter((quest) =>
+    `${quest.name} ${quest.objective}`
+      .toLocaleLowerCase(language)
+      .includes(query),
   );
   function changePage(next: typeof page) {
     setSearch("");
@@ -138,13 +148,13 @@ export function CustomGameEditor({
         questOverrides,
       });
   }
-  const pageCount = Math.ceil(GAME_ICON_IDS.length / 10);
+  const pageCount = Math.ceil(GAME_ICON_IDS.length / ICONS_PER_PAGE);
   const footer =
     page === "appearance" ? (
       <>
         <PillButton className={styles.back} onClick={onCancel}>
           <ChevronIcon />
-          {t("ui.library.cancel")}
+          {t("ui.library.back")}
         </PillButton>
         <SolidButton
           variant="primary"
@@ -222,7 +232,7 @@ export function CustomGameEditor({
             }
           >
             {page === "appearance" ? (
-              <form id={formId} onSubmit={submit}>
+              <form className={styles.appearance} id={formId} onSubmit={submit}>
                 <div className={styles.identity}>
                   <div ref={identityRef}>
                     <GameVisual
@@ -252,8 +262,8 @@ export function CustomGameEditor({
                       transition={{ duration: reduced ? 0 : 0.15 }}
                     >
                       {GAME_ICON_IDS.slice(
-                        iconPage * 10,
-                        iconPage * 10 + 10,
+                        iconPage * ICONS_PER_PAGE,
+                        (iconPage + 1) * ICONS_PER_PAGE,
                       ).map((icon) => (
                         <button
                           key={icon}
@@ -278,35 +288,37 @@ export function CustomGameEditor({
                       ))}
                     </motion.div>
                   </AnimatePresence>
+                  <nav
+                    className={styles.pagination}
+                    aria-label={t("ui.library.gameIcon")}
+                  >
+                    <PillButton
+                      disabled={iconPage === 0}
+                      aria-label={t("ui.library.previousIcons")}
+                      onClick={() => setIconPage((p) => Math.max(0, p - 1))}
+                    >
+                      <ChevronIcon className={styles.previous} />
+                    </PillButton>
+                    {Array.from({ length: pageCount }, (_, p) => (
+                      <button
+                        type="button"
+                        key={p}
+                        aria-label={t("ui.library.iconPage", { page: p + 1 })}
+                        aria-current={p === iconPage ? "page" : undefined}
+                        onClick={() => setIconPage(p)}
+                      />
+                    ))}
+                    <PillButton
+                      disabled={iconPage === pageCount - 1}
+                      aria-label={t("ui.library.nextIcons")}
+                      onClick={() =>
+                        setIconPage((p) => Math.min(pageCount - 1, p + 1))
+                      }
+                    >
+                      <ChevronIcon />
+                    </PillButton>
+                  </nav>
                 </fieldset>
-                <nav
-                  className={styles.pagination}
-                  aria-label={t("ui.library.gameIcon")}
-                >
-                  <PillButton
-                    disabled={iconPage === 0}
-                    aria-label={t("ui.library.previousIcons")}
-                    onClick={() => setIconPage((p) => p - 1)}
-                  >
-                    <ChevronIcon className={styles.previous} />
-                  </PillButton>
-                  {Array.from({ length: pageCount }, (_, p) => (
-                    <button
-                      type="button"
-                      key={p}
-                      aria-label={t("ui.library.iconPage", { page: p + 1 })}
-                      aria-current={p === iconPage ? "page" : undefined}
-                      onClick={() => setIconPage(p)}
-                    />
-                  ))}
-                  <PillButton
-                    disabled={iconPage === pageCount - 1}
-                    aria-label={t("ui.library.nextIcons")}
-                    onClick={() => setIconPage((p) => p + 1)}
-                  >
-                    <ChevronIcon />
-                  </PillButton>
-                </nav>
                 <fieldset className={styles.colors}>
                   <legend>{t("ui.library.gameColor")}</legend>
                   {[
@@ -331,7 +343,7 @@ export function CustomGameEditor({
                 </fieldset>
                 <section className={styles.activities}>
                   <div className={styles.sectionHeading}>
-                    <SectionLabel
+                    <InfoLabel
                       label={t("ui.library.possibleActivities")}
                       hint={t("ui.library.capabilitiesHint")}
                     />
@@ -389,76 +401,71 @@ export function CustomGameEditor({
                     {page === "activities"
                       ? pendingCount
                       : reviewedEnabled.size}
-                    /{bindableQuests.length} sidequests
+                    /{CUSTOM_GAME_QUESTS.length} sidequests
                   </span>
                 </div>
-                <label className={styles.search}>
-                  <SearchIcon />
-                  <input
-                    type="search"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder={t(
-                      page === "activities"
-                        ? "ui.library.searchActivities"
-                        : "ui.library.searchQuests",
-                    )}
-                    aria-label={t(
-                      page === "activities"
-                        ? "ui.library.searchActivities"
-                        : "ui.library.searchQuests",
-                    )}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") e.preventDefault();
-                    }}
-                  />
-                  <span>
+                <div
+                  className={
+                    page === "activities" ? styles.activitySection : undefined
+                  }
+                >
+                  <label className={styles.search}>
+                    <SearchIcon />
+                    <input
+                      type="search"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder={t(
+                        page === "activities"
+                          ? "ui.library.searchActivities"
+                          : "ui.library.searchQuests",
+                      )}
+                      aria-label={t(
+                        page === "activities"
+                          ? "ui.library.searchActivities"
+                          : "ui.library.searchQuests",
+                      )}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") e.preventDefault();
+                      }}
+                    />
+                    <span>
+                      {page === "activities"
+                        ? activities.length
+                        : filteredQuests.length}
+                    </span>
+                  </label>
+                  <div className={styles.activityList}>
                     {page === "activities"
-                      ? activities.length
-                      : reviewed.filter((q) =>
-                          `${q.name} ${q.objective}`
-                            .toLocaleLowerCase(language)
-                            .includes(query),
-                        ).length}
-                  </span>
-                </label>
-                <div className={styles.activityList}>
-                  {page === "activities"
-                    ? activities.map((id) => (
-                        <button
-                          type="button"
-                          className={styles.activityRow}
-                          key={id}
-                          aria-pressed={pendingActivities.includes(id)}
-                          onClick={() =>
-                            setPendingActivities((ids) =>
-                              ids.includes(id)
-                                ? ids.filter((candidate) => candidate !== id)
-                                : [...ids, id],
-                            )
-                          }
-                        >
-                          <CapabilityIcon capability={id} />
-                          <span>
-                            {t(`ui.library.capabilityLabels.${id}`)}
-                            <small>
-                              {t("ui.library.questCount", {
-                                count: activityCounts[id],
-                              })}
-                            </small>
-                          </span>
-                          <SelectionMark
-                            selected={pendingActivities.includes(id)}
-                          />
-                        </button>
-                      ))
-                    : reviewed
-                        .filter((q) =>
-                          `${q.name} ${q.objective}`
-                            .toLocaleLowerCase(language)
-                            .includes(query),
-                        )
-                        .map((q) => (
+                      ? activities.map((id) => (
+                          <button
+                            type="button"
+                            className={styles.activityRow}
+                            key={id}
+                            aria-pressed={pendingActivities.includes(id)}
+                            onClick={() =>
+                              setPendingActivities((ids) =>
+                                ids.includes(id)
+                                  ? ids.filter((candidate) => candidate !== id)
+                                  : [...ids, id],
+                              )
+                            }
+                          >
+                            <CapabilityIcon capability={id} />
+                            <span>
+                              {t(`ui.library.capabilityLabels.${id}`)}
+                              <small>
+                                {t("ui.library.questCount", {
+                                  count: activityCounts[id],
+                                })}
+                              </small>
+                            </span>
+                            <SelectionMark
+                              selected={pendingActivities.includes(id)}
+                            />
+                          </button>
+                        ))
+                      : filteredQuests.map((q) => (
                           <button
                             key={q.id}
                             className={styles.activityRow}
@@ -467,11 +474,8 @@ export function CustomGameEditor({
                             onClick={() =>
                               setPendingOverrides((current) => {
                                 const next = { ...current };
-                                const selected = !reviewedEnabled.has(q.id);
-                                const automatic = customGameQuestIds({
-                                  ...draft,
-                                  questOverrides: {},
-                                }).includes(q.id);
+                                const automatic = automaticQuestIds.has(q.id);
+                                const selected = !(current[q.id] ?? automatic);
                                 if (selected === automatic) delete next[q.id];
                                 else next[q.id] = selected;
                                 return next;
@@ -487,27 +491,23 @@ export function CustomGameEditor({
                             />
                           </button>
                         ))}
-                </div>
-                {page === "activities" && !activities.length && (
-                  <p className={styles.empty}>
-                    {t("ui.library.noActivityResults")}
-                  </p>
-                )}
-                {page === "quests" &&
-                  !reviewed.some((q) =>
-                    `${q.name} ${q.objective}`
-                      .toLocaleLowerCase(language)
-                      .includes(query),
-                  ) && (
+                  </div>
+                  {page === "activities" && !activities.length && (
+                    <p className={styles.empty}>
+                      {t("ui.library.noActivityResults")}
+                    </p>
+                  )}
+                  {page === "quests" && !filteredQuests.length && (
                     <p className={styles.empty}>
                       {t("ui.library.noQuestResults")}
                     </p>
                   )}
-                {page === "quests" && (
-                  <PillButton onClick={() => setPendingOverrides({})}>
-                    {t("ui.library.resetMatches")}
-                  </PillButton>
-                )}
+                  {page === "quests" && (
+                    <PillButton onClick={() => setPendingOverrides({})}>
+                      {t("ui.library.resetMatches")}
+                    </PillButton>
+                  )}
+                </div>
               </>
             )}
           </FlowFrame>

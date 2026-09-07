@@ -2,12 +2,18 @@
   height: 100%;
   min-height: 0;
 }
+.appearance {
+  display: grid;
+  gap: 24px;
+}
 .identity {
   display: flex;
   align-items: center;
   flex-direction: column;
   gap: 20px;
-  padding: 0 0 24px;
+}
+.identity > div {
+  display: flex;
 }
 .identity input {
   width: 200px;
@@ -24,12 +30,11 @@
 .identity input::placeholder {
   color: var(--color-muted);
 }
-.picker,
-.colors {
-  padding: 0;
+.picker {
+  composes: section from "../LibrarySection.module.css";
+  padding: 12px;
   margin: 0;
   border: 0;
-  min-width: 0;
 }
 .picker legend,
 .colors legend {
@@ -63,7 +68,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 20px 0;
+  padding: 20px 0 0;
 }
 .pagination > button {
   padding: 0;
@@ -96,17 +101,14 @@
   transform: rotate(180deg);
 }
 .colors {
+  composes: section from "../LibrarySection.module.css";
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  width: fit-content;
-  max-width: 100%;
   gap: 8px;
-  padding: 9px;
-  margin: 0 auto 24px;
-  background: var(--color-surface);
-  border-radius: 30px;
-  box-shadow: 0 5px 15px #18182b10;
+  padding: 12px;
+  margin: 0;
+  border: 0;
 }
 .colors button {
   width: 24px;
@@ -128,7 +130,8 @@
   font-size: 14px;
 }
 .activities {
-  padding-top: 0;
+  composes: section from "../LibrarySection.module.css";
+  padding: 12px;
 }
 .summaryRow {
   display: flex;
@@ -168,7 +171,7 @@
   padding: 8px 12px;
   border-radius: 30px;
   background: var(--color-surface);
-  box-shadow: 0 6px 15px rgb(var(--color-shadow-rgb) / .1);
+  box-shadow: 0 6px 15px rgb(var(--color-shadow-rgb) / 0.1);
   font-size: 14px;
 }
 .badge strong {
@@ -190,6 +193,10 @@
 }
 .stats > span {
   color: var(--color-muted);
+}
+.activitySection {
+  composes: section from "../LibrarySection.module.css";
+  padding: 12px;
 }
 .search {
   display: flex;
@@ -234,10 +241,16 @@
   border-radius: 21px;
   background: var(--color-surface);
   color: var(--color-text);
-  box-shadow: 0 6px 12px rgb(var(--color-shadow-rgb) / .045);
+  box-shadow: 0 6px 12px rgb(var(--color-shadow-rgb) / 0.045);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    transform 0.15s ease;
+}
+.activityRow:active {
+  transform: scale(0.985);
 }
 .empty {
   display: block;
@@ -251,7 +264,7 @@
   cursor: pointer;
 }
 .editor button:focus-visible,
-.editor input:focus-visible {
+.identity input:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 3px;
 }
@@ -273,7 +286,11 @@
   }
 }
 
-.activityRow { transition:background-color .18s ease,transform .15s ease; }
-.activityRow:active { transform:scale(.985); }
-.identity > div { display:flex; }
-@media(prefers-reduced-motion:reduce) { .activityRow { transition:none; }.activityRow:active { transform:none; } }
+@media (prefers-reduced-motion: reduce) {
+  .activityRow {
+    transition: none;
+  }
+  .activityRow:active {
+    transform: none;
+  }
+}

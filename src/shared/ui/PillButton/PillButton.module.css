@@ -10,6 +10,10 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    transform 0.15s ease,
+    opacity 0.15s ease;
 }
 .pill svg {
   width: 16px;
@@ -20,8 +24,19 @@
   outline: 2px solid var(--color-focus);
   outline-offset: 3px;
 }
-
-.pill { transition:background-color .18s ease,transform .15s ease,opacity .15s ease; }
-.pill:active:not(:disabled) { transform:scale(.96); }
-.pill:disabled { cursor:default; opacity:.4; }
-@media(prefers-reduced-motion:reduce) { .pill { transition:none; }.pill:active:not(:disabled) { transform:none; } }
+/* TODO: use globals and variables for all transitions */
+.pill:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.pill:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pill {
+    transition: none;
+  }
+  .pill:active:not(:disabled) {
+    transform: none;
+  }
+}

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useId, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { CURATED_GAMES } from "../../../../data/games";
@@ -19,21 +19,20 @@ import { LibraryStep } from "../LibraryStep";
 import { useLibraryStore } from "../../../../stores/useLibraryStore";
 import { CustomGameEditor } from "../CustomGameEditor/CustomGameEditor";
 import { EditIcon, PlusIcon, RemoveIcon } from "../LibraryIcons";
-import { SectionLabel } from "../SectionLabel/SectionLabel";
+import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
 import styles from "./LibraryCollectionEditor.module.css";
 
-type EditorTarget = "new" | string | null;
+type EditorTarget = { kind: "new" } | { kind: "edit"; gameId: string } | null;
 
 export function LibraryCollectionEditor({
-  onEditingChange,
   footer,
   title,
 }: {
-  onEditingChange?: (editing: boolean) => void;
   footer?: ReactNode;
   title?: ReactNode;
 }) {
   const { t } = useTranslation();
+  const collectionId = useId();
   const {
     addCustomGame,
     customGames,
@@ -58,9 +57,6 @@ export function LibraryCollectionEditor({
     })),
   );
   const [editorTarget, setEditorTarget] = useState<EditorTarget>(null);
-  useEffect(() => {
-    onEditingChange?.(editorTarget !== null);
-  }, [editorTarget, onEditingChange]);
   const overviewScroll = useRef(0);
   const questCounts = useLibraryStore(
     useShallow((state) =>
@@ -68,22 +64,29 @@ export function LibraryCollectionEditor({
     ),
   );
   const editingGame =
-    editorTarget && editorTarget !== "new"
-      ? customGames.find((game) => game.id === editorTarget)
+    editorTarget?.kind === "edit"
+      ? customGames.find((game) => game.id === editorTarget.gameId)
       : undefined;
-
+  const editorKey =
+    editorTarget?.kind === "new"
+      ? "new"
+      : editingGame
+        ? `edit-${editingGame.id}`
+        : "collection";
 
   function saveCustomGame(input: CustomGameInput) {
-    const saved = editingGame
-      ? updateCustomGame(editingGame.id, input)
-      : addCustomGame(input);
+    if (!editorTarget) return;
+    const saved =
+      editorTarget.kind === "edit"
+        ? updateCustomGame(editorTarget.gameId, input)
+        : addCustomGame(input);
     if (saved) setEditorTarget(null);
   }
 
   return (
     <AnimatePresence mode="wait" initial={false}>
-      <LibraryStep key={editorTarget ?? "collection"}>
-        {editorTarget ? (
+      <LibraryStep key={editorKey}>
+        {editorKey !== "collection" ? (
           <CustomGameEditor
             key={editingGame?.id ?? "new"}
             game={editingGame}
@@ -91,12 +94,19 @@ export function LibraryCollectionEditor({
             onSave={saveCustomGame}
           />
         ) : (
-          <FlowFrame title={title} footer={footer} initialScrollTop={overviewScroll.current} onScrollPositionChange={top => {overviewScroll.current=top;}}>
+          <FlowFrame
+            title={title}
+            footer={footer}
+            initialScrollTop={overviewScroll.current}
+            onScrollPositionChange={(top) => {
+              overviewScroll.current = top;
+            }}
+          >
             <div className={styles.collectionEditor}>
               <section className={styles.collectionSection}>
                 <div className={styles.sectionHeader}>
                   <h3>
-                    <SectionLabel
+                    <InfoLabel
                       label={t("ui.library.curatedHeading")}
                       hint={t("ui.library.collectionHint")}
                     />
@@ -140,7 +150,18 @@ export function LibraryCollectionEditor({
                           <SelectionMark selected={selected} />
                         </button>
                         {selected ? (
-                          <details className={styles.curatedOptions} ref={node => { if(node && !node.dataset.initialized) { node.open = Boolean(game.installments.length && !preferences.installmentIds.length); node.dataset.initialized = "true"; } }}>
+                          <details
+                            className={styles.curatedOptions}
+                            ref={(node) => {
+                              if (node && !node.dataset.initialized) {
+                                node.open = Boolean(
+                                  game.installments.length &&
+                                  !preferences.installmentIds.length,
+                                );
+                                node.dataset.initialized = "true";
+                              }
+                            }}
+                          >
                             <summary>{t("ui.library.configureGame")}</summary>
                             <fieldset className={styles.questMode}>
                               <legend>
@@ -155,7 +176,7 @@ export function LibraryCollectionEditor({
                                 <label key={mode}>
                                   <input
                                     type="radio"
-                                    name={`quest-mode-${game.id}`}
+                                    name={`${collectionId}-quest-mode-${game.id}`}
                                     checked={preferences.questMode === mode}
                                     onChange={() =>
                                       setCuratedQuestMode(game.id, mode)
@@ -210,7 +231,7 @@ export function LibraryCollectionEditor({
               <section className={styles.collectionSection}>
                 <div className={styles.sectionHeader}>
                   <h3>
-                    <SectionLabel
+                    <InfoLabel
                       label={t("ui.library.customHeading")}
                       hint={t("ui.library.customDescription")}
                     />
@@ -218,7 +239,7 @@ export function LibraryCollectionEditor({
                   <button
                     className={styles.addButton}
                     type="button"
-                    onClick={() => setEditorTarget("new")}
+                    onClick={() => setEditorTarget({ kind: "new" })}
                   >
                     <PlusIcon />
                     {t("ui.library.addGame")}
@@ -230,7 +251,9 @@ export function LibraryCollectionEditor({
                       <CustomGameRow
                         game={game}
                         key={game.id}
-                        onEdit={() => setEditorTarget(game.id)}
+                        onEdit={() =>
+                          setEditorTarget({ kind: "edit", gameId: game.id })
+                        }
                         onRemove={() => removeCustomGame(game.id)}
                       />
                     ))}
