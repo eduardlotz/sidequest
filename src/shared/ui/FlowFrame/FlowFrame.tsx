@@ -18,6 +18,7 @@ type Props = {
   floating?: ReactNode;
   identityRef?: RefObject<HTMLElement | null>;
   initialScrollTop?: number;
+  selectionIndicator?: ReactNode;
   onScrollPositionChange?: (top: number) => void;
 };
 
@@ -30,6 +31,7 @@ export function FlowFrame({
   floating,
   identityRef,
   initialScrollTop = 0,
+  selectionIndicator,
   onScrollPositionChange,
 }: Props) {
   const { t } = useTranslation();
@@ -81,6 +83,8 @@ export function FlowFrame({
     };
   }, [identityRef]);
   const showIdentity = Boolean(floating && identityHidden);
+  const showSelectionIndicator =
+    selectionIndicator !== undefined && selectionIndicator !== null;
   return (
     <section className={styles.frame}>
       {title && (
@@ -111,7 +115,10 @@ export function FlowFrame({
           </AnimatePresence>
         </header>
       )}
-      <div className={styles.viewport}>
+      <div
+        className={styles.viewport}
+        data-selection={showSelectionIndicator || undefined}
+      >
         <motion.div
           className={styles.scroll}
           ref={scrollRef}
@@ -127,6 +134,19 @@ export function FlowFrame({
           </div>
         </motion.div>
         <AnimatePresence initial={false}>
+          {showSelectionIndicator ? (
+            <motion.output
+              className={styles.selectionIndicator}
+              aria-live="polite"
+              data-above-scroll={edges.bottom || undefined}
+              initial={reduced ? false : { opacity: 0, y: 5, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 4, scale: 0.9 }}
+              transition={transition}
+            >
+              {selectionIndicator}
+            </motion.output>
+          ) : null}
           {edges.bottom && (
             <motion.button
               key="scroll"

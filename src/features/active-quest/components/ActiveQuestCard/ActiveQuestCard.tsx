@@ -33,6 +33,8 @@ import { AnimatedElapsedTime } from "../AnimatedElapsedTime/AnimatedElapsedTime"
 import { CompletionCheckIcon } from "../CompletionCheckIcon/CompletionCheckIcon";
 import { CoinIcon, InfoIcon } from "../../../../shared/ui/Icons/Icons";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
+import { CardFocusBackdrop } from "../../../../shared/ui/CardFocusBackdrop/CardFocusBackdrop";
+import { useCardFocus } from "../../../../shared/hooks/useCardFocus";
 import { QuestCardBack } from "../../../../shared/quest-card/QuestCardBack/QuestCardBack";
 import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
 import { RopePurchaseRow } from "../RopePurchaseRow/RopePurchaseRow";
@@ -100,8 +102,6 @@ const COIN_FLIGHT_COUNT = 6;
 const CUT_TRAIL_CLEAR_DELAY_MS = 210;
 const CUT_TRAIL_FADE_DURATION_MS = 60;
 const CANCELLATION_BLOCKED_DURATION_MS = 3_000;
-const CARD_FOCUS_DISMISS_DISTANCE = 96;
-const CARD_FOCUS_DISMISS_VELOCITY = 700;
 const CARD_FOCUS_SCALE_MULTIPLIER = 1.02;
 
 const pausePanelVariants: Variants = {
@@ -167,7 +167,6 @@ export function ActiveQuestCard({
   );
   const { isCompact: isMobileViewport } = usePlayLayout();
   const activeCardScale = isMobileViewport ? 1.15 : 1.25;
-  const [cardFocused, setCardFocused] = useState(false);
   const [cardHoverArmed, setCardHoverArmed] = useState(false);
   const [ropeMode, setRopeMode] = useState<RopeMode>(
     initiallyReady ? "ready" : initiallyPaused ? "paused" : "running",
@@ -230,8 +229,6 @@ export function ActiveQuestCard({
   const rigRef = useRef<HTMLDivElement>(null);
   const cardProjectionRef = useRef<HTMLDivElement>(null);
   const cardHitAreaRef = useRef<HTMLElement>(null);
-  const cardFocusTriggerRef = useRef<HTMLButtonElement>(null);
-  const cardFocusBackdropRef = useRef<HTMLButtonElement>(null);
   const ropePointsRef = useRef<RopePoint[]>([]);
   const ropeTargetRef = useRef<RopePoint>(initialTimerOffsetRef.current);
   const timerDraggingRef = useRef(false);
@@ -321,32 +318,6 @@ export function ActiveQuestCard({
       cancellationBlockedTimeoutRef.current = null;
     }
   }, [debugMode, redRopes]);
-
-  useEffect(() => {
-    if (!cardFocused) return;
-
-    if (!isMobileViewport || phase === "cutting" || phase === "completed") {
-      setCardFocused(false);
-      return;
-    }
-
-    function closeOnEscape(event: KeyboardEvent) {
-      if (event.key !== "Escape") return;
-      setCardFocused(false);
-      window.requestAnimationFrame(() => cardFocusTriggerRef.current?.focus());
-    }
-
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [cardFocused, isMobileViewport, phase]);
-
-  useEffect(() => {
-    if (!cardFocused) return;
-    const frame = window.requestAnimationFrame(() => {
-      cardFocusBackdropRef.current?.focus();
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [cardFocused]);
 
   useEffect(() => {
     if (cardHoverArmed) return;
@@ -519,7 +490,7 @@ export function ActiveQuestCard({
     timerDraggingRef.current = false;
     setTimerDragging(false);
     setTimerSettling(false);
-    setCardFocused(false);
+    cardFocus.close();
     const duration = readElapsed();
     setElapsedMs(duration);
     const cardRect = cardProjectionRef.current?.getBoundingClientRect();
@@ -580,7 +551,7 @@ export function ActiveQuestCard({
   function returnToSelection() {
     if (phase !== "ready" || exitStartedRef.current) return;
     exitStartedRef.current = true;
-    setCardFocused(false);
+    cardFocus.close();
     if (!onReturnToSelection()) {
       exitStartedRef.current = false;
     }
@@ -744,7 +715,7 @@ export function ActiveQuestCard({
     cutGestureStartRef.current = null;
     lastCutPointRef.current = null;
     clearCutTrailAfter(CUT_TRAIL_CLEAR_DELAY_MS);
-    if (tappedPausedCard) setCardFocused(true);
+    if (tappedPausedCard) cardFocus.open();
   }
 
   function clearCutTrailAfter(delay: number) {
@@ -841,6 +812,7 @@ export function ActiveQuestCard({
         : "";
   const completionAward = calculateCompletionPoints(elapsedMs);
   const cardFocusAvailable = isMobileViewport && revealFinished && !exiting;
+  const cardFocus = useCardFocus(cardFocusAvailable);
   const hasNoRopes = redRopes <= 0;
   const timerInteractionUiVisible =
     !timerDragging && ropeMode !== "resumePullback";
@@ -850,31 +822,11 @@ export function ActiveQuestCard({
     timerInteractionUiVisible;
   const canCutRope =
     (phase === "running" || phase === "paused") && (debugMode || redRopes > 0);
-  function closeCardFocus() {
-    setCardFocused(false);
-    window.requestAnimationFrame(() => cardFocusTriggerRef.current?.focus());
-  }
-
-  function finishCardFocusDrag(
-    _: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo,
-  ) {
-    if (!cardFocused) return;
-    const distance = Math.hypot(info.offset.x, info.offset.y);
-    const velocity = Math.hypot(info.velocity.x, info.velocity.y);
-    if (
-      distance >= CARD_FOCUS_DISMISS_DISTANCE ||
-      velocity >= CARD_FOCUS_DISMISS_VELOCITY
-    ) {
-      closeCardFocus();
-    }
-  }
-
   return (
     <div
       className={styles.activeQuest}
       style={getMoodAccentStyle(quest.mood.id)}
-      data-card-focused={cardFocused ? "true" : undefined}
+      data-card-focused={cardFocus.focused ? "true" : undefined}
       data-phase={phase}
       data-reveal-complete={revealFinished ? "true" : undefined}
       data-rope-mode={ropeMode}
@@ -901,13 +853,11 @@ export function ActiveQuestCard({
             />
           ))
         : null}
-      {cardFocused && (
-        <button
-          ref={cardFocusBackdropRef}
-          className={styles.cardFocusBackdrop}
-          type="button"
-          aria-label={t("ui.quest.closeFocusedCard")}
-          onClick={closeCardFocus}
+      {cardFocus.focused && (
+        <CardFocusBackdrop
+          ref={cardFocus.backdropRef}
+          label={t("ui.quest.closeFocusedCard")}
+          onClose={cardFocus.close}
         />
       )}
 
@@ -932,12 +882,12 @@ export function ActiveQuestCard({
             }
             setRevealFinished(true);
           }}
-          drag={cardFocused}
+          drag={cardFocus.focused}
           dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
           dragElastic={0.5}
           dragMomentum={false}
           dragTransition={{ bounceStiffness: 320, bounceDamping: 28 }}
-          onDragEnd={finishCardFocusDrag}
+          onDragEnd={cardFocus.dismissFromDrag}
           whileDrag={{ scale: reduceMotion ? 1 : 1.018 }}
           transition={
             reduceMotion
@@ -972,10 +922,10 @@ export function ActiveQuestCard({
             animate={{
               scale: completed
                 ? activeCardScale * 0.96
-                : cardFocused
+                : cardFocus.focused
                   ? activeCardScale * CARD_FOCUS_SCALE_MULTIPLIER
                   : activeCardScale,
-              rotate: cardFocused || completed || !revealFinished ? 0 : -3.5,
+              rotate: cardFocus.focused || completed || !revealFinished ? 0 : -3.5,
             }}
             transition={
               reduceMotion
@@ -1095,15 +1045,15 @@ export function ActiveQuestCard({
                         </motion.div>
                       )}
                     </AnimatePresence>
-                    {cardFocusAvailable && !cardFocused && (
+                    {cardFocusAvailable && !cardFocus.focused && (
                       <button
-                        ref={cardFocusTriggerRef}
+                        ref={cardFocus.triggerRef}
                         className={styles.cardFocusTrigger}
                         type="button"
                         aria-label={t("ui.quest.focusCard", {
                           title: quest.name,
                         })}
-                        onClick={() => setCardFocused(true)}
+                        onClick={cardFocus.open}
                       />
                     )}
                   </article>
@@ -1279,13 +1229,14 @@ export function ActiveQuestCard({
                       <strong>{completionAward}</strong>
                       <CoinIcon />
                     </motion.p>
-                    <motion.button
+                    <motion.div
                       className={styles.saveAction}
-                      type="submit"
                       variants={pausePanelItemVariants}
                     >
-                      {t("ui.timer.completeQuest")}
-                    </motion.button>
+                      <SolidButton type="submit" variant="primary">
+                        {t("ui.timer.completeQuest")}
+                      </SolidButton>
+                    </motion.div>
                   </>
                 ) : (
                   <motion.div

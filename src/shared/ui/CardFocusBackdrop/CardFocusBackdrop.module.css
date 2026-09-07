@@ -1,0 +1,22 @@
+.backdrop {
+  position: fixed;
+  z-index: 200;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: transparent;
+  cursor: zoom-out;
+  inset: 0;
+  touch-action: manipulation;
+}
+
+.backdrop[data-variant="dim"] {
+  background: rgb(var(--color-canvas-rgb) / 0.82);
+  backdrop-filter: blur(10px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop {
+    backdrop-filter: none;
+  }
+}

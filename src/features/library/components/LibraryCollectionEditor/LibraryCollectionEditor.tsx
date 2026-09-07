@@ -1,4 +1,4 @@
-import { useId, useRef, useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { CURATED_GAMES } from "../../../../data/games";
@@ -7,10 +7,7 @@ import type {
   CustomGameInput,
 } from "../../../../domain/library/model";
 import { DEFAULT_CURATED_PREFERENCES } from "../../../../domain/library/model";
-import {
-  customGameQuestIds,
-  curatedGameQuestIds,
-} from "../../../../domain/library/rules";
+import { customGameQuestIds } from "../../../../domain/library/rules";
 import { GameVisual } from "../../../../shared/ui/GameVisual/GameVisual";
 import { SelectionMark } from "../../../../shared/ui/SelectionMark/SelectionMark";
 import { FlowFrame } from "../../../../shared/ui/FlowFrame/FlowFrame";
@@ -20,6 +17,8 @@ import { useLibraryStore } from "../../../../stores/useLibraryStore";
 import { CustomGameEditor } from "../CustomGameEditor/CustomGameEditor";
 import { EditIcon, PlusIcon, RemoveIcon } from "../LibraryIcons";
 import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
+import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
+import { GameControllerIcon } from "@phosphor-icons/react/dist/csr/GameController";
 import styles from "./LibraryCollectionEditor.module.css";
 
 type EditorTarget = { kind: "new" } | { kind: "edit"; gameId: string } | null;
@@ -32,14 +31,12 @@ export function LibraryCollectionEditor({
   title?: ReactNode;
 }) {
   const { t } = useTranslation();
-  const collectionId = useId();
   const {
     addCustomGame,
     customGames,
     removeCustomGame,
     selectedCuratedGameIds,
     curatedGamePreferences,
-    setCuratedQuestMode,
     toggleCuratedInstallment,
     toggleCuratedGame,
     updateCustomGame,
@@ -50,7 +47,6 @@ export function LibraryCollectionEditor({
       removeCustomGame: state.removeCustomGame,
       selectedCuratedGameIds: state.selectedCuratedGameIds,
       curatedGamePreferences: state.curatedGamePreferences,
-      setCuratedQuestMode: state.setCuratedQuestMode,
       toggleCuratedInstallment: state.toggleCuratedInstallment,
       toggleCuratedGame: state.toggleCuratedGame,
       updateCustomGame: state.updateCustomGame,
@@ -58,11 +54,6 @@ export function LibraryCollectionEditor({
   );
   const [editorTarget, setEditorTarget] = useState<EditorTarget>(null);
   const overviewScroll = useRef(0);
-  const questCounts = useLibraryStore(
-    useShallow((state) =>
-      CURATED_GAMES.map((game) => curatedGameQuestIds(state, game.id).length),
-    ),
-  );
   const editingGame =
     editorTarget?.kind === "edit"
       ? customGames.find((game) => game.id === editorTarget.gameId)
@@ -122,7 +113,11 @@ export function LibraryCollectionEditor({
                       curatedGamePreferences[game.id] ??
                       DEFAULT_CURATED_PREFERENCES;
                     return (
-                      <div className={styles.curatedEntry} key={game.id}>
+                      <div
+                        className={styles.curatedEntry}
+                        data-selected={selected || undefined}
+                        key={game.id}
+                      >
                         <button
                           className={styles.curatedGame}
                           key={game.id}
@@ -131,6 +126,7 @@ export function LibraryCollectionEditor({
                           onClick={() => toggleCuratedGame(game.id)}
                         >
                           <GameVisual
+                            className={styles.curatedVisual}
                             game={{
                               id: game.id,
                               name: game.name,
@@ -147,81 +143,44 @@ export function LibraryCollectionEditor({
                               )}
                             </span>
                           </span>
-                          <SelectionMark selected={selected} />
+                          <SelectionMark
+                            pending={
+                              selected &&
+                              game.isSeries &&
+                              preferences.installmentIds.length === 0
+                            }
+                            selected={selected}
+                          />
                         </button>
                         {selected ? (
-                          <details
-                            className={styles.curatedOptions}
-                            ref={(node) => {
-                              if (node && !node.dataset.initialized) {
-                                node.open = Boolean(
-                                  game.installments.length &&
-                                  !preferences.installmentIds.length,
-                                );
-                                node.dataset.initialized = "true";
-                              }
-                            }}
-                          >
-                            <summary>{t("ui.library.configureGame")}</summary>
-                            <fieldset className={styles.questMode}>
-                              <legend>
-                                {t("ui.library.questMode", { game: game.name })}
-                              </legend>
-                              {(
-                                [
-                                  "curated-only",
-                                  "curated-and-flexible",
-                                ] as const
-                              ).map((mode) => (
-                                <label key={mode}>
-                                  <input
-                                    type="radio"
-                                    name={`${collectionId}-quest-mode-${game.id}`}
-                                    checked={preferences.questMode === mode}
-                                    onChange={() =>
-                                      setCuratedQuestMode(game.id, mode)
-                                    }
-                                  />
-                                  {t(
-                                    mode === "curated-only"
-                                      ? "ui.library.curatedOnly"
-                                      : "ui.library.curatedAndFlexible",
-                                  )}
-                                </label>
-                              ))}
-                            </fieldset>
-                            {game.installments.length ? (
-                              <fieldset className={styles.installments}>
-                                <legend>{t("ui.library.installments")}</legend>
-                                {game.installments.map((entry) => (
-                                  <label key={entry.id}>
-                                    <input
-                                      type="checkbox"
-                                      checked={preferences.installmentIds.includes(
-                                        entry.id,
-                                      )}
-                                      onChange={() =>
+                          game.installments.length ? (
+                            <div className={styles.curatedOptions}>
+                              <span>{t("ui.library.installments")}</span>
+                              <div className={styles.installmentChips}>
+                                {game.installments.map((entry) => {
+                                  const installmentSelected =
+                                    preferences.installmentIds.includes(
+                                      entry.id,
+                                    );
+                                  return (
+                                    <button
+                                      key={entry.id}
+                                      type="button"
+                                      aria-pressed={installmentSelected}
+                                      onClick={() =>
                                         toggleCuratedInstallment(
                                           game.id,
                                           entry.id,
                                         )
                                       }
-                                    />
-                                    {entry.name}
-                                  </label>
-                                ))}
-                              </fieldset>
-                            ) : null}
-                            <p className={styles.selectionHint}>
-                              {game.installments.length &&
-                              !preferences.installmentIds.length
-                                ? t("ui.library.chooseInstallment")
-                                : t("ui.library.questCount", {
-                                    count:
-                                      questCounts[CURATED_GAMES.indexOf(game)],
-                                  })}
-                            </p>
-                          </details>
+                                    >
+                                      {entry.name}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ) : null
                         ) : null}
                       </div>
                     );
@@ -236,14 +195,16 @@ export function LibraryCollectionEditor({
                       hint={t("ui.library.customDescription")}
                     />
                   </h3>
-                  <button
-                    className={styles.addButton}
-                    type="button"
-                    onClick={() => setEditorTarget({ kind: "new" })}
-                  >
-                    <PlusIcon />
-                    {t("ui.library.addGame")}
-                  </button>
+                  {customGames.length ? (
+                    <button
+                      className={styles.addButton}
+                      type="button"
+                      onClick={() => setEditorTarget({ kind: "new" })}
+                    >
+                      <PlusIcon />
+                      {t("ui.library.addGame")}
+                    </button>
+                  ) : null}
                 </div>
                 {customGames.length ? (
                   <div className={styles.customGameList}>
@@ -259,9 +220,17 @@ export function LibraryCollectionEditor({
                     ))}
                   </div>
                 ) : (
-                  <p className={styles.emptyState}>
-                    {t("ui.library.noCustomGames")}
-                  </p>
+                  <div className={styles.emptyState}>
+                    <GameControllerIcon weight="duotone" aria-hidden />
+                    <strong>{t("ui.library.noCustomGames")}</strong>
+                    <SolidButton
+                      variant="soft"
+                      iconLeft={<PlusIcon />}
+                      onClick={() => setEditorTarget({ kind: "new" })}
+                    >
+                      {t("ui.library.addGame")}
+                    </SolidButton>
+                  </div>
                 )}
               </section>
             </div>

@@ -50,10 +50,7 @@ export function sanitizePersistedLibraryState(
       const game = CURATED_GAMES_BY_ID[gameId];
       if (!game || !isRecord(stored)) continue;
       curatedGamePreferences[gameId] = {
-        questMode:
-          stored.questMode === "curated-and-flexible"
-            ? "curated-and-flexible"
-            : "curated-only",
+        questMode: "curated-and-flexible",
         installmentIds: uniqueStrings(stored.installmentIds).filter((id) =>
           game.installments.some((entry) => entry.id === id),
         ),

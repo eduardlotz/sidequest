@@ -30,20 +30,6 @@ function createLibraryState(
 ): StateCreator<LibraryStore> {
   return (set, get) => ({
     ...DEFAULT_LIBRARY_STATE,
-    setCuratedQuestMode: (gameId, questMode) => {
-      if (!CURATED_GAMES_BY_ID[gameId]) return;
-      set((state) => ({
-        curatedGamePreferences: {
-          ...state.curatedGamePreferences,
-          [gameId]: {
-            ...(state.curatedGamePreferences[gameId] ??
-              DEFAULT_CURATED_PREFERENCES),
-            questMode,
-          },
-        },
-        revision: state.revision + 1,
-      }));
-    },
     toggleCuratedInstallment: (gameId, installmentId) => {
       if (
         !CURATED_GAMES_BY_ID[gameId]?.installments.some(

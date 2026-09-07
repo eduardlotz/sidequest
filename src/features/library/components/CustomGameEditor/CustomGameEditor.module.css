@@ -32,6 +32,7 @@
 }
 .picker {
   composes: section from "../LibrarySection.module.css";
+  min-width: 0;
   padding: 12px;
   margin: 0;
   border: 0;
@@ -44,11 +45,29 @@
   clip-path: inset(50%);
   overflow: hidden;
 }
+.iconViewport {
+  width: 100%;
+  max-width: 100%;
+  padding: 4px;
+  overflow: hidden;
+  border-radius: 1rem;
+  overflow-x: auto;
+
+  overscroll-behavior-inline: contain;
+  scroll-padding-inline: 4px;
+  /* scroll-snap-type: x mandatory; */
+  scrollbar-width: none;
+}
+.iconViewport::-webkit-scrollbar {
+  display: none;
+}
 .iconGrid {
   display: grid;
-  grid-template-columns: repeat(5, 52px);
   grid-template-rows: repeat(2, 52px);
-  justify-content: space-between;
+  grid-auto-columns: 52px;
+  grid-auto-flow: column;
+  width: max-content;
+  column-gap: 20px;
   row-gap: 20px;
 }
 .iconGrid button {
@@ -58,6 +77,9 @@
   width: 52px;
   height: 52px;
   cursor: pointer;
+}
+.iconGrid button[data-page-start] {
+  scroll-snap-align: start;
 }
 .iconGrid button[aria-pressed="true"] {
   outline: 2px solid var(--custom-color);
@@ -80,7 +102,7 @@
   cursor: pointer;
 }
 .pagination > button[aria-current] {
-  width: 16px;
+  /* width: 16px; */
   background: var(--color-text);
   opacity: 1;
 }
@@ -103,16 +125,26 @@
 .colors {
   composes: section from "../LibrarySection.module.css";
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 10px;
   padding: 12px;
   margin: 0;
   border: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+}
+.colors::-webkit-scrollbar {
+  display: none;
 }
 .colors button {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
   border-radius: 50%;
   background: var(--swatch);
   cursor: pointer;
@@ -160,8 +192,34 @@
   line-height: 1.25;
   font-weight: 500;
 }
-.activities > button:last-child {
-  margin-top: 16px;
+.emptyActivities {
+  display: flex;
+  padding: 20px 8px 10px;
+  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--color-text);
+  text-align: center;
+}
+.emptyActivities > svg {
+  width: 34px;
+  height: 34px;
+  color: var(--custom-color);
+}
+.emptyActivities > strong {
+  max-width: 220px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+/* .emptyActivities > button {
+  width: min(100%, 240px);
+} */
+.reviewAction {
+  display: flex;
+  justify-content: center;
+  margin-top: -12px;
 }
 .badge {
   display: flex;
@@ -182,17 +240,6 @@
 .back {
   background: none;
   padding: 6px 0;
-}
-.stats {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 14px;
-  margin: 0 0 16px;
-}
-.stats > span {
-  color: var(--color-muted);
 }
 .activitySection {
   composes: section from "../LibrarySection.module.css";
@@ -270,7 +317,9 @@
 }
 @media (max-width: 360px) {
   .iconGrid {
-    grid-template-columns: repeat(5, 44px);
+    grid-template-rows: repeat(2, 44px);
+    grid-auto-columns: 44px;
+    column-gap: 17px;
   }
   .iconGrid button,
   .iconGrid button > span {
@@ -278,11 +327,12 @@
     height: 44px;
   }
   .colors {
-    gap: 7px;
+    gap: 9px;
   }
   .colors button {
-    width: 21px;
-    height: 21px;
+    width: 26px;
+    height: 26px;
+    flex-basis: 26px;
   }
 }
 

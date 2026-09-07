@@ -97,7 +97,6 @@
   animation: none;
 }
 
-.cardFocusBackdrop,
 .cardFocusTrigger {
   display: none;
 }
@@ -307,53 +306,10 @@
 
 .saveAction {
   min-width: 188px;
-  min-height: 44px;
-  padding: 0 22px;
-  border: 2px solid #73747c;
-  border-radius: 17px;
-  background: linear-gradient(180deg, #303138 0%, #17181d 52%, #101116 100%);
-  box-shadow:
-    0 0 0 2px #1b1c21,
-    0 5px 10px rgb(20 21 27 / 0.2),
-    inset 0 1px 0 rgb(255 255 255 / 0.22),
-    inset 0 -2px 0 rgb(3 4 7 / 0.62);
-  color: #f7f7fb;
-  font-size: 0.95rem;
-  font-weight: 750;
-  letter-spacing: -0.035em;
-  text-shadow:
-    0 2px 0 rgb(7 10 28 / 0.82),
-    0 4px 6px rgb(0 0 0 / 0.48),
-    0 -1px 0 rgb(255 255 255 / 0.18);
-  cursor: pointer;
-  transition:
-    box-shadow 0.25s ease,
-    filter 0.2s ease,
-    scale 0.2s ease;
 }
 
-.saveAction:disabled {
-  background: #09090b;
-  color: white;
-  cursor: not-allowed;
-  filter: none;
-  transform: none;
-}
-
-.saveAction:active:not(:disabled) {
-  box-shadow:
-    0 0 0 2px #080c22,
-    0 6px 12px rgb(8 12 31 / 0.28),
-    inset 0 2px 0 rgb(255 255 255 / 0.2),
-    inset 0 0 0 2px rgb(128 137 169 / 0.25),
-    inset 0 -2px 0 rgb(3 6 20 / 0.62);
-  filter: brightness(0.98);
-  scale: 0.993;
-}
-
-.saveAction:focus-visible {
-  outline: 3px solid rgb(49 59 102 / 0.38);
-  outline-offset: 5px;
+.saveAction > button {
+  width: 100%;
 }
 
 .pauseMinimumCard {
@@ -549,10 +505,6 @@
     will-change: transform;
   }
 
-  .saveAction:hover:not(:disabled) {
-    filter: brightness(1.04);
-    scale: 0.995;
-  }
 }
 
 :global([data-play-layout="compact"]) .activeQuest {
@@ -579,19 +531,6 @@
   .activeQuest[data-card-focused="true"]
 ) {
   z-index: 121;
-}
-
-:global([data-play-layout="compact"]) .cardFocusBackdrop {
-  position: fixed;
-  z-index: 200;
-  display: block;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  background: transparent;
-  cursor: zoom-out;
-  inset: 0;
-  touch-action: manipulation;
 }
 
 :global([data-play-layout="compact"]) .cardFocusTrigger {

@@ -4,7 +4,7 @@ import styles from "./SolidButton.module.css";
 type SolidButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
-  variant?: "surface" | "soft" | "primary";
+  variant?: "surface" | "soft" | "primary" | "flat";
 };
 
 export const SolidButton = forwardRef<HTMLButtonElement, SolidButtonProps>(

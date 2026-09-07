@@ -74,20 +74,20 @@ export function GameVisual({ className, game, size = "row" }: Props) {
           >
             <feDropShadow
               dx="0"
-              dy="5"
-              stdDeviation="3"
+              dy="2"
+              stdDeviation="2"
               floodColor="#24101a"
-              floodOpacity=".3"
+              floodOpacity=".18"
               result="shadow"
             />
-            <feOffset in="SourceAlpha" dy="-2" result="shifted" />
+            <feOffset in="SourceAlpha" dy="-1" result="shifted" />
             <feComposite
               in="SourceAlpha"
               in2="shifted"
               operator="out"
               result="rim"
             />
-            <feFlood floodColor={visual.color} floodOpacity=".45" />
+            <feFlood floodColor="white" floodOpacity=".28" />
             <feComposite in2="rim" operator="in" result="inner" />
             <feMerge>
               <feMergeNode in="shadow" />

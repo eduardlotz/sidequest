@@ -6,7 +6,7 @@ import {
   type CSSProperties,
   type FormEvent,
 } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, useReducedMotion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import {
   GAME_CAPABILITY_IDS,
@@ -63,6 +63,7 @@ export function CustomGameEditor({
   const formId = useId();
   const reduced = useReducedMotion();
   const identityRef = useRef<HTMLDivElement>(null);
+  const iconGridRef = useRef<HTMLDivElement>(null);
   const scrollPositions = useRef({ appearance: 0, activities: 0, quests: 0 });
   const [name, setName] = useState(game?.name ?? "");
   const [iconId, setIconId] = useState<GameIconId>(game?.iconId ?? "sports");
@@ -101,10 +102,6 @@ export function CustomGameEditor({
   const reviewedEnabled = new Set(
     customGameQuestIds({ ...draft, questOverrides: pendingOverrides }),
   );
-  const pendingCount = customGameQuestIds({
-    ...draft,
-    capabilityIds: pendingActivities,
-  }).length;
   const query = search.trim().toLocaleLowerCase(language);
   const activities = GAME_CAPABILITY_IDS.filter((id) =>
     t(`ui.library.capabilityLabels.${id}`)
@@ -137,6 +134,18 @@ export function CustomGameEditor({
     if (next === "quests") setPendingOverrides(questOverrides);
     setPage(next);
   }
+  function showIconPage(nextPage: number) {
+    const pageIndex = Math.max(0, Math.min(pageCount - 1, nextPage));
+    setIconPage(pageIndex);
+    const icon = GAME_ICON_IDS[pageIndex * ICONS_PER_PAGE];
+    iconGridRef.current
+      ?.querySelector<HTMLElement>(`[data-icon="${icon}"]`)
+      ?.scrollIntoView({
+        behavior: reduced ? "instant" : "smooth",
+        block: "nearest",
+        inline: "start",
+      });
+  }
   function submit(event: FormEvent) {
     event.preventDefault();
     if (page === "appearance" && name.trim())
@@ -152,10 +161,6 @@ export function CustomGameEditor({
   const footer =
     page === "appearance" ? (
       <>
-        <PillButton className={styles.back} onClick={onCancel}>
-          <ChevronIcon />
-          {t("ui.library.back")}
-        </PillButton>
         <SolidButton
           variant="primary"
           type="submit"
@@ -164,16 +169,13 @@ export function CustomGameEditor({
         >
           {t("ui.library.saveGame")}
         </SolidButton>
+        <SolidButton variant="flat" className={styles.back} onClick={onCancel}>
+          <ChevronIcon />
+          {t("ui.library.back")}
+        </SolidButton>
       </>
     ) : (
       <>
-        <PillButton
-          className={styles.back}
-          onClick={() => changePage("appearance")}
-        >
-          <ChevronIcon />
-          {t("ui.library.back")}
-        </PillButton>
         <SolidButton
           type="button"
           variant="primary"
@@ -188,6 +190,14 @@ export function CustomGameEditor({
               ? "ui.library.saveActivities"
               : "ui.library.done",
           )}
+        </SolidButton>
+        <SolidButton
+          variant="flat"
+          className={styles.back}
+          onClick={() => changePage("appearance")}
+        >
+          <ChevronIcon />
+          {t("ui.library.back")}
         </SolidButton>
       </>
     );
@@ -230,6 +240,17 @@ export function CustomGameEditor({
                 </span>
               ) : undefined
             }
+            selectionIndicator={
+              page === "activities"
+                ? t("ui.library.selectedActivities", {
+                    count: pendingActivities.length,
+                  })
+                : page === "quests"
+                  ? t("ui.library.selectedQuests", {
+                      count: reviewedEnabled.size,
+                    })
+                  : undefined
+            }
           >
             {page === "appearance" ? (
               <form className={styles.appearance} id={formId} onSubmit={submit}>
@@ -252,21 +273,28 @@ export function CustomGameEditor({
                 </div>
                 <fieldset className={styles.picker}>
                   <legend>{t("ui.library.gameIcon")}</legend>
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.div
-                      key={iconPage}
-                      className={styles.iconGrid}
-                      initial={{ opacity: 0, x: reduced ? 0 : 10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: reduced ? 0 : -10 }}
-                      transition={{ duration: reduced ? 0 : 0.15 }}
-                    >
-                      {GAME_ICON_IDS.slice(
-                        iconPage * ICONS_PER_PAGE,
-                        (iconPage + 1) * ICONS_PER_PAGE,
-                      ).map((icon) => (
+                  <div
+                    className={styles.iconViewport}
+                    ref={iconGridRef}
+                    onScroll={(event) => {
+                      const node = event.currentTarget;
+                      const available = node.scrollWidth - node.clientWidth;
+                      if (available <= 0) return;
+                      setIconPage(
+                        Math.round(
+                          (node.scrollLeft / available) * (pageCount - 1),
+                        ),
+                      );
+                    }}
+                  >
+                    <div className={styles.iconGrid}>
+                      {GAME_ICON_IDS.map((icon, index) => (
                         <button
                           key={icon}
+                          data-icon={icon}
+                          data-page-start={
+                            index % ICONS_PER_PAGE === 0 || undefined
+                          }
                           type="button"
                           aria-label={t("ui.library.iconChoice", {
                             icon: t(`ui.library.icons.${icon}`),
@@ -286,8 +314,8 @@ export function CustomGameEditor({
                           />
                         </button>
                       ))}
-                    </motion.div>
-                  </AnimatePresence>
+                    </div>
+                  </div>
                   <nav
                     className={styles.pagination}
                     aria-label={t("ui.library.gameIcon")}
@@ -295,7 +323,7 @@ export function CustomGameEditor({
                     <PillButton
                       disabled={iconPage === 0}
                       aria-label={t("ui.library.previousIcons")}
-                      onClick={() => setIconPage((p) => Math.max(0, p - 1))}
+                      onClick={() => showIconPage(iconPage - 1)}
                     >
                       <ChevronIcon className={styles.previous} />
                     </PillButton>
@@ -305,15 +333,13 @@ export function CustomGameEditor({
                         key={p}
                         aria-label={t("ui.library.iconPage", { page: p + 1 })}
                         aria-current={p === iconPage ? "page" : undefined}
-                        onClick={() => setIconPage(p)}
+                        onClick={() => showIconPage(p)}
                       />
                     ))}
                     <PillButton
                       disabled={iconPage === pageCount - 1}
                       aria-label={t("ui.library.nextIcons")}
-                      onClick={() =>
-                        setIconPage((p) => Math.min(pageCount - 1, p + 1))
-                      }
+                      onClick={() => showIconPage(iconPage + 1)}
                     >
                       <ChevronIcon />
                     </PillButton>
@@ -347,14 +373,16 @@ export function CustomGameEditor({
                       label={t("ui.library.possibleActivities")}
                       hint={t("ui.library.capabilitiesHint")}
                     />
-                    <PillButton
-                      onClick={() => {
-                        setPendingActivities(capabilityIds);
-                        changePage("activities");
-                      }}
-                    >
-                      {t("ui.library.adjust")}
-                    </PillButton>
+                    {capabilityIds.length ? (
+                      <PillButton
+                        onClick={() => {
+                          setPendingActivities(capabilityIds);
+                          changePage("activities");
+                        }}
+                      >
+                        {t("ui.library.adjust")}
+                      </PillButton>
+                    ) : null}
                   </div>
                   {capabilityIds.length ? (
                     capabilityIds.map((id) => (
@@ -371,39 +399,29 @@ export function CustomGameEditor({
                       </div>
                     ))
                   ) : (
-                    <button
-                      type="button"
-                      className={styles.empty}
-                      onClick={() => {
-                        setPendingActivities(capabilityIds);
-                        changePage("activities");
-                      }}
-                    >
-                      {t("ui.library.chooseActivities")}
-                    </button>
+                    <div className={styles.emptyActivities}>
+                      <CapabilityIcon capability="rounds-or-matches" />
+                      <strong>{t("ui.library.chooseActivities")}</strong>
+                      <SolidButton
+                        variant="soft"
+                        onClick={() => {
+                          setPendingActivities(capabilityIds);
+                          changePage("activities");
+                        }}
+                      >
+                        {t("ui.library.addActivities")}
+                      </SolidButton>
+                    </div>
                   )}
+                </section>
+                <div className={styles.reviewAction}>
                   <PillButton onClick={() => changePage("quests")}>
                     {t("ui.library.reviewQuests")} · {enabled.size}
                   </PillButton>
-                </section>
+                </div>
               </form>
             ) : (
               <>
-                <div className={styles.stats}>
-                  <strong>
-                    {page === "activities"
-                      ? t("ui.library.selectedActivities", {
-                          count: pendingActivities.length,
-                        })
-                      : t("ui.library.reviewQuests")}
-                  </strong>
-                  <span aria-live="polite">
-                    {page === "activities"
-                      ? pendingCount
-                      : reviewedEnabled.size}
-                    /{CUSTOM_GAME_QUESTS.length} sidequests
-                  </span>
-                </div>
                 <div
                   className={
                     page === "activities" ? styles.activitySection : undefined

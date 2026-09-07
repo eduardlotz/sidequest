@@ -21,21 +21,23 @@ export function curatedGameQuestIds(
   if (!game) return [];
   const preferences =
     state.curatedGamePreferences[gameId] ?? DEFAULT_CURATED_PREFERENCES;
-  // Do not guess which installment someone owns.
-  if (game.installments.length && !preferences.installmentIds.length) return [];
-  const dedicated = game.exclusiveQuestIds.filter((id) => {
-    const curated = QUEST_CORES_BY_ID[id]?.curated;
-    return (
-      curated?.gameId === gameId &&
-      (!curated.installmentIds.length ||
-        curated.installmentIds.some((id) =>
-          preferences.installmentIds.includes(id),
-        ))
-    );
-  });
-  return preferences.questMode === "curated-and-flexible"
-    ? Array.from(new Set([...dedicated, ...game.compatibleQuestIds]))
-    : dedicated;
+  // Dedicated series quests wait for an explicit installment, while the
+  // flexible catalogue remains available for every selected game.
+  const canUseDedicated =
+    !game.installments.length || preferences.installmentIds.length > 0;
+  const dedicated = canUseDedicated
+    ? game.exclusiveQuestIds.filter((id) => {
+        const curated = QUEST_CORES_BY_ID[id]?.curated;
+        return (
+          curated?.gameId === gameId &&
+          (!curated.installmentIds.length ||
+            curated.installmentIds.some((id) =>
+              preferences.installmentIds.includes(id),
+            ))
+        );
+      })
+    : [];
+  return Array.from(new Set([...dedicated, ...game.compatibleQuestIds]));
 }
 
 export function libraryGamesFromState(state: LibraryState): LibraryGame[] {

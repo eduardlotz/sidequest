@@ -3,6 +3,7 @@
   place-items: center;
   width: 20px;
   height: 20px;
+  box-sizing: border-box;
   flex: none;
   color: var(--color-muted);
 }
@@ -16,4 +17,16 @@
 .mark[data-selected="true"] {
   color: #168cff;
   filter: drop-shadow(0 2px 4px #168cff40);
+}
+.mark[data-pending="true"] {
+  border: 2px dotted #f2c94c;
+  border-radius: 50%;
+  color: #f2c94c;
+  filter: drop-shadow(0 2px 4px #f2c94c40);
+}
+.pendingDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
 }

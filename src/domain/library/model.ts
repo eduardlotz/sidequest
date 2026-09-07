@@ -10,14 +10,14 @@ export const LIBRARY_STORE_VERSION = 1;
 
 export type QuestOverrides = Record<string, boolean>;
 
-export type CuratedQuestMode = "curated-only" | "curated-and-flexible";
+export type CuratedQuestMode = "curated-and-flexible";
 export type CuratedGamePreferences = {
   questMode: CuratedQuestMode;
   installmentIds: string[];
 };
 
 export const DEFAULT_CURATED_PREFERENCES: CuratedGamePreferences = {
-  questMode: "curated-only",
+  questMode: "curated-and-flexible",
   installmentIds: [],
 };
 
@@ -46,7 +46,6 @@ export type LibraryState = {
 
 export type LibraryActions = {
   toggleCuratedGame: (gameId: string) => void;
-  setCuratedQuestMode: (gameId: string, mode: CuratedQuestMode) => void;
   toggleCuratedInstallment: (gameId: string, installmentId: string) => void;
   addCustomGame: (input: CustomGameInput) => string | null;
   updateCustomGame: (gameId: string, input: CustomGameInput) => boolean;
