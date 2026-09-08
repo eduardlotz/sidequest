@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { ChevronLeftIcon } from "../../../../shared/ui/Icons/Icons";
+import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import { visuallyHiddenClassName } from "../../../../shared/ui/VisuallyHidden/VisuallyHidden";
 import styles from "./ProfileDrawer.module.css";
 
@@ -29,13 +30,14 @@ export function ProfilePanel({
         <div className={styles.profileDrawerTitleRow}>
           {showBack ? (
             <Drawer.Close asChild>
-              <button
+              <SolidButton
                 className={styles.profileBackButton}
-                type="button"
                 aria-label={t("ui.profile.back")}
+                size="small"
+                variant="soft"
               >
                 <ChevronLeftIcon />
-              </button>
+              </SolidButton>
             </Drawer.Close>
           ) : null}
           <Drawer.Title asChild>

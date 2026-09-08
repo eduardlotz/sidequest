@@ -4,7 +4,8 @@ import styles from "./SolidButton.module.css";
 type SolidButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
-  variant?: "surface" | "soft" | "primary" | "flat";
+  size?: "small" | "medium" | "large";
+  variant?: "soft" | "primary" | "ghost" | "highContrast";
 };
 
 export const SolidButton = forwardRef<HTMLButtonElement, SolidButtonProps>(
@@ -14,7 +15,8 @@ export const SolidButton = forwardRef<HTMLButtonElement, SolidButtonProps>(
       className,
       iconLeft,
       iconRight,
-      variant = "surface",
+      size = "small",
+      variant = "soft",
       type = "button",
       ...props
     },
@@ -25,6 +27,9 @@ export const SolidButton = forwardRef<HTMLButtonElement, SolidButtonProps>(
         {...props}
         type={type}
         className={[styles.button, className].filter(Boolean).join(" ")}
+        data-icon-left={iconLeft ? "true" : undefined}
+        data-icon-right={iconRight ? "true" : undefined}
+        data-size={size}
         data-variant={variant}
         ref={ref}
       >
@@ -33,7 +38,7 @@ export const SolidButton = forwardRef<HTMLButtonElement, SolidButtonProps>(
             {iconLeft}
           </span>
         ) : null}
-        <span>{children}</span>
+        {children}
         {iconRight ? (
           <span className={styles.icon} aria-hidden="true">
             {iconRight}

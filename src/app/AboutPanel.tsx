@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { WordmarkLogo } from "../assets/wordmark";
 import { ResponsiveNestedDrawer } from "../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
+import { SolidButton } from "../shared/ui/SolidButton/SolidButton";
 import { TiltedElement } from "../shared/ui/TiltedElement/TiltedElement";
 import { QuestSourcesPanel } from "./QuestSourcesPanel";
 import styles from "./AboutPanel.module.css";
@@ -86,21 +87,26 @@ export function AboutPanel({
             <ResponsiveNestedDrawer
               variant="about"
               trigger={
-                <button type="button" className={styles.sourcesButton}>
+                <SolidButton
+                  className={styles.sourcesButton}
+                  size="small"
+                  variant="ghost"
+                >
                   {t("ui.about.sourcesButton")}
-                </button>
+                </SolidButton>
               }
             >
               <QuestSourcesPanel />
             </ResponsiveNestedDrawer>
           ) : (
-            <button
-              type="button"
+            <SolidButton
               className={styles.sourcesButton}
+              size="small"
+              variant="ghost"
               onClick={() => setSourcesOpen(true)}
             >
               {t("ui.about.sourcesButton")}
-            </button>
+            </SolidButton>
           )}
         </section>
 

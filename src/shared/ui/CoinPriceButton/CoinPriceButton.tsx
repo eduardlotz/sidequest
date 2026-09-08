@@ -1,5 +1,6 @@
 import { type ButtonHTMLAttributes, type ReactNode } from "react";
 import { CoinIcon } from "../Icons/Icons";
+import { SolidButton } from "../SolidButton/SolidButton";
 import styles from "./CoinPriceButton.module.css";
 
 type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
@@ -16,16 +17,21 @@ export function CoinPriceButton({
   ...props
 }: Props) {
   return (
-    <button
+    <SolidButton
       {...props}
-      className={[styles.button, className].filter(Boolean).join(" ")}
+      className={className}
+      size="small"
+      // variant={tone === "inverse" ? "highContrast" : "soft"}
+      variant="primary"
       data-tone={tone}
     >
-      <span className={styles.label}>{label}</span>
-      <span className={styles.price}>
-        {price}
-        <CoinIcon />
+      <span className={styles.content}>
+        <span className={styles.label}>{label}</span>
+        <span className={styles.price}>
+          {price}
+          <CoinIcon />
+        </span>
       </span>
-    </button>
+    </SolidButton>
   );
 }

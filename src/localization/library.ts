@@ -13,7 +13,8 @@ export const englishLibrary = {
   finishSetup: "Finish setup",
   optional: "Optional",
   configureGame: "Game & quest options",
-  editorIntro: "Give your game a name and look, then choose what you can do in it",
+  editorIntro:
+    "Give your game a name and look, then choose what you can do in it",
   activitiesIntro: "Choose everything you can do in",
   possibleActivities: "Possible activities",
   adjust: "Adjust",
@@ -28,7 +29,7 @@ export const englishLibrary = {
   previousIcons: "Previous icons",
   nextIcons: "Next icons",
   iconPage: "Icon page {{page}}",
-  previewRelax: "Relaxation",
+  previewRelax: "Relax",
   previewNostalgia: "Nostalgia",
   scrollDown: "Scroll down",
 
@@ -40,7 +41,7 @@ export const englishLibrary = {
   questMode: "Quests for {{game}}",
   curatedOnly: "Curated only",
   curatedAndFlexible: "Curated + flexible",
-  installments: "Which games do you play?",
+  installments: "Which parts do you play?",
   chooseInstallment:
     "Pick at least one game in this series to get matching quests.",
   customHeading: "Your games",

@@ -48,12 +48,12 @@ export function GameVisual({ className, game, size = "row" }: Props) {
     >
       <GameIcon
         icon={visual.iconId}
-        style={{
-          fill: `url(#${effectId}-fill)`,
-          filter: `url(#${effectId}-relief)`,
-        }}
+        // style={{
+        //   fill: `url(#${effectId}-fill)`,
+        //   filter: `url(#${effectId}-relief)`,
+        // }}
       >
-        <defs>
+        {/* <defs>
           <linearGradient
             id={`${effectId}-fill`}
             x1="0"
@@ -94,7 +94,7 @@ export function GameVisual({ className, game, size = "row" }: Props) {
               <feMergeNode in="inner" />
             </feMerge>
           </filter>
-        </defs>
+        </defs> */}
       </GameIcon>
     </span>
   );

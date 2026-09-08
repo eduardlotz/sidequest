@@ -1233,7 +1233,11 @@ export function ActiveQuestCard({
                       className={styles.saveAction}
                       variants={pausePanelItemVariants}
                     >
-                      <SolidButton type="submit" variant="primary">
+                      <SolidButton
+                        size="large"
+                        type="submit"
+                        variant="primary"
+                      >
                         {t("ui.timer.completeQuest")}
                       </SolidButton>
                     </motion.div>
@@ -1293,6 +1297,7 @@ export function ActiveQuestCard({
                 transition={{ duration: reduceMotion ? 0 : 0.16 }}
               >
                 <SolidButton
+                  size="small"
                   type="button"
                   variant="soft"
                   onClick={returnToSelection}

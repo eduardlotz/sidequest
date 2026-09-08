@@ -5,15 +5,21 @@
 }
 .collectionSection {
   composes: section from "../LibrarySection.module.css";
-  padding: 12px 4px 4px;
-  background: transparent;
+  /* background: transparent;
+  padding: 12px 4px 4px; */
+
+  padding: 8px;
+  border-radius: 28px;
+  /* background: var(--color-canvas); */
+  background: rgb(var(--color-text-rgb) / 0.05);
 }
+
 .sectionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin: 0 12px 18px;
+  gap: 8px;
+  padding: 8px 16px;
 }
 .sectionHeader h3 {
   margin: 0;
@@ -21,7 +27,9 @@
   font-weight: 600;
 }
 .optional {
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -2%;
   color: var(--color-muted);
 }
 .addButton {
@@ -37,23 +45,30 @@
   color: var(--color-text);
   cursor: pointer;
 }
+.addButton[data-icon-left="true"] {
+  padding-left: 8px;
+}
 .addButton svg {
   width: 15px;
   height: 15px;
 }
 .customGameList {
-  padding: 4px 12px;
   border-radius: 22px;
+  padding: 4px 12px;
   background: var(--color-surface);
   box-shadow: 0 8px 16px #17172b0b;
 }
 .curatedList {
   max-height: 340px;
-  padding: 4px 0;
   overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--color-border) transparent;
   overscroll-behavior-y: auto;
+  padding: 4px 0;
+
+  /* padding: 8px; */
+  border-radius: 28px;
+  /* background: var(--color-canvas); */
 }
 .curatedEntry {
   position: relative;
@@ -142,6 +157,11 @@
 .curatedOptions > span {
   display: block;
   margin-bottom: 8px;
+  padding: 4px;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: -2%;
+  font-size: 0.75rem;
 }
 .installmentChips {
   display: flex;

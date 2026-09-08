@@ -200,30 +200,34 @@ export function LibraryCollectionEditor({
                       hint={t("ui.library.customDescription")}
                     />
                   </h3>
-                  {customGames.length ? (
-                    <button
-                      className={styles.addButton}
-                      type="button"
-                      onClick={() => openEditor({ kind: "new" })}
-                    >
-                      <PlusIcon />
-                      {t("ui.library.addGame")}
-                    </button>
-                  ) : null}
                 </div>
                 {customGames.length ? (
-                  <div className={styles.customGameList}>
-                    {customGames.map((game) => (
-                      <CustomGameRow
-                        game={game}
-                        key={game.id}
-                        onEdit={() =>
-                          openEditor({ kind: "edit", gameId: game.id })
-                        }
-                        onRemove={() => removeCustomGame(game.id)}
-                      />
-                    ))}
-                  </div>
+                  <>
+                    <div className={styles.customGameList}>
+                      {customGames.map((game) => (
+                        <CustomGameRow
+                          game={game}
+                          key={game.id}
+                          onEdit={() =>
+                            openEditor({ kind: "edit", gameId: game.id })
+                          }
+                          onRemove={() => removeCustomGame(game.id)}
+                        />
+                      ))}
+                    </div>
+
+                    <div className={styles.emptyState}>
+                      <SolidButton
+                        className={styles.addButton}
+                        iconLeft={<PlusIcon />}
+                        size="small"
+                        variant="highContrast"
+                        onClick={() => openEditor({ kind: "new" })}
+                      >
+                        {t("ui.library.addGame")}
+                      </SolidButton>
+                    </div>
+                  </>
                 ) : (
                   <div className={styles.emptyState}>
                     <GameControllerIcon weight="duotone" aria-hidden />
@@ -231,6 +235,7 @@ export function LibraryCollectionEditor({
                     <SolidButton
                       variant="soft"
                       iconLeft={<PlusIcon />}
+                      size="small"
                       onClick={() => openEditor({ kind: "new" })}
                     >
                       {t("ui.library.addGame")}

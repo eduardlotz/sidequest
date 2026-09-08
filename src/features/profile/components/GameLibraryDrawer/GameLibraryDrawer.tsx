@@ -1,7 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { LibraryCollectionEditor } from "../../../library/components/LibraryCollectionEditor/LibraryCollectionEditor";
-import { PillButton } from "../../../../shared/ui/PillButton/PillButton";
+import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
+import { ChevronLeftIcon } from "../../../../shared/ui/Icons/Icons";
 import { visuallyHiddenClassName } from "../../../../shared/ui/VisuallyHidden/VisuallyHidden";
 import styles from "./GameLibraryDrawer.module.css";
 export function GameLibraryDrawer() {
@@ -10,7 +11,13 @@ export function GameLibraryDrawer() {
     <section className={styles.drawer}>
       <header>
         <Drawer.Close asChild>
-          <PillButton aria-label={t("ui.profile.back")}>‹</PillButton>
+          <SolidButton
+            aria-label={t("ui.profile.back")}
+            size="small"
+            variant="soft"
+          >
+            <ChevronLeftIcon />
+          </SolidButton>
         </Drawer.Close>
         <Drawer.Title>{t("ui.library.drawerTitle")}</Drawer.Title>
       </header>

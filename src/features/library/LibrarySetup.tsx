@@ -12,10 +12,10 @@ import { useTranslation } from "react-i18next";
 import { CircleHalfTiltIcon } from "@phosphor-icons/react/dist/csr/CircleHalfTilt";
 import { GlobeIcon } from "@phosphor-icons/react/dist/csr/Globe";
 import { InfoIcon } from "@phosphor-icons/react/dist/csr/Info";
+import { CaretRightIcon } from "@phosphor-icons/react/dist/csr/CaretRight";
 import { XIcon } from "@phosphor-icons/react/dist/csr/X";
 
 import { SolidButton } from "../../shared/ui/SolidButton/SolidButton";
-import { PillButton } from "../../shared/ui/PillButton/PillButton";
 import { useLibraryStore } from "../../stores/useLibraryStore";
 import { LibraryCollectionEditor } from "./components/LibraryCollectionEditor/LibraryCollectionEditor";
 import { LibraryStep } from "./components/LibraryStep";
@@ -29,6 +29,7 @@ import { TiltedElement } from "../../shared/ui/TiltedElement/TiltedElement";
 import { useCardFocus } from "../../shared/hooks/useCardFocus";
 import { CardFocusBackdrop } from "../../shared/ui/CardFocusBackdrop/CardFocusBackdrop";
 import type { ThemeChoice } from "../../lib/theme";
+import { ContrastIcon } from "../../shared/ui/Icons/Icons";
 
 export function LibrarySetup({
   onThemeChange,
@@ -122,11 +123,16 @@ export function LibrarySetup({
               title={t("ui.library.overviewIntro")}
               footer={
                 <>
-                  <SolidButton variant="primary" onClick={completeSetup}>
+                  <SolidButton
+                    size="large"
+                    variant="primary"
+                    onClick={completeSetup}
+                  >
                     {t("ui.library.finishSetup")}
                   </SolidButton>
                   <SolidButton
-                    variant="flat"
+                    size="large"
+                    variant="ghost"
                     onClick={() => setPersonal(false)}
                   >
                     {t("ui.library.back")}
@@ -148,40 +154,52 @@ export function LibrarySetup({
               </div>
               <p>{t("ui.library.welcomeDescription")}</p>
               <div className={styles.links}>
-                <PillButton
+                <SolidButton
                   ref={informationTriggerRef}
+                  iconLeft={<InfoIcon weight="bold" />}
+                  size="medium"
+                  variant="soft"
                   onClick={() => setInformationOpen(true)}
                 >
-                  <InfoIcon weight="bold" />
                   {t("ui.library.moreInformation")}
-                </PillButton>
-                <PillButton
+                </SolidButton>
+                <SolidButton
+                  iconLeft={<GlobeIcon weight="bold" />}
+                  size="medium"
+                  variant="soft"
                   onClick={() =>
                     void i18n.changeLanguage(language === "en" ? "de" : "en")
                   }
                 >
-                  <GlobeIcon weight="bold" />
                   {t("ui.library.changeLanguage")}
-                </PillButton>
-                <PillButton
+                </SolidButton>
+                <SolidButton
                   aria-label={t("ui.library.changeThemeTo", {
                     theme: t(`ui.profile.theme${capitalize(nextTheme)}`),
                   })}
+                  iconLeft={<ContrastIcon />}
+                  size="medium"
+                  variant="soft"
                   onClick={() => onThemeChange(nextTheme)}
                 >
-                  <CircleHalfTiltIcon weight="fill" />
                   {t("ui.library.changeTheme")}
-                </PillButton>
+                </SolidButton>
               </div>
               <div className={styles.start}>
                 <SolidButton
+                  size="large"
                   variant="primary"
                   onClick={() => setPersonal(true)}
                 >
                   {t("ui.library.createLibrary")}
                 </SolidButton>
-                <SolidButton variant="flat" onClick={completeSetup}>
-                  {t("ui.library.startWithoutSetup")} ›
+                <SolidButton
+                  iconRight={<CaretRightIcon weight="bold" />}
+                  size="large"
+                  variant="ghost"
+                  onClick={completeSetup}
+                >
+                  {t("ui.library.startWithoutSetup")}
                 </SolidButton>
               </div>
               <div className={styles.previews}>
@@ -213,15 +231,15 @@ export function LibrarySetup({
               ease: "easeOut",
             }}
           >
-            <button
+            <SolidButton
               autoFocus
               className={styles.informationClose}
-              type="button"
               aria-label={t("ui.library.closeInformation")}
+              iconLeft={<XIcon weight="bold" />}
+              size="medium"
+              variant="soft"
               onClick={closeInformation}
-            >
-              <XIcon weight="bold" />
-            </button>
+            />
             <motion.div
               className={styles.scroll}
               ref={scrollRef}

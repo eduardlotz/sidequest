@@ -42,7 +42,7 @@
 }
 .content {
   width: min(100%, var(--flow-frame-content-width, 360px));
-  padding: 12px 0 48px;
+  padding: 12px 8px 48px;
   margin-inline: auto;
 }
 .viewport[data-selection] .content {
@@ -109,12 +109,13 @@
 .footer {
   display: flex;
   width: min(100%, var(--flow-frame-content-width, 360px));
+  max-width: 100%;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   gap: 8px;
   flex: none;
-  padding: 14px 0 4px;
+  padding: 0 8px 0px;
   margin-inline: auto;
 }
 .footer > button {

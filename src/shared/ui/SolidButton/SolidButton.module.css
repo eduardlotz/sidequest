@@ -1,20 +1,29 @@
 .button {
+  --button-gap: 5px;
+  --button-height: 28px;
+  --button-icon-size: 1rem;
+  --button-inline-padding: 12px;
+  --button-radius: 14px;
+
   display: inline-flex;
   min-width: 0;
-  min-height: 34px;
+  min-height: var(--button-height);
   align-items: center;
   justify-content: center;
-  padding: 0 13px;
+  padding: 0 var(--button-inline-padding);
   border: 0;
-  border-radius: 16px;
-  background: var(--color-surface);
-  box-shadow: var(--control-shadow);
+  border-radius: var(--button-radius);
+  background: transparent;
+  box-shadow: none;
   color: var(--color-text);
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  gap: 6px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  gap: var(--button-gap);
+  white-space: nowrap;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   transition:
     background-color 180ms ease,
     box-shadow 150ms ease,
@@ -23,9 +32,41 @@
     transform 150ms ease;
 }
 
+.button[data-size="medium"] {
+  --button-gap: 6px;
+  --button-height: 36px;
+  --button-icon-size: 1.0625rem;
+  --button-inline-padding: 16px;
+  --button-radius: 18px;
+
+  font-size: 0.875rem;
+}
+
+.button[data-size="large"] {
+  --button-gap: 7px;
+  --button-height: 48px;
+  --button-icon-size: 1.125rem;
+  --button-inline-padding: 22px;
+  --button-radius: 17px;
+
+  font-size: 0.95rem;
+}
+
+.button[data-icon-left="true"] {
+  padding-left: calc(var(--button-inline-padding) - 3px);
+}
+
+.button[data-icon-right="true"] {
+  padding-right: calc(var(--button-inline-padding) - 3px);
+}
+
 .button:active:not(:disabled) {
-  box-shadow: var(--control-shadow);
   transform: scale(0.98);
+}
+
+.button svg {
+  height: var(--button-icon-size);
+  width: var(--button-icon-size);
 }
 
 .button:disabled {
@@ -35,80 +76,71 @@
 }
 
 .button[data-variant="soft"] {
-  min-height: 28px;
-  padding: 0 15px;
-  border-radius: 16px;
   background: var(--color-surface-pressed);
-  box-shadow: none;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  white-space: nowrap;
-}
 
-.button[data-variant="primary"] {
-  min-width: 188px;
-  min-height: 48px;
-  padding: 0 22px;
-  border: 2px solid #73747c;
-  border-radius: 17px;
-  background: linear-gradient(180deg, #303138 0%, #17181d 52%, #101116 100%);
-  box-shadow:
-    0 0 0 2px #1b1c21,
-    0 5px 10px rgb(20 21 27 / 0.2),
-    inset 0 1px 0 rgb(255 255 255 / 0.22),
-    inset 0 -2px 0 rgb(3 4 7 / 0.62);
-  color: #f7f7fb;
-  font-size: 0.95rem;
-  font-weight: 750;
-  letter-spacing: -0.035em;
-  text-shadow:
-    0 2px 0 rgb(7 10 28 / 0.82),
-    0 4px 6px rgb(0 0 0 / 0.48),
-    0 -1px 0 rgb(255 255 255 / 0.18);
-}
-
-.button[data-variant="flat"] {
-  min-height: 48px;
-  padding: 0 20px;
-
-  background: transparent;
-  box-shadow: none;
-  font-size: 0.95rem;
-  font-weight: 700;
-
-  > span {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.25rem;
-
-    svg {
-      height: 1rem;
-      opacity: 0.5;
-    }
+  svg {
+    color: var(--color-muted);
+    /* opacity: 0.5; */
   }
 }
 
+.button[data-variant="primary"] {
+  border: 1px solid #565863;
+  background: linear-gradient(180deg, #30313a 0%, #20212a 48%, #11121a 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.34),
+    inset 0 3px 5px rgb(255 255 255 / 0.08),
+    0 1px 2px rgb(10 11 18 / 0.42),
+    0 6px 12px rgb(10 11 18 / 0.2);
+  color: #f7f7fb;
+  font-weight: 700;
+  text-shadow: 0 1px 1px rgb(0 0 0 / 0.72);
+}
+
+.button[data-variant="ghost"] {
+  background: transparent;
+  font-weight: 700;
+
+  svg {
+    color: var(--color-muted);
+    opacity: 0.58;
+  }
+}
+
+.button[data-variant="ghost"] .icon {
+  color: var(--color-muted);
+  opacity: 0.58;
+}
+
+.button[data-variant="highContrast"] {
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-copy);
+}
+
+.button[data-variant="primary"] .icon,
+.button[data-variant="highContrast"] .icon {
+  color: inherit;
+  opacity: 0.78;
+}
+
 :global(:root[data-theme="dark"]) .button[data-variant="primary"] {
-  border-color: #d6d6df;
+  border-color: #c9c9d3;
   background: linear-gradient(180deg, #fff 0%, #ededf4 52%, #dcdce7 100%);
   box-shadow:
-    0 0 0 2px #f5f5fa,
-    0 6px 14px rgb(0 0 0 / 0.34),
     inset 0 1px 0 rgb(255 255 255 / 0.95),
-    inset 0 -2px 0 rgb(111 111 126 / 0.28);
+    inset 0 3px 5px rgb(255 255 255 / 0.42),
+    0 1px 2px rgb(0 0 0 / 0.46),
+    0 6px 12px rgb(0 0 0 / 0.32);
   color: #17181d;
-  text-shadow: 0 1px 0 rgb(255 255 255 / 0.9);
+  text-shadow: 0 1px 1px rgb(255 255 255 / 0.8);
 }
 
 .button[data-variant="primary"]:active:not(:disabled) {
   box-shadow:
-    0 0 0 2px #080c22,
-    0 6px 12px rgb(8 12 31 / 0.28),
-    inset 0 2px 0 rgb(255 255 255 / 0.2),
-    inset 0 0 0 2px rgb(128 137 169 / 0.25),
-    inset 0 -2px 0 rgb(3 6 20 / 0.62);
+    inset 0 1px 0 rgb(255 255 255 / 0.22),
+    inset 0 3px 5px rgb(255 255 255 / 0.05),
+    0 1px 2px rgb(10 11 18 / 0.38),
+    0 4px 8px rgb(10 11 18 / 0.16);
   filter: brightness(0.98);
   transform: scale(0.993);
 }
@@ -116,9 +148,10 @@
 :global(:root[data-theme="dark"])
   .button[data-variant="primary"]:active:not(:disabled) {
   box-shadow:
-    0 0 0 2px #f5f5fa,
-    0 4px 9px rgb(0 0 0 / 0.28),
-    inset 0 2px 3px rgb(66 66 78 / 0.2);
+    inset 0 1px 0 rgb(255 255 255 / 0.7),
+    inset 0 3px 5px rgb(255 255 255 / 0.24),
+    0 1px 2px rgb(0 0 0 / 0.4),
+    0 4px 8px rgb(0 0 0 / 0.26);
 }
 
 .button[data-variant="primary"]:focus-visible {
@@ -134,8 +167,13 @@
   text-shadow: none;
 }
 
-.button[data-variant="soft"]:active:not(:disabled) {
-  transform: scale(0.98);
+.button[data-variant="highContrast"]:disabled {
+  background: color-mix(
+    in srgb,
+    var(--color-inverse-surface),
+    var(--color-canvas) 90%
+  );
+  color: color-mix(in srgb, var(--color-inverse-copy), var(--color-text) 90%);
 }
 
 .icon {
@@ -143,7 +181,7 @@
   flex: 0 0 auto;
   place-items: center;
   color: var(--color-muted);
-  font-size: 0.94rem;
+  font-size: var(--button-icon-size);
   line-height: 1;
 }
 
@@ -159,7 +197,6 @@
   }
 
   .button[data-variant="soft"]:hover:not(:disabled) {
-    box-shadow: none;
     filter: brightness(0.95);
   }
 
@@ -168,10 +205,14 @@
     transform: scale(0.995);
   }
 
-  .button[data-variant="flat"]:hover:not(:disabled) {
-    box-shadow: none;
+  .button[data-variant="ghost"]:hover:not(:disabled) {
     background: var(--color-wash);
     filter: none;
+  }
+
+  .button[data-variant="highContrast"]:hover:not(:disabled) {
+    filter: brightness(0.94);
+    transform: scale(1.015);
   }
 
   .button:hover:active:not(:disabled) {

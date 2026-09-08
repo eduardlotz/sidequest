@@ -30,7 +30,6 @@ import { normalizeLanguage } from "../../../../localization/i18n";
 import { plainObjectiveText } from "../../../../shared/quest-card/QuestObjectiveText/QuestObjectiveText";
 import { GameVisual } from "../../../../shared/ui/GameVisual/GameVisual";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
-import { PillButton } from "../../../../shared/ui/PillButton/PillButton";
 import { SelectionMark } from "../../../../shared/ui/SelectionMark/SelectionMark";
 import { FlowFrame } from "../../../../shared/ui/FlowFrame/FlowFrame";
 import { CapabilityIcon, ChevronIcon, SearchIcon } from "../LibraryIcons";
@@ -165,6 +164,7 @@ export function CustomGameEditor({
     page === "appearance" ? (
       <>
         <SolidButton
+          size="large"
           variant="primary"
           type="submit"
           form={formId}
@@ -172,14 +172,20 @@ export function CustomGameEditor({
         >
           {t("ui.library.saveGame")}
         </SolidButton>
-        <SolidButton variant="flat" className={styles.back} onClick={onCancel}>
-          <ChevronIcon />
+        <SolidButton
+          className={styles.back}
+          iconLeft={<ChevronIcon />}
+          size="large"
+          variant="ghost"
+          onClick={onCancel}
+        >
           {t("ui.library.back")}
         </SolidButton>
       </>
     ) : (
       <>
         <SolidButton
+          size="large"
           type="button"
           variant="primary"
           onClick={() => {
@@ -195,11 +201,12 @@ export function CustomGameEditor({
           )}
         </SolidButton>
         <SolidButton
-          variant="flat"
           className={styles.back}
+          iconLeft={<ChevronIcon />}
+          size="large"
+          variant="ghost"
           onClick={() => changePage("appearance")}
         >
-          <ChevronIcon />
           {t("ui.library.back")}
         </SolidButton>
       </>
@@ -321,13 +328,14 @@ export function CustomGameEditor({
                     className={styles.pagination}
                     aria-label={t("ui.library.gameIcon")}
                   >
-                    <PillButton
+                    <SolidButton
                       disabled={iconPage === 0}
                       aria-label={t("ui.library.previousIcons")}
+                      iconLeft={<ChevronIcon className={styles.previous} />}
+                      size="small"
+                      variant="soft"
                       onClick={() => showIconPage(iconPage - 1)}
-                    >
-                      <ChevronIcon className={styles.previous} />
-                    </PillButton>
+                    />
                     {Array.from({ length: pageCount }, (_, p) => (
                       <button
                         type="button"
@@ -337,13 +345,14 @@ export function CustomGameEditor({
                         onClick={() => showIconPage(p)}
                       />
                     ))}
-                    <PillButton
+                    <SolidButton
                       disabled={iconPage === pageCount - 1}
                       aria-label={t("ui.library.nextIcons")}
+                      iconLeft={<ChevronIcon />}
+                      size="small"
+                      variant="soft"
                       onClick={() => showIconPage(iconPage + 1)}
-                    >
-                      <ChevronIcon />
-                    </PillButton>
+                    />
                   </nav>
                 </fieldset>
                 <fieldset className={styles.colors}>
@@ -375,14 +384,16 @@ export function CustomGameEditor({
                       hint={t("ui.library.capabilitiesHint")}
                     />
                     {capabilityIds.length ? (
-                      <PillButton
+                      <SolidButton
+                        size="small"
+                        variant="soft"
                         onClick={() => {
                           setPendingActivities(capabilityIds);
                           changePage("activities");
                         }}
                       >
                         {t("ui.library.adjust")}
-                      </PillButton>
+                      </SolidButton>
                     ) : null}
                   </div>
                   {capabilityIds.length ? (
@@ -404,7 +415,8 @@ export function CustomGameEditor({
                       <CapabilityIcon capability="rounds-or-matches" />
                       <strong>{t("ui.library.chooseActivities")}</strong>
                       <SolidButton
-                        variant="soft"
+                        size="small"
+                        variant="highContrast"
                         onClick={() => {
                           setPendingActivities(capabilityIds);
                           changePage("activities");
@@ -416,9 +428,13 @@ export function CustomGameEditor({
                   )}
                 </section>
                 <div className={styles.reviewAction}>
-                  <PillButton onClick={() => changePage("quests")}>
+                  <SolidButton
+                    size="small"
+                    variant="soft"
+                    onClick={() => changePage("quests")}
+                  >
                     {t("ui.library.reviewQuests")} · {enabled.size}
-                  </PillButton>
+                  </SolidButton>
                 </div>
               </form>
             ) : (
@@ -522,9 +538,13 @@ export function CustomGameEditor({
                     </p>
                   )}
                   {page === "quests" && (
-                    <PillButton onClick={() => setPendingOverrides({})}>
+                    <SolidButton
+                      size="small"
+                      variant="soft"
+                      onClick={() => setPendingOverrides({})}
+                    >
                       {t("ui.library.resetMatches")}
-                    </PillButton>
+                    </SolidButton>
                   )}
                 </div>
               </>

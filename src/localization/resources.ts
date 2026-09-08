@@ -5,7 +5,7 @@ export const englishUi = {
   nav: {
     skipToContent: "Skip to content",
     mainNavigation: "Main navigation",
-    about: "About",
+    about: "Info",
     spinLogo: "Spin Sidequest logo",
     profileLabel: "Your profile, {{points}} coins",
     points: "{{points}} coins",

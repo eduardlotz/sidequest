@@ -81,6 +81,9 @@
   text-underline-offset: 3px;
   cursor: pointer;
 }
+.sourcesButton[data-icon-left="true"] {
+  padding-left: 0;
+}
 .aboutIntro > .sourcesButton {
   margin: 0 0 18px;
 }

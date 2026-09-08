@@ -24,8 +24,8 @@
 
 .profileBackButton {
   display: grid;
-  width: 29px;
-  height: 29px;
+  /* width: 29px;
+  height: 29px; */
   padding: 0;
   border-radius: 50%;
   place-items: center;
@@ -33,10 +33,13 @@
   color: var(--color-text);
   cursor: pointer;
 }
+.profileBackButton[data-icon-left="true"] {
+  padding: 0;
+}
 
 .profileBackButton svg {
-  width: 16px;
-  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
 }
 
 .profileDrawerHeader h2 {
