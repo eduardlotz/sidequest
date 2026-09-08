@@ -1,4 +1,4 @@
-import { useId, type CSSProperties } from "react";
+import { useEffect, useId, useRef, type CSSProperties } from "react";
 import type { GameReference } from "../../../data/gameTypes";
 import { resolveGameVisual } from "../../../data/gameVisuals";
 import { GameIcon } from "../Icons/GameIcon";
@@ -6,7 +6,9 @@ import styles from "./GameVisual.module.css";
 
 type Props = {
   className?: string;
+  colorTransitionKey?: string;
   game: GameReference;
+  iconTransitionKey?: string;
   size?: "card" | "row" | "picker" | "hero";
 };
 
@@ -15,10 +17,37 @@ type GameVisualStyle = CSSProperties & {
   "--game-color-rgb"?: string;
 };
 
-export function GameVisual({ className, game, size = "row" }: Props) {
+export function GameVisual({
+  className,
+  colorTransitionKey,
+  game,
+  iconTransitionKey,
+  size = "row",
+}: Props) {
   const effectId = useId();
+  const previousColorTransitionKey = useRef(colorTransitionKey);
+  const previousIconTransitionKey = useRef(iconTransitionKey);
   const visual = resolveGameVisual(game);
-  const classes = [styles.visual, className].filter(Boolean).join(" ");
+  const colorChanged =
+    colorTransitionKey !== undefined &&
+    previousColorTransitionKey.current !== undefined &&
+    previousColorTransitionKey.current !== colorTransitionKey;
+  const classes = [
+    styles.visual,
+    colorChanged ? styles.visualChanging : undefined,
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const iconChanged =
+    iconTransitionKey !== undefined &&
+    previousIconTransitionKey.current !== undefined &&
+    previousIconTransitionKey.current !== iconTransitionKey;
+
+  useEffect(() => {
+    previousColorTransitionKey.current = colorTransitionKey;
+    previousIconTransitionKey.current = iconTransitionKey;
+  }, [colorTransitionKey, iconTransitionKey]);
 
   if (visual.kind === "artwork") {
     return (
@@ -46,14 +75,23 @@ export function GameVisual({ className, game, size = "row" }: Props) {
         } as GameVisualStyle
       }
     >
-      <GameIcon
-        icon={visual.iconId}
-        // style={{
-        //   fill: `url(#${effectId}-fill)`,
-        //   filter: `url(#${effectId}-relief)`,
-        // }}
+      <span
+        className={[
+          styles.iconGlyph,
+          iconChanged ? styles.iconGlyphChanging : undefined,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        key={iconTransitionKey ?? "static-icon"}
       >
-        {/* <defs>
+          <GameIcon
+            icon={visual.iconId}
+            // style={{
+            //   fill: `url(#${effectId}-fill)`,
+            //   filter: `url(#${effectId}-relief)`,
+            // }}
+          >
+            {/* <defs>
           <linearGradient
             id={`${effectId}-fill`}
             x1="0"
@@ -94,8 +132,9 @@ export function GameVisual({ className, game, size = "row" }: Props) {
               <feMergeNode in="inner" />
             </feMerge>
           </filter>
-        </defs> */}
-      </GameIcon>
+            </defs> */}
+          </GameIcon>
+      </span>
     </span>
   );
 }

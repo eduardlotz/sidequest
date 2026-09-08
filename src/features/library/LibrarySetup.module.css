@@ -23,7 +23,7 @@
 }
 
 .welcome h1 {
-  font-size: clamp(2rem, 15vw, 3rem);
+  font-size: clamp(2rem, 5vw, 3rem);
   line-height: 1;
   letter-spacing: -4%;
   margin: 0;
@@ -34,10 +34,10 @@
   /* width: min(260px, 50svh); */
   /* filter: drop-shadow(0 5px 5px #17172b20); */
   rotate: 3deg;
-  margin-top: -5%;
+  margin-top: -4%;
 
   span {
-    width: clamp(260px, 35vw, 420px);
+    width: clamp(260px, 35vw, 340px);
   }
 }
 .wordmark svg {
@@ -257,9 +257,9 @@
   .links {
     gap: 5px;
   }
-  .welcome h1 {
+  /* .welcome h1 {
     font-size: 30px;
-  }
+  } */
 
   .previewCard[data-focused] {
     width: min(82vw, 320px);

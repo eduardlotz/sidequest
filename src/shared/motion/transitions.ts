@@ -7,4 +7,18 @@ export const NAV_ENTRY_SPRING = {
   mass: 0.75,
 } as const;
 
+export const LIBRARY_SELECTION_SPRING = {
+  type: "spring",
+  stiffness: 420,
+  damping: 24,
+  mass: 0.72,
+} as const;
+
+export const LIBRARY_LAYOUT_SPRING = {
+  type: "spring",
+  stiffness: 330,
+  damping: 30,
+  mass: 0.82,
+} as const;
+
 export const CARD_FLIP_EASE = [0.55, 0.06, 0.15, 0.86] as const;

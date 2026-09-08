@@ -6,7 +6,7 @@ import {
   type CSSProperties,
   type FormEvent,
 } from "react";
-import { AnimatePresence, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import {
   GAME_CAPABILITY_IDS,
@@ -35,6 +35,7 @@ import { FlowFrame } from "../../../../shared/ui/FlowFrame/FlowFrame";
 import { CapabilityIcon, ChevronIcon, SearchIcon } from "../LibraryIcons";
 import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
 import { LibraryStep } from "../LibraryStep";
+import { LIBRARY_SELECTION_SPRING } from "../../../../shared/motion/transitions";
 import styles from "./CustomGameEditor.module.css";
 
 const ICONS_PER_PAGE = 10;
@@ -263,9 +264,11 @@ export function CustomGameEditor({
             {page === "appearance" ? (
               <form className={styles.appearance} id={formId} onSubmit={submit}>
                 <div className={styles.identity}>
-                  <div ref={identityRef}>
+                  <div className={styles.identityVisual} ref={identityRef}>
                     <GameVisual
+                      colorTransitionKey={colorId}
                       game={{ ...draft, source: "custom" }}
+                      iconTransitionKey={iconId}
                       size="hero"
                     />
                   </div>
@@ -310,16 +313,27 @@ export function CustomGameEditor({
                           aria-pressed={iconId === icon}
                           onClick={() => setIconId(icon)}
                         >
-                          <GameVisual
-                            size="picker"
-                            game={{
-                              id: "preview",
-                              name: "",
-                              source: "custom",
-                              iconId: icon,
-                              colorId,
-                            }}
-                          />
+                          <motion.span
+                            className={styles.iconChoiceVisual}
+                            initial={false}
+                            animate={{ scale: iconId === icon ? 0.82 : 1 }}
+                            transition={
+                              reduced
+                                ? { duration: 0 }
+                                : LIBRARY_SELECTION_SPRING
+                            }
+                          >
+                            <GameVisual
+                              size="picker"
+                              game={{
+                                id: "preview",
+                                name: "",
+                                source: "custom",
+                                iconId: icon,
+                                colorId,
+                              }}
+                            />
+                          </motion.span>
                         </button>
                       ))}
                     </div>
@@ -374,7 +388,16 @@ export function CustomGameEditor({
                       })}
                       aria-pressed={colorId === color}
                       onClick={() => setColorId(color)}
-                    />
+                    >
+                      <motion.span
+                        className={styles.colorChoiceVisual}
+                        initial={false}
+                        animate={{ scale: colorId === color ? 0.84 : 1 }}
+                        transition={
+                          reduced ? { duration: 0 } : LIBRARY_SELECTION_SPRING
+                        }
+                      />
+                    </button>
                   ))}
                 </fieldset>
                 <section className={styles.activities}>

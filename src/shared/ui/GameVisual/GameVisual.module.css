@@ -26,6 +26,35 @@
     inset 0 -7px 10px rgb(64 20 34 / 0.13),
     0 4px 9px rgb(var(--game-color-rgb) / 0.16); */
 }
+.iconGlyph {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-area: 1 / 1;
+  place-items: center;
+  transform-origin: center;
+}
+.iconGlyphChanging {
+  animation: icon-gelatine 480ms ease-in-out;
+}
+.visualChanging {
+  animation: icon-gelatine 480ms ease-in-out;
+}
+@keyframes icon-gelatine {
+  from,
+  to {
+    transform: scale(1, 1);
+  }
+  25% {
+    transform: scale(0.9, 1.1);
+  }
+  50% {
+    transform: scale(1.1, 0.9);
+  }
+  75% {
+    transform: scale(0.95, 1.05);
+  }
+}
 .visual[data-visual="icon"] svg {
   width: 72%;
   height: 72%;
@@ -56,4 +85,11 @@
   width: clamp(20px, 6.5cqw, 28px);
   height: clamp(20px, 6.5cqw, 28px);
   border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visualChanging,
+  .iconGlyphChanging {
+    animation: none;
+  }
 }

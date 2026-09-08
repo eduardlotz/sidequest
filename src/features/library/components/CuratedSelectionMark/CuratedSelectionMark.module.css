@@ -1,0 +1,57 @@
+.mark {
+  position: relative;
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  place-items: center;
+  color: var(--color-muted);
+  transition:
+    color 180ms ease,
+    filter 180ms ease;
+}
+.dottedRing,
+.circle {
+  position: absolute;
+  inset: 0;
+  width: 20px;
+  height: 20px;
+}
+.dottedRing {
+  border: 2px dotted currentColor;
+  border-radius: 50%;
+  transform-origin: center;
+}
+.circle {
+  display: grid;
+  border-radius: 50%;
+  background: currentColor;
+  place-items: center;
+  transform-origin: center;
+}
+.glyph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: var(--color-surface);
+}
+.glyph svg {
+  width: 11px;
+  height: 11px;
+}
+.mark[data-state="selected"] {
+  color: #168cff;
+  filter: drop-shadow(0 2px 4px #168cff40);
+}
+.mark[data-state="pending"] {
+  color: #f2c94c;
+  filter: drop-shadow(0 2px 4px #f2c94c40);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mark {
+    transition: none;
+  }
+}
