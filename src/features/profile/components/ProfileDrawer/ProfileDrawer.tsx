@@ -1,3 +1,5 @@
+import { useLibraryStore } from "../../../../stores/useLibraryStore";
+import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./ProfileDrawer.module.css";
@@ -5,13 +7,13 @@ import { formatScore } from "../../../../lib/format";
 import { applySoundEnabled, readSoundEnabled } from "../../../../lib/sound";
 import { localizeMood } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
-import { THEME_CHOICES, type ThemeChoice } from "../../../../lib/theme";
+import type { ThemeChoice } from "../../../../lib/theme";
 import type {
   CompletedSession,
   QuestStats,
   UserProfile,
 } from "../../../../domain/quest/model";
-import { ChevronLeftIcon, InfoIcon } from "../../../../shared/ui/Icons/Icons";
+import { ChevronLeftIcon, CoinIcon, InfoIcon } from "../../../../shared/ui/Icons/Icons";
 import { ResponsiveNestedDrawer } from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
 import { RopePurchaseRow } from "../../../active-quest/components/RopePurchaseRow/RopePurchaseRow";
 import { GameLibraryDrawer } from "../GameLibraryDrawer/GameLibraryDrawer";
@@ -44,6 +46,8 @@ export function ProfileDrawer({
   const favoriteMood = stats.favoriteMoodId
     ? localizeMood(stats.favoriteMoodId, language)
     : null;
+  const curatedCount = useLibraryStore(state => state.selectedCuratedGameIds.length);
+  const customCount = useLibraryStore(state => state.customGames.length);
   const [soundEnabled, setSoundEnabled] = useState(readSoundEnabled);
 
   function changeSound(enabled: boolean) {
@@ -56,94 +60,10 @@ export function ProfileDrawer({
       description={t("ui.profile.description")}
       title={t("ui.profile.title")}
       titleId="profile-title"
+      overview
+      headerAction={<span className={styles.profileCoins}>{formatScore(profile.points, language)}<CoinIcon aria-hidden /></span>}
     >
       <section className={styles.profileSection}>
-        <div className={styles.profileNavigation}>
-          <ResponsiveNestedDrawer
-            trigger={
-              <button type="button">
-                <span>
-                  <strong>{t("ui.library.drawerTitle")}</strong>
-                  <small>{t("ui.library.profileSummary")}</small>
-                </span>
-                <ChevronLeftIcon aria-hidden="true" />
-              </button>
-            }
-          >
-            <GameLibraryDrawer />
-          </ResponsiveNestedDrawer>
-          <ResponsiveNestedDrawer
-            trigger={
-              <button type="button">
-                <span>
-                  <strong>{t("ui.history.title")}</strong>
-                  <small>
-                    {t("ui.history.profileSummary", {
-                      count: completedSessions.length,
-                    })}
-                  </small>
-                </span>
-                <ChevronLeftIcon aria-hidden="true" />
-              </button>
-            }
-          >
-            <QuestHistoryDrawer completedSessions={completedSessions} />
-          </ResponsiveNestedDrawer>
-        </div>
-      </section>
-
-      <section className={styles.profileSection}>
-        <h3 className={styles.profileSectionLabel}>
-          {t("ui.profile.redRopes")}
-        </h3>
-        <dl className={styles.profileMetrics}>
-          <ProfileMetric
-            label={t("ui.profile.owned")}
-            value={formatScore(profile.redRopes, language)}
-          />
-        </dl>
-        <RopePurchaseRow
-          coins={profile.points}
-          onPurchase={onPurchaseRedRopes}
-        />
-      </section>
-
-      <section className={styles.profileSection}>
-        <h3 className={styles.profileSectionLabel}>
-          {t("ui.profile.statistics")}
-        </h3>
-        <dl className={styles.profileMetrics}>
-          <ProfileMetric
-            label={t("ui.profile.completedQuests")}
-            value={formatScore(stats.completedQuestCount, language)}
-          />
-          <ProfileMetric
-            label={t("ui.profile.timePlayed")}
-            value={formatPlayedTime(stats.totalPlayedMs, t, language)}
-          />
-          <ProfileMetric
-            label={t("ui.profile.coinsCollected")}
-            value={formatScore(totalCoinsCollected, language)}
-          />
-          <ProfileMetric
-            label={t("ui.profile.cancelledQuests")}
-            value={formatScore(stats.cancelledQuestCount, language)}
-          />
-          <ProfileMetric
-            label={t("ui.profile.repeatedQuests")}
-            value={formatScore(stats.repeatedCompletionCount, language)}
-          />
-          <ProfileMetric
-            label={t("ui.profile.favoriteMood")}
-            value={favoriteMood?.title ?? t("ui.profile.noFavoriteMood")}
-          />
-        </dl>
-      </section>
-
-      <section className={styles.profileSection}>
-        <h3 className={styles.profileSectionLabel}>
-          {t("ui.profile.settings")}
-        </h3>
         <div className={styles.profileSettingRow}>
           <span>{t("ui.profile.theme")}</span>
           <div
@@ -151,7 +71,7 @@ export function ProfileDrawer({
             role="group"
             aria-label={t("ui.profile.theme")}
           >
-            {THEME_CHOICES.map((choice) => (
+            {(["light", "dark", "auto"] as const).map((choice) => (
               <button
                 type="button"
                 aria-pressed={themeChoice === choice}
@@ -200,6 +120,72 @@ export function ProfileDrawer({
           />
         </div>
       </section>
+      <section className={styles.profileSection}>
+        <div className={styles.profileNavigation}>
+          <ResponsiveNestedDrawer
+            trigger={
+              <button type="button">
+                <span>
+                  <strong>{t("ui.library.drawerTitle")}</strong>
+                  <small>{t("ui.library.profileSummaryCounts", { curated: curatedCount, custom: customCount })}</small>
+                </span>
+                <ChevronLeftIcon aria-hidden="true" />
+              </button>
+            }
+          >
+            <GameLibraryDrawer />
+          </ResponsiveNestedDrawer>
+        </div>
+      </section>
+
+      <section className={styles.profileSection}>
+        <dl className={styles.profileMetrics}>
+          <ProfileMetric
+            label={t("ui.profile.redRopes")}
+            value={formatScore(profile.redRopes, language)}
+          />
+        </dl>
+        <RopePurchaseRow
+          label={t("ui.profile.buyOneRope")}
+          coins={profile.points}
+          onPurchase={onPurchaseRedRopes}
+        />
+      </section>
+
+      <section className={styles.profileSection}>
+        <dl className={styles.profileMetrics}>
+          <ProfileMetric
+            label={t("ui.profile.completedQuests")}
+            value={formatScore(stats.completedQuestCount, language)}
+          />
+          <ProfileMetric
+            label={t("ui.profile.timePlayed")}
+            value={formatPlayedTime(stats.totalPlayedMs, t, language)}
+          />
+          <ProfileMetric
+            label={t("ui.profile.coinsCollected")}
+            value={formatScore(totalCoinsCollected, language)}
+          />
+          <ProfileMetric
+            label={t("ui.profile.cancelledQuests")}
+            value={formatScore(stats.cancelledQuestCount, language)}
+          />
+          <ProfileMetric
+            label={t("ui.profile.repeatedQuests")}
+            value={formatScore(stats.repeatedCompletionCount, language)}
+          />
+          <ProfileMetric
+            label={t("ui.profile.favoriteMood")}
+            value={favoriteMood?.title ?? t("ui.profile.noFavoriteMood")}
+          />
+        </dl>
+      </section>
+
+      <div className={styles.historyAction}>
+        <ResponsiveNestedDrawer trigger={<SolidButton size="medium" variant="soft" iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}>{t("ui.profile.viewHistory")}</SolidButton>}>
+          <QuestHistoryDrawer completedSessions={completedSessions} />
+        </ResponsiveNestedDrawer>
+      </div>
     </ProfilePanel>
   );
 }

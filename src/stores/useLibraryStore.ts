@@ -1,3 +1,4 @@
+import { createContext, useContext } from "react";
 import { useStore } from "zustand";
 import {
   createJSONStorage,
@@ -80,7 +81,7 @@ function createLibraryState(
     },
     addCustomGame: (input) => {
       const normalized = sanitizeCustomGameInput(input);
-      if (!normalized) return null;
+      if (!normalized || normalized.capabilityIds.length === 0) return null;
       const id = createGameId();
       set((state) => ({
         customGames: [...state.customGames, { id, ...normalized }],
@@ -91,7 +92,7 @@ function createLibraryState(
     updateCustomGame: (gameId, input) => {
       const normalized = sanitizeCustomGameInput(input);
       if (
-        !normalized ||
+        !normalized || normalized.capabilityIds.length === 0 ||
         !get().customGames.some((game) => game.id === gameId)
       ) {
         return false;
@@ -162,8 +163,10 @@ const browserStorage =
 
 export const libraryStore = createLibraryStore(browserStorage);
 
+export const LibraryStoreContext = createContext(libraryStore);
+
 export function useLibraryStore<T>(selector: (state: LibraryStore) => T) {
-  return useStore(libraryStore, selector);
+  return useStore(useContext(LibraryStoreContext), selector);
 }
 
 export * from "../domain/library/model";

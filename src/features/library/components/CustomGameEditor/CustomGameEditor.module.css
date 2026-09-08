@@ -256,11 +256,6 @@
 /* .emptyActivities > button {
   width: min(100%, 240px);
 } */
-.reviewAction {
-  display: flex;
-  justify-content: center;
-  margin-top: -12px;
-}
 .badge {
   display: flex;
   align-items: center;
@@ -384,3 +379,61 @@
     transform: none;
   }
 }
+
+.viewSwitch {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 12px;
+  border-radius: 24px;
+  background: var(--library-muted-surface);
+}
+.viewSwitch button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  min-height: 30px;
+  border-radius: 20px;
+  background: transparent;
+  color: var(--color-muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.viewSwitch button[aria-pressed="true"] {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 1px 4px rgb(var(--color-shadow-rgb) / 0.08);
+}
+.viewSwitch span { color: var(--color-muted); }
+
+/* Each page owns five flexible columns so complete icons and selection rings
+   fit the available width in both page and drawer presentations. */
+.iconPage {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+.colorPicker { position: relative; min-width: 0; }
+.moreColors {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 40px;
+  min-height: 40px;
+  padding: 0;
+  border-radius: 14px;
+  box-shadow: var(--control-shadow);
+}
+.moreColors[data-icon-left="true"] { padding: 0; }
+.colorPicker > .moreColors[data-variant="soft"] {
+  background: var(--color-surface);
+}
+
+.previousColors { left: 8px; right: auto; }

@@ -55,3 +55,10 @@
     transition: none;
   }
 }
+
+.mark[data-appearance="drawer"] { width: 16px; height: 16px; color: #8b8b92; filter: none; }
+.mark[data-appearance="drawer"] .circle,
+.mark[data-appearance="drawer"] .dottedRing { width: 16px; height: 16px; }
+.mark[data-appearance="drawer"] .circle { background: none; }
+.mark[data-appearance="drawer"][data-state="selected"] { color: #0d86ff; }
+.mark[data-appearance="drawer"][data-state="pending"] { color: #f2c94c; }

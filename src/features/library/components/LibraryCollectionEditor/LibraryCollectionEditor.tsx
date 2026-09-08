@@ -1,3 +1,6 @@
+import { FolderDashedIcon } from "@phosphor-icons/react/dist/csr/FolderDashed";
+import { ResponsiveNestedDrawer } from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
+import { LibraryDrawerFrame } from "../LibraryDrawerFrame/LibraryDrawerFrame";
 import { useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
@@ -26,7 +29,6 @@ import { CustomGameEditor } from "../CustomGameEditor/CustomGameEditor";
 import { EditIcon, PlusIcon, RemoveIcon } from "../LibraryIcons";
 import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
-import { GameControllerIcon } from "@phosphor-icons/react/dist/csr/GameController";
 import { CuratedSelectionMark } from "../CuratedSelectionMark/CuratedSelectionMark";
 import styles from "./LibraryCollectionEditor.module.css";
 
@@ -35,7 +37,9 @@ type EditorTarget = { kind: "new" } | { kind: "edit"; gameId: string } | null;
 export function LibraryCollectionEditor({
   footer,
   title,
+  presentation = "page",
 }: {
+  presentation?: "page" | "drawer";
   footer?: ReactNode;
   title?: ReactNode;
 }) {
@@ -91,26 +95,26 @@ export function LibraryCollectionEditor({
     setEditorTarget(target);
   }
 
-  return (
+  const customEditor = editorKey !== "collection" ? (
+    <CustomGameEditor key={editingGame?.id ?? "new"} game={editingGame}
+      presentation={presentation} onCancel={() => setEditorTarget(null)} onSave={saveCustomGame} />
+  ) : null;
+  return (<>
     <AnimatePresence mode="wait" initial={false}>
-      <LibraryStep key={editorKey}>
-        {editorKey !== "collection" ? (
-          <CustomGameEditor
-            key={editingGame?.id ?? "new"}
-            game={editingGame}
-            onCancel={() => setEditorTarget(null)}
-            onSave={saveCustomGame}
-          />
+      <LibraryStep key={presentation === "drawer" ? "collection" : editorKey}>
+        {presentation !== "drawer" && editorKey !== "collection" ? (
+          customEditor
         ) : (
           <FlowFrame
+            titleInContent
             title={title}
             footer={footer}
             initialScrollTop={overviewScroll.current}
             scrollElementRef={overviewScrollRef}
           >
-            <div className={styles.collectionEditor}>
-              <section className={styles.collectionSection}>
-                <div className={styles.sectionHeader}>
+            <div className={styles.collectionEditor} data-library-part="collectionEditor">
+              <section className={styles.collectionSection} data-library-part="collectionSection">
+                <div className={styles.sectionHeader} data-library-part="sectionHeader">
                   <h3>
                     <InfoLabel
                       label={t("ui.library.curatedHeading")}
@@ -118,11 +122,11 @@ export function LibraryCollectionEditor({
                     />
                   </h3>
                   <span className={styles.optional}>
-                    {t("ui.library.optional")}
+                    {`${selectedCuratedGameIds.length}/${CURATED_GAMES.length}`}
                   </span>
                 </div>
                 <LayoutGroup id="curated-library-games">
-                  <div className={styles.curatedList}>
+                  <div className={styles.curatedList} data-library-part="curatedList">
                     {CURATED_GAMES.map((game, index) => {
                       const selected = selectedCuratedGameIds.includes(game.id);
                       const previousSelected = selectedCuratedGameIds.includes(
@@ -151,7 +155,7 @@ export function LibraryCollectionEditor({
                           }}
                         >
                           <button
-                            className={styles.curatedGame}
+                            className={styles.curatedGame} data-library-part="curatedGame"
                             type="button"
                             aria-pressed={selected}
                             onClick={() => toggleCuratedGame(game.id)}
@@ -188,6 +192,7 @@ export function LibraryCollectionEditor({
                               </span>
                             </span>
                             <CuratedSelectionMark
+                              appearance="drawer"
                               pending={
                                 selected &&
                                 game.isSeries &&
@@ -209,14 +214,14 @@ export function LibraryCollectionEditor({
                                   reduced
                                     ? { duration: 0 }
                                     : {
-                                        height: LIBRARY_LAYOUT_SPRING,
-                                        opacity: { duration: 0.16 },
-                                      }
+                                      height: LIBRARY_LAYOUT_SPRING,
+                                      opacity: { duration: 0.16 },
+                                    }
                                 }
                               >
-                                <div className={styles.curatedOptions}>
+                                <div className={styles.curatedOptions} data-library-part="curatedOptions">
                                   <span>{t("ui.library.installments")}</span>
-                                  <div className={styles.installmentChips}>
+                                  <div className={styles.installmentChips} data-library-part="installmentChips">
                                     {game.installments.map((entry) => {
                                       const installmentSelected =
                                         preferences.installmentIds.includes(
@@ -235,7 +240,7 @@ export function LibraryCollectionEditor({
                                           }
                                         >
                                           <span
-                                            className={styles.chipDot}
+                                            className={styles.chipDot} data-library-part="chipDot"
                                             aria-hidden
                                           />
                                           <span>{entry.name}</span>
@@ -253,14 +258,15 @@ export function LibraryCollectionEditor({
                   </div>
                 </LayoutGroup>
               </section>
-              <section className={styles.collectionSection}>
-                <div className={styles.sectionHeader}>
+              <section className={styles.collectionSection} data-library-part="collectionSection">
+                <div className={styles.sectionHeader} data-library-part="sectionHeader">
                   <h3>
                     <InfoLabel
                       label={t("ui.library.customHeading")}
                       hint={t("ui.library.customDescription")}
                     />
                   </h3>
+                  <span className={styles.optional}>{t("ui.library.optional")}</span>
                 </div>
                 {customGames.length ? (
                   <>
@@ -277,12 +283,11 @@ export function LibraryCollectionEditor({
                       ))}
                     </div>
 
-                    <div className={styles.emptyState}>
+                    <div className={styles.addAction}>
                       <SolidButton
-                        className={styles.addButton}
                         iconLeft={<PlusIcon />}
                         size="small"
-                        variant="highContrast"
+                        variant="soft"
                         onClick={() => openEditor({ kind: "new" })}
                       >
                         {t("ui.library.addGame")}
@@ -290,11 +295,11 @@ export function LibraryCollectionEditor({
                     </div>
                   </>
                 ) : (
-                  <div className={styles.emptyState}>
-                    <GameControllerIcon weight="duotone" aria-hidden />
+                  <div className={styles.emptyState} data-library-part="emptyState">
+                    <FolderDashedIcon aria-hidden />
                     <strong>{t("ui.library.noCustomGames")}</strong>
                     <SolidButton
-                      variant="highContrast"
+                      variant="soft"
                       iconLeft={<PlusIcon />}
                       size="small"
                       onClick={() => openEditor({ kind: "new" })}
@@ -309,7 +314,12 @@ export function LibraryCollectionEditor({
         )}
       </LibraryStep>
     </AnimatePresence>
-  );
+    {presentation === "drawer" && <ResponsiveNestedDrawer open={editorKey !== "collection"} onOpenChange={open => { if (!open) setEditorTarget(null); }}>
+      <LibraryDrawerFrame title={t(editingGame ? "ui.library.editGameTitle" : "ui.library.addGame")}>
+        {customEditor}
+      </LibraryDrawerFrame>
+    </ResponsiveNestedDrawer>}
+  </>);
 }
 
 function CustomGameRow({

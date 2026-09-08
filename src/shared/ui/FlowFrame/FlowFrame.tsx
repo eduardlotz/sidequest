@@ -15,6 +15,7 @@ import styles from "./FlowFrame.module.css";
 type Props = {
   children: ReactNode;
   title?: ReactNode;
+  titleInContent?: boolean;
   footer?: ReactNode;
   floating?: ReactNode;
   identityRef?: RefObject<HTMLElement | null>;
@@ -28,6 +29,7 @@ type Props = {
 export function FlowFrame({
   children,
   title,
+  titleInContent = false,
   footer,
   floating,
   identityRef,
@@ -74,14 +76,14 @@ export function FlowFrame({
     const identity = identityRef?.current;
     const observer = identity
       ? new IntersectionObserver(
-          ([entry]) => {
-            setIdentityHidden(
-              entry.intersectionRatio < 0.15 &&
-                entry.boundingClientRect.top < (entry.rootBounds?.top ?? 0),
-            );
-          },
-          { root: node, threshold: [0, 0.15, 1] },
-        )
+        ([entry]) => {
+          setIdentityHidden(
+            entry.intersectionRatio < 0.15 &&
+            entry.boundingClientRect.top < (entry.rootBounds?.top ?? 0),
+          );
+        },
+        { root: node, threshold: [0, 0.15, 1] },
+      )
       : null;
     if (identity) observer?.observe(identity);
     node.addEventListener("scroll", update, { passive: true });
@@ -97,7 +99,7 @@ export function FlowFrame({
     selectionIndicator !== undefined && selectionIndicator !== null;
   return (
     <section className={styles.frame}>
-      {title && (
+      {title && !titleInContent && (
         <header className={styles.heading}>
           <motion.div
             animate={{
@@ -139,10 +141,12 @@ export function FlowFrame({
           }}
           transition={transition}
         >
-          <div className={styles.content} ref={contentRef}>
+          <div className={styles.content} data-flow-part="content" ref={contentRef}>
+            {titleInContent && title && <div data-library-part="intro"><span data-library-part="infoIcon" aria-hidden>i</span>{title}</div>}
             {children}
           </div>
         </motion.div>
+        {titleInContent && showIdentity && <div className={styles.floating}>{floating}</div>}
         <AnimatePresence initial={false}>
           {showSelectionIndicator ? (
             <motion.output
@@ -181,7 +185,7 @@ export function FlowFrame({
           )}
         </AnimatePresence>
       </div>
-      {footer && <footer className={styles.footer}>{footer}</footer>}
+      {footer && <footer className={styles.footer} data-flow-part="footer">{footer}</footer>}
     </section>
   );
 }

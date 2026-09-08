@@ -122,22 +122,9 @@ export function LibrarySetup({
             <LibraryCollectionEditor
               title={t("ui.library.overviewIntro")}
               footer={
-                <>
-                  <SolidButton
-                    size="large"
-                    variant="primary"
-                    onClick={completeSetup}
-                  >
-                    {t("ui.library.finishSetup")}
-                  </SolidButton>
-                  <SolidButton
-                    size="large"
-                    variant="ghost"
-                    onClick={() => setPersonal(false)}
-                  >
-                    {t("ui.library.back")}
-                  </SolidButton>
-                </>
+                <SolidButton size="large" variant="primary" onClick={completeSetup}>
+                  {t("ui.library.finishSetup")}
+                </SolidButton>
               }
             />
           ) : (

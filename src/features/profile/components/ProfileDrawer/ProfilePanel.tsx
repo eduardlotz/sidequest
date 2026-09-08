@@ -12,8 +12,12 @@ export function ProfilePanel({
   showBack = false,
   title,
   titleId,
+  headerAction,
+  overview = false,
 }: {
   children: ReactNode;
+  headerAction?: ReactNode;
+  overview?: boolean;
   description: string;
   showBack?: boolean;
   title: string;
@@ -22,7 +26,7 @@ export function ProfilePanel({
   const { t } = useTranslation();
   return (
     <section
-      className={styles.profileDrawer}
+      className={`${styles.profileDrawer} ${overview ? styles.profileOverview : ""}`}
       data-profile-drawer
       aria-labelledby={titleId}
     >
@@ -43,6 +47,7 @@ export function ProfilePanel({
           <Drawer.Title asChild>
             <h2 id={titleId}>{title}</h2>
           </Drawer.Title>
+          {headerAction}
         </div>
         <Drawer.Description className={visuallyHiddenClassName}>
           {description}

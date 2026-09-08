@@ -98,13 +98,18 @@ export function ResponsiveNestedDrawer({
   children,
   trigger,
   variant = "profile",
+  open: controlledOpen,
+  onOpenChange,
 }: {
   children: ReactNode;
-  trigger: ReactElement;
+  trigger?: ReactElement;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   variant?: "about" | "profile";
 }) {
   const environment = useContext(DrawerEnvironmentContext);
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
 
   if (!environment) {
     throw new Error("ResponsiveNestedDrawer must be inside ResponsiveDrawer");
@@ -116,6 +121,7 @@ export function ResponsiveNestedDrawer({
     if (nextOpen === open) return;
     playSound(nextOpen ? "drawerOpen" : "drawerClose");
     setOpen(nextOpen);
+    onOpenChange?.(nextOpen);
   }
 
   return (
@@ -127,7 +133,7 @@ export function ResponsiveNestedDrawer({
       onOpenChange={changeOpen}
       snapPoints={desktop ? undefined : [1]}
     >
-      <Drawer.Trigger asChild>{trigger}</Drawer.Trigger>
+      {trigger && <Drawer.Trigger asChild>{trigger}</Drawer.Trigger>}
       <Drawer.Portal>
         <Drawer.Overlay className={styles.drawerOverlay} />
         <Drawer.Content
