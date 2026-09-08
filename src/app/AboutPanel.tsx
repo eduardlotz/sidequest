@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { WordmarkLogo } from "../assets/wordmark";
@@ -8,13 +8,22 @@ import { QuestSourcesPanel } from "./QuestSourcesPanel";
 import styles from "./AboutPanel.module.css";
 
 type Props = {
+  onPageChange?: () => void;
   presentation?: "drawer" | "page";
   reduceMotion: boolean;
 };
 
-export function AboutPanel({ presentation = "drawer", reduceMotion }: Props) {
+export function AboutPanel({
+  onPageChange,
+  presentation = "drawer",
+  reduceMotion,
+}: Props) {
   const { t } = useTranslation();
   const [sourcesOpen, setSourcesOpen] = useState(false);
+
+  useEffect(() => {
+    if (presentation === "page") onPageChange?.();
+  }, [onPageChange, presentation, sourcesOpen]);
 
   if (presentation === "page" && sourcesOpen) {
     return (

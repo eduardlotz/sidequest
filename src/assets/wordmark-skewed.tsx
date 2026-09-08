@@ -422,9 +422,9 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           width="995.835"
           height="707.955"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -458,10 +458,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint1_radial_280_4359"
@@ -471,10 +471,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint2_radial_280_4359"
@@ -484,10 +484,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint3_radial_280_4359"
@@ -497,10 +497,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint4_radial_280_4359"
@@ -510,10 +510,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint5_radial_280_4359"
@@ -523,10 +523,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint6_radial_280_4359"
@@ -536,10 +536,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint7_radial_280_4359"
@@ -549,10 +549,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint8_radial_280_4359"
@@ -562,10 +562,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint9_radial_280_4359"
@@ -575,10 +575,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint10_radial_280_4359"
@@ -588,10 +588,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint11_radial_280_4359"
@@ -601,10 +601,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint12_radial_280_4359"
@@ -614,10 +614,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint13_radial_280_4359"
@@ -627,10 +627,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint14_radial_280_4359"
@@ -640,10 +640,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint15_radial_280_4359"
@@ -653,10 +653,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint16_radial_280_4359"
@@ -666,10 +666,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint17_radial_280_4359"
@@ -679,10 +679,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint18_radial_280_4359"
@@ -692,10 +692,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint19_radial_280_4359"
@@ -705,10 +705,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint20_radial_280_4359"
@@ -718,10 +718,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint21_radial_280_4359"
@@ -731,10 +731,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint22_radial_280_4359"
@@ -744,10 +744,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint23_radial_280_4359"
@@ -757,10 +757,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint24_radial_280_4359"
@@ -770,10 +770,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint25_radial_280_4359"
@@ -783,10 +783,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint26_radial_280_4359"
@@ -796,10 +796,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint27_radial_280_4359"
@@ -809,10 +809,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint28_radial_280_4359"
@@ -822,10 +822,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint29_radial_280_4359"
@@ -835,10 +835,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint30_radial_280_4359"
@@ -848,10 +848,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint31_radial_280_4359"
@@ -861,10 +861,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint32_radial_280_4359"
@@ -874,10 +874,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint33_radial_280_4359"
@@ -887,10 +887,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint34_radial_280_4359"
@@ -900,10 +900,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint35_radial_280_4359"
@@ -913,10 +913,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint36_radial_280_4359"
@@ -926,10 +926,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint37_radial_280_4359"
@@ -939,10 +939,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint38_radial_280_4359"
@@ -952,10 +952,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint39_radial_280_4359"
@@ -965,10 +965,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint40_radial_280_4359"
@@ -978,10 +978,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint41_radial_280_4359"
@@ -991,10 +991,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint42_radial_280_4359"
@@ -1004,10 +1004,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint43_radial_280_4359"
@@ -1017,10 +1017,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint44_radial_280_4359"
@@ -1030,10 +1030,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint45_radial_280_4359"
@@ -1043,10 +1043,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint46_radial_280_4359"
@@ -1056,10 +1056,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint47_radial_280_4359"
@@ -1069,10 +1069,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint48_radial_280_4359"
@@ -1082,10 +1082,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint49_radial_280_4359"
@@ -1095,10 +1095,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint50_radial_280_4359"
@@ -1108,10 +1108,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint51_radial_280_4359"
@@ -1121,10 +1121,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint52_radial_280_4359"
@@ -1134,10 +1134,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint53_radial_280_4359"
@@ -1147,10 +1147,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint54_radial_280_4359"
@@ -1160,10 +1160,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint55_radial_280_4359"
@@ -1173,10 +1173,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint56_radial_280_4359"
@@ -1186,10 +1186,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint57_radial_280_4359"
@@ -1199,10 +1199,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint58_radial_280_4359"
@@ -1212,10 +1212,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint59_radial_280_4359"
@@ -1225,10 +1225,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint60_radial_280_4359"
@@ -1238,10 +1238,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint61_radial_280_4359"
@@ -1251,10 +1251,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint62_radial_280_4359"
@@ -1264,10 +1264,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint63_radial_280_4359"
@@ -1277,10 +1277,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint64_radial_280_4359"
@@ -1290,10 +1290,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint65_radial_280_4359"
@@ -1303,10 +1303,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint66_radial_280_4359"
@@ -1316,10 +1316,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint67_radial_280_4359"
@@ -1329,10 +1329,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint68_radial_280_4359"
@@ -1342,10 +1342,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint69_radial_280_4359"
@@ -1355,10 +1355,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint70_radial_280_4359"
@@ -1368,10 +1368,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint71_radial_280_4359"
@@ -1381,10 +1381,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint72_radial_280_4359"
@@ -1394,10 +1394,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint73_radial_280_4359"
@@ -1407,10 +1407,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint74_radial_280_4359"
@@ -1420,10 +1420,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint75_radial_280_4359"
@@ -1433,10 +1433,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint76_radial_280_4359"
@@ -1446,10 +1446,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint77_radial_280_4359"
@@ -1459,10 +1459,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint78_radial_280_4359"
@@ -1472,10 +1472,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint79_radial_280_4359"
@@ -1485,10 +1485,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint80_radial_280_4359"
@@ -1498,10 +1498,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint81_radial_280_4359"
@@ -1511,10 +1511,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint82_radial_280_4359"
@@ -1524,10 +1524,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint83_radial_280_4359"
@@ -1537,10 +1537,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint84_radial_280_4359"
@@ -1550,10 +1550,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint85_radial_280_4359"
@@ -1563,10 +1563,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint86_radial_280_4359"
@@ -1576,10 +1576,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint87_radial_280_4359"
@@ -1589,10 +1589,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint88_radial_280_4359"
@@ -1602,10 +1602,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint89_radial_280_4359"
@@ -1615,10 +1615,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint90_radial_280_4359"
@@ -1628,10 +1628,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint91_radial_280_4359"
@@ -1641,10 +1641,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint92_radial_280_4359"
@@ -1654,10 +1654,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint93_radial_280_4359"
@@ -1667,10 +1667,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint94_radial_280_4359"
@@ -1680,10 +1680,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint95_radial_280_4359"
@@ -1693,10 +1693,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint96_radial_280_4359"
@@ -1706,10 +1706,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
         <radialGradient
           id="paint97_radial_280_4359"
@@ -1719,10 +1719,10 @@ export const WordmarkSkewedLogo = ({ width }: { width?: number }) => {
           gradientTransform="matrix(-557.043 674.878 -919.972 -755.925 807.162 15.7686)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0B0B0C" />
-          <stop offset="0.355763" stop-color="#3F3F54" />
-          <stop offset="0.421506" stop-color="#4F4F5A" />
-          <stop offset="1" stop-color="#0B0B0C" />
+          <stop stopColor="#0B0B0C" />
+          <stop offset="0.355763" stopColor="#3F3F54" />
+          <stop offset="0.421506" stopColor="#4F4F5A" />
+          <stop offset="1" stopColor="#0B0B0C" />
         </radialGradient>
       </defs>
     </svg>

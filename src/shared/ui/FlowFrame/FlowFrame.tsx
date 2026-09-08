@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -19,7 +20,7 @@ type Props = {
   identityRef?: RefObject<HTMLElement | null>;
   initialScrollTop?: number;
   selectionIndicator?: ReactNode;
-  onScrollPositionChange?: (top: number) => void;
+  scrollElementRef?: RefObject<HTMLDivElement | null>;
 };
 
 // Mask the scrolling content itself: the fade always reveals the actual parent
@@ -32,20 +33,30 @@ export function FlowFrame({
   identityRef,
   initialScrollTop = 0,
   selectionIndicator,
-  onScrollPositionChange,
+  scrollElementRef,
 }: Props) {
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const callbackRef = useRef(onScrollPositionChange);
-  callbackRef.current = onScrollPositionChange;
   const [edges, setEdges] = useState({ top: false, bottom: false });
   const [identityHidden, setIdentityHidden] = useState(false);
   const reduced = useReducedMotion();
   const transition = { duration: reduced ? 0 : 0.2, ease: "easeOut" as const };
+  const setScrollRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      scrollRef.current = node;
+      if (scrollElementRef) scrollElementRef.current = node;
+    },
+    [scrollElementRef],
+  );
   useLayoutEffect(() => {
-    scrollRef.current!.scrollTop = initialScrollTop;
-  }, []);
+    const node = scrollRef.current!;
+    node.scrollTop = initialScrollTop;
+    const frame = window.requestAnimationFrame(() => {
+      node.scrollTop = initialScrollTop;
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [initialScrollTop]);
   useEffect(() => {
     const node = scrollRef.current!;
     const update = () => {
@@ -56,7 +67,6 @@ export function FlowFrame({
           ? previous
           : { top: top > 8, bottom },
       );
-      callbackRef.current?.(top);
     };
     const resize = new ResizeObserver(update);
     resize.observe(node);
@@ -121,7 +131,7 @@ export function FlowFrame({
       >
         <motion.div
           className={styles.scroll}
-          ref={scrollRef}
+          ref={setScrollRef}
           initial={false}
           animate={{
             "--fade-top": edges.top ? "48px" : "0px",

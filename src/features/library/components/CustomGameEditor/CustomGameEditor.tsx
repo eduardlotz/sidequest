@@ -64,6 +64,7 @@ export function CustomGameEditor({
   const reduced = useReducedMotion();
   const identityRef = useRef<HTMLDivElement>(null);
   const iconGridRef = useRef<HTMLDivElement>(null);
+  const pageScrollRef = useRef<HTMLDivElement>(null);
   const scrollPositions = useRef({ appearance: 0, activities: 0, quests: 0 });
   const [name, setName] = useState(game?.name ?? "");
   const [iconId, setIconId] = useState<GameIconId>(game?.iconId ?? "sports");
@@ -129,6 +130,8 @@ export function CustomGameEditor({
       .includes(query),
   );
   function changePage(next: typeof page) {
+    scrollPositions.current[page] =
+      pageScrollRef.current?.scrollTop ?? scrollPositions.current[page];
     setSearch("");
     if (next !== "appearance") scrollPositions.current[next] = 0;
     if (next === "quests") setPendingOverrides(questOverrides);
@@ -225,9 +228,7 @@ export function CustomGameEditor({
             }
             footer={footer}
             initialScrollTop={scrollPositions.current[page]}
-            onScrollPositionChange={(top) => {
-              scrollPositions.current[page] = top;
-            }}
+            scrollElementRef={pageScrollRef}
             identityRef={page === "appearance" ? identityRef : undefined}
             floating={
               page === "appearance" ? (

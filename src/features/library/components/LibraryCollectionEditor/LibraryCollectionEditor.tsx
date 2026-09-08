@@ -54,6 +54,7 @@ export function LibraryCollectionEditor({
   );
   const [editorTarget, setEditorTarget] = useState<EditorTarget>(null);
   const overviewScroll = useRef(0);
+  const overviewScrollRef = useRef<HTMLDivElement>(null);
   const editingGame =
     editorTarget?.kind === "edit"
       ? customGames.find((game) => game.id === editorTarget.gameId)
@@ -74,6 +75,12 @@ export function LibraryCollectionEditor({
     if (saved) setEditorTarget(null);
   }
 
+  function openEditor(target: Exclude<EditorTarget, null>) {
+    overviewScroll.current =
+      overviewScrollRef.current?.scrollTop ?? overviewScroll.current;
+    setEditorTarget(target);
+  }
+
   return (
     <AnimatePresence mode="wait" initial={false}>
       <LibraryStep key={editorKey}>
@@ -89,9 +96,7 @@ export function LibraryCollectionEditor({
             title={title}
             footer={footer}
             initialScrollTop={overviewScroll.current}
-            onScrollPositionChange={(top) => {
-              overviewScroll.current = top;
-            }}
+            scrollElementRef={overviewScrollRef}
           >
             <div className={styles.collectionEditor}>
               <section className={styles.collectionSection}>
@@ -199,7 +204,7 @@ export function LibraryCollectionEditor({
                     <button
                       className={styles.addButton}
                       type="button"
-                      onClick={() => setEditorTarget({ kind: "new" })}
+                      onClick={() => openEditor({ kind: "new" })}
                     >
                       <PlusIcon />
                       {t("ui.library.addGame")}
@@ -213,7 +218,7 @@ export function LibraryCollectionEditor({
                         game={game}
                         key={game.id}
                         onEdit={() =>
-                          setEditorTarget({ kind: "edit", gameId: game.id })
+                          openEditor({ kind: "edit", gameId: game.id })
                         }
                         onRemove={() => removeCustomGame(game.id)}
                       />
@@ -226,7 +231,7 @@ export function LibraryCollectionEditor({
                     <SolidButton
                       variant="soft"
                       iconLeft={<PlusIcon />}
-                      onClick={() => setEditorTarget({ kind: "new" })}
+                      onClick={() => openEditor({ kind: "new" })}
                     >
                       {t("ui.library.addGame")}
                     </SolidButton>
