@@ -16,20 +16,57 @@
 .visual[data-visual="icon"] {
   background: linear-gradient(
     150deg,
-    color-mix(in srgb, var(--game-color), white 24%),
+    color-mix(in srgb, var(--game-color), white 10%),
     var(--game-color) 48%,
-    color-mix(in srgb, var(--game-color), black 14%)
+    color-mix(in srgb, var(--game-color), black 10%)
   );
-  color: color-mix(in srgb, var(--game-color), white 86%);
-  box-shadow:
+  color: var(--game-icon-color);
+  /* box-shadow:
     inset 0 2px 4px rgb(255 255 255 / 0.42),
     inset 0 -7px 10px rgb(64 20 34 / 0.13),
-    0 4px 9px rgb(var(--game-color-rgb) / 0.16);
+    0 4px 9px rgb(var(--game-color-rgb) / 0.16); */
+}
+.iconGlyph {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-area: 1 / 1;
+  place-items: center;
+  transform-origin: center;
+}
+.iconGlyphChanging {
+  animation: icon-gelatine 480ms ease-in-out;
+}
+.visualChanging {
+  animation: icon-gelatine 480ms ease-in-out;
+}
+@keyframes icon-gelatine {
+  from,
+  to {
+    transform: scale(1, 1);
+  }
+  25% {
+    transform: scale(0.9, 1.1);
+  }
+  50% {
+    transform: scale(1.1, 0.9);
+  }
+  75% {
+    transform: scale(0.95, 1.05);
+  }
 }
 .visual[data-visual="icon"] svg {
   width: 72%;
   height: 72%;
+
+  path {
+    box-shadow:
+      inset 0 -4px 8px color-mix(in srgb, var(--game-color), transparent 25%),
+      inset 0 -8px 24px rgb(255 255 255 / 0.5),
+      0 2px 4px rgb(0 0 0 / 0.3);
+  }
 }
+
 .visual[data-size="hero"] {
   width: 100px;
   height: 100px;
@@ -48,4 +85,11 @@
   width: clamp(20px, 6.5cqw, 28px);
   height: clamp(20px, 6.5cqw, 28px);
   border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visualChanging,
+  .iconGlyphChanging {
+    animation: none;
+  }
 }

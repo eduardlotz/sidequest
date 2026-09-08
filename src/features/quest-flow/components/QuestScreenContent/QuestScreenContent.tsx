@@ -368,6 +368,7 @@ export function QuestScreenContent({
                           <span className={styles.moodEditControl}>
                             <SolidButton
                               className={styles.moodEditButton}
+                              size="small"
                               type="button"
                               variant="soft"
                               aria-describedby="change-mood-tooltip"

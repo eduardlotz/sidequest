@@ -30,3 +30,5 @@
   border-radius: 50%;
   background: currentColor;
 }
+.mark[data-appearance="drawer"],
+.mark[data-appearance="drawer"] svg { width: 16px; height: 16px; filter: none; }

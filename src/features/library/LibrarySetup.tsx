@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -11,10 +12,10 @@ import { useTranslation } from "react-i18next";
 import { CircleHalfTiltIcon } from "@phosphor-icons/react/dist/csr/CircleHalfTilt";
 import { GlobeIcon } from "@phosphor-icons/react/dist/csr/Globe";
 import { InfoIcon } from "@phosphor-icons/react/dist/csr/Info";
+import { CaretRightIcon } from "@phosphor-icons/react/dist/csr/CaretRight";
 import { XIcon } from "@phosphor-icons/react/dist/csr/X";
 
 import { SolidButton } from "../../shared/ui/SolidButton/SolidButton";
-import { PillButton } from "../../shared/ui/PillButton/PillButton";
 import { useLibraryStore } from "../../stores/useLibraryStore";
 import { LibraryCollectionEditor } from "./components/LibraryCollectionEditor/LibraryCollectionEditor";
 import { LibraryStep } from "./components/LibraryStep";
@@ -28,6 +29,7 @@ import { TiltedElement } from "../../shared/ui/TiltedElement/TiltedElement";
 import { useCardFocus } from "../../shared/hooks/useCardFocus";
 import { CardFocusBackdrop } from "../../shared/ui/CardFocusBackdrop/CardFocusBackdrop";
 import type { ThemeChoice } from "../../lib/theme";
+import { ContrastIcon } from "../../shared/ui/Icons/Icons";
 
 export function LibrarySetup({
   onThemeChange,
@@ -42,6 +44,7 @@ export function LibrarySetup({
   const [personal, setPersonal] = useState(false);
   const [informationOpen, setInformationOpen] = useState(false);
   const informationTriggerRef = useRef<HTMLButtonElement>(null);
+  const setupRef = useRef<HTMLElement>(null);
   const [edges, setEdges] = useState({ top: false, bottom: false });
   const scrollRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
@@ -59,6 +62,21 @@ export function LibrarySetup({
     setInformationOpen(false);
     window.requestAnimationFrame(() => informationTriggerRef.current?.focus());
   }, []);
+  const resetInformationScroll = useCallback(() => {
+    window.requestAnimationFrame(() => {
+      const node = scrollRef.current;
+      if (!node) return;
+      node.scrollTop = 0;
+      setEdges({
+        top: false,
+        bottom: node.scrollHeight - node.clientHeight > 8,
+      });
+    });
+  }, []);
+
+  useLayoutEffect(() => {
+    setupRef.current?.scrollTo({ top: 0 });
+  }, [personal]);
 
   useEffect(() => {
     if (!informationOpen) return;
@@ -69,9 +87,33 @@ export function LibrarySetup({
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [closeInformation, informationOpen]);
 
+  useEffect(() => {
+    if (!informationOpen || !scrollRef.current) return;
+    const node = scrollRef.current;
+    const update = () => {
+      const top = Math.max(0, node.scrollTop);
+      const bottom = node.scrollHeight - node.clientHeight - top > 8;
+      setEdges((previous) =>
+        previous.top === top > 8 && previous.bottom === bottom
+          ? previous
+          : { top: top > 8, bottom },
+      );
+    };
+    const resize = new ResizeObserver(update);
+    resize.observe(node);
+    if (node.firstElementChild) resize.observe(node.firstElementChild);
+    node.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => {
+      resize.disconnect();
+      node.removeEventListener("scroll", update);
+    };
+  }, [informationOpen]);
+
   return (
     <section
       className={styles.setup}
+      ref={setupRef}
       aria-label={t("ui.library.personalTitle")}
     >
       <AnimatePresence mode="wait" initial={false}>
@@ -80,17 +122,9 @@ export function LibrarySetup({
             <LibraryCollectionEditor
               title={t("ui.library.overviewIntro")}
               footer={
-                <>
-                  <SolidButton variant="primary" onClick={completeSetup}>
-                    {t("ui.library.finishSetup")}
-                  </SolidButton>
-                  <SolidButton
-                    variant="flat"
-                    onClick={() => setPersonal(false)}
-                  >
-                    {t("ui.library.back")}
-                  </SolidButton>
-                </>
+                <SolidButton size="large" variant="primary" onClick={completeSetup}>
+                  {t("ui.library.finishSetup")}
+                </SolidButton>
               }
             />
           ) : (
@@ -107,40 +141,52 @@ export function LibrarySetup({
               </div>
               <p>{t("ui.library.welcomeDescription")}</p>
               <div className={styles.links}>
-                <PillButton
+                <SolidButton
                   ref={informationTriggerRef}
+                  iconLeft={<InfoIcon weight="bold" />}
+                  size="medium"
+                  variant="soft"
                   onClick={() => setInformationOpen(true)}
                 >
-                  <InfoIcon weight="bold" />
                   {t("ui.library.moreInformation")}
-                </PillButton>
-                <PillButton
+                </SolidButton>
+                <SolidButton
+                  iconLeft={<GlobeIcon weight="bold" />}
+                  size="medium"
+                  variant="soft"
                   onClick={() =>
                     void i18n.changeLanguage(language === "en" ? "de" : "en")
                   }
                 >
-                  <GlobeIcon weight="bold" />
                   {t("ui.library.changeLanguage")}
-                </PillButton>
-                <PillButton
+                </SolidButton>
+                <SolidButton
                   aria-label={t("ui.library.changeThemeTo", {
                     theme: t(`ui.profile.theme${capitalize(nextTheme)}`),
                   })}
+                  iconLeft={<ContrastIcon />}
+                  size="medium"
+                  variant="soft"
                   onClick={() => onThemeChange(nextTheme)}
                 >
-                  <CircleHalfTiltIcon weight="fill" />
                   {t("ui.library.changeTheme")}
-                </PillButton>
+                </SolidButton>
               </div>
               <div className={styles.start}>
                 <SolidButton
+                  size="large"
                   variant="primary"
                   onClick={() => setPersonal(true)}
                 >
                   {t("ui.library.createLibrary")}
                 </SolidButton>
-                <SolidButton variant="flat" onClick={completeSetup}>
-                  {t("ui.library.startWithoutSetup")} ›
+                <SolidButton
+                  iconRight={<CaretRightIcon weight="bold" />}
+                  size="large"
+                  variant="ghost"
+                  onClick={completeSetup}
+                >
+                  {t("ui.library.startWithoutSetup")}
                 </SolidButton>
               </div>
               <div className={styles.previews}>
@@ -172,32 +218,45 @@ export function LibrarySetup({
               ease: "easeOut",
             }}
           >
-            <button
+            <SolidButton
               autoFocus
               className={styles.informationClose}
-              type="button"
               aria-label={t("ui.library.closeInformation")}
+              iconLeft={<XIcon weight="bold" />}
+              size="medium"
+              variant="soft"
               onClick={closeInformation}
-            >
-              <XIcon weight="bold" />
-            </button>
+            />
             <motion.div
               className={styles.scroll}
               ref={scrollRef}
               initial={false}
               animate={{
-                "--fade-top": "48px",
-                "--fade-bottom": "64px",
+                "--fade-top": edges.top ? "48px" : "0px",
+                "--fade-bottom": edges.bottom ? "64px" : "0px",
               }}
               transition={transition}
             >
-              <AboutPanel presentation="page" reduceMotion={reduceMotion} />
+              <AboutPanel
+                presentation="page"
+                reduceMotion={reduceMotion}
+                onPageChange={resetInformationScroll}
+              />
             </motion.div>
           </motion.div>
         ) : null}
       </AnimatePresence>
     </section>
   );
+}
+
+function nextThemeChoice(choice: ThemeChoice): ThemeChoice {
+  if (choice === "auto") return "light";
+  return choice === "light" ? "dark" : "auto";
+}
+
+function capitalize(value: string) {
+  return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
 }
 
 type PreviewQuest = NonNullable<ReturnType<typeof localizeQuest>>;
@@ -261,34 +320,5 @@ function PreviewQuestCard({
     </motion.span>
   );
 
-  return (
-    <span className={styles.previewCard}>
-      {!focus.focused ? card : null}
-      {focus.focused
-        ? createPortal(
-            <span className={styles.previewFocusPortal}>
-              <CardFocusBackdrop
-                label={t("ui.quest.closeFocusedCard")}
-                onClose={focus.close}
-                ref={focus.backdropRef}
-                variant="dim"
-              />
-              <span className={styles.previewCard} data-focused>
-                {card}
-              </span>
-            </span>,
-            document.body,
-          )
-        : null}
-    </span>
-  );
-}
-
-function nextThemeChoice(choice: ThemeChoice): ThemeChoice {
-  if (choice === "auto") return "light";
-  return choice === "light" ? "dark" : "auto";
-}
-
-function capitalize(value: string) {
-  return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
+  return <span className={styles.previewCard}>{card}</span>;
 }

@@ -23,6 +23,29 @@ export function TimerIcon(props: IconProps) {
   );
 }
 
+export function ContrastIcon(props: IconProps) {
+  return (
+    <svg
+      {...defaults}
+      height="24"
+      width="24"
+      viewBox="0 0 16 16"
+      strokeWidth={1.6}
+    >
+      <path
+        d="M14.6468 8C14.6468 9.96 13.7935 11.7333 12.4335 12.94C11.2602 14.0067 9.70685 14.6467 8.00018 14.6467C4.33352 14.6467 1.35352 11.6667 1.35352 8C1.35352 4.33333 4.33352 1.35333 8.00018 1.35333C9.70685 1.35333 11.2602 1.99333 12.4335 3.06C13.7935 4.26667 14.6468 6.04 14.6468 8Z"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.97986 10.9267C7.96652 12.0267 7.14652 12.2933 6.37986 11.9867C4.79986 11.3533 3.68652 9.80666 3.68652 8C3.68652 6.19333 4.79986 4.64666 6.37986 4.00666C7.14652 3.7 7.96652 3.97333 7.97986 5.06666V10.9267Z"
+        fill="currentColor"
+        stroke="none"
+      />
+    </svg>
+  );
+}
+
 export function NewCardsIcon(props: IconProps) {
   return (
     <svg {...defaults} {...props}>
@@ -105,8 +128,20 @@ export function CoinIcon({ style, ...props }: IconProps) {
           colorInterpolationFilters="sRGB"
           filterUnits="userSpaceOnUse"
         >
-          <feDropShadow dx="0" dy="5" stdDeviation="3.5" floodColor="#767B24" floodOpacity="0.28" />
-          <feDropShadow dx="0" dy="-2" stdDeviation="1.5" floodColor="white" floodOpacity="0.55" />
+          <feDropShadow
+            dx="0"
+            dy="5"
+            stdDeviation="3.5"
+            floodColor="#767B24"
+            floodOpacity="0.28"
+          />
+          <feDropShadow
+            dx="0"
+            dy="-2"
+            stdDeviation="1.5"
+            floodColor="white"
+            floodOpacity="0.55"
+          />
         </filter>
       </defs>
       <g filter={`url(#${coinShadowId})`}>

@@ -10,6 +10,7 @@ import styles from "./RopePurchaseRow.module.css";
 
 type Props = {
   coins: number;
+  label?: string;
   context?: "pause" | "profile" | "timer";
   onPurchase: () => boolean;
   tone?: "neutral" | "inverse";
@@ -17,6 +18,7 @@ type Props = {
 
 export function RopePurchaseRow({
   coins,
+  label,
   context = "profile",
   onPurchase,
   tone = "inverse",
@@ -30,7 +32,7 @@ export function RopePurchaseRow({
       <CoinPriceButton
         type="button"
         disabled={!canPurchase}
-        label={t("ui.profile.buyRopeInline")}
+        label={label ?? t("ui.profile.buyRopeInline")}
         price={formatScore(RED_ROPE_BUNDLE_COST, language)}
         tone={tone}
         aria-label={t("ui.profile.buyRopesLabel", {

@@ -1,20 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { WordmarkLogo } from "../assets/wordmark";
 import { ResponsiveNestedDrawer } from "../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
+import { SolidButton } from "../shared/ui/SolidButton/SolidButton";
 import { TiltedElement } from "../shared/ui/TiltedElement/TiltedElement";
 import { QuestSourcesPanel } from "./QuestSourcesPanel";
 import styles from "./AboutPanel.module.css";
 
 type Props = {
+  onPageChange?: () => void;
   presentation?: "drawer" | "page";
   reduceMotion: boolean;
 };
 
-export function AboutPanel({ presentation = "drawer", reduceMotion }: Props) {
+export function AboutPanel({
+  onPageChange,
+  presentation = "drawer",
+  reduceMotion,
+}: Props) {
   const { t } = useTranslation();
   const [sourcesOpen, setSourcesOpen] = useState(false);
+
+  useEffect(() => {
+    if (presentation === "page") onPageChange?.();
+  }, [onPageChange, presentation, sourcesOpen]);
 
   if (presentation === "page" && sourcesOpen) {
     return (
@@ -77,21 +87,26 @@ export function AboutPanel({ presentation = "drawer", reduceMotion }: Props) {
             <ResponsiveNestedDrawer
               variant="about"
               trigger={
-                <button type="button" className={styles.sourcesButton}>
+                <SolidButton
+                  className={styles.sourcesButton}
+                  size="small"
+                  variant="ghost"
+                >
                   {t("ui.about.sourcesButton")}
-                </button>
+                </SolidButton>
               }
             >
               <QuestSourcesPanel />
             </ResponsiveNestedDrawer>
           ) : (
-            <button
-              type="button"
+            <SolidButton
               className={styles.sourcesButton}
+              size="small"
+              variant="ghost"
               onClick={() => setSourcesOpen(true)}
             >
               {t("ui.about.sourcesButton")}
-            </button>
+            </SolidButton>
           )}
         </section>
 

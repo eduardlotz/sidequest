@@ -4,6 +4,7 @@ import { CURATED_GAMES } from "../data/games";
 import { QUEST_CATALOG } from "../data/quests";
 import { QUEST_SOURCES } from "../data/questSources";
 import { ChevronLeftIcon } from "../shared/ui/Icons/Icons";
+import { SolidButton } from "../shared/ui/SolidButton/SolidButton";
 import styles from "./AboutPanel.module.css";
 
 export function QuestSourcesPanel({
@@ -24,16 +25,25 @@ export function QuestSourcesPanel({
       <header className={styles.aboutIntro}>
         {presentation === "drawer" ? (
           <Drawer.Close asChild>
-            <button className={styles.sourcesButton} type="button">
-              <ChevronLeftIcon />
+            <SolidButton
+              className={styles.sourcesButton}
+              iconLeft={<ChevronLeftIcon />}
+              size="small"
+              variant="soft"
+            >
               {t("ui.about.sourcesBack")}
-            </button>
+            </SolidButton>
           </Drawer.Close>
         ) : (
-          <button className={styles.sourcesButton} type="button" onClick={onBack}>
-            <ChevronLeftIcon />
+          <SolidButton
+            className={styles.sourcesButton}
+            iconLeft={<ChevronLeftIcon />}
+            size="small"
+            variant="ghost"
+            onClick={onBack}
+          >
             {t("ui.about.sourcesBack")}
-          </button>
+          </SolidButton>
         )}
         {presentation === "drawer" ? (
           <>
@@ -54,22 +64,36 @@ export function QuestSourcesPanel({
       <div className={styles.aboutBody}>
         <p className={styles.sourcesHint}>{t("ui.about.sourcesLinkHint")}</p>
         {CURATED_GAMES.map((game) => {
-          const sources = QUEST_SOURCES.filter((source) => source.gameId === game.id);
+          const sources = QUEST_SOURCES.filter(
+            (source) => source.gameId === game.id,
+          );
           if (!sources.length) return null;
           return (
             <section className={styles.aboutSection} key={game.id}>
               <h3>{game.name}</h3>
               <ul className={styles.sourcesList}>
                 {sources.map((source) => {
-                  const quests = QUEST_CATALOG.filter((quest) => quest.curated?.sourceIds.includes(source.id));
+                  const quests = QUEST_CATALOG.filter((quest) =>
+                    quest.curated?.sourceIds.includes(source.id),
+                  );
                   return (
                     <li key={source.id}>
-                      <span className={styles.sourceScope}>r/{source.subreddit} · {source.scope}</span>
-                      <a href={source.url} target="_blank" rel="noopener noreferrer"
-                        aria-label={`${t("ui.about.sourcesOpen")}: ${source.title}`}>{source.title}</a>
+                      <span className={styles.sourceScope}>
+                        r/{source.subreddit} · {source.scope}
+                      </span>
+                      <a
+                        href={source.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${t("ui.about.sourcesOpen")}: ${source.title}`}
+                      >
+                        {source.title}
+                      </a>
                       <p>{source.note[language]}</p>
                       <span className={styles.sourcesHint}>
-                        {quests.length ? `${t("ui.about.sourcesQuestNames")}: ${quests.map((quest) => quest.translations[language].name).join(", ")}` : t("ui.about.sourcesResearchOnly")}
+                        {quests.length
+                          ? `${t("ui.about.sourcesQuestNames")}: ${quests.map((quest) => quest.translations[language].name).join(", ")}`
+                          : t("ui.about.sourcesResearchOnly")}
                       </span>
                     </li>
                   );

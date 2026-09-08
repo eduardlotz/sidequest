@@ -18,6 +18,7 @@ import styles from "./AppHeader.module.css";
 import { AboutPanel } from "./AboutPanel";
 import type { CoinImpact } from "../features/active-quest/components/FlyingCoin/FlyingCoin";
 import type { ThemeChoice } from "../lib/theme";
+import { GlobeIcon, InfoIcon } from "@phosphor-icons/react";
 
 type Props = {
   coinImpact: CoinImpact | null;
@@ -110,22 +111,34 @@ export function AppHeader({
               mobileContainer={mobileDrawerContainer}
               variant="about"
               trigger={
-                <SolidButton data-sound-click-skip type="button">
+                <SolidButton
+                  // data-sound-click-skip
+                  iconLeft={<InfoIcon weight="bold" />}
+                  aria-label={t("ui.nav.about")}
+                  size="medium"
+                  type="button"
+                  variant="soft"
+                >
                   {t("ui.nav.about")}
+                  {/* <InfoIcon weight="bold" /> */}
                 </SolidButton>
               }
             >
               <AboutPanel reduceMotion={reduceMotion} />
             </ResponsiveDrawer>
             <SolidButton
+              size="medium"
               type="button"
+              variant="soft"
+              // iconLeft={<GlobeIcon weight="bold" />}
               aria-label={t("ui.nav.switchLanguage", {
                 language: nextLanguageName,
               })}
               lang={nextLanguage}
               onClick={() => void i18n.changeLanguage(nextLanguage)}
             >
-              {nextLanguage.toUpperCase()}
+              {/* {t("ui.library.changeLanguage")} */}
+              <GlobeIcon weight="bold" />
             </SolidButton>
           </div>
         </motion.div>
@@ -174,7 +187,9 @@ export function AppHeader({
                   className={styles.profileTriggerImpact}
                   data-profile-trigger
                   data-sound-click-skip
+                  size="medium"
                   type="button"
+                  variant="soft"
                   aria-label={t("ui.nav.profileLabel", {
                     points: formattedPoints,
                   })}

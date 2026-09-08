@@ -25,6 +25,7 @@ import { SwordIcon } from "@phosphor-icons/react/dist/csr/Sword";
 import { TShirtIcon } from "@phosphor-icons/react/dist/csr/TShirt";
 import { TreasureChestIcon } from "@phosphor-icons/react/dist/csr/TreasureChest";
 import { UsersIcon } from "@phosphor-icons/react/dist/csr/Users";
+
 const activities = {
   "open-world": MapTrifoldIcon,
   "missions-or-levels": FlagIcon,
@@ -55,10 +56,12 @@ const activities = {
   "space-exploration": PlanetIcon,
   swimming: PersonSimpleSwimIcon,
 } satisfies Record<GameCapabilityId, React.ComponentType<IconProps>>;
+
 export function GameActivityIcon({
   capability,
   ...props
 }: IconProps & { capability: GameCapabilityId }) {
   const Icon = activities[capability];
+
   return <Icon size={24} {...props} weight="duotone" aria-hidden />;
 }

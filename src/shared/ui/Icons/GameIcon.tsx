@@ -4,6 +4,7 @@ import {
   SlasherMaskIcon,
   HauntedHouseIcon,
 } from "./CustomGameIcons";
+
 import { RadioactiveIcon } from "@phosphor-icons/react/dist/csr/Radioactive";
 import { CastleTurretIcon } from "@phosphor-icons/react/dist/csr/CastleTurret";
 import { GhostIcon } from "@phosphor-icons/react/dist/csr/Ghost";
@@ -42,6 +43,7 @@ import { SwordIcon } from "@phosphor-icons/react/dist/csr/Sword";
 import { TShirtIcon } from "@phosphor-icons/react/dist/csr/TShirt";
 import { TreasureChestIcon } from "@phosphor-icons/react/dist/csr/TreasureChest";
 import { UsersIcon } from "@phosphor-icons/react/dist/csr/Users";
+
 const icons = {
   zombie: ZombieIcon,
   vampire: VampireIcon,
@@ -84,7 +86,9 @@ const icons = {
   collectibles: TreasureChestIcon,
   lore: BookOpenIcon,
 } satisfies Record<GameIconId, React.ComponentType<IconProps>>;
+
 export function GameIcon({ icon, ...props }: IconProps & { icon: GameIconId }) {
   const Icon = icons[icon];
+
   return <Icon size={24} {...props} weight="fill" aria-hidden />;
 }

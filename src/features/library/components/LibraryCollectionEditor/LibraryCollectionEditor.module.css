@@ -5,15 +5,21 @@
 }
 .collectionSection {
   composes: section from "../LibrarySection.module.css";
-  padding: 12px 4px 4px;
-  background: transparent;
+  /* background: transparent;
+  padding: 12px 4px 4px; */
+
+  padding: 8px;
+  border-radius: 28px;
+  /* background: var(--color-canvas); */
+  background: rgb(var(--color-text-rgb) / 0.05);
 }
+
 .sectionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin: 0 12px 18px;
+  gap: 8px;
+  padding: 8px 16px;
 }
 .sectionHeader h3 {
   margin: 0;
@@ -21,7 +27,9 @@
   font-weight: 600;
 }
 .optional {
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -2%;
   color: var(--color-muted);
 }
 .addButton {
@@ -37,37 +45,48 @@
   color: var(--color-text);
   cursor: pointer;
 }
+.addButton[data-icon-left="true"] {
+  padding-left: 8px;
+}
 .addButton svg {
   width: 15px;
   height: 15px;
 }
 .customGameList {
-  padding: 4px 12px;
   border-radius: 22px;
+  padding: 4px 12px;
   background: var(--color-surface);
   box-shadow: 0 8px 16px #17172b0b;
 }
 .curatedList {
   max-height: 340px;
-  padding: 4px 0;
   overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--color-border) transparent;
-  overscroll-behavior: contain;
+  overscroll-behavior-y: auto;
+  padding: 4px 0;
+
+  /* padding: 8px; */
+  border-radius: 28px;
+  /* background: var(--color-canvas); */
 }
 .curatedEntry {
   position: relative;
+  isolation: isolate;
+  transition:
+    background-color 220ms ease,
+    border-radius 280ms ease;
 }
 .curatedEntry:not([data-selected]) {
   background: var(--color-surface);
 }
 .curatedEntry:not([data-selected]):first-child,
-.curatedEntry[data-selected] + .curatedEntry:not([data-selected]) {
+.curatedEntry:not([data-selected])[data-previous-selected] {
   border-start-start-radius: 22px;
   border-start-end-radius: 22px;
 }
 .curatedEntry:not([data-selected]):last-child,
-.curatedEntry:not([data-selected]):has(+ .curatedEntry[data-selected]) {
+.curatedEntry:not([data-selected])[data-next-selected] {
   border-end-start-radius: 22px;
   border-end-end-radius: 22px;
 }
@@ -75,8 +94,12 @@
   border-radius: 22px;
 }
 .curatedEntry[data-selected] {
+  z-index: 1;
   margin: 10px 0;
   border-radius: 22px;
+  background: var(--color-surface);
+}
+:global(:root[data-theme="dark"]) .curatedEntry[data-selected] {
   background: var(--color-surface);
 }
 .curatedEntry[data-selected]:first-child {
@@ -96,6 +119,9 @@
   color: var(--color-muted);
   cursor: pointer;
   text-align: left;
+  transition:
+    color 180ms ease,
+    padding-bottom 260ms ease;
 }
 .curatedGame[aria-pressed="true"] {
   color: var(--color-text);
@@ -103,24 +129,42 @@
 .curatedEntry[data-selected] .curatedGame {
   padding-bottom: 6px;
 }
+.curatedVisualFrame {
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  place-items: center;
+  border-radius: 13px;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  transition:
+    outline-color 200ms ease,
+    outline-offset 260ms ease,
+    border-radius 260ms ease,
+    box-shadow 200ms ease;
+}
+.curatedVisualScale {
+  display: inline-grid;
+  place-items: center;
+  transform-origin: center;
+}
 .curatedVisual {
   width: 42px;
   height: 42px;
-  padding: 3px;
-  border: 2px solid transparent;
   border-radius: 13px;
-  background: var(--color-surface);
-  transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease,
-    border-radius 160ms ease;
+  transition: border-radius 260ms ease;
 }
-.curatedEntry[data-selected] .curatedVisual {
-  border-color: var(--color-focus);
+.curatedEntry[data-selected] .curatedVisualFrame {
+  outline-color: var(--color-focus);
+  outline-offset: 0;
   box-shadow: 0 3px 8px rgb(var(--color-focus-rgb, 10 132 255) / 0.2);
 }
+.curatedEntry[data-selected] .curatedVisual {
+  border-radius: 9px;
+}
 .curatedVisual img {
-  border-radius: 8px;
+  border-radius: inherit;
 }
 .gameName {
   flex: 1;
@@ -133,6 +177,9 @@
   font-weight: 500;
   color: var(--color-muted);
 }
+.curatedOptionsClip {
+  overflow: clip;
+}
 .curatedOptions {
   padding: 0 12px 14px;
   color: var(--color-muted);
@@ -142,6 +189,11 @@
 .curatedOptions > span {
   display: block;
   margin-bottom: 8px;
+  padding: 4px;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: -2%;
+  font-size: 0.75rem;
 }
 .installmentChips {
   display: flex;
@@ -155,8 +207,13 @@
   display: none;
 }
 .installmentChips button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   min-height: 36px;
-  padding: 0 13px;
+  padding: 0 11px;
+  border: 2px solid transparent;
   border-radius: 18px;
   background: var(--color-surface-soft);
   color: var(--color-text);
@@ -164,10 +221,31 @@
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    box-shadow 220ms ease;
 }
 .installmentChips button[aria-pressed="true"] {
-  background: var(--color-inverse-surface);
-  color: var(--color-inverse-copy);
+  border-color: var(--color-focus);
+  color: var(--color-text);
+  box-shadow: 0 2px 6px rgb(var(--color-shadow-rgb) / 0.08);
+}
+.chipDot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-surface-sunken);
+  box-shadow: inset 0 0 0 1px var(--color-border-soft);
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+.installmentChips button[aria-pressed="true"] .chipDot {
+  background: var(--color-focus);
+  box-shadow: 0 1px 3px rgb(var(--color-focus-rgb, 10 132 255) / 0.28);
 }
 .customGameRow {
   display: flex;
@@ -238,3 +316,15 @@
   outline: 2px solid var(--color-focus);
   outline-offset: 3px;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .curatedEntry,
+  .curatedGame,
+  .curatedVisualFrame,
+  .curatedVisual,
+  .installmentChips button,
+  .chipDot {
+    transition: none;
+  }
+}
+.addAction { display: flex; justify-content: center; padding: 12px 0 4px; }

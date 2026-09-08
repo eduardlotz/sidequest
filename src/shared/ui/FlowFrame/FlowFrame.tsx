@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -14,12 +15,13 @@ import styles from "./FlowFrame.module.css";
 type Props = {
   children: ReactNode;
   title?: ReactNode;
+  titleInContent?: boolean;
   footer?: ReactNode;
   floating?: ReactNode;
   identityRef?: RefObject<HTMLElement | null>;
   initialScrollTop?: number;
   selectionIndicator?: ReactNode;
-  onScrollPositionChange?: (top: number) => void;
+  scrollElementRef?: RefObject<HTMLDivElement | null>;
 };
 
 // Mask the scrolling content itself: the fade always reveals the actual parent
@@ -27,25 +29,36 @@ type Props = {
 export function FlowFrame({
   children,
   title,
+  titleInContent = false,
   footer,
   floating,
   identityRef,
   initialScrollTop = 0,
   selectionIndicator,
-  onScrollPositionChange,
+  scrollElementRef,
 }: Props) {
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const callbackRef = useRef(onScrollPositionChange);
-  callbackRef.current = onScrollPositionChange;
   const [edges, setEdges] = useState({ top: false, bottom: false });
   const [identityHidden, setIdentityHidden] = useState(false);
   const reduced = useReducedMotion();
   const transition = { duration: reduced ? 0 : 0.2, ease: "easeOut" as const };
+  const setScrollRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      scrollRef.current = node;
+      if (scrollElementRef) scrollElementRef.current = node;
+    },
+    [scrollElementRef],
+  );
   useLayoutEffect(() => {
-    scrollRef.current!.scrollTop = initialScrollTop;
-  }, []);
+    const node = scrollRef.current!;
+    node.scrollTop = initialScrollTop;
+    const frame = window.requestAnimationFrame(() => {
+      node.scrollTop = initialScrollTop;
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [initialScrollTop]);
   useEffect(() => {
     const node = scrollRef.current!;
     const update = () => {
@@ -56,7 +69,6 @@ export function FlowFrame({
           ? previous
           : { top: top > 8, bottom },
       );
-      callbackRef.current?.(top);
     };
     const resize = new ResizeObserver(update);
     resize.observe(node);
@@ -64,14 +76,14 @@ export function FlowFrame({
     const identity = identityRef?.current;
     const observer = identity
       ? new IntersectionObserver(
-          ([entry]) => {
-            setIdentityHidden(
-              entry.intersectionRatio < 0.15 &&
-                entry.boundingClientRect.top < (entry.rootBounds?.top ?? 0),
-            );
-          },
-          { root: node, threshold: [0, 0.15, 1] },
-        )
+        ([entry]) => {
+          setIdentityHidden(
+            entry.intersectionRatio < 0.15 &&
+            entry.boundingClientRect.top < (entry.rootBounds?.top ?? 0),
+          );
+        },
+        { root: node, threshold: [0, 0.15, 1] },
+      )
       : null;
     if (identity) observer?.observe(identity);
     node.addEventListener("scroll", update, { passive: true });
@@ -87,7 +99,7 @@ export function FlowFrame({
     selectionIndicator !== undefined && selectionIndicator !== null;
   return (
     <section className={styles.frame}>
-      {title && (
+      {title && !titleInContent && (
         <header className={styles.heading}>
           <motion.div
             animate={{
@@ -121,7 +133,7 @@ export function FlowFrame({
       >
         <motion.div
           className={styles.scroll}
-          ref={scrollRef}
+          ref={setScrollRef}
           initial={false}
           animate={{
             "--fade-top": edges.top ? "48px" : "0px",
@@ -129,10 +141,12 @@ export function FlowFrame({
           }}
           transition={transition}
         >
-          <div className={styles.content} ref={contentRef}>
+          <div className={styles.content} data-flow-part="content" ref={contentRef}>
+            {titleInContent && title && <div data-library-part="intro"><span data-library-part="infoIcon" aria-hidden>i</span>{title}</div>}
             {children}
           </div>
         </motion.div>
+        {titleInContent && showIdentity && <div className={styles.floating}>{floating}</div>}
         <AnimatePresence initial={false}>
           {showSelectionIndicator ? (
             <motion.output
@@ -171,7 +185,7 @@ export function FlowFrame({
           )}
         </AnimatePresence>
       </div>
-      {footer && <footer className={styles.footer}>{footer}</footer>}
+      {footer && <footer className={styles.footer} data-flow-part="footer">{footer}</footer>}
     </section>
   );
 }
