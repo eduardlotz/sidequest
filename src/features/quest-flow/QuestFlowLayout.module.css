@@ -137,6 +137,12 @@
   opacity: 1;
 }
 
+@media (max-width: 600px) {
+  .questSelectionPrompt {
+    margin-top: min(5svh, 64px);
+  }
+}
+
 .moodEditControl {
   position: relative;
   display: inline-flex;

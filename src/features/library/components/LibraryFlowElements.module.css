@@ -4,7 +4,7 @@
   --color-surface-pressed: var(--library-muted-surface);
 }
 .elements [data-flow-part="content"] {
-  padding: 18px 8px 48px;
+  padding: 16px 0px 40px;
 }
 .elements [data-flow-part="footer"] {
   padding-inline: 8px;

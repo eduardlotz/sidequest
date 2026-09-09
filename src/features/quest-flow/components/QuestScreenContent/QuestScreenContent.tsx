@@ -433,8 +433,8 @@ export function QuestScreenContent({
                             data-sound-click-skip
                             type="button"
                             disabled={
-                              isDealingNewCards ||
-                              (points < newCardsCost && debugMode === false)
+                              // isDealingNewCards ||
+                              points < newCardsCost && debugMode === false
                             }
                             label={t("ui.task.newCards")}
                             price={formatScore(
