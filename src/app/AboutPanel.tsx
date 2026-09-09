@@ -69,6 +69,12 @@ export function AboutPanel({
         </section>
 
         <section className={styles.aboutSection}>
+          <h3>{t("ui.about.coinsHeading")}</h3>
+          <p>{t("ui.about.coinEarning")}</p>
+          <p>{t("ui.about.coinSpending")}</p>
+        </section>
+
+        <section className={styles.aboutSection}>
           <h3>{t("ui.about.mismatchHeading")}</h3>
           <p>{t("ui.about.mismatchBody")}</p>
           <p>{t("ui.about.difficultyBody")}</p>
@@ -108,12 +114,6 @@ export function AboutPanel({
               {t("ui.about.sourcesButton")}
             </SolidButton>
           )}
-        </section>
-
-        <section className={styles.aboutSection}>
-          <h3>{t("ui.about.coinsHeading")}</h3>
-          <p>{t("ui.about.coinEarning")}</p>
-          <p>{t("ui.about.coinSpending")}</p>
         </section>
       </div>
 

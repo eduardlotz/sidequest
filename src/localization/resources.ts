@@ -26,18 +26,18 @@ export const englishUi = {
       "Before starting, return to the cards for free. Once the timer is running, cut a red rope to cancel the quest.",
     difficultyBody:
       "Read the full objective before you start. Some quests require a mode, item, mechanic, or a save with enough progress.",
-    libraryHeading: "Your library, your quests",
+    libraryHeading: "Quests for your library",
     libraryBody:
       "Choose from the starter collection or add any game yourself. Starter games receive their own curated quests plus flexible quests that fit their features.",
     libraryChoice:
       "For a series, select the entries you actually play so installment-specific quests stay accurate. You can edit the library later from your profile. Cards without a named game still work with any library.",
     sourcesHeading: "Where do the ideas come from?",
     sourcesBody:
-      "Some quests started with things players shared on Reddit. I check the idea, turn it into a small session, and write the sidequests myself. Others come from exploring what a game lets you do.",
+      "A few curated quests are based on ideas that players have shared on Reddit; the rest are inspired by what the game itself makes possible.",
     sourcesButton: "Reddit sources",
     sourcesTitle: "Reddit sources",
     sourcesDescription:
-      "The threads behind our research, grouped by game. Each note explains what I took from it. The players did not write or approve our quests.",
+      "Each note explains what I took from the original idea.",
     sourcesBack: "Back to Info",
     sourcesOpen: "Open Reddit thread",
     sourcesQuestNames: "Inspired quests",
@@ -218,18 +218,18 @@ export const germanUi = {
       "Vor dem Start kannst du kostenlos zu den Karten zurück. Läuft der Timer schon, brichst du die Quest mit einem roten Seil ab.",
     difficultyBody:
       "Lies die ganze Aufgabe vor dem Start. Manche Quests brauchen einen Modus, Gegenstand, eine Mechanik oder einen ausreichend fortgeschrittenen Spielstand.",
-    libraryHeading: "Deine Bibliothek, deine Quests",
+    libraryHeading: "Quests für deine Bibliothek",
     libraryBody:
       "Wähle aus der Starter-Sammlung oder füge selbst ein beliebiges Spiel hinzu. Spiele aus der Sammlung bekommen eigene kuratierte Quests und flexible Quests, die zu ihren Features passen.",
     libraryChoice:
       "Bei einer Reihe wählst du die Teile, die du wirklich spielst, damit Quests für einzelne Teile stimmen. Die Bibliothek kannst du später im Profil ändern. Karten ohne festes Spiel funktionieren weiterhin mit jeder Bibliothek.",
     sourcesHeading: "Woher kommen die Ideen?",
     sourcesBody:
-      "Manche Quests haben mit Ideen angefangen, die Spieler auf Reddit geteilt haben. Ich prüfe die Idee, mache eine kleine Session daraus und schreib die sidequests selbst. Andere entstehen aus dem, was ein Spiel möglich macht.",
+      "Ein paar kuratierte Quests entstehen aus Ideen, die Spieler auf Reddit geteilt haben, die restlichen entstehen aus dem, was ein Spiel so möglich macht.",
     sourcesButton: "Reddit-Quellen",
     sourcesTitle: "Reddit-Quellen",
     sourcesDescription:
-      "Die Threads hinter meiner Recherche, nach Spiel sortiert. Bei jedem steht, was ich daraus mitgenommen haben.",
+      "Bei jedem steht bei, was ich aus der orignalen Idee mitgenommen haben.",
     sourcesBack: "Zurück zur Info",
     sourcesOpen: "Reddit-Thread öffnen",
     sourcesQuestNames: "Davon inspirierte Quests",

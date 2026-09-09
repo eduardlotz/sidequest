@@ -51,7 +51,7 @@ export const englishLibrary = {
   questMode: "Quests for {{game}}",
   curatedOnly: "Curated only",
   curatedAndFlexible: "Curated + flexible",
-  installments: "Which parts do you play?",
+  installments: "Supported titles",
   chooseInstallment:
     "Pick at least one game in this series to get matching quests.",
   customHeading: "Your games",
@@ -243,7 +243,8 @@ export const germanLibrary = {
   questsView: "Quests",
   activityView: "Aktivitäten oder Quests anzeigen",
   drawerActivitiesIntro: "Wähle alles aus, was du in",
-  drawerActivitiesOutro: " machen kannst. Daraus werden später deine persönlichen sidequests.",
+  drawerActivitiesOutro:
+    " machen kannst. Daraus werden später deine persönlichen sidequests.",
   selectedActivities: "{{count}} ausgewählt",
   selectedQuests: "{{count}} Quests ausgewählt",
   searchActivities: "Suche",
@@ -267,7 +268,7 @@ export const germanLibrary = {
   questMode: "Quests für {{game}}",
   curatedOnly: "Nur kuratierte",
   curatedAndFlexible: "Kuratierte + flexible",
-  installments: "Welche Teile spielst du?",
+  installments: "Unterstütze Teile",
   chooseInstallment:
     "Wähle mindestens einen Teil, um passende Quests zu bekommen.",
   customHeading: "Deine Spiele",
