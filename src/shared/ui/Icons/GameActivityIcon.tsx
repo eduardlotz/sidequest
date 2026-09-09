@@ -5,6 +5,13 @@ import { BackpackIcon } from "@phosphor-icons/react/dist/csr/Backpack";
 import { BookOpenIcon } from "@phosphor-icons/react/dist/csr/BookOpen";
 import { TargetIcon } from "@phosphor-icons/react/dist/csr/Target";
 import { CameraIcon } from "@phosphor-icons/react/dist/csr/Camera";
+import { MagicWandIcon } from "@phosphor-icons/react/dist/csr/MagicWand";
+import { CoinsIcon } from "@phosphor-icons/react/dist/csr/Coins";
+import { BinocularsIcon } from "@phosphor-icons/react/dist/csr/Binoculars";
+import { PawPrintIcon } from "@phosphor-icons/react/dist/csr/PawPrint";
+import { PersonSimpleSnowboardIcon } from "@phosphor-icons/react/dist/csr/PersonSimpleSnowboard";
+import { SoccerBallIcon } from "@phosphor-icons/react/dist/csr/SoccerBall";
+import { DoorOpenIcon } from "@phosphor-icons/react/dist/csr/DoorOpen";
 import { CookingPotIcon } from "@phosphor-icons/react/dist/csr/CookingPot";
 import { CrosshairIcon } from "@phosphor-icons/react/dist/csr/Crosshair";
 import { DetectiveIcon } from "@phosphor-icons/react/dist/csr/Detective";
@@ -27,6 +34,13 @@ import { TreasureChestIcon } from "@phosphor-icons/react/dist/csr/TreasureChest"
 import { UsersIcon } from "@phosphor-icons/react/dist/csr/Users";
 
 const activities = {
+  magic: MagicWandIcon,
+  trading: CoinsIcon,
+  hunting: BinocularsIcon,
+  "animal-companions": PawPrintIcon,
+  "skate-tricks": PersonSimpleSnowboardIcon,
+  "sports-goals": SoccerBallIcon,
+  "extraction-runs": DoorOpenIcon,
   "open-world": MapTrifoldIcon,
   "missions-or-levels": FlagIcon,
   "rounds-or-matches": GameControllerIcon,

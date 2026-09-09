@@ -382,34 +382,92 @@
   height: min(710px, calc(100svh - 98px));
   border-radius: 24px;
 }
-.profileOverview .profileDrawerHeader { padding: 24px 24px 16px; }
-.profileOverview .profileDrawerTitleRow { justify-content: space-between; }
-.profileCoins { display: inline-flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 700; }
-.profileCoins svg { width: 20px; height: 20px; overflow: visible; }
-.profileOverview .profileDrawerBody { flex: 1; padding: 0 16px 24px; }
-.profileOverview .profileSection { padding: 8px 8px 16px; }
-.profileOverview .profileSection:has(.profileNavigation) { padding: 8px 0 16px; }
-.profileOverview .profileSettingRow { min-height: 42px; font-size: 14px; }
-.profileOverview .themeSegmentedControl { background: var(--profile-muted-surface); }
-.profileOverview .themeSegmentedControl button { min-width: 48px; padding-inline: 8px; font-size: 13px; }
-.profileOverview .settingToggle { background: #d8d8de; }
-.profileOverview .settingToggle[aria-checked="true"] { background: #08eb3c; }
-.profileOverview .settingToggle > span { background: white; box-shadow: none; }
+.profileOverview .profileDrawerHeader {
+  padding: 24px 24px 16px;
+}
+.profileOverview .profileDrawerTitleRow {
+  justify-content: space-between;
+}
+.profileCoins {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.profileCoins svg {
+  width: 20px;
+  height: 20px;
+  overflow: visible;
+}
+.profileOverview .profileDrawerBody {
+  flex: 1;
+  padding: 0 16px 24px;
+}
+.profileOverview .profileSection {
+  padding: 8px 8px 16px;
+}
+.profileOverview .profileSection:has(.profileNavigation) {
+  padding: 8px 0 16px;
+}
+.profileOverview .profileSettingRow {
+  min-height: 42px;
+  font-size: 14px;
+}
+.profileOverview .themeSegmentedControl {
+  background: var(--profile-muted-surface);
+}
+.profileOverview .themeSegmentedControl button {
+  min-width: 48px;
+  padding-inline: 8px;
+  font-size: 13px;
+}
+.profileOverview .settingToggle {
+  background: #d8d8de;
+}
+.profileOverview .settingToggle[aria-checked="true"] {
+  background: #08eb3c;
+}
+.profileOverview .settingToggle > span {
+  background: white;
+  box-shadow: none;
+}
 .profileOverview .profileNavigation > button {
   min-height: 60px;
   padding: 12px 16px;
   border-radius: 18px;
   background: var(--profile-muted-surface);
 }
-.profileOverview .profileNavigation > button::before { content: none; }
+.profileOverview .profileNavigation > button::before {
+  content: none;
+}
 .profileOverview .profileNavigation strong,
-.profileOverview .profileNavigation small { font-size: 14px; }
-.profileOverview .profileMetrics > div { min-height: 32px; padding-block: 5px; gap: 8px; }
+.profileOverview .profileNavigation small {
+  font-size: 14px;
+}
+.profileOverview .profileMetrics > div {
+  min-height: 32px;
+  padding-block: 5px;
+  gap: 8px;
+}
 .profileOverview .profileMetrics dt,
-.profileOverview .profileMetrics dd { font-size: 14px; }
-.historyAction { display: flex; align-items: center; justify-content: center; padding: 0 8px 12px; }
-.forwardIcon { transform: rotate(180deg); }
+.profileOverview .profileMetrics dd {
+  font-size: 14px;
+}
+.historyAction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px 12px;
+}
+.forwardIcon {
+  transform: rotate(180deg);
+}
 @media (max-width: 820px) {
-  .profileOverview { height: 100%; }
-  .profileOverview .profileDrawerHeader { padding-top: 26px; }
+  .profileOverview {
+    height: 100%;
+  }
+  .profileOverview .profileDrawerHeader {
+    padding-top: 26px;
+  }
 }

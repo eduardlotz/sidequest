@@ -88,11 +88,13 @@ export function CoinIcon({ style, ...props }: IconProps) {
       aria-hidden="true"
       {...props}
       style={{
-        filter: "drop-shadow(0 2px 3px rgb(33 33 33 / 0.18))",
+        filter: "drop-shadow(0 1px 2px rgb(33 33 33 / 0.12))",
+        // filter: "drop-shadow(0 0 0 4px rgb(255 255 255))",
         overflow: "visible",
         ...style,
       }}
     >
+      <circle cx="100" cy="100" r="100" fill="#e8ebdf" />
       <defs>
         <radialGradient
           id={coinGradientId}

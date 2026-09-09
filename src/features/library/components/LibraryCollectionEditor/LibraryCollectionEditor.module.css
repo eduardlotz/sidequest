@@ -80,6 +80,7 @@
 .curatedEntry:not([data-selected]) {
   background: var(--color-surface);
 }
+
 .curatedEntry:not([data-selected]):first-child,
 .curatedEntry:not([data-selected])[data-previous-selected] {
   border-start-start-radius: 22px;
@@ -99,9 +100,12 @@
   border-radius: 22px;
   background: var(--color-surface);
 }
-:global(:root[data-theme="dark"]) .curatedEntry[data-selected] {
-  background: var(--color-surface);
+
+/* :global(:root[data-theme="dark"]) .curatedEntry[data-selected] { */
+:global(:root[data-theme="dark"]) .curatedEntry {
+  background: var(--color-canvas);
 }
+
 .curatedEntry[data-selected]:first-child {
   margin-top: 0;
 }
@@ -126,9 +130,11 @@
 .curatedGame[aria-pressed="true"] {
   color: var(--color-text);
 }
-.curatedEntry[data-selected] .curatedGame {
+
+/* .curatedEntry[data-selected] .curatedGame {
   padding-bottom: 6px;
-}
+} */
+
 .curatedVisualFrame {
   display: inline-grid;
   width: 42px;
@@ -327,4 +333,8 @@
     transition: none;
   }
 }
-.addAction { display: flex; justify-content: center; padding: 12px 0 4px; }
+.addAction {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0 4px;
+}

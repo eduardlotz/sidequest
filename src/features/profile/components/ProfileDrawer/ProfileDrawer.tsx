@@ -13,7 +13,11 @@ import type {
   QuestStats,
   UserProfile,
 } from "../../../../domain/quest/model";
-import { ChevronLeftIcon, CoinIcon, InfoIcon } from "../../../../shared/ui/Icons/Icons";
+import {
+  ChevronLeftIcon,
+  CoinIcon,
+  InfoIcon,
+} from "../../../../shared/ui/Icons/Icons";
 import { ResponsiveNestedDrawer } from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
 import { RopePurchaseRow } from "../../../active-quest/components/RopePurchaseRow/RopePurchaseRow";
 import { GameLibraryDrawer } from "../GameLibraryDrawer/GameLibraryDrawer";
@@ -46,8 +50,10 @@ export function ProfileDrawer({
   const favoriteMood = stats.favoriteMoodId
     ? localizeMood(stats.favoriteMoodId, language)
     : null;
-  const curatedCount = useLibraryStore(state => state.selectedCuratedGameIds.length);
-  const customCount = useLibraryStore(state => state.customGames.length);
+  const curatedCount = useLibraryStore(
+    (state) => state.selectedCuratedGameIds.length,
+  );
+  const customCount = useLibraryStore((state) => state.customGames.length);
   const [soundEnabled, setSoundEnabled] = useState(readSoundEnabled);
 
   function changeSound(enabled: boolean) {
@@ -61,7 +67,12 @@ export function ProfileDrawer({
       title={t("ui.profile.title")}
       titleId="profile-title"
       overview
-      headerAction={<span className={styles.profileCoins}>{formatScore(profile.points, language)}<CoinIcon aria-hidden /></span>}
+      headerAction={
+        <span className={styles.profileCoins}>
+          {formatScore(profile.points, language)}
+          <CoinIcon aria-hidden />
+        </span>
+      }
     >
       <section className={styles.profileSection}>
         <div className={styles.profileSettingRow}>
@@ -127,7 +138,12 @@ export function ProfileDrawer({
               <button type="button">
                 <span>
                   <strong>{t("ui.library.drawerTitle")}</strong>
-                  <small>{t("ui.library.profileSummaryCounts", { curated: curatedCount, custom: customCount })}</small>
+                  <small>
+                    {t("ui.library.profileSummaryCounts", {
+                      curated: curatedCount,
+                      custom: customCount,
+                    })}
+                  </small>
                 </span>
                 <ChevronLeftIcon aria-hidden="true" />
               </button>
@@ -181,11 +197,11 @@ export function ProfileDrawer({
         </dl>
       </section>
 
-      <div className={styles.historyAction}>
+      {/* <div className={styles.historyAction}>
         <ResponsiveNestedDrawer trigger={<SolidButton size="medium" variant="soft" iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}>{t("ui.profile.viewHistory")}</SolidButton>}>
           <QuestHistoryDrawer completedSessions={completedSessions} />
         </ResponsiveNestedDrawer>
-      </div>
+      </div> */}
     </ProfilePanel>
   );
 }

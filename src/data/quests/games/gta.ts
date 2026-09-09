@@ -2,6 +2,21 @@ import { defineGameQuests } from "../defineGameQuests";
 
 export const gtaQuests = defineGameQuests("gta", [
   {
+    id: "sa-road-signs", installments: ["gta-sa"], moods: ["explore", "nostalgic"], minutes: 25, sources: ["gta-sa-road-trips"],
+    en: { name: "Read the Road Signs", objective: "In **GTA: San Andreas**, after the countryside unlocks, start at Grove Street with a car and turn the radar off. **Drive to the Blueberry town sign using road signs and landmarks**, without opening the map. Stay on roads and keep the same car until you park at the sign." },
+    de: { name: "Den Schildern nach", objective: "Starte in **GTA: San Andreas** nach Freischaltung des Umlands mit einem Auto in der Grove Street und schalte das Radar aus. **Fahre anhand von Straßenschildern und Orientierungspunkten zum Ortsschild von Blueberry**, ohne die Karte zu öffnen. Bleib auf Straßen und parke dort mit demselben Wagen." },
+  },
+  {
+    id: "sa-export-condition", installments: ["gta-sa"], moods: ["progress", "focused"], minutes: 30, sources: ["gta-sa-side-jobs"],
+    en: { name: "Ready for Export", objective: "In **GTA: San Andreas**, after vehicle exports unlock at Easter Basin, find a vehicle still on the export board. Repair it at Pay 'n' Spray, then **deliver it to the ship with no new damage**. Repair again after a crash; finish when the export payment appears." },
+    de: { name: "Bereit zum Export", objective: "Such in **GTA: San Andreas** nach Freischaltung der Fahrzeugexporte in Easter Basin ein noch auf der Exporttafel gesuchtes Fahrzeug. Repariere es bei Pay 'n' Spray und **liefere es ohne neuen Schaden am Schiff ab**. Nach einem Unfall erneut reparieren; die Exportzahlung beendet die Quest." },
+  },
+  {
+    id: "sa-delivery-return", installments: ["gta-sa"], moods: ["relax", "focused"], minutes: 25, sources: ["gta-sa-side-jobs"],
+    en: { name: "Back to the Depot", objective: "In **GTA: San Andreas**, after RS Haul trucking unlocks, complete its next delivery using roads instead of cross-country shortcuts. **Return the same truck cab to RS Haul after the delivery payment**. Detaching the trailer before delivery restarts the job." },
+    de: { name: "Zurück zum Depot", objective: "Erledige in **GTA: San Andreas** nach Freischaltung der RS-Haul-Transportaufträge die nächste Lieferung auf Straßen statt querfeldein. **Bring dieselbe Zugmaschine nach der Bezahlung zu RS Haul zurück**. Verlierst du vorher den Anhänger, starte den Auftrag neu." },
+  },
+  {
     id: "iv-bowling-pickup", installments: ["gta-iv"], moods: ["connect", "nostalgic"], minutes: 25,
     en: { name: "Pick Them Up", objective: "In **GTA IV's story mode**, call an available friend for bowling. Pick them up yourself, drive to the alley without a wanted level, and **finish a full bowling game before driving them home**. Use no taxi skips." },
     de: { name: "Hol sie ab", objective: "Ruf im **Story-Modus von GTA IV** einen verfügbaren Freund zum Bowling an. Hole ihn selbst ab, fahre ohne Fahndungssterne zur Bahn und **beende ein ganzes Bowling-Spiel, bevor du ihn heimfährst**. Keine übersprungenen Taxifahrten." },

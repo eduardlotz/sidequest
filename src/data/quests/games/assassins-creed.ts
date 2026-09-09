@@ -2,6 +2,16 @@ import { defineGameQuests } from "../defineGameQuests";
 
 export const assassinsCreedQuests = defineGameQuests("assassins-creed", [
   {
+    id: "black-flag-no-boarding", installments: ["ac-black-flag"], moods: ["challenge", "focused"], minutes: 25, sources: ["ac-no-boarding"],
+    en: { name: "No Boarding Repairs", objective: "In the original **Assassin's Creed IV: Black Flag**, start with the Jackdaw repaired. **Sink two hostile schooners without boarding or repairing between fights**, then dock at a friendly harbor. Keep your existing upgrades; losing the Jackdaw restarts the attempt." },
+    de: { name: "Keine Enter-Reparatur", objective: "Starte im ursprünglichen **Assassin's Creed IV: Black Flag** mit reparierter Jackdaw. **Versenke zwei feindliche Schoner, ohne dazwischen zu entern oder zu reparieren**, und lege danach in einem freundlichen Hafen an. Behalte deine Upgrades; beim Verlust der Jackdaw neu beginnen." },
+  },
+  {
+    id: "syndicate-smoke-blade", installments: ["ac-syndicate"], moods: ["restless", "challenge"], minutes: 25, sources: ["ac-stealth-rules"],
+    en: { name: "Smoke at the Stronghold", objective: "In **Assassin's Creed Syndicate**, bring smoke bombs to an unfinished Gang Stronghold. **Clear its required enemies using Hidden Blade assassinations while they are inside your smoke**, then finish the activity. Use no guns, knives, or gang recruits; attacking outside smoke restarts the attempt." },
+    de: { name: "Rauch im Bandenquartier", objective: "Nimm in **Assassin's Creed Syndicate** Rauchbomben zu einem offenen Bandenquartier mit. **Erledige die nötigen Gegner mit Attentaten der versteckten Klinge, während sie in deinem Rauch stehen**, und schließe das Quartier ab. Keine Schusswaffen, Messer oder Gang-Rekruten; Angriffe außerhalb des Rauchs starten den Versuch neu." },
+  },
+  {
     id: "haystack-exit", installments: ["ac-ii"], moods: ["focused", "challenge"], minutes: 15, sources: ["ac-stealth-rules"],
     en: { name: "Haystack Exit", objective: "In **Assassin's Creed II**, with the Hidden Blade unlocked, hide in a haystack beside a guard's route. **Pull one guard into the hay, then blend into a crowd and leave unseen**. Drawing a weapon in open combat restarts the attempt." },
     de: { name: "Aus dem Heu", objective: "Verstecke dich in **Assassin's Creed II** mit freigeschalteter versteckter Klinge in einem Heuhaufen an der Route einer Wache. **Zieh eine Wache ins Heu und verschwinde ungesehen in der Menge**. Offener Kampf startet den Versuch neu." },
