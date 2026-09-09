@@ -6,6 +6,7 @@ export const COMBAT_CAPABILITY_IDS = [
   "bows",
   "melee-weapons",
   "fist-fights",
+  "magic",
 ] as const;
 
 export const GAME_CAPABILITY_IDS = [
@@ -33,6 +34,12 @@ export const GAME_CAPABILITY_IDS = [
   "local-multiplayer",
   "collectibles",
   "choices-or-lore",
+  "trading",
+  "hunting",
+  "animal-companions",
+  "skate-tricks",
+  "sports-goals",
+  "extraction-runs",
 ] as const;
 
 export type GameCapabilityId = (typeof GAME_CAPABILITY_IDS)[number];

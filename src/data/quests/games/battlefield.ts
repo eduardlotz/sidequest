@@ -2,6 +2,16 @@ import { defineGameQuests } from "../defineGameQuests";
 
 export const battlefieldQuests = defineGameQuests("battlefield", [
   {
+    id: "bf6-repair-push", installments: ["bf-6"], moods: ["connect", "progress"], minutes: 30, sources: ["battlefield-engineer-advice"],
+    en: { name: "Repair, Then Push", objective: "In **Battlefield 6 Conquest**, play Engineer beside a friendly tank. **Earn repair points on that tank, then help capture the next enemy-held flag it attacks**. Stay on foot near cover during the push and finish the round; do not damage friendly vehicles to manufacture repairs." },
+    de: { name: "Reparieren und vorrücken", objective: "Spiele in **Battlefield 6 Eroberung** Pionier neben einem befreundeten Panzer. **Verdiene Reparaturpunkte an ihm und hilf danach, die nächste von ihm angegriffene feindliche Flagge einzunehmen**. Bleib beim Vorrücken zu Fuß nahe Deckung und beende die Runde. Beschädige keine eigenen Fahrzeuge für Reparaturpunkte." },
+  },
+  {
+    id: "bf4-mine-road", installments: ["bf-4"], moods: ["focused", "challenge"], minutes: 30, sources: ["battlefield-mine-trap"],
+    en: { name: "Watch the Approach", objective: "In **Battlefield 4 Conquest**, equip anti-tank mines as Engineer. Place them on a vehicle approach to a contested flag, then **earn one mine hit on an enemy vehicle and finish the round**. Stay near the flag to defend it; place no mines inside the enemy deployment area." },
+    de: { name: "Zufahrt im Blick", objective: "Rüste in **Battlefield 4 Eroberung** als Pionier Panzerabwehrminen aus. Lege sie auf einer Fahrzeugzufahrt zu einer umkämpften Flagge. **Triff damit ein feindliches Fahrzeug und beende die Runde**. Verteidige die Flagge in der Nähe; keine Minen im gegnerischen Startgebiet." },
+  },
+  {
     id: "bf3-moving-supply", installments: ["bf-3"], moods: ["connect", "focused"], minutes: 30,
     en: { name: "Moving Supply Line", objective: "In **Battlefield 3 multiplayer**, play Support in Conquest. Move with your squad between objectives and **earn an ammo resupply score at three different flags**, placing ammo behind cover each time. Finish the round with your squad." },
     de: { name: "Nachschub unterwegs", objective: "Spiele in **Battlefield 3 im Mehrspielermodus** Versorger in Eroberung. Ziehe mit deinem Squad zwischen Zielen weiter und **bekomme an drei verschiedenen Flaggen Punkte für Munitionsnachschub**. Lege Munition jeweils in Deckung ab und beende die Runde mit dem Squad." },

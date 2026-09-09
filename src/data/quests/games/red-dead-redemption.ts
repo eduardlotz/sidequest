@@ -2,6 +2,16 @@ import { defineGameQuests } from "../defineGameQuests";
 
 export const redDeadQuests = defineGameQuests("red-dead-redemption", [
   {
+    id: "rdr2-camp-coffee", installments: ["rdr-2"], moods: ["relax", "low-energy"], minutes: 20, sources: ["rdr-camping-coffee"],
+    en: { name: "Coffee Before the Road", objective: "In **Red Dead Redemption 2 story mode**, bring a coffee percolator and ground coffee to a wilderness camp. Sleep until morning, **brew and drink coffee, then break camp and ride to the nearest town without fast travel**. Finish by hitching your horse there." },
+    de: { name: "Kaffee vor der Fahrt", objective: "Nimm im **Story-Modus von Red Dead Redemption 2** Kaffeekanne und gemahlenen Kaffee zu einem Wildnislager mit. Schlafe bis zum Morgen, **koche und trinke Kaffee, brich das Lager ab und reite ohne Schnellreise zum nächsten Ort**. Binde dort zum Abschluss dein Pferd an." },
+  },
+  {
+    id: "rdr2-seasoned-provisions", installments: ["rdr-2"], moods: ["explore", "progress"], minutes: 25, sources: ["rdr-camp-routines"],
+    en: { name: "Season the Journey", objective: "In **Red Dead Redemption 2 story mode**, gather creeping thyme, oregano, and wild mint while traveling on horseback. With three uncooked portions of big game meat ready, **cook one portion with each herb at a wilderness camp and stow all three**. Buy no herbs and use none from before this trip." },
+    de: { name: "Würze für unterwegs", objective: "Sammle im **Story-Modus von Red Dead Redemption 2** auf einem Ausritt Kriechenden Thymian, Oregano und Wilde Minze. Halte drei rohe Portionen Großwildfleisch bereit. **Koche am Wildnislager je eine Portion mit jedem Kraut und verstaue alle drei**. Keine gekauften oder vorher gesammelten Kräuter." },
+  },
+  {
     id: "bring-them-in", installments: ["rdr-1"], moods: ["challenge", "focused"], minutes: 25,
     en: { name: "Bring Them In", objective: "In **Red Dead Redemption's story mode**, with the lasso unlocked, take an available bounty poster. **Lasso the target and deliver them alive without using Dead Eye**. You may fight their gang, but never shoot the target." },
     de: { name: "Lebend abliefern", objective: "Nimm im **Story-Modus von Red Dead Redemption** mit freigeschaltetem Lasso einen verfügbaren Steckbrief an. **Fange das Ziel mit dem Lasso und liefere es lebend ab, ohne Dead Eye**. Du darfst gegen die Bande kämpfen, aber nicht auf das Ziel schießen." },

@@ -2,6 +2,16 @@ import { defineGameQuests } from "../defineGameQuests";
 
 export const crimsonDesertQuests = defineGameQuests("crimson-desert", [
   {
+    id: "unarmed-shield-opener", moods: ["restless", "focused"], minutes: 20, sources: ["crimson-unarmed-play"],
+    en: { name: "Kick the Guard Open", objective: "As Kliff in **Crimson Desert**, find ordinary shield-carrying enemies outside an arena. **Break a shield guard's defense with a kick before using your weapon to defeat them**. Do this to three guards; a weapon hit before the guard opens does not count." },
+    de: { name: "Deckung aufbrechen", objective: "Such als Kliff in **Crimson Desert** gewöhnliche Schildgegner außerhalb einer Arena. **Brich ihre Deckung mit einem Tritt auf, bevor du sie mit deiner Waffe besiegst**. Schaffe das bei drei Wachen; ein Waffentreffer vor geöffneter Deckung zählt nicht." },
+  },
+  {
+    id: "abyss-postcard", moods: ["create", "explore"], minutes: 20, sources: ["crimson-photo-walks"],
+    en: { name: "Between Two Worlds", objective: "In **Crimson Desert**, return to an already accessible Abyss island. Find an edge with a view of Pywel below and **save a screenshot with Kliff, part of the island, and the land below all in frame**. Keep Kliff standing on the island rather than falling for the shot." },
+    de: { name: "Zwischen zwei Welten", objective: "Kehre in **Crimson Desert** zu einer bereits zugänglichen Abyss-Insel zurück. Such einen Rand mit Blick auf Pywel und **speichere einen Screenshot mit Kliff, einem Teil der Insel und dem Land darunter im Bild**. Lass Kliff für die Aufnahme auf der Insel stehen, statt zu fallen." },
+  },
+  {
     id: "resting-corner", moods: ["create", "relax"], minutes: 20, sources: ["crimson-player-sandbox"],
     en: { name: "A Place to Rest", objective: "In **Crimson Desert**, once you have a house and furniture, build a resting corner with one chair and two decorations you own. **Place them so you can sit in the chair and see both decorations**, then sit down." },
     de: { name: "Platz zum Ausruhen", objective: "Richte in **Crimson Desert** mit freigeschaltetem Haus und vorhandenen Möbeln eine Ecke mit einem Stuhl und zwei Dekorationen ein. **Stelle sie so auf, dass du sitzend beide Dekorationen siehst**, und setz dich hin." },

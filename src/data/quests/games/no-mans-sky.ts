@@ -2,12 +2,22 @@ import { defineGameQuests } from "../defineGameQuests";
 
 export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
   {
-    id: "salvage-repair", moods: ["progress", "focused"], minutes: 30, sources: ["nms-player-rules"],
+    id: "stay-in-orbit", moods: ["explore", "focused"], minutes: 20, sources: ["nms-player-rules"],
+    en: { name: "Stay in Orbit", objective: "In **No Man's Sky**, start at a space station with a working ship and room for cargo. Mine asteroids for gold, silver, and tritium, then **sell some gold or silver at the station and refuel your pulse engine with the mined tritium**. Land on no planet and visit no Anomaly during the trip." },
+    de: { name: "Im Orbit bleiben", objective: "Starte in **No Man's Sky** an einer Raumstation mit flugfähigem Schiff und Platz für Fracht. Baue Gold, Silber und Tritium aus Asteroiden ab. **Verkaufe Gold oder Silber an der Station und betanke den Impulsantrieb mit dem abgebauten Tritium**. Keine Planetenlandung und kein Anomalie-Besuch auf diesem Ausflug." },
+  },
+  {
+    id: "planet-field-card", moods: ["create", "curious"], minutes: 25, sources: ["nms-photo-hobby"],
+    en: { name: "Planet Field Card", objective: "On a planet with land animals in **No Man's Sky**, scan one previously unscanned animal, plant, and mineral. **Save a Photo Mode picture of the scanned animal with your ship in the background**, then upload the three discoveries. Do not rename another player's discoveries." },
+    de: { name: "Steckbrief eines Planeten", objective: "Scanne in **No Man's Sky** auf einem Planeten mit Landtieren je ein noch ungescanntes Tier, eine Pflanze und ein Mineral. **Speichere im Fotomodus ein Bild des gescannten Tiers mit deinem Schiff im Hintergrund** und lade die drei Entdeckungen hoch. Benenne keine Entdeckungen anderer Spieler um." },
+  },
+  {
+    id: "salvage-repair", moods: ["progress", "focused"], minutes: 30,
     en: { name: "Back in Service", objective: "In **No Man's Sky**, use a crashed ship you have already claimed. Pick one damaged slot whose materials you can gather nearby. **Repair that slot using only materials gathered or refined this trip**, without buying supplies." },
     de: { name: "Wieder einsatzbereit", objective: "Nimm in **No Man's Sky** ein bereits beanspruchtes Schiffswrack. Wähle einen beschädigten Platz, dessen Materialien du in der Nähe sammeln kannst. **Repariere ihn nur mit auf diesem Ausflug gesammelten oder veredelten Materialien**, ohne Vorräte zu kaufen." },
   },
   {
-    id: "buried-freighter", moods: ["explore", "curious"], minutes: 25, sources: ["nms-player-rules"],
+    id: "buried-freighter", moods: ["explore", "curious"], minutes: 25,
     en: { name: "Under the Wreck", objective: "At a crashed freighter you have found in **No Man's Sky**, use the Terrain Manipulator to uncover a buried cargo container. Gather its needed repair materials nearby, then **open the container and bring its contents back to your ship**." },
     de: { name: "Unter dem Wrack", objective: "Lege bei einem entdeckten Frachterwrack in **No Man's Sky** mit dem Terrainmanipulator einen vergrabenen Frachtbehälter frei. Sammle die nötigen Reparaturmaterialien in der Nähe. **Öffne den Behälter und bring seinen Inhalt zu deinem Schiff**." },
   },
@@ -52,7 +62,7 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
     de: { name: "Frisch gefangen", objective: "Nimm in **No Man's Sky** deine Angelausrüstung und den Nährstoffprozessor mit zur Küste. Fange einen Fisch für ein bekanntes Fischrezept. **Koche und iss eine Portion aus diesem Fang**. Fische aus dem Lager zählen nicht." },
   },
   {
-    id: "exocraft-recovery", moods: ["restless", "explore"], minutes: 25, sources: ["nms-player-rules"],
+    id: "exocraft-recovery", moods: ["restless", "explore"], minutes: 25,
     en: { name: "Ground Crew", objective: "In **No Man's Sky**, with an Exocraft ready, mark a Buried Technology Module at least 500 units from your ship. Drive there, recover its Salvaged Data, and **return to the ship by Exocraft without summoning either vehicle**." },
     de: { name: "Bodenteam", objective: "Markiere in **No Man's Sky** mit einsatzbereitem Exofahrzeug ein vergrabenes Technologiemodul mindestens 500 Einheiten vom Schiff entfernt. Fahre hin, berge die Daten und **kehre im Exofahrzeug zurück, ohne ein Fahrzeug herbeizurufen**." },
   },

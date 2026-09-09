@@ -52,7 +52,7 @@
 }
 
 .app:has([data-play-layout="compact"]) {
-  overflow: auto;
+  height: 100svh;
 }
 
 .app[data-screen="setup"] {

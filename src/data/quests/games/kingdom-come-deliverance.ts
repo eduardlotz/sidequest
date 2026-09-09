@@ -2,6 +2,16 @@ import { defineGameQuests } from "../defineGameQuests";
 
 export const kingdomComeQuests = defineGameQuests("kingdom-come-deliverance", [
   {
+    id: "kcd2-roadside-prayer", installments: ["kcd-2"], moods: ["relax", "explore"], minutes: 20, sources: ["kcd-roadside-prayer"],
+    en: { name: "A Stop at the Shrine", objective: "In **Kingdom Come: Deliverance II**, with Fundamentals of Theology unlocked, walk from your current town to a roadside shrine that offers prayer. **Pray until the blessing is active, then walk back to the town**. Use no horse or fast travel; keep your weapons sheathed unless attacked." },
+    de: { name: "Halt am Schrein", objective: "Gehe in **Kingdom Come: Deliverance II** mit freigeschalteten Grundlagen der Theologie von deinem aktuellen Ort zu einem Wegschrein, an dem Beten möglich ist. **Bete, bis der Segen aktiv ist, und gehe zum Ort zurück**. Kein Pferd und keine Schnellreise; zieh Waffen nur, wenn du angegriffen wirst." },
+  },
+  {
+    id: "kcd2-ordinary-dice", installments: ["kcd-2"], moods: ["challenge", "relax"], minutes: 25, sources: ["kcd-fair-dice"],
+    en: { name: "Leave the Lucky Dice", objective: "In **Kingdom Come: Deliverance II**, sit at the nearest available dice table with enough money for three minimum stakes. Use **six ordinary dice and no badge**. Win one full game or finish three games trying; keep the same stake and never reload a loss." },
+    de: { name: "Ohne Glückswürfel", objective: "Setz dich in **Kingdom Come: Deliverance II** mit Geld für drei Mindesteinsätze an den nächsten verfügbaren Würfeltisch. Nutze **sechs gewöhnliche Würfel und kein Abzeichen**. Gewinne eine ganze Partie oder beende drei Versuche; behalte den Einsatz bei und lade nach Niederlagen nicht neu." },
+  },
+  {
     id: "an-honest-night", installments: ["kcd-1"], moods: ["relax", "explore"], minutes: 30, sources: ["kcd-herbalist"],
     en: { name: "An Honest Night", objective: "In **Kingdom Come: Deliverance (1)**, with the Marigold Decoction recipe and a bench available, gather nettles and marigolds, brew by hand, and sell the potions. **Pay for one available inn room using only those earnings**. No bought herbs, stolen goods, or autobrew." },
     de: { name: "Ehrlich verdient", objective: "Sammle in **Kingdom Come: Deliverance (1)** mit bekanntem Ringelblumensud-Rezept und erreichbarem Alchemietisch Brennnesseln und Ringelblumen. Braue von Hand und verkaufe die Tränke. **Bezahle ein verfügbares Gasthauszimmer nur mit diesen Einnahmen**. Keine gekauften Kräuter, gestohlenen Waren oder automatisches Brauen." },

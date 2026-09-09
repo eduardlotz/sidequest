@@ -2,6 +2,16 @@ import { defineGameQuests } from "../defineGameQuests";
 
 export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
   {
+    id: "deck-only-dispatch", moods: ["challenge", "focused"], minutes: 25, sources: ["cyberpunk-build-rules"],
+    en: { name: "The Deck Does It", objective: "In **Cyberpunk 2077**, with a cyberdeck and damage quickhacks equipped, take the nearest unfinished NCPD Assault in Progress. **Defeat its enemies only with quickhacks and collect the evidence**. No weapon attacks, grenades, takedowns, or exploding devices; death restarts the attempt." },
+    de: { name: "Das Deck erledigt es", objective: "Nimm in **Cyberpunk 2077** mit Cyberdeck und Schadens-Quickhacks den nächsten offenen NCPD-Übergriff an. **Besiege die Gegner nur mit Quickhacks und sammle die Beweise**. Keine Waffenangriffe, Granaten, Takedowns oder explodierenden Geräte; beim Tod neu beginnen." },
+  },
+  {
+    id: "chrome-free-gig", moods: ["focused", "challenge"], minutes: 25, sources: ["cyberpunk-no-chrome"],
+    en: { name: "Keep the Chrome Quiet", objective: "In **Cyberpunk 2077**, choose an unfinished gig with no mandatory hacking. **Complete it and leave without quickhacks, Sandevistan, Berserk, or arm cyberware attacks**. Passive implants may stay installed; use ordinary weapons and movement for the whole gig." },
+    de: { name: "Chrome bleibt still", objective: "Nimm in **Cyberpunk 2077** einen offenen Auftrag ohne verpflichtendes Hacken. **Erledige ihn und verschwinde ohne Quickhacks, Sandevistan, Berserk oder Angriffe mit Arm-Cyberware**. Passive Implantate dürfen bleiben; nutze im ganzen Auftrag gewöhnliche Waffen und Bewegung." },
+  },
+  {
     id: "borrowed-eyes", moods: ["focused", "challenge"], minutes: 25, sources: ["cyberpunk-ghost"],
     en: { name: "Borrowed Eyes", objective: "In **Cyberpunk 2077**, with a cyberdeck, choose an open theft gig with usable cameras. Scout through them, then **steal the target and get out unseen**, using devices to distract guards. No kills or knockouts; being spotted or hurting a guard restarts the attempt." },
     de: { name: "Fremde Augen", objective: "Nimm in **Cyberpunk 2077** mit einem Cyberdeck einen offenen Diebstahl-Auftrag mit nutzbaren Kameras. Spähe durch sie aus, lenke Wachen mit Geräten ab und **stiehl das Ziel und verschwinde ungesehen**. Keine Tötungen oder K.-o.-Schläge; Entdeckung oder verletzte Wachen starten den Versuch neu." },

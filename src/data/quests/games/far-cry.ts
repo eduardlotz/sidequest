@@ -2,6 +2,21 @@ import { defineGameQuests } from "../defineGameQuests";
 
 export const farCryQuests = defineGameQuests("far-cry", [
   {
+    id: "primal-owl-opening", installments: ["fc-primal"], moods: ["focused", "curious"], minutes: 25, sources: ["primal-beast-tools"],
+    en: { name: "Owl's First Move", objective: "In **Far Cry Primal**, with Owl: Attack unlocked, scout an enemy outpost through your owl. **Have the owl eliminate a horn blower before Takkar enters**, then capture the outpost without reinforcements being called. A horn sounding restarts the attempt." },
+    de: { name: "Die Eule beginnt", objective: "Spähe in **Far Cry Primal** mit freigeschaltetem Eulenangriff einen feindlichen Außenposten durch die Eule aus. **Lass sie einen Hornbläser ausschalten, bevor Takkar hineingeht**, und erobere den Posten ohne gerufene Verstärkung. Ertönt ein Horn, beginnt der Versuch neu." },
+  },
+  {
+    id: "primal-beast-hunt", installments: ["fc-primal"], moods: ["explore", "progress"], minutes: 20, sources: ["primal-beast-tools"],
+    en: { name: "Hunting Partner", objective: "In **Far Cry Primal**, with a tamed wolf available, command it to kill a deer and skin the deer yourself. **Bring that hide back to the Wenja village with the wolf alive**, traveling on foot. Do not attack the deer yourself or use fast travel." },
+    de: { name: "Jagdgefährte", objective: "Lass in **Far Cry Primal** einen bereits gezähmten Wolf einen Hirsch erlegen und häute ihn selbst. **Bring das Fell zu Fuß ins Wenja-Dorf zurück, während der Wolf am Leben bleibt**. Greife den Hirsch nicht selbst an und nutze keine Schnellreise." },
+  },
+  {
+    id: "primal-burning-spear", installments: ["fc-primal"], moods: ["restless", "challenge"], minutes: 25,
+    en: { name: "Carry the Fire", objective: "In **Far Cry Primal**, with spears and animal fat ready, approach an uncaptured bonfire. **Defeat its guards using only burning spears, then claim the bonfire**. Dismiss your beast and use no owl attacks; relight each spear before attacking." },
+    de: { name: "Feuer mitbringen", objective: "Nähere dich in **Far Cry Primal** mit Speeren und Tierfett einem noch nicht eroberten Leuchtfeuer. **Besiege seine Wachen nur mit brennenden Speeren und beanspruche das Leuchtfeuer**. Schicke dein Tier weg, nutze keine Eulenangriffe und zünde jeden Speer vor dem Angriff an." },
+  },
+  {
     id: "cage-opener", installments: ["fc-3"], moods: ["curious", "challenge"], minutes: 20,
     en: { name: "Open the Cage", objective: "In **Far Cry 3**, scout an enemy outpost with a caged predator. Break the cage from outside and **let the animal take down at least one guard before you enter**. Then capture the outpost without killing the freed animal yourself." },
     de: { name: "Käfig auf", objective: "Spähe in **Far Cry 3** einen feindlichen Außenposten mit eingesperrtem Raubtier aus. Öffne den Käfig von draußen und **lass das Tier mindestens eine Wache ausschalten, bevor du reingehst**. Erobere den Posten, ohne das befreite Tier selbst zu töten." },

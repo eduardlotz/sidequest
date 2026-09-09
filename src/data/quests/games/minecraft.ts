@@ -2,6 +2,16 @@ import { defineGameQuests } from "../defineGameQuests";
 
 export const minecraftQuests = defineGameQuests("minecraft", [
   {
+    id: "working-fishing-pier", moods: ["create", "relax"], minutes: 30, sources: ["minecraft-fishing-pier"],
+    en: { name: "Open the Pier", objective: "In **Minecraft Survival**, build a wooden pier at your village's nearest shore with a barrel, two lights, and space to cast into open water. **Catch a fish from the pier and store it in the barrel**. Keep the water in front of the casting spot uncovered." },
+    de: { name: "Der Steg ist offen", objective: "Baue in **Minecraft im Überlebensmodus** am nächsten Dorfufer einen Holzsteg mit Fass, zwei Lichtern und Platz zum Angeln ins offene Wasser. **Fange vom Steg einen Fisch und lege ihn ins Fass**. Lass das Wasser vor dem Angelplatz unbedeckt." },
+  },
+  {
+    id: "village-mine-stairs", moods: ["progress", "create"], minutes: 25, sources: ["minecraft-village-worker"],
+    en: { name: "A Proper Mine Entrance", objective: "In **Minecraft Survival**, beside your village, dig a staircase twelve blocks down without digging straight beneath yourself. Add stairs and a torch every four steps. **Walk back up without jumping and place a chest containing sixteen mined cobblestone at the entrance**." },
+    de: { name: "Ein richtiger Mineneingang", objective: "Grabe in **Minecraft im Überlebensmodus** neben deinem Dorf einen Treppengang zwölf Blöcke tief, ohne direkt unter dir abzubauen. Setze Treppen und alle vier Stufen eine Fackel. **Laufe ohne Springen hinauf und stelle am Eingang eine Truhe mit sechzehn abgebauten Bruchsteinen auf**." },
+  },
+  {
     id: "village-payday", moods: ["progress", "relax"], minutes: 25, sources: ["minecraft-village-worker"],
     en: { name: "Village Payday", objective: "In **Minecraft Survival**, find a farmer who buys wheat. Grow and harvest enough for one trade, replant every patch you harvested, then **earn emeralds from your own crop**. Leave the village's hay bales alone." },
     de: { name: "Zahltag im Dorf", objective: "Such in **Minecraft im Überlebensmodus** einen Bauern, der Weizen kauft. Baue genug für einen Handel an, ernte und bepflanze alle abgeernteten Felder neu. **Verdiene Smaragde mit deiner eigenen Ernte**, ohne die Heuballen im Dorf zu nehmen." },
