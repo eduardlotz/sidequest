@@ -106,10 +106,18 @@ export function CustomGameEditor({
     questOverrides,
   };
   const automaticQuestIds = new Set(
-    customGameQuestIds({ ...draft, capabilityIds: pendingActivities, questOverrides: {} }),
+    customGameQuestIds({
+      ...draft,
+      capabilityIds: pendingActivities,
+      questOverrides: {},
+    }),
   );
   const reviewedEnabled = new Set(
-    customGameQuestIds({ ...draft, capabilityIds: pendingActivities, questOverrides: pendingOverrides }),
+    customGameQuestIds({
+      ...draft,
+      capabilityIds: pendingActivities,
+      questOverrides: pendingOverrides,
+    }),
   );
   const query = search.trim().toLocaleLowerCase(language);
   const activities = GAME_CAPABILITY_IDS.filter((id) =>
@@ -138,24 +146,36 @@ export function CustomGameEditor({
       .includes(query),
   );
   function changePage(next: typeof page) {
-    const currentScroll = presentation === "drawer" && page === "appearance"
-      ? appearanceScrollRef.current : pageScrollRef.current;
-    scrollPositions.current[page] = currentScroll?.scrollTop ?? scrollPositions.current[page];
+    const currentScroll =
+      presentation === "drawer" && page === "appearance"
+        ? appearanceScrollRef.current
+        : pageScrollRef.current;
+    scrollPositions.current[page] =
+      currentScroll?.scrollTop ?? scrollPositions.current[page];
     setSearch("");
-    if (page !== "appearance" && next !== "appearance") currentScroll?.scrollTo({ top: 0 });
+    if (page !== "appearance" && next !== "appearance")
+      currentScroll?.scrollTo({ top: 0 });
     if (next !== "appearance") scrollPositions.current[next] = 0;
-    if (page === "appearance" && next === "activities") setPendingOverrides(questOverrides);
+    if (page === "appearance" && next === "activities")
+      setPendingOverrides(questOverrides);
     setPage(next);
   }
   useEffect(() => {
     const node = colorScrollRef.current;
     if (!node) return;
-    const update = () => setColorEdges({ left: node.scrollLeft > 4, right: node.scrollWidth - node.clientWidth - node.scrollLeft > 4 });
+    const update = () =>
+      setColorEdges({
+        left: node.scrollLeft > 4,
+        right: node.scrollWidth - node.clientWidth - node.scrollLeft > 4,
+      });
     const observer = new ResizeObserver(update);
     observer.observe(node);
     node.addEventListener("scroll", update, { passive: true });
     update();
-    return () => { observer.disconnect(); node.removeEventListener("scroll", update); };
+    return () => {
+      observer.disconnect();
+      node.removeEventListener("scroll", update);
+    };
   }, [page]);
   function showIconPage(nextPage: number) {
     const pageIndex = Math.max(0, Math.min(pageCount - 1, nextPage));
@@ -195,11 +215,7 @@ export function CustomGameEditor({
           className={styles.iconChoiceVisual}
           initial={false}
           animate={{ scale: iconId === icon ? 0.82 : 1 }}
-          transition={
-            reduced
-              ? { duration: 0 }
-              : LIBRARY_SELECTION_SPRING
-          }
+          transition={reduced ? { duration: 0 } : LIBRARY_SELECTION_SPRING}
         >
           <GameVisual
             size="picker"
@@ -226,9 +242,17 @@ export function CustomGameEditor({
           >
             {t("ui.library.saveGame")}
           </SolidButton>
-          {presentation !== "drawer" && <SolidButton
-            className={styles.back} iconLeft={<ChevronIcon />} size="large" variant="ghost" onClick={onCancel}
-          >{t("ui.library.back")}</SolidButton>}
+          {presentation !== "drawer" && (
+            <SolidButton
+              className={styles.back}
+              iconLeft={<ChevronIcon />}
+              size="large"
+              variant="ghost"
+              onClick={onCancel}
+            >
+              {t("ui.library.back")}
+            </SolidButton>
+          )}
         </>
       ) : (
         <>
@@ -244,10 +268,17 @@ export function CustomGameEditor({
           >
             {t("ui.library.saveActivities")}
           </SolidButton>
-          {presentation !== "drawer" && <SolidButton
-            className={styles.back} iconLeft={<ChevronIcon />} size="large" variant="ghost"
-            onClick={() => changePage("appearance")}
-          >{t("ui.library.back")}</SolidButton>}
+          {presentation !== "drawer" && (
+            <SolidButton
+              className={styles.back}
+              iconLeft={<ChevronIcon />}
+              size="large"
+              variant="ghost"
+              onClick={() => changePage("appearance")}
+            >
+              {t("ui.library.back")}
+            </SolidButton>
+          )}
         </>
       );
     return (
@@ -261,20 +292,31 @@ export function CustomGameEditor({
             page === "appearance" ? (
               t("ui.library.editorIntro")
             ) : (
-              <>{t("ui.library.drawerActivitiesIntro")} <span data-library-part="inlineGame"><GameVisual game={{ ...draft, source: "custom" }} size="card" /><strong>{draft.name}</strong></span>{t("ui.library.drawerActivitiesOutro")}</>
+              <>
+                {t("ui.library.drawerActivitiesIntro")}{" "}
+                <span data-library-part="inlineGame">
+                  <GameVisual
+                    game={{ ...draft, source: "custom" }}
+                    size="card"
+                  />
+                  <strong>{draft.name}</strong>
+                </span>
+                {t("ui.library.drawerActivitiesOutro")}
+              </>
             )
           }
           footer={footer}
           initialScrollTop={scrollPositions.current[page]}
-          scrollElementRef={presentation === "drawer" && page === "appearance" ? appearanceScrollRef : pageScrollRef}
+          scrollElementRef={
+            presentation === "drawer" && page === "appearance"
+              ? appearanceScrollRef
+              : pageScrollRef
+          }
           identityRef={page === "appearance" ? identityRef : undefined}
           floating={
             page === "appearance" ? (
               <span className={styles.badge}>
-                <GameVisual
-                  game={{ ...draft, source: "custom" }}
-                  size="card"
-                />
+                <GameVisual game={{ ...draft, source: "custom" }} size="card" />
                 <strong>{draft.name}</strong>
               </span>
             ) : undefined
@@ -282,12 +324,12 @@ export function CustomGameEditor({
           selectionIndicator={
             page === "activities"
               ? t("ui.library.selectedActivities", {
-                count: pendingActivities.length,
-              })
+                  count: pendingActivities.length,
+                })
               : page === "quests"
                 ? t("ui.library.selectedQuests", {
-                  count: reviewedEnabled.size,
-                })
+                    count: reviewedEnabled.size,
+                  })
                 : undefined
           }
         >
@@ -330,11 +372,17 @@ export function CustomGameEditor({
                 >
                   <div className={styles.iconGrid}>
                     {Array.from({ length: pageCount }, (_, index) => (
-                        <div className={styles.iconPage} key={index} data-icon-page={index}>
-                          {iconChoices.slice(index * ICONS_PER_PAGE, (index + 1) * ICONS_PER_PAGE)}
-                        </div>
-                      ))
-                      }
+                      <div
+                        className={styles.iconPage}
+                        key={index}
+                        data-icon-page={index}
+                      >
+                        {iconChoices.slice(
+                          index * ICONS_PER_PAGE,
+                          (index + 1) * ICONS_PER_PAGE,
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
                 <nav
@@ -402,16 +450,38 @@ export function CustomGameEditor({
                     </button>
                   ))}
                 </fieldset>
-                {colorEdges.left && <SolidButton
-                  className={styles.moreColors} data-direction="previous" size="small" variant="soft"
-                  aria-label={t("ui.library.previousColors")} iconLeft={<ChevronIcon className={styles.previous} />}
-                  onClick={() => colorScrollRef.current?.scrollBy({ left: -192, behavior: reduced ? "instant" : "smooth" })}
-                />}
-                {colorEdges.right && <SolidButton
-                  className={styles.moreColors} data-direction="next" size="small" variant="soft"
-                  aria-label={t("ui.library.moreColors")} iconLeft={<ChevronIcon />}
-                  onClick={() => colorScrollRef.current?.scrollBy({ left: 192, behavior: reduced ? "instant" : "smooth" })}
-                />}
+                {colorEdges.left && (
+                  <SolidButton
+                    className={styles.moreColors}
+                    data-direction="previous"
+                    size="small"
+                    variant="soft"
+                    aria-label={t("ui.library.previousColors")}
+                    iconLeft={<ChevronIcon className={styles.previous} />}
+                    onClick={() =>
+                      colorScrollRef.current?.scrollBy({
+                        left: -192,
+                        behavior: reduced ? "instant" : "smooth",
+                      })
+                    }
+                  />
+                )}
+                {colorEdges.right && (
+                  <SolidButton
+                    className={styles.moreColors}
+                    data-direction="next"
+                    size="small"
+                    variant="soft"
+                    aria-label={t("ui.library.moreColors")}
+                    iconLeft={<ChevronIcon />}
+                    onClick={() =>
+                      colorScrollRef.current?.scrollBy({
+                        left: 192,
+                        behavior: reduced ? "instant" : "smooth",
+                      })
+                    }
+                  />
+                )}
               </div>
               <section className={styles.activities}>
                 <div className={styles.sectionHeading}>
@@ -463,7 +533,6 @@ export function CustomGameEditor({
                   </div>
                 )}
               </section>
-
             </form>
           ) : (
             <>
@@ -489,69 +558,89 @@ export function CustomGameEditor({
                     }}
                   />
                 </label>
-                <div className={styles.viewSwitch} role="group" aria-label={t("ui.library.activityView")}>
-                  {(["activities", "quests"] as const).map(view => <button key={view} type="button" aria-pressed={page === view} onClick={() => changePage(view)}>
-                    {t(view === "activities" ? "ui.library.activitiesView" : "ui.library.questsView")} <span>{view === "activities" ? GAME_CAPABILITY_IDS.length : reviewed.length}</span>
-                  </button>)}
+                <div
+                  className={styles.viewSwitch}
+                  role="group"
+                  aria-label={t("ui.library.activityView")}
+                >
+                  {(["activities", "quests"] as const).map((view) => (
+                    <button
+                      key={view}
+                      type="button"
+                      aria-pressed={page === view}
+                      onClick={() => changePage(view)}
+                    >
+                      {t(
+                        view === "activities"
+                          ? "ui.library.activitiesView"
+                          : "ui.library.questsView",
+                      )}{" "}
+                      <span>
+                        {view === "activities"
+                          ? GAME_CAPABILITY_IDS.length
+                          : reviewed.length}
+                      </span>
+                    </button>
+                  ))}
                 </div>
                 <div className={styles.activityList}>
                   {page === "activities"
                     ? activities.map((id) => (
-                      <button
-                        type="button"
-                        className={styles.activityRow}
-                        key={id}
-                        aria-pressed={pendingActivities.includes(id)}
-                        onClick={() =>
-                          setPendingActivities((ids) =>
-                            ids.includes(id)
-                              ? ids.filter((candidate) => candidate !== id)
-                              : [...ids, id],
-                          )
-                        }
-                      >
-                        <CapabilityIcon capability={id} />
-                        <span>
-                          {t(`ui.library.capabilityLabels.${id}`)}
-                          <small>
-                            {t("ui.library.questCount", {
-                              count: activityCounts[id],
-                            })}
-                          </small>
-                        </span>
-                        <SelectionMark
-                          appearance="drawer"
-                          selected={pendingActivities.includes(id)}
-                        />
-                      </button>
-                    ))
+                        <button
+                          type="button"
+                          className={styles.activityRow}
+                          key={id}
+                          aria-pressed={pendingActivities.includes(id)}
+                          onClick={() =>
+                            setPendingActivities((ids) =>
+                              ids.includes(id)
+                                ? ids.filter((candidate) => candidate !== id)
+                                : [...ids, id],
+                            )
+                          }
+                        >
+                          <CapabilityIcon capability={id} />
+                          <span>
+                            {t(`ui.library.capabilityLabels.${id}`)}
+                            <small>
+                              {t("ui.library.questCount", {
+                                count: activityCounts[id],
+                              })}
+                            </small>
+                          </span>
+                          <SelectionMark
+                            appearance="drawer"
+                            selected={pendingActivities.includes(id)}
+                          />
+                        </button>
+                      ))
                     : filteredQuests.map((q) => (
-                      <button
-                        key={q.id}
-                        className={styles.activityRow}
-                        type="button"
-                        aria-pressed={reviewedEnabled.has(q.id)}
-                        onClick={() =>
-                          setPendingOverrides((current) => {
-                            const next = { ...current };
-                            const automatic = automaticQuestIds.has(q.id);
-                            const selected = !(current[q.id] ?? automatic);
-                            if (selected === automatic) delete next[q.id];
-                            else next[q.id] = selected;
-                            return next;
-                          })
-                        }
-                      >
-                        <span>
-                          {q.name}
-                          <small>{q.objective}</small>
-                        </span>
-                        <SelectionMark
-                          appearance="drawer"
-                          selected={reviewedEnabled.has(q.id)}
-                        />
-                      </button>
-                    ))}
+                        <button
+                          key={q.id}
+                          className={styles.activityRow}
+                          type="button"
+                          aria-pressed={reviewedEnabled.has(q.id)}
+                          onClick={() =>
+                            setPendingOverrides((current) => {
+                              const next = { ...current };
+                              const automatic = automaticQuestIds.has(q.id);
+                              const selected = !(current[q.id] ?? automatic);
+                              if (selected === automatic) delete next[q.id];
+                              else next[q.id] = selected;
+                              return next;
+                            })
+                          }
+                        >
+                          <span>
+                            {q.name}
+                            <small>{q.objective}</small>
+                          </span>
+                          <SelectionMark
+                            appearance="drawer"
+                            selected={reviewedEnabled.has(q.id)}
+                          />
+                        </button>
+                      ))}
                 </div>
                 {page === "activities" && !activities.length && (
                   <p className={styles.empty}>
@@ -579,12 +668,25 @@ export function CustomGameEditor({
       </div>
     );
   };
-  return presentation === "drawer" ? <>
-    {renderPage("appearance")}
-    <ResponsiveNestedDrawer open={page !== "appearance"} onOpenChange={open => { if (!open) changePage("appearance"); }}>
-      <LibraryDrawerFrame title={t("ui.library.selectActivities")}>
-        {page !== "appearance" && renderPage(page)}
-      </LibraryDrawerFrame>
-    </ResponsiveNestedDrawer>
-  </> : <AnimatePresence mode="wait" initial={false}><LibraryStep key={page === "appearance" ? "appearance" : "activities"}>{renderPage(page)}</LibraryStep></AnimatePresence>;
+  return presentation === "drawer" ? (
+    <>
+      {renderPage("appearance")}
+      <ResponsiveNestedDrawer
+        open={page !== "appearance"}
+        onOpenChange={(open) => {
+          if (!open) changePage("appearance");
+        }}
+      >
+        <LibraryDrawerFrame title={t("ui.library.selectActivities")}>
+          {page !== "appearance" && renderPage(page)}
+        </LibraryDrawerFrame>
+      </ResponsiveNestedDrawer>
+    </>
+  ) : (
+    <AnimatePresence mode="wait" initial={false}>
+      <LibraryStep key={page === "appearance" ? "appearance" : "activities"}>
+        {renderPage(page)}
+      </LibraryStep>
+    </AnimatePresence>
+  );
 }

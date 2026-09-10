@@ -96,7 +96,7 @@ export function AboutPanel({
                 <SolidButton
                   className={styles.sourcesButton}
                   size="small"
-                  variant="ghost"
+                  variant="soft"
                 >
                   {t("ui.about.sourcesButton")}
                 </SolidButton>

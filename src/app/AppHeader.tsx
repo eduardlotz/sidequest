@@ -113,14 +113,14 @@ export function AppHeader({
               trigger={
                 <SolidButton
                   // data-sound-click-skip
-                  // iconLeft={<InfoIcon weight="bold" />}
+                  iconLeft={<InfoIcon weight="bold" />}
                   aria-label={t("ui.nav.about")}
                   size="medium"
                   type="button"
                   variant="secondary"
                 >
-                  {/* {t("ui.nav.about")} */}
-                  <InfoIcon weight="bold" />
+                  {t("ui.nav.about")}
+                  {/* <InfoIcon weight="bold" /> */}
                 </SolidButton>
               }
             >

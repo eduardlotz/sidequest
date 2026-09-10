@@ -39,7 +39,7 @@ export function QuestSourcesPanel({
             className={styles.sourcesButton}
             iconLeft={<ChevronLeftIcon />}
             size="small"
-            variant="ghost"
+            variant="soft"
             onClick={onBack}
           >
             {t("ui.about.sourcesBack")}

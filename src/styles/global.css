@@ -33,6 +33,7 @@
 :root {
   color-scheme: light;
   --color-canvas: #f2f2f9;
+  --color-canvas-gradient: linear-gradient(180deg, #f9f9fa 100%, #efeff2 100%);
   --color-canvas-rgb: 242 242 249;
   --color-text: #292d32;
   --color-text-rgb: 41 45 50;
@@ -91,7 +92,8 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-canvas: #111118;
+  --color-canvas: #0f0f12;
+  --color-canvas-gradient: linear-gradient(180deg, #24242a 100%, #111119 100%);
   --color-canvas-rgb: 17 17 24;
   --color-text: #f2f2f7;
   --color-text-rgb: 242 242 247;
