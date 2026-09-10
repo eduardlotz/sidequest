@@ -87,7 +87,7 @@
 }
 
 .questSelectionScreen {
-  --quest-card-height: calc(var(--quest-card-width) / 0.7);
+  --quest-card-height: calc(var(--quest-card-width) / 0.6);
   --quest-deck-height: calc(var(--quest-card-height) + 20px);
   --quest-screen-top: clamp(74px, 7.2cqw, 92px);
   --quest-screen-bottom-inline: clamp(36px, calc(182px - 12cqw), 84px);
@@ -111,7 +111,7 @@
   min-height: 0;
   align-self: center;
   grid-template-rows: var(--quest-deck-height) auto;
-  row-gap: 16px;
+  /* row-gap: 16px; */
 }
 
 .questSelectionHeader {
