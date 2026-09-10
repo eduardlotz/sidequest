@@ -538,7 +538,14 @@ function QuestOfferCard({
           //     suppressClickRef.current = false;
           //   }, 0);
           // }}
-          onDrag={drag.onDrag}
+          // onDrag={drag.onDrag}
+          onDrag={(event, info) => {
+            if (Math.hypot(info.offset.x, info.offset.y) > 8) {
+              suppressClickRef.current = true;
+            }
+
+            drag.onDrag(event, info);
+          }}
           onDragEnd={drag.onDragEnd}
           style={{
             x: drag.x,

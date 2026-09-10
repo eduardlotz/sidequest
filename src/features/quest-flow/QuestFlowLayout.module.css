@@ -7,6 +7,7 @@
 
 .screen {
   --quest-card-inline-size: clamp(255px, calc(36.111cqw - 41.111px), 320px);
+  /* --quest-card-inline-size: clamp(255px, calc(65cqh - 2rem), 320px); */
   --quest-card-width: var(--quest-card-inline-size);
   position: relative;
   container-type: inline-size;
@@ -110,8 +111,21 @@
   display: grid;
   min-height: 0;
   align-self: flex-start;
-  grid-template-rows: var(--quest-deck-height) auto;
-  /* row-gap: 16px; */
+  grid-template-rows: auto var(--quest-deck-height);
+  grid-gap: 1rem;
+  padding-top: 2rem;
+
+  @media (--mobile) {
+    grid-template-rows: var(--quest-deck-height) auto;
+
+    > :first-child {
+      order: 2;
+    }
+
+    > :last-child {
+      order: 1;
+    }
+  }
 }
 
 .questSelectionHeader {
@@ -145,14 +159,18 @@
 }
 
 .moodEditControl {
-  position: relative;
+  position: absolute;
+  bottom: 40px;
+  margin-inline: auto;
+  justify-self: center;
   display: inline-flex;
+  z-index: 10;
 }
 
-.moodEditButton[data-variant="secondary"] {
+/* .moodEditButton[data-variant="secondary"] {
   padding-inline: 12px;
   border-radius: 12px;
-}
+} */
 
 .moodEditTooltip {
   position: absolute;

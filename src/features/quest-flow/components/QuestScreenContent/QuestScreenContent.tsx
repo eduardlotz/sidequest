@@ -348,7 +348,7 @@ export function QuestScreenContent({
                     zIndex={1}
                   >
                     <>
-                      <header className={styles.questSelectionHeader}>
+                      {/* <header className={styles.questSelectionHeader}>
                         <motion.p
                           className={styles.questSelectionPrompt}
                           initial={
@@ -368,7 +368,7 @@ export function QuestScreenContent({
                           <span className={styles.moodEditControl}>
                             <SolidButton
                               className={styles.moodEditButton}
-                              size="small"
+                              size="medium"
                               type="button"
                               variant="secondary"
                               aria-describedby="change-mood-tooltip"
@@ -386,37 +386,9 @@ export function QuestScreenContent({
                           </span>
                           <span>{t("ui.task.chooseSuffix")}</span>
                         </motion.p>
-                      </header>
+                      </header> */}
 
                       <div className={styles.questDeckGroup}>
-                        <QuestOfferDeck
-                          items={offeredQuests}
-                          entryMotion={questEntryMotion}
-                          layoutSessionId={questLayoutSessionId}
-                          reduceMotion={reduceMotion}
-                          returningQuestId={
-                            returnedFromActive
-                              ? lastActiveQuestIdRef.current
-                              : undefined
-                          }
-                          returningToMoods={editingMood}
-                          newCardsSequence={newCardsSequence}
-                          newCardsPhase={newCardsPhase}
-                          onSelectionStart={(previewRotation) => {
-                            setNewCardsSequence(0);
-                            setNewCardsPhase("idle");
-                            setQuestSelectionClosing(true);
-                            setActiveHandoffStarted(false);
-                            setActiveEntryRotation(previewRotation);
-                          }}
-                          onSelect={(questId) => {
-                            onRevealQuest(questId);
-                            window.requestAnimationFrame(() =>
-                              setActiveHandoffStarted(true),
-                            );
-                          }}
-                        />
-
                         <motion.div
                           className={styles.newCardsControl}
                           initial={reduceMotion ? false : { opacity: 0, y: 8 }}
@@ -448,6 +420,54 @@ export function QuestScreenContent({
                             onClick={dealNewCards}
                           />
                         </motion.div>
+
+                        <QuestOfferDeck
+                          items={offeredQuests}
+                          entryMotion={questEntryMotion}
+                          layoutSessionId={questLayoutSessionId}
+                          reduceMotion={reduceMotion}
+                          returningQuestId={
+                            returnedFromActive
+                              ? lastActiveQuestIdRef.current
+                              : undefined
+                          }
+                          returningToMoods={editingMood}
+                          newCardsSequence={newCardsSequence}
+                          newCardsPhase={newCardsPhase}
+                          onSelectionStart={(previewRotation) => {
+                            setNewCardsSequence(0);
+                            setNewCardsPhase("idle");
+                            setQuestSelectionClosing(true);
+                            setActiveHandoffStarted(false);
+                            setActiveEntryRotation(previewRotation);
+                          }}
+                          onSelect={(questId) => {
+                            onRevealQuest(questId);
+                            window.requestAnimationFrame(() =>
+                              setActiveHandoffStarted(true),
+                            );
+                          }}
+                        />
+
+                        <span className={styles.moodEditControl}>
+                          <SolidButton
+                            className={styles.moodEditButton}
+                            size="medium"
+                            type="button"
+                            variant="soft"
+                            aria-describedby="change-mood-tooltip"
+                            onClick={editMood}
+                          >
+                            {t("ui.task.changeMood")}
+                          </SolidButton>
+                          {/* <span
+                            className={styles.moodEditTooltip}
+                            id="change-mood-tooltip"
+                            role="tooltip"
+                          >
+                            {t("ui.task.changeMood")}
+                          </span> */}
+                        </span>
                       </div>
                     </>
                   </SelectionLayer>
