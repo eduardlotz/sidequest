@@ -33,6 +33,7 @@
 :root {
   color-scheme: light;
   --color-canvas: #f2f2f9;
+  --color-canvas-gradient: linear-gradient(180deg, #f9f9fa 100%, #efeff2 100%);
   --color-canvas-rgb: 242 242 249;
   --color-text: #292d32;
   --color-text-rgb: 41 45 50;
@@ -52,6 +53,7 @@
   --color-overlay: rgb(9 9 11 / 0.04);
   --color-wash: rgb(41 45 50 / 0.07);
   --color-shadow-rgb: 21 21 28;
+  --color-brand: #0a84ff;
   --color-focus: #0a84ff;
   --color-selection-bg: #151515;
   --color-selection-text: #fff;
@@ -90,7 +92,8 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-canvas: #111118;
+  --color-canvas: #0f0f12;
+  --color-canvas-gradient: linear-gradient(180deg, #24242a 100%, #111119 100%);
   --color-canvas-rgb: 17 17 24;
   --color-text: #f2f2f7;
   --color-text-rgb: 242 242 247;
@@ -168,7 +171,7 @@ a:focus-visible {
   background: var(--color-selection-bg);
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (--reduced-motion) {
   html {
     scroll-behavior: auto;
     transition: none;

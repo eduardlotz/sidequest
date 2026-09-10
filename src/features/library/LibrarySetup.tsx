@@ -24,12 +24,13 @@ import { QuestCard } from "../../shared/quest-card/QuestCard/QuestCard";
 import { localizeQuest } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
 import styles from "./LibrarySetup.module.css";
+import flowStyles from "./components/LibraryFlowElements.module.css";
 import { WordmarkSkewedLogo } from "../../assets/wordmark-skewed";
 import { TiltedElement } from "../../shared/ui/TiltedElement/TiltedElement";
 import { useCardFocus } from "../../shared/hooks/useCardFocus";
 import { CardFocusBackdrop } from "../../shared/ui/CardFocusBackdrop/CardFocusBackdrop";
 import type { ThemeChoice } from "../../lib/theme";
-import { ContrastIcon } from "../../shared/ui/Icons/Icons";
+import { ChevronLeftIcon, ContrastIcon } from "../../shared/ui/Icons/Icons";
 
 export function LibrarySetup({
   onThemeChange,
@@ -112,7 +113,8 @@ export function LibrarySetup({
 
   return (
     <section
-      className={styles.setup}
+      className={`${flowStyles.elements} ${styles.setup}`}
+      data-presentation="page"
       ref={setupRef}
       aria-label={t("ui.library.personalTitle")}
     >
@@ -122,9 +124,19 @@ export function LibrarySetup({
             <LibraryCollectionEditor
               title={t("ui.library.overviewIntro")}
               footer={
-                <SolidButton size="large" variant="primary" onClick={completeSetup}>
-                  {t("ui.library.finishSetup")}
-                </SolidButton>
+                <>
+                  <SolidButton size="large" variant="primary" onClick={completeSetup}>
+                    {t("ui.library.finishSetup")}
+                  </SolidButton>
+                  <SolidButton
+                    size="large"
+                    variant="ghost"
+                    iconLeft={<ChevronLeftIcon />}
+                    onClick={() => setPersonal(false)}
+                  >
+                    {t("ui.library.back")}
+                  </SolidButton>
+                </>
               }
             />
           ) : (
@@ -145,7 +157,7 @@ export function LibrarySetup({
                   ref={informationTriggerRef}
                   iconLeft={<InfoIcon weight="bold" />}
                   size="medium"
-                  variant="soft"
+                  variant="secondary"
                   onClick={() => setInformationOpen(true)}
                 >
                   {t("ui.library.moreInformation")}
@@ -153,7 +165,7 @@ export function LibrarySetup({
                 <SolidButton
                   iconLeft={<GlobeIcon weight="bold" />}
                   size="medium"
-                  variant="soft"
+                  variant="secondary"
                   onClick={() =>
                     void i18n.changeLanguage(language === "en" ? "de" : "en")
                   }
@@ -166,7 +178,7 @@ export function LibrarySetup({
                   })}
                   iconLeft={<ContrastIcon />}
                   size="medium"
-                  variant="soft"
+                  variant="secondary"
                   onClick={() => onThemeChange(nextTheme)}
                 >
                   {t("ui.library.changeTheme")}
@@ -224,7 +236,7 @@ export function LibrarySetup({
               aria-label={t("ui.library.closeInformation")}
               iconLeft={<XIcon weight="bold" />}
               size="medium"
-              variant="soft"
+              variant="secondary"
               onClick={closeInformation}
             />
             <motion.div

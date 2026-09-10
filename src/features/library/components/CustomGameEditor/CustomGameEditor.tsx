@@ -1,5 +1,9 @@
 import { EyesIcon } from "@phosphor-icons/react/dist/csr/Eyes";
-import { ResponsiveNestedDrawer } from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
+import {
+  ResponsiveNestedDrawerContent,
+  ResponsiveNestedDrawerRoot,
+} from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
+import { Drawer } from "vaul";
 import { LibraryDrawerFrame } from "../LibraryDrawerFrame/LibraryDrawerFrame";
 import {
   useId,
@@ -9,6 +13,7 @@ import {
   useState,
   type CSSProperties,
   type FormEvent,
+  type ReactElement,
 } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useTranslation } from "react-i18next";
@@ -62,11 +67,12 @@ export function CustomGameEditor({
   presentation?: "page" | "drawer";
   game?: CustomGame;
   onCancel: () => void;
-  onSave: (input: CustomGameInput) => void;
+  onSave: (input: CustomGameInput) => boolean | void;
 }) {
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const formId = useId();
+  const saveButtonRef = useRef<HTMLButtonElement>(null);
   const reduced = useReducedMotion();
   const identityRef = useRef<HTMLDivElement>(null);
   const iconGridRef = useRef<HTMLDivElement>(null);
@@ -106,10 +112,18 @@ export function CustomGameEditor({
     questOverrides,
   };
   const automaticQuestIds = new Set(
-    customGameQuestIds({ ...draft, capabilityIds: pendingActivities, questOverrides: {} }),
+    customGameQuestIds({
+      ...draft,
+      capabilityIds: pendingActivities,
+      questOverrides: {},
+    }),
   );
   const reviewedEnabled = new Set(
-    customGameQuestIds({ ...draft, capabilityIds: pendingActivities, questOverrides: pendingOverrides }),
+    customGameQuestIds({
+      ...draft,
+      capabilityIds: pendingActivities,
+      questOverrides: pendingOverrides,
+    }),
   );
   const query = search.trim().toLocaleLowerCase(language);
   const activities = GAME_CAPABILITY_IDS.filter((id) =>
@@ -138,57 +152,79 @@ export function CustomGameEditor({
       .includes(query),
   );
   function changePage(next: typeof page) {
-    const currentScroll = presentation === "drawer" && page === "appearance"
-      ? appearanceScrollRef.current : pageScrollRef.current;
-    scrollPositions.current[page] = currentScroll?.scrollTop ?? scrollPositions.current[page];
+    const currentScroll =
+      presentation === "drawer" && page === "appearance"
+        ? appearanceScrollRef.current
+        : pageScrollRef.current;
+    scrollPositions.current[page] =
+      currentScroll?.scrollTop ?? scrollPositions.current[page];
     setSearch("");
-    if (page !== "appearance" && next !== "appearance") currentScroll?.scrollTo({ top: 0 });
+    if (page !== "appearance" && next !== "appearance")
+      currentScroll?.scrollTo({ top: 0 });
     if (next !== "appearance") scrollPositions.current[next] = 0;
-    if (page === "appearance" && next === "activities") setPendingOverrides(questOverrides);
+    if (page === "appearance" && next === "activities")
+      setPendingOverrides(questOverrides);
     setPage(next);
   }
   useEffect(() => {
     const node = colorScrollRef.current;
     if (!node) return;
-    const update = () => setColorEdges({ left: node.scrollLeft > 4, right: node.scrollWidth - node.clientWidth - node.scrollLeft > 4 });
+    const update = () =>
+      setColorEdges({
+        left: node.scrollLeft > 4,
+        right: node.scrollWidth - node.clientWidth - node.scrollLeft > 4,
+      });
     const observer = new ResizeObserver(update);
     observer.observe(node);
     node.addEventListener("scroll", update, { passive: true });
     update();
-    return () => { observer.disconnect(); node.removeEventListener("scroll", update); };
+    return () => {
+      observer.disconnect();
+      node.removeEventListener("scroll", update);
+    };
   }, [page]);
   function showIconPage(nextPage: number) {
     const pageIndex = Math.max(0, Math.min(pageCount - 1, nextPage));
     setIconPage(pageIndex);
-    iconGridRef.current
-      ?.querySelector<HTMLElement>(`[data-icon-page="${pageIndex}"]`)
-      ?.scrollIntoView({
-        behavior: reduced ? "instant" : "smooth",
-        block: "nearest",
-        inline: "start",
-      });
+    const viewport = iconGridRef.current;
+    viewport?.scrollTo({
+      left: pageIndex * viewport.clientWidth,
+      behavior: reduced ? "instant" : "smooth",
+    });
   }
   function submit(event: FormEvent) {
     event.preventDefault();
-    if (page === "appearance" && name.trim() && capabilityIds.length > 0)
+    if (page !== "appearance") return;
+    if (presentation === "drawer") saveButtonRef.current?.click();
+    else saveGame();
+  }
+  function saveGame() {
+    if (!name.trim() || capabilityIds.length === 0) return false;
+    return (
       onSave({
         name: name.trim(),
         iconId,
         colorId,
         capabilityIds,
         questOverrides,
-      });
+      }) !== false
+    );
+  }
+  function renderActivityTrigger(trigger: ReactElement) {
+    return presentation === "drawer" ? (
+      <Drawer.Trigger asChild>{trigger}</Drawer.Trigger>
+    ) : (
+      trigger
+    );
   }
   const pageCount = Math.ceil(GAME_ICON_IDS.length / ICONS_PER_PAGE);
-  const renderPage = (view: typeof page) => {
+  const activityPage = page === "appearance" ? "activities" : page;
+  const renderPage = (view: typeof page): ReactElement => {
     const page = view;
-    const iconChoices = GAME_ICON_IDS.map((icon, index) => (
+    const iconChoices = GAME_ICON_IDS.map((icon) => (
       <button
         key={icon}
         data-icon={icon}
-        data-page-start={
-          index % ICONS_PER_PAGE === 0 || undefined
-        }
         type="button"
         aria-label={t("ui.library.iconChoice", {
           icon: t(`ui.library.icons.${icon}`),
@@ -200,11 +236,7 @@ export function CustomGameEditor({
           className={styles.iconChoiceVisual}
           initial={false}
           animate={{ scale: iconId === icon ? 0.82 : 1 }}
-          transition={
-            reduced
-              ? { duration: 0 }
-              : LIBRARY_SELECTION_SPRING
-          }
+          transition={reduced ? { duration: 0 } : LIBRARY_SELECTION_SPRING}
         >
           <GameVisual
             size="picker"
@@ -219,42 +251,135 @@ export function CustomGameEditor({
         </motion.span>
       </button>
     ));
+    const saveGameButton = (
+      <SolidButton
+        ref={saveButtonRef}
+        size="large"
+        variant="primary"
+        type={presentation === "drawer" ? "button" : "submit"}
+        form={formId}
+        disabled={!name.trim() || capabilityIds.length === 0}
+        onClick={
+          presentation === "drawer"
+            ? (event) => {
+                if (!saveGame()) event.preventDefault();
+              }
+            : undefined
+        }
+      >
+        {t("ui.library.saveGame")}
+      </SolidButton>
+    );
+    const saveActivitiesButton = (
+      <SolidButton
+        size="large"
+        type="button"
+        variant="primary"
+        onClick={() => {
+          setCapabilityIds(pendingActivities);
+          setQuestOverrides(pendingOverrides);
+          if (presentation === "page") changePage("appearance");
+        }}
+      >
+        {t("ui.library.saveActivities")}
+      </SolidButton>
+    );
     const footer =
       page === "appearance" ? (
         <>
-          <SolidButton
-            size="large"
-            variant="primary"
-            type="submit"
-            form={formId}
-            disabled={!name.trim() || capabilityIds.length === 0}
-          >
-            {t("ui.library.saveGame")}
-          </SolidButton>
-          {presentation !== "drawer" && <SolidButton
-            className={styles.back} iconLeft={<ChevronIcon />} size="large" variant="ghost" onClick={onCancel}
-          >{t("ui.library.back")}</SolidButton>}
+          {presentation === "drawer" ? (
+            <Drawer.Close asChild>{saveGameButton}</Drawer.Close>
+          ) : (
+            saveGameButton
+          )}
+          {presentation !== "drawer" && (
+            <SolidButton
+              className={styles.back}
+              iconLeft={<ChevronIcon />}
+              size="large"
+              variant="ghost"
+              onClick={onCancel}
+            >
+              {t("ui.library.back")}
+            </SolidButton>
+          )}
         </>
       ) : (
         <>
-          <SolidButton
-            size="large"
-            type="button"
-            variant="primary"
-            onClick={() => {
-              setCapabilityIds(pendingActivities);
-              setQuestOverrides(pendingOverrides);
-              changePage("appearance");
-            }}
-          >
-            {t("ui.library.saveActivities")}
-          </SolidButton>
-          {presentation !== "drawer" && <SolidButton
-            className={styles.back} iconLeft={<ChevronIcon />} size="large" variant="ghost"
-            onClick={() => changePage("appearance")}
-          >{t("ui.library.back")}</SolidButton>}
+          {presentation === "drawer" ? (
+            <Drawer.Close asChild>{saveActivitiesButton}</Drawer.Close>
+          ) : (
+            saveActivitiesButton
+          )}
+          {presentation !== "drawer" && (
+            <SolidButton
+              className={styles.back}
+              iconLeft={<ChevronIcon />}
+              size="large"
+              variant="ghost"
+              onClick={() => changePage("appearance")}
+            >
+              {t("ui.library.back")}
+            </SolidButton>
+          )}
         </>
       );
+    const activitiesSection = (
+      <section className={styles.activities}>
+        <div className={styles.sectionHeading}>
+          <InfoLabel
+            label={t("ui.library.possibleActivities")}
+            hint={t("ui.library.capabilitiesHint")}
+          />
+          {capabilityIds.length
+            ? renderActivityTrigger(
+                <SolidButton
+                  size="small"
+                  variant="highlighted"
+                  onClick={() => {
+                    setPendingActivities(capabilityIds);
+                    changePage("activities");
+                  }}
+                >
+                  {t("ui.library.adjust")}
+                </SolidButton>,
+              )
+            : null}
+        </div>
+        {capabilityIds.length ? (
+          capabilityIds.map((id) => (
+            <div className={styles.summaryRow} key={id}>
+              <CapabilityIcon capability={id} />
+              <span>
+                {t(`ui.library.capabilityLabels.${id}`)}
+                <small>
+                  {t("ui.library.questCount", {
+                    count: activityCounts[id],
+                  })}
+                </small>
+              </span>
+            </div>
+          ))
+        ) : (
+          <div className={styles.emptyActivities}>
+            <EyesIcon aria-hidden />
+            <strong>{t("ui.library.chooseActivities")}</strong>
+            {renderActivityTrigger(
+              <SolidButton
+                size="medium"
+                variant="highlighted"
+                onClick={() => {
+                  setPendingActivities(capabilityIds);
+                  changePage("activities");
+                }}
+              >
+                {t("ui.library.selectActivities")}
+              </SolidButton>,
+            )}
+          </div>
+        )}
+      </section>
+    );
     return (
       <div
         className={styles.editor}
@@ -266,20 +391,31 @@ export function CustomGameEditor({
             page === "appearance" ? (
               t("ui.library.editorIntro")
             ) : (
-              <>{t("ui.library.drawerActivitiesIntro")} <span data-library-part="inlineGame"><GameVisual game={{ ...draft, source: "custom" }} size="card" /><strong>{draft.name}</strong></span>{t("ui.library.drawerActivitiesOutro")}</>
+              <>
+                {t("ui.library.drawerActivitiesIntro")}{" "}
+                <span data-library-part="inlineGame">
+                  <GameVisual
+                    game={{ ...draft, source: "custom" }}
+                    size="card"
+                  />
+                  <strong>{draft.name}</strong>
+                </span>
+                {t("ui.library.drawerActivitiesOutro")}
+              </>
             )
           }
           footer={footer}
           initialScrollTop={scrollPositions.current[page]}
-          scrollElementRef={presentation === "drawer" && page === "appearance" ? appearanceScrollRef : pageScrollRef}
+          scrollElementRef={
+            presentation === "drawer" && page === "appearance"
+              ? appearanceScrollRef
+              : pageScrollRef
+          }
           identityRef={page === "appearance" ? identityRef : undefined}
           floating={
             page === "appearance" ? (
               <span className={styles.badge}>
-                <GameVisual
-                  game={{ ...draft, source: "custom" }}
-                  size="card"
-                />
+                <GameVisual game={{ ...draft, source: "custom" }} size="card" />
                 <strong>{draft.name}</strong>
               </span>
             ) : undefined
@@ -287,17 +423,17 @@ export function CustomGameEditor({
           selectionIndicator={
             page === "activities"
               ? t("ui.library.selectedActivities", {
-                count: pendingActivities.length,
-              })
+                  count: pendingActivities.length,
+                })
               : page === "quests"
                 ? t("ui.library.selectedQuests", {
-                  count: reviewedEnabled.size,
-                })
+                    count: reviewedEnabled.size,
+                  })
                 : undefined
           }
         >
           {page === "appearance" ? (
-            <form className={styles.appearance} data-library-part="appearance" id={formId} onSubmit={submit}>
+            <form className={styles.appearance} id={formId} onSubmit={submit}>
               <div className={styles.identity}>
                 <div className={styles.identityVisual} ref={identityRef}>
                   <GameVisual
@@ -317,10 +453,10 @@ export function CustomGameEditor({
                   autoComplete="off"
                 />
               </div>
-              <fieldset className={styles.picker} data-library-part="picker">
+              <fieldset className={styles.picker}>
                 <legend>{t("ui.library.gameIcon")}</legend>
                 <div
-                  className={styles.iconViewport} data-library-part="iconViewport"
+                  className={styles.iconViewport}
                   ref={iconGridRef}
                   onScroll={(event) => {
                     const node = event.currentTarget;
@@ -333,20 +469,27 @@ export function CustomGameEditor({
                     );
                   }}
                 >
-                  <div className={styles.iconGrid} data-library-part="iconGrid">
+                  <div className={styles.iconGrid}>
                     {Array.from({ length: pageCount }, (_, index) => (
-                        <div className={styles.iconPage} key={index} data-icon-page={index}>
-                          {iconChoices.slice(index * ICONS_PER_PAGE, (index + 1) * ICONS_PER_PAGE)}
-                        </div>
-                      ))
-                      }
+                      <div
+                        className={styles.iconPage}
+                        key={index}
+                        data-icon-page={index}
+                      >
+                        {iconChoices.slice(
+                          index * ICONS_PER_PAGE,
+                          (index + 1) * ICONS_PER_PAGE,
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
                 <nav
-                  className={styles.pagination} data-library-part="pagination"
+                  className={styles.pagination}
                   aria-label={t("ui.library.gameIcon")}
                 >
                   <SolidButton
+                    data-direction="previous"
                     disabled={iconPage === 0}
                     aria-label={t("ui.library.previousIcons")}
                     iconLeft={<ChevronIcon className={styles.previous} />}
@@ -364,6 +507,7 @@ export function CustomGameEditor({
                     />
                   ))}
                   <SolidButton
+                    data-direction="next"
                     disabled={iconPage === pageCount - 1}
                     aria-label={t("ui.library.nextIcons")}
                     iconLeft={<ChevronIcon />}
@@ -374,7 +518,7 @@ export function CustomGameEditor({
                 </nav>
               </fieldset>
               <div className={styles.colorPicker}>
-                <fieldset className={styles.colors} data-library-part="colors" ref={colorScrollRef}>
+                <fieldset className={styles.colors} ref={colorScrollRef}>
                   <legend>{t("ui.library.gameColor")}</legend>
                   {[
                     ...GAME_PICKER_COLOR_IDS,
@@ -405,76 +549,62 @@ export function CustomGameEditor({
                     </button>
                   ))}
                 </fieldset>
-                {colorEdges.left && <SolidButton
-                  className={`${styles.moreColors} ${styles.previousColors}`} size="small" variant="soft"
-                  aria-label={t("ui.library.previousColors")} iconLeft={<ChevronIcon className={styles.previous} />}
-                  onClick={() => colorScrollRef.current?.scrollBy({ left: -192, behavior: reduced ? "instant" : "smooth" })}
-                />}
-                {colorEdges.right && <SolidButton
-                  className={styles.moreColors} size="small" variant="soft"
-                  aria-label={t("ui.library.moreColors")} iconLeft={<ChevronIcon />}
-                  onClick={() => colorScrollRef.current?.scrollBy({ left: 192, behavior: reduced ? "instant" : "smooth" })}
-                />}
-              </div>
-              <section className={styles.activities} data-library-part="activities">
-                <div className={styles.sectionHeading} data-library-part="sectionHeading">
-                  <InfoLabel
-                    label={t("ui.library.possibleActivities")}
-                    hint={t("ui.library.capabilitiesHint")}
+                {colorEdges.left && (
+                  <SolidButton
+                    className={styles.moreColors}
+                    data-direction="previous"
+                    size="small"
+                    variant="soft"
+                    aria-label={t("ui.library.previousColors")}
+                    iconLeft={<ChevronIcon className={styles.previous} />}
+                    onClick={() =>
+                      colorScrollRef.current?.scrollBy({
+                        left: -192,
+                        behavior: reduced ? "instant" : "smooth",
+                      })
+                    }
                   />
-                  {capabilityIds.length ? (
-                    <SolidButton
-                      size="small"
-                      variant="soft"
-                      onClick={() => {
-                        setPendingActivities(capabilityIds);
-                        changePage("activities");
-                      }}
-                    >
-                      {t("ui.library.adjust")}
-                    </SolidButton>
-                  ) : null}
-                </div>
-                {capabilityIds.length ? (
-                  capabilityIds.map((id) => (
-                    <div className={styles.summaryRow} data-library-part="summaryRow" key={id}>
-                      <CapabilityIcon capability={id} />
-                      <span>
-                        {t(`ui.library.capabilityLabels.${id}`)}
-                        <small>
-                          {t("ui.library.questCount", {
-                            count: activityCounts[id],
-                          })}
-                        </small>
-                      </span>
-                    </div>
-                  ))
-                ) : (
-                  <div className={styles.emptyActivities} data-library-part="emptyActivities">
-                    <EyesIcon aria-hidden />
-                    <strong>{t("ui.library.chooseActivities")}</strong>
-                    <SolidButton
-                      size="small"
-                      variant="soft"
-                      iconLeft={<span aria-hidden>+</span>}
-                      onClick={() => {
-                        setPendingActivities(capabilityIds);
-                        changePage("activities");
-                      }}
-                    >
-                      {t("ui.library.selectActivities")}
-                    </SolidButton>
-                  </div>
                 )}
-              </section>
-
+                {colorEdges.right && (
+                  <SolidButton
+                    className={styles.moreColors}
+                    data-direction="next"
+                    size="small"
+                    variant="soft"
+                    aria-label={t("ui.library.moreColors")}
+                    iconLeft={<ChevronIcon />}
+                    onClick={() =>
+                      colorScrollRef.current?.scrollBy({
+                        left: 192,
+                        behavior: reduced ? "instant" : "smooth",
+                      })
+                    }
+                  />
+                )}
+              </div>
+              {presentation === "drawer" ? (
+                <ResponsiveNestedDrawerRoot
+                  onAnimationEnd={(open) => {
+                    if (!open) changePage("appearance");
+                  }}
+                >
+                  {activitiesSection}
+                  <ResponsiveNestedDrawerContent>
+                    <LibraryDrawerFrame
+                      title={t("ui.library.selectActivities")}
+                    >
+                      {renderPage(activityPage)}
+                    </LibraryDrawerFrame>
+                  </ResponsiveNestedDrawerContent>
+                </ResponsiveNestedDrawerRoot>
+              ) : (
+                activitiesSection
+              )}
             </form>
           ) : (
             <>
-              <div data-library-part="activitySection"
-                className={styles.activitySection}
-              >
-                <label className={styles.search} data-library-part="search">
+              <div className={styles.activitySection}>
+                <label className={styles.search}>
                   <SearchIcon />
                   <input
                     type="search"
@@ -495,69 +625,89 @@ export function CustomGameEditor({
                     }}
                   />
                 </label>
-                <div className={styles.viewSwitch} role="group" aria-label={t("ui.library.activityView")}>
-                  {(["activities", "quests"] as const).map(view => <button key={view} type="button" aria-pressed={page === view} onClick={() => changePage(view)}>
-                    {t(view === "activities" ? "ui.library.activitiesView" : "ui.library.questsView")} <span>{view === "activities" ? GAME_CAPABILITY_IDS.length : reviewed.length}</span>
-                  </button>)}
+                <div
+                  className={styles.viewSwitch}
+                  role="group"
+                  aria-label={t("ui.library.activityView")}
+                >
+                  {(["activities", "quests"] as const).map((view) => (
+                    <button
+                      key={view}
+                      type="button"
+                      aria-pressed={page === view}
+                      onClick={() => changePage(view)}
+                    >
+                      {t(
+                        view === "activities"
+                          ? "ui.library.activitiesView"
+                          : "ui.library.questsView",
+                      )}{" "}
+                      <span>
+                        {view === "activities"
+                          ? GAME_CAPABILITY_IDS.length
+                          : reviewed.length}
+                      </span>
+                    </button>
+                  ))}
                 </div>
                 <div className={styles.activityList}>
                   {page === "activities"
                     ? activities.map((id) => (
-                      <button
-                        type="button"
-                        className={styles.activityRow} data-library-part="activityRow"
-                        key={id}
-                        aria-pressed={pendingActivities.includes(id)}
-                        onClick={() =>
-                          setPendingActivities((ids) =>
-                            ids.includes(id)
-                              ? ids.filter((candidate) => candidate !== id)
-                              : [...ids, id],
-                          )
-                        }
-                      >
-                        <CapabilityIcon capability={id} />
-                        <span>
-                          {t(`ui.library.capabilityLabels.${id}`)}
-                          <small>
-                            {t("ui.library.questCount", {
-                              count: activityCounts[id],
-                            })}
-                          </small>
-                        </span>
-                        <SelectionMark
-                          appearance="drawer"
-                          selected={pendingActivities.includes(id)}
-                        />
-                      </button>
-                    ))
+                        <button
+                          type="button"
+                          className={styles.activityRow}
+                          key={id}
+                          aria-pressed={pendingActivities.includes(id)}
+                          onClick={() =>
+                            setPendingActivities((ids) =>
+                              ids.includes(id)
+                                ? ids.filter((candidate) => candidate !== id)
+                                : [...ids, id],
+                            )
+                          }
+                        >
+                          <CapabilityIcon capability={id} />
+                          <span>
+                            {t(`ui.library.capabilityLabels.${id}`)}
+                            <small>
+                              {t("ui.library.questCount", {
+                                count: activityCounts[id],
+                              })}
+                            </small>
+                          </span>
+                          <SelectionMark
+                            appearance="drawer"
+                            selected={pendingActivities.includes(id)}
+                          />
+                        </button>
+                      ))
                     : filteredQuests.map((q) => (
-                      <button
-                        key={q.id}
-                        className={styles.activityRow} data-library-part="activityRow"
-                        type="button"
-                        aria-pressed={reviewedEnabled.has(q.id)}
-                        onClick={() =>
-                          setPendingOverrides((current) => {
-                            const next = { ...current };
-                            const automatic = automaticQuestIds.has(q.id);
-                            const selected = !(current[q.id] ?? automatic);
-                            if (selected === automatic) delete next[q.id];
-                            else next[q.id] = selected;
-                            return next;
-                          })
-                        }
-                      >
-                        <span>
-                          {q.name}
-                          <small>{q.objective}</small>
-                        </span>
-                        <SelectionMark
-                          appearance="drawer"
-                          selected={reviewedEnabled.has(q.id)}
-                        />
-                      </button>
-                    ))}
+                        <button
+                          key={q.id}
+                          className={styles.activityRow}
+                          type="button"
+                          aria-pressed={reviewedEnabled.has(q.id)}
+                          onClick={() =>
+                            setPendingOverrides((current) => {
+                              const next = { ...current };
+                              const automatic = automaticQuestIds.has(q.id);
+                              const selected = !(current[q.id] ?? automatic);
+                              if (selected === automatic) delete next[q.id];
+                              else next[q.id] = selected;
+                              return next;
+                            })
+                          }
+                        >
+                          <span>
+                            {q.name}
+                            <small>{q.objective}</small>
+                          </span>
+                          <SelectionMark
+                            appearance="drawer"
+                            selected={reviewedEnabled.has(q.id)}
+                          />
+                        </button>
+                      ))}
                 </div>
                 {page === "activities" && !activities.length && (
                   <p className={styles.empty}>
@@ -572,7 +722,7 @@ export function CustomGameEditor({
                 {page === "quests" && (
                   <SolidButton
                     size="small"
-                    variant="soft"
+                    variant="secondary"
                     onClick={() => setPendingOverrides({})}
                   >
                     {t("ui.library.resetMatches")}
@@ -585,12 +735,13 @@ export function CustomGameEditor({
       </div>
     );
   };
-  return presentation === "drawer" ? <>
-    {renderPage("appearance")}
-    <ResponsiveNestedDrawer open={page !== "appearance"} onOpenChange={open => { if (!open) changePage("appearance"); }}>
-      <LibraryDrawerFrame title={t("ui.library.selectActivities")}>
-        {page !== "appearance" && renderPage(page)}
-      </LibraryDrawerFrame>
-    </ResponsiveNestedDrawer>
-  </> : <AnimatePresence mode="wait" initial={false}><LibraryStep key={page === "appearance" ? "appearance" : "activities"}>{renderPage(page)}</LibraryStep></AnimatePresence>;
+  return presentation === "drawer" ? (
+    renderPage("appearance")
+  ) : (
+    <AnimatePresence mode="wait" initial={false}>
+      <LibraryStep key={page === "appearance" ? "appearance" : "activities"}>
+        {renderPage(page)}
+      </LibraryStep>
+    </AnimatePresence>
+  );
 }

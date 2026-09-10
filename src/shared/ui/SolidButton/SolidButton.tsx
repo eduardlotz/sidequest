@@ -5,7 +5,13 @@ type SolidButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
   size?: "small" | "medium" | "large";
-  variant?: "soft" | "primary" | "ghost" | "highContrast";
+  variant?:
+    | "soft"
+    | "secondary"
+    | "highlighted"
+    | "primary"
+    | "ghost"
+    | "highContrast";
 };
 
 export const SolidButton = forwardRef<HTMLButtonElement, SolidButtonProps>(

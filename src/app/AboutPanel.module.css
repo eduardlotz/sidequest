@@ -65,24 +65,11 @@
   margin-top: 24px;
 }
 .sourcesButton {
-  display: inline-flex;
-  min-height: 36px;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 0;
-  margin: 10px 0 0;
-  background: transparent;
-  color: var(--color-text);
-  font: inherit;
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-align: left;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
+  margin-top: 1.5rem;
 }
+
 .sourcesButton[data-icon-left="true"] {
-  padding-left: 0;
+  padding-left: 8px;
 }
 .aboutIntro > .sourcesButton {
   margin: 0 0 18px;
@@ -182,7 +169,7 @@
   height: auto;
 }
 
-@media (hover: hover) and (pointer: fine) {
+@media (--hover) {
   .aboutCredit a:hover {
     text-decoration-color: var(--color-text);
   }
@@ -192,7 +179,7 @@
   }
 }
 
-@media (max-width: 820px) {
+@media (--mobile) {
   .aboutContent {
     padding: 34px 24px 26px;
     border-radius: 24px;
@@ -207,7 +194,7 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (--reduced-motion) {
   .aboutWordmarkVisual {
     transition: none;
   }

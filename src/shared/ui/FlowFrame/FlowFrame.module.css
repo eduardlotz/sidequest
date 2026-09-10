@@ -7,7 +7,7 @@
 }
 .heading {
   position: relative;
-  width: min(100%, var(--flow-frame-content-width, 360px));
+  width: min(100%, var(--flow-frame-content-width, 100%));
   flex: none;
   min-height: 62px;
   box-sizing: border-box;
@@ -41,8 +41,8 @@
   display: none;
 }
 .content {
-  width: min(100%, var(--flow-frame-content-width, 360px));
-  padding: 12px 8px 48px;
+  width: min(100%, var(--flow-frame-content-width, 100%));
+  padding: var(--flow-frame-content-padding, 12px 8px 48px);
   margin-inline: auto;
 }
 .viewport[data-selection] .content {
@@ -141,14 +141,14 @@
 }
 .footer {
   display: flex;
-  width: min(100%, var(--flow-frame-content-width, 360px));
+  width: min(100%, var(--flow-frame-content-width, 100%));
   max-width: 100%;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   gap: 8px;
   flex: none;
-  padding: 0 8px 0px;
+  padding: var(--flow-frame-footer-padding, 0 8px);
   margin-inline: auto;
 }
 .footer > button {

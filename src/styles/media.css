@@ -1,0 +1,4 @@
+/* Shared with every stylesheet through postcss.config.mjs; no imports needed. */
+@custom-media --mobile (max-width: 820px);
+@custom-media --hover (hover: hover) and (pointer: fine);
+@custom-media --reduced-motion (prefers-reduced-motion: reduce);
