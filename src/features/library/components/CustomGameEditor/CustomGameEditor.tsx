@@ -1,5 +1,9 @@
 import { EyesIcon } from "@phosphor-icons/react/dist/csr/Eyes";
-import { ResponsiveNestedDrawer } from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
+import {
+  ResponsiveNestedDrawerContent,
+  ResponsiveNestedDrawerRoot,
+} from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
+import { Drawer } from "vaul";
 import { LibraryDrawerFrame } from "../LibraryDrawerFrame/LibraryDrawerFrame";
 import {
   useId,
@@ -9,6 +13,7 @@ import {
   useState,
   type CSSProperties,
   type FormEvent,
+  type ReactElement,
 } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useTranslation } from "react-i18next";
@@ -62,11 +67,12 @@ export function CustomGameEditor({
   presentation?: "page" | "drawer";
   game?: CustomGame;
   onCancel: () => void;
-  onSave: (input: CustomGameInput) => void;
+  onSave: (input: CustomGameInput) => boolean | void;
 }) {
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const formId = useId();
+  const saveButtonRef = useRef<HTMLButtonElement>(null);
   const reduced = useReducedMotion();
   const identityRef = useRef<HTMLDivElement>(null);
   const iconGridRef = useRef<HTMLDivElement>(null);
@@ -188,17 +194,32 @@ export function CustomGameEditor({
   }
   function submit(event: FormEvent) {
     event.preventDefault();
-    if (page === "appearance" && name.trim() && capabilityIds.length > 0)
+    if (page !== "appearance") return;
+    if (presentation === "drawer") saveButtonRef.current?.click();
+    else saveGame();
+  }
+  function saveGame() {
+    if (!name.trim() || capabilityIds.length === 0) return false;
+    return (
       onSave({
         name: name.trim(),
         iconId,
         colorId,
         capabilityIds,
         questOverrides,
-      });
+      }) !== false
+    );
+  }
+  function renderActivityTrigger(trigger: ReactElement) {
+    return presentation === "drawer" ? (
+      <Drawer.Trigger asChild>{trigger}</Drawer.Trigger>
+    ) : (
+      trigger
+    );
   }
   const pageCount = Math.ceil(GAME_ICON_IDS.length / ICONS_PER_PAGE);
-  const renderPage = (view: typeof page) => {
+  const activityPage = page === "appearance" ? "activities" : page;
+  const renderPage = (view: typeof page): ReactElement => {
     const page = view;
     const iconChoices = GAME_ICON_IDS.map((icon) => (
       <button
@@ -230,18 +251,47 @@ export function CustomGameEditor({
         </motion.span>
       </button>
     ));
+    const saveGameButton = (
+      <SolidButton
+        ref={saveButtonRef}
+        size="large"
+        variant="primary"
+        type={presentation === "drawer" ? "button" : "submit"}
+        form={formId}
+        disabled={!name.trim() || capabilityIds.length === 0}
+        onClick={
+          presentation === "drawer"
+            ? (event) => {
+                if (!saveGame()) event.preventDefault();
+              }
+            : undefined
+        }
+      >
+        {t("ui.library.saveGame")}
+      </SolidButton>
+    );
+    const saveActivitiesButton = (
+      <SolidButton
+        size="large"
+        type="button"
+        variant="primary"
+        onClick={() => {
+          setCapabilityIds(pendingActivities);
+          setQuestOverrides(pendingOverrides);
+          if (presentation === "page") changePage("appearance");
+        }}
+      >
+        {t("ui.library.saveActivities")}
+      </SolidButton>
+    );
     const footer =
       page === "appearance" ? (
         <>
-          <SolidButton
-            size="large"
-            variant="primary"
-            type="submit"
-            form={formId}
-            disabled={!name.trim() || capabilityIds.length === 0}
-          >
-            {t("ui.library.saveGame")}
-          </SolidButton>
+          {presentation === "drawer" ? (
+            <Drawer.Close asChild>{saveGameButton}</Drawer.Close>
+          ) : (
+            saveGameButton
+          )}
           {presentation !== "drawer" && (
             <SolidButton
               className={styles.back}
@@ -256,18 +306,11 @@ export function CustomGameEditor({
         </>
       ) : (
         <>
-          <SolidButton
-            size="large"
-            type="button"
-            variant="primary"
-            onClick={() => {
-              setCapabilityIds(pendingActivities);
-              setQuestOverrides(pendingOverrides);
-              changePage("appearance");
-            }}
-          >
-            {t("ui.library.saveActivities")}
-          </SolidButton>
+          {presentation === "drawer" ? (
+            <Drawer.Close asChild>{saveActivitiesButton}</Drawer.Close>
+          ) : (
+            saveActivitiesButton
+          )}
           {presentation !== "drawer" && (
             <SolidButton
               className={styles.back}
@@ -281,6 +324,62 @@ export function CustomGameEditor({
           )}
         </>
       );
+    const activitiesSection = (
+      <section className={styles.activities}>
+        <div className={styles.sectionHeading}>
+          <InfoLabel
+            label={t("ui.library.possibleActivities")}
+            hint={t("ui.library.capabilitiesHint")}
+          />
+          {capabilityIds.length
+            ? renderActivityTrigger(
+                <SolidButton
+                  size="small"
+                  variant="highlighted"
+                  onClick={() => {
+                    setPendingActivities(capabilityIds);
+                    changePage("activities");
+                  }}
+                >
+                  {t("ui.library.adjust")}
+                </SolidButton>,
+              )
+            : null}
+        </div>
+        {capabilityIds.length ? (
+          capabilityIds.map((id) => (
+            <div className={styles.summaryRow} key={id}>
+              <CapabilityIcon capability={id} />
+              <span>
+                {t(`ui.library.capabilityLabels.${id}`)}
+                <small>
+                  {t("ui.library.questCount", {
+                    count: activityCounts[id],
+                  })}
+                </small>
+              </span>
+            </div>
+          ))
+        ) : (
+          <div className={styles.emptyActivities}>
+            <EyesIcon aria-hidden />
+            <strong>{t("ui.library.chooseActivities")}</strong>
+            {renderActivityTrigger(
+              <SolidButton
+                size="medium"
+                variant="highlighted"
+                onClick={() => {
+                  setPendingActivities(capabilityIds);
+                  changePage("activities");
+                }}
+              >
+                {t("ui.library.selectActivities")}
+              </SolidButton>,
+            )}
+          </div>
+        )}
+      </section>
+    );
     return (
       <div
         className={styles.editor}
@@ -483,56 +582,24 @@ export function CustomGameEditor({
                   />
                 )}
               </div>
-              <section className={styles.activities}>
-                <div className={styles.sectionHeading}>
-                  <InfoLabel
-                    label={t("ui.library.possibleActivities")}
-                    hint={t("ui.library.capabilitiesHint")}
-                  />
-                  {capabilityIds.length ? (
-                    <SolidButton
-                      size="small"
-                      variant="highlighted"
-                      onClick={() => {
-                        setPendingActivities(capabilityIds);
-                        changePage("activities");
-                      }}
+              {presentation === "drawer" ? (
+                <ResponsiveNestedDrawerRoot
+                  onAnimationEnd={(open) => {
+                    if (!open) changePage("appearance");
+                  }}
+                >
+                  {activitiesSection}
+                  <ResponsiveNestedDrawerContent>
+                    <LibraryDrawerFrame
+                      title={t("ui.library.selectActivities")}
                     >
-                      {t("ui.library.adjust")}
-                    </SolidButton>
-                  ) : null}
-                </div>
-                {capabilityIds.length ? (
-                  capabilityIds.map((id) => (
-                    <div className={styles.summaryRow} key={id}>
-                      <CapabilityIcon capability={id} />
-                      <span>
-                        {t(`ui.library.capabilityLabels.${id}`)}
-                        <small>
-                          {t("ui.library.questCount", {
-                            count: activityCounts[id],
-                          })}
-                        </small>
-                      </span>
-                    </div>
-                  ))
-                ) : (
-                  <div className={styles.emptyActivities}>
-                    <EyesIcon aria-hidden />
-                    <strong>{t("ui.library.chooseActivities")}</strong>
-                    <SolidButton
-                      size="medium"
-                      variant="highlighted"
-                      onClick={() => {
-                        setPendingActivities(capabilityIds);
-                        changePage("activities");
-                      }}
-                    >
-                      {t("ui.library.selectActivities")}
-                    </SolidButton>
-                  </div>
-                )}
-              </section>
+                      {renderPage(activityPage)}
+                    </LibraryDrawerFrame>
+                  </ResponsiveNestedDrawerContent>
+                </ResponsiveNestedDrawerRoot>
+              ) : (
+                activitiesSection
+              )}
             </form>
           ) : (
             <>
@@ -669,19 +736,7 @@ export function CustomGameEditor({
     );
   };
   return presentation === "drawer" ? (
-    <>
-      {renderPage("appearance")}
-      <ResponsiveNestedDrawer
-        open={page !== "appearance"}
-        onOpenChange={(open) => {
-          if (!open) changePage("appearance");
-        }}
-      >
-        <LibraryDrawerFrame title={t("ui.library.selectActivities")}>
-          {page !== "appearance" && renderPage(page)}
-        </LibraryDrawerFrame>
-      </ResponsiveNestedDrawer>
-    </>
+    renderPage("appearance")
   ) : (
     <AnimatePresence mode="wait" initial={false}>
       <LibraryStep key={page === "appearance" ? "appearance" : "activities"}>

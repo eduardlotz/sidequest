@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Drawer } from "vaul";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import {
@@ -69,17 +70,34 @@ export function CuratedGameEditor({
     onClose();
   }
 
+  const saveButton = (
+    <SolidButton size="large" variant="primary" onClick={saveSelection}>
+      {t("ui.library.saveSelection")}
+    </SolidButton>
+  );
+  const cancelButton = (
+    <SolidButton size="large" variant="ghost" onClick={onClose}>
+      {t("ui.library.cancel")}
+    </SolidButton>
+  );
+
   return (
     <FlowFrame
-      title={presentation === "page" ? t("ui.library.curatedHeading") : undefined}
+      title={
+        presentation === "page" ? t("ui.library.curatedHeading") : undefined
+      }
       footer={
         <>
-          <SolidButton size="large" variant="primary" onClick={saveSelection}>
-            {t("ui.library.saveSelection")}
-          </SolidButton>
-          <SolidButton size="large" variant="ghost" onClick={onClose}>
-            {t("ui.library.cancel")}
-          </SolidButton>
+          {presentation === "drawer" ? (
+            <Drawer.Close asChild>{saveButton}</Drawer.Close>
+          ) : (
+            saveButton
+          )}
+          {presentation === "drawer" ? (
+            <Drawer.Close asChild>{cancelButton}</Drawer.Close>
+          ) : (
+            cancelButton
+          )}
         </>
       }
     >
@@ -118,9 +136,7 @@ export function CuratedGameEditor({
                     key={game.id}
                     layout
                     transition={{
-                      layout: reduced
-                        ? { duration: 0 }
-                        : LIBRARY_LAYOUT_SPRING,
+                      layout: reduced ? { duration: 0 } : LIBRARY_LAYOUT_SPRING,
                     }}
                   >
                     <button
@@ -135,9 +151,7 @@ export function CuratedGameEditor({
                           initial={false}
                           animate={{ scale: selected ? 0.82 : 1 }}
                           transition={
-                            reduced
-                              ? { duration: 0 }
-                              : LIBRARY_SELECTION_SPRING
+                            reduced ? { duration: 0 } : LIBRARY_SELECTION_SPRING
                           }
                         >
                           <GameVisual
@@ -174,9 +188,7 @@ export function CuratedGameEditor({
                       {selected && game.installments.length ? (
                         <motion.div
                           className={styles.curatedOptionsClip}
-                          initial={
-                            reduced ? false : { height: 0, opacity: 0 }
-                          }
+                          initial={reduced ? false : { height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
                           transition={
@@ -193,9 +205,7 @@ export function CuratedGameEditor({
                             <div className={styles.installmentChips}>
                               {game.installments.map((entry) => {
                                 const installmentSelected =
-                                  preferences.installmentIds.includes(
-                                    entry.id,
-                                  );
+                                  preferences.installmentIds.includes(entry.id);
                                 return (
                                   <button
                                     key={entry.id}
