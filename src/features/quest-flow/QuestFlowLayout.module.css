@@ -87,9 +87,10 @@
 }
 
 .questSelectionScreen {
-  --quest-card-height: calc(var(--quest-card-width) / 0.6);
-  --quest-deck-height: calc(var(--quest-card-height) + 20px);
-  --quest-screen-top: clamp(74px, 7.2cqw, 92px);
+  --quest-card-width: min(var(--quest-card-inline-size), calc((100svh - 265px) * 0.7));
+  --quest-card-height: calc(var(--quest-card-width) / 0.7);
+  --quest-deck-height: calc(var(--quest-card-height) + 22px);
+  --quest-screen-top: clamp(108px, 17svh, 150px);
   --quest-screen-bottom-inline: clamp(36px, calc(182px - 12cqw), 84px);
   --quest-screen-bottom-height: clamp(16px, calc(100svh - 646px), 84px);
   --quest-screen-bottom: min(
@@ -99,7 +100,7 @@
   display: grid;
   gap: 2rem;
   min-height: 100svh;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   align-items: start;
   padding: var(--quest-screen-top) 0 var(--quest-screen-bottom);
   overflow-x: clip;
@@ -111,69 +112,6 @@
   min-height: 0;
   align-self: flex-start;
   grid-template-rows: var(--quest-deck-height) auto;
-  /* row-gap: 16px; */
-}
-
-.questSelectionHeader {
-  position: relative;
-  z-index: 30;
-  display: flex;
-  align-self: start;
-  align-items: center;
-  justify-self: center;
-  flex-direction: column;
-}
-
-.questSelectionPrompt {
-  display: inline-flex;
-  align-items: center;
-  margin-top: clamp(1.5rem, 15vh, 2rem);
-
-  color: var(--color-muted);
-  font-size: 0.875rem;
-  font-weight: 600;
-  gap: 6px;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  opacity: 1;
-}
-
-@media (max-width: 600px) {
-  .questSelectionPrompt {
-    margin-top: 1rem;
-  }
-}
-
-.moodEditControl {
-  position: relative;
-  display: inline-flex;
-}
-
-.moodEditButton[data-variant="secondary"] {
-  padding-inline: 12px;
-  border-radius: 12px;
-}
-
-.moodEditTooltip {
-  position: absolute;
-  bottom: calc(100% + 14px);
-  left: 50%;
-  z-index: 80;
-  padding: 8px 13px 9px;
-  border-radius: 14px;
-  background: var(--color-inverse-surface);
-  box-shadow: 0 7px 18px rgb(var(--color-shadow-rgb) / 0.14);
-  color: var(--color-inverse-copy);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, 6px);
-  transition:
-    opacity 140ms ease,
-    transform 140ms ease;
-  white-space: nowrap;
 }
 
 .newCardsControl {
@@ -184,14 +122,6 @@
   align-items: center;
   justify-self: center;
   margin: 0;
-}
-
-@media (--hover) {
-  .moodEditControl:hover .moodEditTooltip,
-  .moodEditControl:focus-within .moodEditTooltip {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
 }
 
 @media (--mobile) {
@@ -211,7 +141,8 @@
 }
 
 .screen[data-play-layout="compact"] .questSelectionScreen {
-  --quest-deck-height: calc(var(--quest-card-height) + 33px);
+  --quest-card-width: min(var(--quest-card-inline-size), calc((100svh - 300px) * 0.7));
+  --quest-deck-height: calc(var(--quest-card-height) + 55px);
 }
 
 @media (max-height: 640px) {
@@ -219,13 +150,4 @@
     --quest-card-width: min(var(--quest-card-inline-size), calc(70svh - 133px));
   }
 
-  .questSelectionScreen {
-    --quest-screen-top: clamp(56px, calc(100svh - 553px), 92px);
-  }
-}
-
-@media (--reduced-motion) {
-  .moodEditTooltip {
-    transition: none;
-  }
 }

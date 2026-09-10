@@ -11,6 +11,7 @@ import type { ThemeChoice } from "../../../../lib/theme";
 import type {
   CompletedSession,
   QuestStats,
+  QuestOfferMode,
   UserProfile,
 } from "../../../../domain/quest/model";
 import {
@@ -28,6 +29,7 @@ type Props = {
   onDebugModeChange: (enabled: boolean) => void;
   onPurchaseRedRopes: () => boolean;
   onThemeChange: (theme: ThemeChoice) => void;
+  onQuestOfferModeChange: (mode: QuestOfferMode) => void;
   completedSessions: readonly CompletedSession[];
   profile: UserProfile;
   stats: QuestStats;
@@ -40,7 +42,7 @@ export function ProfileDrawer({
   onDebugModeChange,
   onPurchaseRedRopes,
   onThemeChange,
-  profile,
+  onQuestOfferModeChange,  profile,
   stats,
   totalCoinsCollected,
   themeChoice,
@@ -90,6 +92,25 @@ export function ProfileDrawer({
                 onClick={() => onThemeChange(choice)}
               >
                 {t(`ui.profile.theme${capitalize(choice)}`)}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className={styles.profileSettingRow}>
+          <span>{t("ui.profile.questOffers")}</span>
+          <div
+            className={styles.themeSegmentedControl}
+            role="group"
+            aria-label={t("ui.profile.questOffers")}
+          >
+            {(["library", "flexible", "all"] as const).map((mode) => (
+              <button
+                type="button"
+                aria-pressed={profile.questOfferMode === mode}
+                key={mode}
+                onClick={() => onQuestOfferModeChange(mode)}
+              >
+                {t(`ui.profile.questOffers${capitalize(mode)}`)}
               </button>
             ))}
           </div>

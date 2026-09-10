@@ -1,42 +1,34 @@
 .deck {
   position: relative;
   z-index: 4;
-  display: flex;
   width: 100%;
   height: var(--quest-deck-height);
   min-height: 0;
-  padding-top: 12px;
   align-self: center;
-  align-items: flex-start;
-  justify-content: center;
   perspective: 1400px;
-  translate: 0 12px;
+}
+
+.arcTrack {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 100%;
 }
 
 .previewCardSlot {
   --accent: #31ff6c;
   --accent-rgb: 49 255 108;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: var(--quest-card-width);
-  flex: 0 0 auto;
+  margin-left: calc(var(--quest-card-width) / -2);
   aspect-ratio: 0.7;
   container-name: quest-card;
   container-type: inline-size;
   isolation: isolate;
   transform-origin: 50% 50%;
-}
-
-.previewCardSlot[data-position="left"],
-.previewCardSlot[data-position="right"] {
-  top: 8px;
-}
-
-.previewCardSlot[data-position="center"] {
-  top: -12px;
-}
-
-.previewCardSlot + .previewCardSlot {
-  margin-left: clamp(-60px, calc(16.667cqw - 176.667px), -40px);
 }
 
 .previewCardSlot::before {
@@ -119,13 +111,13 @@
 }
 
 .newCardsCard[data-new-cards-phase="outgoing"] {
-  animation: questCardNewCardsDropOut 0.34s cubic-bezier(0.32, 0, 0.67, 0)
+  animation: questCardNewCardsDropOut var(--new-cards-out-duration) cubic-bezier(0.32, 0, 0.67, 0)
     var(--new-cards-delay, 0s) both;
   will-change: filter, opacity, rotate, scale, translate;
 }
 
 .newCardsCard[data-new-cards-phase="incoming"] {
-  animation: questCardNewCardsDropIn 0.44s cubic-bezier(0.22, 0.8, 0.24, 1)
+  animation: questCardNewCardsDropIn var(--new-cards-in-duration) cubic-bezier(0.22, 0.8, 0.24, 1)
     var(--new-cards-delay, 0s) both;
   will-change: filter, opacity, rotate, scale, translate;
 }
@@ -170,8 +162,8 @@
 }
 
 .newCardsCard[data-new-cards-phase="incoming"] .newCardsShine {
-  animation: questCardNewCardsShine 0.24s cubic-bezier(0.18, 0.78, 0.25, 1)
-    calc(var(--new-cards-delay, 0s) + 0.44s) both;
+  animation: questCardNewCardsShine var(--new-cards-shine-duration) cubic-bezier(0.18, 0.78, 0.25, 1)
+    calc(var(--new-cards-delay, 0s) + var(--new-cards-in-duration)) both;
 }
 
 @media (--hover) {
@@ -189,7 +181,7 @@
 
 :global([data-play-layout="compact"]) .deck {
   padding-top: 0;
-  touch-action: pan-y;
+  touch-action: none;
   translate: none;
 }
 
@@ -327,4 +319,23 @@
   .previewCardProjection {
     filter: none !important;
   }
+}
+
+:global([data-play-layout="compact"]) .previewCardTilt {
+  touch-action: none;
+}
+
+.previewCardSlot[data-stack-hidden] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.emptyDeck {
+  max-width: 340px;
+  margin: 80px auto 0;
+  padding-inline: 20px;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: center;
 }

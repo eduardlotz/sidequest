@@ -4,12 +4,14 @@ import { useTranslation } from "react-i18next";
 import type { MoodId } from "../../../../data/moods";
 import { getMoodArtStyle } from "../../../../data/questColors";
 import { useTiltEffect } from "../../../../hooks/useTiltEffect";
-import { moodCardLayoutId } from "../../../../lib/cardMotion";
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
 import { usePlayLayout } from "../../usePlayLayout";
 import styles from "./ArcDeck.module.css";
 import { MoodIllustration } from "../MoodIllustration/MoodIllustration";
-import { SelectionCardBody } from "../SelectionCard/SelectionCard";
+import {
+  BOX_LID_OPEN_SECONDS,
+  BOX_FADE_DELAY_SECONDS,
+} from "../QuestOfferDeck/questDeckMotion";
 import type { ArcDeckItem } from "./ArcDeck";
 import { loopDistance, modulo } from "./arcDeckMath";
 
@@ -19,7 +21,6 @@ type Props = {
   item: ArcDeckItem;
   itemCount: number;
   layerPresent: boolean;
-  layoutSessionId: number | string;
   position: MotionValue<number>;
   reduceMotion: boolean;
   revealCards: boolean;
@@ -47,7 +48,6 @@ export function ArcCard({
   item,
   itemCount,
   layerPresent,
-  layoutSessionId,
   position,
   reduceMotion,
   revealCards,
@@ -65,7 +65,7 @@ export function ArcCard({
     distance,
     (value) => value * (isCompact ? MOBILE_CARD_GAP : DESKTOP_CARD_GAP),
   );
-  const y = useTransform(distance, (value) => -42 + Math.abs(value) * 92);
+  const y = useTransform(distance, (value) => -90 + Math.abs(value) * 92);
   const rotate = useTransform(distance, (value) => value * 11);
   const scale = useTransform(distance, (value) =>
     Math.max(0.78, 1 - Math.abs(value) * 0.1),
@@ -91,7 +91,7 @@ export function ArcCard({
     : direction * (32 + absoluteDistance * 10);
   const returningOffsetY = center ? 36 : 28;
   const moodExitX = primaryExit ? 0 : direction * (42 + absoluteDistance * 12);
-  const moodExitY = primaryExit ? 32 : 44;
+  const moodExitY = primaryExit ? 0 : 44;
   const positionDelay = foregroundExiting
     ? centerStaggerDelay
     : revealCards
@@ -147,7 +147,7 @@ export function ArcCard({
             ? {
                 filter: "none",
                 opacity: 0,
-                scale: primaryExit ? 0.96 : 0.94,
+                scale: primaryExit ? 1 : 0.94,
                 x: moodExitX,
                 y: moodExitY,
               }
@@ -183,7 +183,7 @@ export function ArcCard({
                 opacity: {
                   duration: foregroundExiting ? 0.26 : 0.28,
                   ease: SELECTION_HANDOFF_EASE,
-                  delay: positionDelay,
+                  delay: foregroundExiting && primaryExit ? BOX_FADE_DELAY_SECONDS : positionDelay,
                 },
                 filter: {
                   duration: foregroundExiting || returningFromQuests ? 0 : 0.3,
@@ -229,7 +229,7 @@ export function ArcCard({
         >
           <motion.span
             className={styles.moodCardTiltSurface}
-            style={{ rotateX, rotateY, transformPerspective: 1_000 }}
+            style={{ rotateX, rotateY, transformPerspective: 1_200 }}
             variants={{
               rest: { scale: 1, y: 0 },
               hover: { scale: 1.035, y: -8 },
@@ -242,35 +242,34 @@ export function ArcCard({
               mass: 0.74,
             }}
           >
-            <SelectionCardBody
-              className={styles.moodSelectionCardBody}
-              contentKey={`mood-${item.id}`}
-              contentClassName={styles.moodSelectionCardContent}
-              contentVisible={!foregroundExiting || primaryExit}
-              layoutId={moodCardLayoutId(layoutSessionId, item.id)}
-              reduceMotion={reduceMotion}
-            >
+            <span className={styles.moodBox} data-mood-box>
+              <span className={styles.moodBoxFloor} />
+              <span className={`${styles.moodBoxWall} ${styles.moodBoxWallFront}`} />
+              <span className={`${styles.moodBoxWall} ${styles.moodBoxWallLeft}`} />
+              <span className={`${styles.moodBoxWall} ${styles.moodBoxWallRight}`} />
+              <span className={`${styles.moodBoxWall} ${styles.moodBoxWallBack}`} />
               <motion.span
-                className={styles.moodCardVisual}
-                style={{ opacity: contentOpacity }}
+                className={styles.moodBoxLid}
+                animate={{ rotateX: primaryExit && foregroundExiting ? -112 : 0 }}
+                transition={{ duration: reduceMotion ? 0 : BOX_LID_OPEN_SECONDS, ease: SELECTION_HANDOFF_EASE }}
               >
-                <span className={styles.arcCardContent}>
-                  <strong className={styles.arcCardTitle}>{item.title}</strong>
-                  <span className={styles.arcCardDescription}>
-                    {item.subtitle}
-                  </span>
+                <span className={styles.moodBoxLidInside} />
+                <span className={styles.moodSelectionCardBody}>
+                  <motion.span className={styles.moodCardVisual} style={{ opacity: contentOpacity }}>
+                    <span className={styles.arcCardContent}>
+                      <strong className={styles.arcCardTitle}>{item.title}</strong>
+                      <span className={styles.arcCardDescription}>{item.subtitle}</span>
+                    </span>
+                    <motion.span
+                      className={styles.moodIllustrationLayer}
+                      style={{ x: illustrationX, y: illustrationY }}
+                    >
+                      <MoodIllustration className={styles.moodIllustration} moodId={item.id} />
+                    </motion.span>
+                  </motion.span>
                 </span>
-                <motion.span
-                  className={styles.moodIllustrationLayer}
-                  style={{ x: illustrationX, y: illustrationY }}
-                >
-                  <MoodIllustration
-                    className={styles.moodIllustration}
-                    moodId={item.id}
-                  />
-                </motion.span>
               </motion.span>
-            </SelectionCardBody>
+            </span>
           </motion.span>
         </motion.button>
       </motion.div>

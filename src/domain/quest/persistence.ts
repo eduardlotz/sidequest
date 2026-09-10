@@ -13,6 +13,8 @@ import {
   DEFAULT_PROFILE,
   INITIAL_RED_ROPES,
   QUEST_OFFER_COUNT,
+  QUEST_OFFER_MODES,
+  type QuestOfferMode,
   STORED_COMPLETION_LIMIT,
   STORE_VERSION,
   type AvatarTheme,
@@ -87,6 +89,7 @@ export function sanitizePersistedQuestState(
     value.offerSetsByMoodId,
     random,
     libraryGames,
+    profile.questOfferMode,
   );
   if (selectedMoodId && !offerSetsByMoodId[selectedMoodId]) {
     offerSetsByMoodId[selectedMoodId] = sanitizedOfferSet(
@@ -94,6 +97,7 @@ export function sanitizePersistedQuestState(
       value.offeredQuests,
       random,
       libraryGames,
+      profile.questOfferMode,
     );
   }
   const offeredQuests = selectedMoodId
@@ -117,13 +121,14 @@ function offerSetsFromUnknown(
   value: unknown,
   random: () => number,
   libraryGames: readonly LibraryGame[],
+  mode: QuestOfferMode,
 ): Partial<Record<MoodId, QuestOffer[]>> {
   if (!isRecord(value)) return {};
   const offerSets: Partial<Record<MoodId, QuestOffer[]>> = {};
 
   for (const [moodId, offers] of Object.entries(value)) {
     if (!isMoodId(moodId) || !Array.isArray(offers)) continue;
-    offerSets[moodId] = sanitizedOfferSet(moodId, offers, random, libraryGames);
+    offerSets[moodId] = sanitizedOfferSet(moodId, offers, random, libraryGames, mode);
   }
 
   return offerSets;
@@ -134,6 +139,7 @@ function sanitizedOfferSet(
   value: unknown,
   random: () => number,
   libraryGames: readonly LibraryGame[],
+  mode: QuestOfferMode,
 ) {
   const offeredQuests = Array.isArray(value)
     ? value.flatMap((entry) => {
@@ -156,20 +162,12 @@ function sanitizedOfferSet(
         (candidate) => candidate.questId === offer.questId,
       ) === index,
   );
-  const compatibleIds = new Set(
-    libraryGames
-      .flatMap((game) => game.questIds)
-      .filter((id) => {
-        const quest = QUEST_CORES_BY_ID[id];
-        return quest?.gameBindable && quest.moodIds.includes(moodId);
-      }),
-  );
-  const expectedBoundCount = Math.min(2, compatibleIds.size);
+  const expected = generateQuestOffers(moodId, libraryGames, () => 0, { mode });
   if (
-    uniqueOffers.length !== QUEST_OFFER_COUNT ||
-    uniqueOffers.filter((offer) => offer.game).length !== expectedBoundCount
+    uniqueOffers.length !== expected.length ||
+    uniqueOffers.filter((offer) => offer.game).length !== expected.filter((offer) => offer.game).length
   ) {
-    return generateQuestOffers(moodId, libraryGames, random);
+    return generateQuestOffers(moodId, libraryGames, random, { mode });
   }
   return uniqueOffers.slice(0, QUEST_OFFER_COUNT);
 }
@@ -197,6 +195,8 @@ function profileFromUnknown(value: unknown): UserProfile {
         : safeNonNegativeInteger(storedRedRopes),
     avatarTheme: avatarThemeFromUnknown(value.avatarTheme),
     debugMode: value.debugMode === true,
+    questOfferMode: QUEST_OFFER_MODES.includes(value.questOfferMode as QuestOfferMode)
+      ? value.questOfferMode as QuestOfferMode : "all",
   };
 }
 

@@ -10,7 +10,6 @@ import { QUEST_CORES_BY_ID } from "../data/quests";
 import { libraryGamesFromState } from "../domain/library/rules";
 import { libraryStore } from "./useLibraryStore";
 import {
-  QUEST_OFFER_COUNT,
   RED_ROPE_BUNDLE_COST,
   RED_ROPE_BUNDLE_SIZE,
   NEW_CARDS_COST,
@@ -81,14 +80,14 @@ function createQuestState(
         expired || libraryChanged ? {} : { ...state.offerSetsByMoodId };
       const cachedOffers = offerSetsByMoodId[moodId];
       const offeredQuests =
-        cachedOffers?.length === QUEST_OFFER_COUNT
+        cachedOffers !== undefined
           ? [...cachedOffers]
           : generateQuestOffers(
               moodId,
               options.getLibraryGames(),
               options.random,
+              { mode: state.profile.questOfferMode },
             );
-      if (offeredQuests.length !== QUEST_OFFER_COUNT) return false;
 
       set({
         selectedMoodId: moodId,
@@ -130,6 +129,7 @@ function createQuestState(
         state.selectedMoodId,
         options.getLibraryGames(),
         options.random,
+        { mode: state.profile.questOfferMode },
       );
       set({
         offeredQuests,
@@ -163,10 +163,13 @@ function createQuestState(
         state.selectedMoodId,
         options.getLibraryGames(),
         options.random,
-        new Set(state.offeredQuests.map((offer) => offer.id)),
+        {
+          mode: state.profile.questOfferMode,
+          excludedOfferIds: new Set(state.offeredQuests.map((offer) => offer.id)),
+        },
       );
       if (
-        offeredQuests.length !== QUEST_OFFER_COUNT ||
+        offeredQuests.length === 0 ||
         sameQuestOffers(offeredQuests, state.offeredQuests)
       ) {
         return false;
@@ -352,6 +355,19 @@ function createQuestState(
         },
       });
       return true;
+    },
+    setQuestOfferMode: (mode) => {
+      const state = get();
+      if (state.profile.questOfferMode === mode) return;
+      const offeredQuests = state.selectedMoodId
+        ? generateQuestOffers(state.selectedMoodId, options.getLibraryGames(), options.random, { mode })
+        : [];
+      set({
+        profile: { ...state.profile, questOfferMode: mode },
+        offeredQuests,
+        offerSetsByMoodId: state.selectedMoodId ? { [state.selectedMoodId]: offeredQuests } : {},
+        offerLibraryRevision: options.getLibraryRevision(),
+      });
     },
     setDebugMode: (enabled) => {
       set((state) => ({

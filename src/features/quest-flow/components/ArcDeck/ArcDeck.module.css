@@ -5,9 +5,7 @@
   width: 100%;
   height: calc(100svh - var(--mood-screen-top) - var(--mood-header-height));
   min-height: 0;
-  overflow: hidden;
-  overflow-x: clip;
-  overflow-y: hidden;
+  overflow: visible;
   cursor: grab;
   perspective: 1600px;
   overscroll-behavior-y: none;
@@ -36,7 +34,7 @@
   left: 0;
   width: var(--mood-card-width);
   margin-left: calc(var(--mood-card-width) / -2);
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1.15;
   container-name: arc-card;
   container-type: inline-size;
   opacity: 1;
@@ -71,13 +69,13 @@
   height: 100%;
   padding: 0;
   border: 0;
-  border-radius: 30px;
+  border-radius: 3px;
   background: transparent;
   color: white;
   text-align: left;
   cursor: pointer;
   appearance: none;
-  transform-style: flat;
+  transform-style: preserve-3d;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -93,49 +91,92 @@
 .moodCardTiltSurface {
   position: absolute;
   display: block;
-  border-radius: 30px;
-  box-shadow: 0 22px 45px rgb(8 8 10 / 0.16);
   inset: 0;
   pointer-events: none;
   transform-style: preserve-3d;
-  transition: box-shadow 240ms cubic-bezier(0.22, 0.8, 0.24, 1);
   will-change: transform;
 }
 
-.moodSelectionCardBody {
-  --mood-card-radius: 30px;
-  --selection-card-border: transparent;
-  --selection-card-background: var(--mood-card-bg, #15271f);
-  --selection-card-content-overflow: visible;
-  --selection-card-overflow: visible;
-  --selection-card-radius: var(--mood-card-radius);
-  --selection-card-shadow: none;
-  border-color: transparent;
-}
-
-.moodSelectionCardBody::before {
+.moodBox {
+  --box-depth: 52px;
   position: absolute;
-  z-index: 3;
-  border: 4px solid #74747b;
-  border-radius: calc(var(--mood-card-radius) + 4px);
-  content: "";
-  inset: -4px;
-  opacity: 0;
-  outline: 3px solid #252529;
-  pointer-events: none;
-  transform: scale(0.985);
-  transition:
-    opacity 200ms cubic-bezier(0.22, 0.8, 0.24, 1),
-    transform 300ms cubic-bezier(0.22, 0.8, 0.24, 1);
-}
-
-.arcCardSlot[data-center] .moodSelectionCardBody::before {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.moodSelectionCardContent {
+  display: block;
+  inset: 0;
+  transform: rotateX(30deg);
+  transform-origin: 50% 100%;
   transform-style: preserve-3d;
+}
+
+.moodBoxFloor,
+.moodBoxLid,
+.moodBoxLidInside,
+.moodSelectionCardBody {
+  position: absolute;
+  display: block;
+  border-radius: 3px;
+  inset: 0;
+}
+
+.moodBoxFloor {
+  border: 2px solid #181a19;
+  background: color-mix(in srgb, var(--mood-card-bg) 55%, #050706);
+  box-shadow: inset 0 0 28px #0008;
+  transform: translateZ(calc(-1 * var(--box-depth)));
+}
+
+.moodBoxWall {
+  position: absolute;
+  display: block;
+  background: #090b0a;
+  border: 1px solid #1c201d;
+}
+
+.moodBoxWallFront,
+.moodBoxWallBack {
+  width: 100%;
+  height: var(--box-depth);
+  transform-origin: 50% 0;
+  transform: rotateX(-90deg);
+}
+
+.moodBoxWallFront { top: 100%; }
+.moodBoxWallBack { top: 0; }
+
+.moodBoxWallLeft,
+.moodBoxWallRight {
+  width: var(--box-depth);
+  height: 100%;
+  top: 0;
+  transform-origin: 0 50%;
+  transform: rotateY(90deg);
+}
+
+.moodBoxWallLeft { left: 0; }
+.moodBoxWallRight { left: 100%; }
+
+.moodBoxLid {
+  transform-origin: 50% 0;
+  transform-style: preserve-3d;
+}
+
+.moodBoxLidInside {
+  border: 2px solid color-mix(in srgb, var(--mood-card-border) 30%, #111);
+  background: color-mix(in srgb, var(--mood-card-bg) 75%, #050706);
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.moodSelectionCardBody {
+  overflow: hidden;
+  border: 2px solid color-mix(in srgb, var(--mood-card-border) 28%, #141715);
+  background: var(--mood-card-bg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.arcCardSlot[data-center] .moodSelectionCardBody {
+  border-color: color-mix(in srgb, var(--mood-card-copy) 42%, var(--mood-card-bg));
 }
 
 .moodCardVisual {
@@ -146,16 +187,6 @@
   inset: 0;
   pointer-events: none;
   transform-style: preserve-3d;
-}
-
-.moodCardVisual::after {
-  position: absolute;
-  z-index: 2;
-  border-radius: inherit;
-  box-shadow: inset 0 -24px 30px rgb(0 0 0 / 0.34);
-  content: "";
-  inset: 0;
-  pointer-events: none;
 }
 
 .arcCardContent {
@@ -174,7 +205,8 @@
   max-width: 94%;
   margin: 0;
   color: var(--mood-card-copy, #cce7d5);
-  font-size: clamp(1.9rem, 8cqw, 2.5rem);
+  font-size: clamp(1.35rem, 6cqw, 1.9rem);
+  font-style: italic;
   font-weight: 750;
   letter-spacing: -0.058em;
   line-height: 0.98;
@@ -184,9 +216,10 @@
 
 .arcCardDescription {
   max-width: 94%;
-  margin-top: clamp(10px, 2.3cqw, 14px);
+  margin-top: 4px;
   color: var(--mood-card-copy, #cce7d5);
-  font-size: clamp(0.94rem, 4.2cqw, 1.15rem);
+  font-size: clamp(0.8rem, 3.2cqw, 1rem);
+  font-style: italic;
   font-weight: 620;
   letter-spacing: -0.025em;
   line-height: 1.16;
@@ -196,7 +229,7 @@
 .moodIllustrationLayer {
   position: absolute;
   right: clamp(22px, 3.5cqw, 32px);
-  bottom: -10px;
+  bottom: 10%;
   left: clamp(22px, 3.5cqw, 32px);
   z-index: 1;
   display: block;
@@ -217,7 +250,7 @@
 .moodDeckControls {
   position: absolute;
   top: calc(
-    var(--arc-track-top) - 42px + (var(--mood-card-width) * 0.75) + 46px
+    var(--arc-track-top) - 90px + (var(--mood-card-width) / 1.15) + 40px
   );
   left: 50%;
   z-index: 60;
@@ -246,21 +279,8 @@
   transform: scaleX(-1);
 }
 
-@media (--hover) {
-  .arcCardSlot[data-center] .arcCardHitArea:hover .moodCardTiltSurface {
-    box-shadow: 0 31px 62px rgb(8 8 10 / 0.26);
-  }
-}
-
 @media (--mobile) {
-  .moodSelectionCardBody {
-    --mood-card-radius: 28px;
-  }
-
-  .arcCardHitArea,
-  .moodCardTiltSurface {
-    border-radius: 28px;
-  }
+  .moodBox { --box-depth: 40px; }
 
   .moodDeckControls {
     gap: 11px;
@@ -277,13 +297,6 @@
       var(--mood-card-inline-size),
       calc(133.333svh - 332px)
     );
-  }
-}
-
-@media (--reduced-motion) {
-  .moodSelectionCardBody::before,
-  .moodCardTiltSurface {
-    transition: none;
   }
 }
 

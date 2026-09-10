@@ -15,6 +15,7 @@ import { InfoIcon } from "@phosphor-icons/react/dist/csr/Info";
 import { CaretRightIcon } from "@phosphor-icons/react/dist/csr/CaretRight";
 import { XIcon } from "@phosphor-icons/react/dist/csr/X";
 
+import { FloatingIconButton } from "../../shared/ui/FloatingIconButton/FloatingIconButton";
 import { SolidButton } from "../../shared/ui/SolidButton/SolidButton";
 import { useLibraryStore } from "../../stores/useLibraryStore";
 import { LibraryCollectionEditor } from "./components/LibraryCollectionEditor/LibraryCollectionEditor";
@@ -230,13 +231,10 @@ export function LibrarySetup({
               ease: "easeOut",
             }}
           >
-            <SolidButton
+            <FloatingIconButton
               autoFocus
-              className={styles.informationClose}
               aria-label={t("ui.library.closeInformation")}
-              iconLeft={<XIcon weight="bold" />}
-              size="medium"
-              variant="secondary"
+              icon={<XIcon weight="bold" />}
               onClick={closeInformation}
             />
             <motion.div

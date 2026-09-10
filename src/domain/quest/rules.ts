@@ -10,6 +10,8 @@ import {
   POINTS_DURATION_CAP_MS,
   POINTS_PER_MINUTE,
   QUEST_OFFER_COUNT,
+  LIBRARY_QUEST_OFFER_COUNT,
+  type QuestOfferMode,
   type CompletedSession,
   type QuestOffer,
   type QuestSession,
@@ -31,21 +33,32 @@ export function createDefaultQuestState(): QuestState {
   };
 }
 
+type QuestOfferOptions = {
+  count?: number;
+  mode?: QuestOfferMode;
+  excludedOfferIds?: ReadonlySet<string>;
+  excludedQuestIds?: ReadonlySet<string>;
+  gameBoundTarget?: number;
+};
+
 export function generateQuestOffers(
   moodId: MoodId,
   libraryGames: readonly LibraryGame[] = [],
   random: () => number = Math.random,
-  excludedOfferIds: ReadonlySet<string> = new Set(),
-  count = QUEST_OFFER_COUNT,
-  gameBoundTarget = Math.min(2, count),
-  excludedQuestIds: ReadonlySet<string> = new Set(),
+  {
+    count = QUEST_OFFER_COUNT,
+    mode = "all",
+    excludedOfferIds = new Set<string>(),
+    excludedQuestIds = new Set<string>(),
+    gameBoundTarget = mode === "library" ? count : mode === "flexible" ? 0 : Math.min(LIBRARY_QUEST_OFFER_COUNT, count),
+  }: QuestOfferOptions = {},
 ): QuestOffer[] {
   const eligible = questCoresForMood(moodId);
   const eligibleById = new Map(eligible.map((quest) => [quest.id, quest]));
   const selected: QuestOffer[] = [];
   const selectedQuestIds = new Set(excludedQuestIds);
   const usedGameIds = new Set<string>();
-  const boundPool = libraryGames.flatMap((game) =>
+  const boundPool = (mode === "flexible" ? [] : libraryGames).flatMap((game) =>
     game.questIds.flatMap((questId) =>
       eligibleById.get(questId)?.gameBindable
         ? [createQuestOffer(moodId, questId, game)]
@@ -53,7 +66,7 @@ export function generateQuestOffers(
     ),
   );
   const universalPool = eligible
-    .filter((quest) => quest.universal)
+    .filter((quest) => mode !== "library" && quest.universal)
     .map((quest) => createQuestOffer(moodId, quest.id, null));
 
   function pick(pool: readonly QuestOffer[], preferDifferentGame = false) {
@@ -231,7 +244,7 @@ export function rotateSessionOffer(
 ): Pick<QuestState, "offeredQuests" | "offerSetsByMoodId"> {
   const storedOffers = state.offerSetsByMoodId[session.moodId];
   const moodOffers =
-    storedOffers?.length === QUEST_OFFER_COUNT
+    storedOffers !== undefined
       ? [...storedOffers]
       : state.selectedMoodId === session.moodId
         ? [...state.offeredQuests]
@@ -252,14 +265,15 @@ export function rotateSessionOffer(
     session.moodId,
     libraryGames,
     random,
-    new Set(moodOffers.map((offer) => offer.id)),
-    1,
-    session.game ? 1 : 0,
-    new Set(
-      moodOffers
-        .filter((_, index) => index !== slotIndex)
-        .map((offer) => offer.questId),
-    ),
+    {
+      count: 1,
+      mode: state.profile.questOfferMode,
+      excludedOfferIds: new Set(moodOffers.map((offer) => offer.id)),
+      gameBoundTarget: session.game ? 1 : 0,
+      excludedQuestIds: new Set(
+        moodOffers.filter((_, index) => index !== slotIndex).map((offer) => offer.questId),
+      ),
+    },
   )[0];
   if (!replacement) {
     return {

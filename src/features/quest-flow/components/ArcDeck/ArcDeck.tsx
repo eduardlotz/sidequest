@@ -18,6 +18,7 @@ import { VisuallyHidden } from "../../../../shared/ui/VisuallyHidden/VisuallyHid
 import { usePlayLayout } from "../../usePlayLayout";
 import styles from "./ArcDeck.module.css";
 import { ArcCard } from "./ArcCard";
+import { BOX_REVEAL_COMPLETE_MS, type MoodBoxOrigin } from "../QuestOfferDeck/questDeckMotion";
 import { clamp, loopDistance, modulo } from "./arcDeckMath";
 
 export type ArcDeckItem = {
@@ -31,10 +32,9 @@ type Props = {
   initialItemId?: MoodId;
   label: string;
   layerPresent: boolean;
-  layoutSessionId: number | string;
   reduceMotion: boolean;
   returningFromQuests: boolean;
-  onSelect: (id: MoodId) => boolean;
+  onSelect: (id: MoodId, origin: MoodBoxOrigin | null) => boolean;
 };
 
 type DragState = {
@@ -57,7 +57,6 @@ export function ArcDeck({
   initialItemId,
   label,
   layerPresent,
-  layoutSessionId,
   reduceMotion,
   returningFromQuests,
   onSelect,
@@ -253,18 +252,24 @@ export function ArcDeck({
       return;
     }
     if (selectedId || selectionFrameRef.current !== null) return;
+    const bounds = deckRef.current?.querySelector<HTMLElement>("[data-center] [data-mood-box]")?.getBoundingClientRect();
+    const origin = bounds ? {
+      centerX: bounds.left + bounds.width / 2,
+      centerY: bounds.top + bounds.height / 2,
+      width: bounds.width,
+    } : null;
     setSelectedId(itemId);
     playSound("cardSelect");
     if (reduceMotion) {
-      if (!onSelect(itemId)) setSelectedId(null);
+      if (!onSelect(itemId, origin)) setSelectedId(null);
     } else {
       selectionFrameRef.current = window.requestAnimationFrame(() => {
         selectionFrameRef.current = null;
-        if (!onSelect(itemId)) setSelectedId(null);
+        if (!onSelect(itemId, origin)) setSelectedId(null);
       });
     }
     if (focusNext) {
-      moveFocusToNextStep(reduceMotion ? 0 : 620);
+      moveFocusToNextStep(reduceMotion ? 0 : BOX_REVEAL_COMPLETE_MS);
     }
   }
 
@@ -290,7 +295,6 @@ export function ArcDeck({
             itemCount={items.length}
             key={item.id}
             layerPresent={layerPresent}
-            layoutSessionId={layoutSessionId}
             position={position}
             reduceMotion={reduceMotion}
             revealCards={revealCards}

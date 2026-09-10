@@ -6,7 +6,10 @@ export const STORE_KEY = "sidequest.quests";
 export const STORE_VERSION = 13;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const NEW_CARDS_COST = 25;
-export const QUEST_OFFER_COUNT = 3;
+export const QUEST_OFFER_COUNT = 5;
+export const LIBRARY_QUEST_OFFER_COUNT = 3;
+export const QUEST_OFFER_MODES = ["library", "flexible", "all"] as const;
+export type QuestOfferMode = (typeof QUEST_OFFER_MODES)[number];
 export const STORED_COMPLETION_LIMIT = 500;
 export const INITIAL_RED_ROPES = 3;
 export const RED_ROPE_BUNDLE_SIZE = 1;
@@ -36,6 +39,7 @@ export type UserProfile = {
   redRopes: number;
   avatarTheme: AvatarTheme;
   debugMode: boolean;
+  questOfferMode: QuestOfferMode;
 };
 
 export type QuestSession = {
@@ -91,6 +95,7 @@ export type QuestState = {
 };
 
 export type QuestActions = {
+  setQuestOfferMode: (mode: QuestOfferMode) => void;
   selectMood: (moodId: MoodId) => boolean;
   editMood: () => boolean;
   refreshMoodWindow: () => void;
@@ -132,6 +137,7 @@ export const DEFAULT_PROFILE: UserProfile = {
   redRopes: INITIAL_RED_ROPES,
   avatarTheme: "default",
   debugMode: false,
+  questOfferMode: "all",
 };
 
 export const DEFAULT_QUEST_STATS: QuestStats = {
