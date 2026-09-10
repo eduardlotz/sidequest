@@ -160,13 +160,11 @@ export function CustomGameEditor({
   function showIconPage(nextPage: number) {
     const pageIndex = Math.max(0, Math.min(pageCount - 1, nextPage));
     setIconPage(pageIndex);
-    iconGridRef.current
-      ?.querySelector<HTMLElement>(`[data-icon-page="${pageIndex}"]`)
-      ?.scrollIntoView({
-        behavior: reduced ? "instant" : "smooth",
-        block: "nearest",
-        inline: "start",
-      });
+    const viewport = iconGridRef.current;
+    viewport?.scrollTo({
+      left: pageIndex * viewport.clientWidth,
+      behavior: reduced ? "instant" : "smooth",
+    });
   }
   function submit(event: FormEvent) {
     event.preventDefault();
@@ -182,13 +180,10 @@ export function CustomGameEditor({
   const pageCount = Math.ceil(GAME_ICON_IDS.length / ICONS_PER_PAGE);
   const renderPage = (view: typeof page) => {
     const page = view;
-    const iconChoices = GAME_ICON_IDS.map((icon, index) => (
+    const iconChoices = GAME_ICON_IDS.map((icon) => (
       <button
         key={icon}
         data-icon={icon}
-        data-page-start={
-          index % ICONS_PER_PAGE === 0 || undefined
-        }
         type="button"
         aria-label={t("ui.library.iconChoice", {
           icon: t(`ui.library.icons.${icon}`),
@@ -297,7 +292,7 @@ export function CustomGameEditor({
           }
         >
           {page === "appearance" ? (
-            <form className={styles.appearance} data-library-part="appearance" id={formId} onSubmit={submit}>
+            <form className={styles.appearance} id={formId} onSubmit={submit}>
               <div className={styles.identity}>
                 <div className={styles.identityVisual} ref={identityRef}>
                   <GameVisual
@@ -317,10 +312,10 @@ export function CustomGameEditor({
                   autoComplete="off"
                 />
               </div>
-              <fieldset className={styles.picker} data-library-part="picker">
+              <fieldset className={styles.picker}>
                 <legend>{t("ui.library.gameIcon")}</legend>
                 <div
-                  className={styles.iconViewport} data-library-part="iconViewport"
+                  className={styles.iconViewport}
                   ref={iconGridRef}
                   onScroll={(event) => {
                     const node = event.currentTarget;
@@ -333,7 +328,7 @@ export function CustomGameEditor({
                     );
                   }}
                 >
-                  <div className={styles.iconGrid} data-library-part="iconGrid">
+                  <div className={styles.iconGrid}>
                     {Array.from({ length: pageCount }, (_, index) => (
                         <div className={styles.iconPage} key={index} data-icon-page={index}>
                           {iconChoices.slice(index * ICONS_PER_PAGE, (index + 1) * ICONS_PER_PAGE)}
@@ -343,10 +338,11 @@ export function CustomGameEditor({
                   </div>
                 </div>
                 <nav
-                  className={styles.pagination} data-library-part="pagination"
+                  className={styles.pagination}
                   aria-label={t("ui.library.gameIcon")}
                 >
                   <SolidButton
+                    data-direction="previous"
                     disabled={iconPage === 0}
                     aria-label={t("ui.library.previousIcons")}
                     iconLeft={<ChevronIcon className={styles.previous} />}
@@ -364,6 +360,7 @@ export function CustomGameEditor({
                     />
                   ))}
                   <SolidButton
+                    data-direction="next"
                     disabled={iconPage === pageCount - 1}
                     aria-label={t("ui.library.nextIcons")}
                     iconLeft={<ChevronIcon />}
@@ -374,7 +371,7 @@ export function CustomGameEditor({
                 </nav>
               </fieldset>
               <div className={styles.colorPicker}>
-                <fieldset className={styles.colors} data-library-part="colors" ref={colorScrollRef}>
+                <fieldset className={styles.colors} ref={colorScrollRef}>
                   <legend>{t("ui.library.gameColor")}</legend>
                   {[
                     ...GAME_PICKER_COLOR_IDS,
@@ -406,18 +403,18 @@ export function CustomGameEditor({
                   ))}
                 </fieldset>
                 {colorEdges.left && <SolidButton
-                  className={`${styles.moreColors} ${styles.previousColors}`} size="small" variant="soft"
+                  className={styles.moreColors} data-direction="previous" size="small" variant="soft"
                   aria-label={t("ui.library.previousColors")} iconLeft={<ChevronIcon className={styles.previous} />}
                   onClick={() => colorScrollRef.current?.scrollBy({ left: -192, behavior: reduced ? "instant" : "smooth" })}
                 />}
                 {colorEdges.right && <SolidButton
-                  className={styles.moreColors} size="small" variant="soft"
+                  className={styles.moreColors} data-direction="next" size="small" variant="soft"
                   aria-label={t("ui.library.moreColors")} iconLeft={<ChevronIcon />}
                   onClick={() => colorScrollRef.current?.scrollBy({ left: 192, behavior: reduced ? "instant" : "smooth" })}
                 />}
               </div>
-              <section className={styles.activities} data-library-part="activities">
-                <div className={styles.sectionHeading} data-library-part="sectionHeading">
+              <section className={styles.activities}>
+                <div className={styles.sectionHeading}>
                   <InfoLabel
                     label={t("ui.library.possibleActivities")}
                     hint={t("ui.library.capabilitiesHint")}
@@ -437,7 +434,7 @@ export function CustomGameEditor({
                 </div>
                 {capabilityIds.length ? (
                   capabilityIds.map((id) => (
-                    <div className={styles.summaryRow} data-library-part="summaryRow" key={id}>
+                    <div className={styles.summaryRow} key={id}>
                       <CapabilityIcon capability={id} />
                       <span>
                         {t(`ui.library.capabilityLabels.${id}`)}
@@ -450,7 +447,7 @@ export function CustomGameEditor({
                     </div>
                   ))
                 ) : (
-                  <div className={styles.emptyActivities} data-library-part="emptyActivities">
+                  <div className={styles.emptyActivities}>
                     <EyesIcon aria-hidden />
                     <strong>{t("ui.library.chooseActivities")}</strong>
                     <SolidButton
@@ -471,10 +468,8 @@ export function CustomGameEditor({
             </form>
           ) : (
             <>
-              <div data-library-part="activitySection"
-                className={styles.activitySection}
-              >
-                <label className={styles.search} data-library-part="search">
+              <div className={styles.activitySection}>
+                <label className={styles.search}>
                   <SearchIcon />
                   <input
                     type="search"
@@ -505,7 +500,7 @@ export function CustomGameEditor({
                     ? activities.map((id) => (
                       <button
                         type="button"
-                        className={styles.activityRow} data-library-part="activityRow"
+                        className={styles.activityRow}
                         key={id}
                         aria-pressed={pendingActivities.includes(id)}
                         onClick={() =>
@@ -534,7 +529,7 @@ export function CustomGameEditor({
                     : filteredQuests.map((q) => (
                       <button
                         key={q.id}
-                        className={styles.activityRow} data-library-part="activityRow"
+                        className={styles.activityRow}
                         type="button"
                         aria-pressed={reviewedEnabled.has(q.id)}
                         onClick={() =>

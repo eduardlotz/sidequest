@@ -1,5 +1,35 @@
 .section {
   min-width: 0;
-  border-radius: 16px;
-  background: rgb(var(--color-text-rgb) / 0.05);
+  padding: var(--library-panel-inset);
+  border-radius: var(--library-panel-radius);
+  background: var(--library-muted-surface);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-inline: var(--library-row-inset);
+  font-size: 14px;
+}
+
+.emptyState {
+  display: flex;
+  min-height: 172px;
+  padding: 28px var(--library-row-inset) 24px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  border-radius: 18px;
+  background: var(--color-surface);
+  color: var(--color-muted);
+  text-align: center;
+
+  > svg {
+    width: 34px;
+    height: 34px;
+    color: var(--color-muted);
+  }
 }

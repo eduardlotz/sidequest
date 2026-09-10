@@ -1,6 +1,4 @@
 .setup {
-  composes: elements from "./components/LibraryFlowElements.module.css";
-  --flow-frame-content-width: 360px;
   --flow-frame-edge-inset: 16px;
 
   position: relative;

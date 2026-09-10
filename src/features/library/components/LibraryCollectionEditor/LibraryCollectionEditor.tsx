@@ -112,9 +112,9 @@ export function LibraryCollectionEditor({
             initialScrollTop={overviewScroll.current}
             scrollElementRef={overviewScrollRef}
           >
-            <div className={styles.collectionEditor} data-library-part="collectionEditor">
-              <section className={styles.collectionSection} data-library-part="collectionSection">
-                <div className={styles.sectionHeader} data-library-part="sectionHeader">
+            <div className={styles.collectionEditor}>
+              <section className={styles.collectionSection}>
+                <div className={styles.sectionHeader}>
                   <h3>
                     <InfoLabel
                       label={t("ui.library.curatedHeading")}
@@ -126,7 +126,7 @@ export function LibraryCollectionEditor({
                   </span>
                 </div>
                 <LayoutGroup id="curated-library-games">
-                  <div className={styles.curatedList} data-library-part="curatedList">
+                  <div className={styles.curatedList}>
                     {CURATED_GAMES.map((game, index) => {
                       const selected = selectedCuratedGameIds.includes(game.id);
                       const previousSelected = selectedCuratedGameIds.includes(
@@ -155,7 +155,7 @@ export function LibraryCollectionEditor({
                           }}
                         >
                           <button
-                            className={styles.curatedGame} data-library-part="curatedGame"
+                            className={styles.curatedGame}
                             type="button"
                             aria-pressed={selected}
                             onClick={() => toggleCuratedGame(game.id)}
@@ -219,9 +219,9 @@ export function LibraryCollectionEditor({
                                     }
                                 }
                               >
-                                <div className={styles.curatedOptions} data-library-part="curatedOptions">
+                                <div className={styles.curatedOptions}>
                                   <span>{t("ui.library.installments")}</span>
-                                  <div className={styles.installmentChips} data-library-part="installmentChips">
+                                  <div className={styles.installmentChips}>
                                     {game.installments.map((entry) => {
                                       const installmentSelected =
                                         preferences.installmentIds.includes(
@@ -239,10 +239,6 @@ export function LibraryCollectionEditor({
                                             )
                                           }
                                         >
-                                          <span
-                                            className={styles.chipDot} data-library-part="chipDot"
-                                            aria-hidden
-                                          />
                                           <span>{entry.name}</span>
                                         </button>
                                       );
@@ -258,8 +254,8 @@ export function LibraryCollectionEditor({
                   </div>
                 </LayoutGroup>
               </section>
-              <section className={styles.collectionSection} data-library-part="collectionSection">
-                <div className={styles.sectionHeader} data-library-part="sectionHeader">
+              <section className={styles.collectionSection}>
+                <div className={styles.sectionHeader}>
                   <h3>
                     <InfoLabel
                       label={t("ui.library.customHeading")}
@@ -295,7 +291,7 @@ export function LibraryCollectionEditor({
                     </div>
                   </>
                 ) : (
-                  <div className={styles.emptyState} data-library-part="emptyState">
+                  <div className={styles.emptyState}>
                     <FolderDashedIcon aria-hidden />
                     <strong>{t("ui.library.noCustomGames")}</strong>
                     <SolidButton
@@ -355,7 +351,7 @@ function CustomGameRow({
             </button>
             <button
               type="button"
-              className={styles.removeConfirmation}
+              data-action="remove"
               onClick={onRemove}
             >
               {t("ui.library.confirmRemove")}
@@ -373,6 +369,7 @@ function CustomGameRow({
             </button>
             <button
               type="button"
+              data-action="remove"
               onClick={() => setConfirming(true)}
               aria-label={t("ui.library.removeGame", { game: game.name })}
               title={t("ui.library.remove")}
