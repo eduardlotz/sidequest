@@ -185,7 +185,7 @@
   margin: 0;
 }
 
-@media (hover: hover) and (pointer: fine) {
+@media (--hover) {
   .moodEditControl:hover .moodEditTooltip,
   .moodEditControl:focus-within .moodEditTooltip {
     opacity: 1;
@@ -193,7 +193,7 @@
   }
 }
 
-@media (max-width: 820px) {
+@media (--mobile) {
   .selectionScreen {
     --mood-screen-top-inline: 78px;
     --mood-header-height-inline: 86px;
@@ -223,7 +223,7 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (--reduced-motion) {
   .moodEditTooltip {
     transition: none;
   }

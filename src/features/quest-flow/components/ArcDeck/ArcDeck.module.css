@@ -246,13 +246,13 @@
   transform: scaleX(-1);
 }
 
-@media (hover: hover) and (pointer: fine) {
+@media (--hover) {
   .arcCardSlot[data-center] .arcCardHitArea:hover .moodCardTiltSurface {
     box-shadow: 0 31px 62px rgb(8 8 10 / 0.26);
   }
 }
 
-@media (max-width: 820px) {
+@media (--mobile) {
   .moodSelectionCardBody {
     --mood-card-radius: 28px;
   }
@@ -280,7 +280,7 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (--reduced-motion) {
   .moodSelectionCardBody::before,
   .moodCardTiltSurface {
     transition: none;

@@ -28,7 +28,7 @@
   -webkit-backface-visibility: hidden;
 }
 
-@media (max-width: 820px) {
+@media (--mobile) {
   .selectionCardBody,
   .selectionCardContent {
     border-radius: var(--selection-card-radius, 28px);

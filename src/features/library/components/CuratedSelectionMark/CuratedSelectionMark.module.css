@@ -50,7 +50,7 @@
   color: #f2c94c;
   filter: drop-shadow(0 2px 4px #f2c94c40);
 }
-@media (prefers-reduced-motion: reduce) {
+@media (--reduced-motion) {
   .mark {
     transition: none;
   }

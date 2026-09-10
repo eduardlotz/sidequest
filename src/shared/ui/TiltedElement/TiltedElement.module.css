@@ -4,7 +4,7 @@
   place-items: center;
   perspective: 600px;
 
-  @media (hover: hover) and (pointer: fine) {
+  @media (--hover) {
     &:hover .tiltedInner {
       filter: drop-shadow(0 8px 10px rgb(var(--color-shadow-rgb) / 0.2));
     }

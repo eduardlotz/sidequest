@@ -168,7 +168,7 @@ a:focus-visible {
   background: var(--color-selection-bg);
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (--reduced-motion) {
   html {
     scroll-behavior: auto;
     transition: none;

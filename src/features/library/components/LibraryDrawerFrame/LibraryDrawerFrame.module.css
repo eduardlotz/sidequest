@@ -28,7 +28,7 @@
 }
 .header h2 { margin: 0; font-size: 16px; letter-spacing: -0.03em; text-align: center; }
 .body { flex: 1; min-height: 0; padding: 0 0 8px; }
-@media (max-width: 820px) {
+@media (--mobile) {
   .drawer { height: 100%; max-height: 100%; }
   .header { padding-top: 26px; min-height: 76px; }
   .body { padding-bottom: max(8px, env(safe-area-inset-bottom)); }

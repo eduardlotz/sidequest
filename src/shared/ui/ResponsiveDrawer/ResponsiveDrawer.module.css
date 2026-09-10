@@ -64,7 +64,7 @@
   display: none;
 }
 
-@media (max-width: 820px) {
+@media (--mobile) {
   .drawerContent[data-direction="bottom"] {
     position: absolute;
     width: 100%;
@@ -92,7 +92,7 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (--reduced-motion) {
   .drawerContent {
     transition: none;
   }

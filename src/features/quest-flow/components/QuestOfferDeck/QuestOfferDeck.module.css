@@ -174,7 +174,7 @@
     calc(var(--new-cards-delay, 0s) + 0.44s) both;
 }
 
-@media (hover: hover) and (pointer: fine) {
+@media (--hover) {
   .previewCardHitArea:not([data-selected]):hover,
   .previewCardHitArea:focus-visible {
     --quest-card-content-opacity: 1;
@@ -311,7 +311,7 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (--reduced-motion) {
   .questSelectionCard,
   .previewCardSlot,
   .previewCardTilt {
