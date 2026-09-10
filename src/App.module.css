@@ -20,9 +20,10 @@
 
     background: linear-gradient(
       90deg,
-      #f2f2f900,
-      var(--color-canvas),
-      #f2f2f900
+      #f2f2f900 0%,
+      var(--color-canvas) 25%,
+      var(--color-canvas) 75%,
+      #f2f2f900 100%
     );
   }
 }

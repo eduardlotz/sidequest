@@ -295,12 +295,12 @@ export function CustomGameEditor({
           {presentation !== "drawer" && (
             <SolidButton
               className={styles.back}
-              iconLeft={<ChevronIcon />}
+              // iconLeft={<ChevronIcon />}
               size="large"
               variant="ghost"
               onClick={onCancel}
             >
-              {t("ui.library.back")}
+              {t("ui.library.cancel")}
             </SolidButton>
           )}
         </>
@@ -314,7 +314,7 @@ export function CustomGameEditor({
           {presentation !== "drawer" && (
             <SolidButton
               className={styles.back}
-              iconLeft={<ChevronIcon />}
+              // iconLeft={<ChevronIcon />}
               size="large"
               variant="ghost"
               onClick={() => changePage("appearance")}

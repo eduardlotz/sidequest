@@ -13,6 +13,7 @@ import { QuestCardBack } from "../../../../shared/quest-card/QuestCardBack/Quest
 import { plainObjectiveText } from "../../../../shared/quest-card/QuestObjectiveText/QuestObjectiveText";
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
 import { usePlayLayout } from "../../usePlayLayout";
+import { useQuestCardDrag } from "./useQuestCardDrag";
 
 export type QuestOfferItem = Quest & { offerId: string };
 export type NewCardsPhase = "idle" | "outgoing" | "incoming";
@@ -267,6 +268,14 @@ function QuestOfferCard({
   const { t } = useTranslation();
   const { isCompact } = usePlayLayout();
   const dealingNewCards = newCardsPhase !== "idle";
+  const drag = useQuestCardDrag({
+    reduceMotion,
+    onCycle: () => onCycle(1),
+    onExit: () => onSwipeStart(item.offerId),
+    onReturn: () => onSwipeReturnStart(item.offerId),
+    onComplete: () => onSwipeComplete(item.offerId),
+  });
+
   const suppressClickRef = useRef(false);
   const swipeX = useMotionValue(0);
   const swipeAnimationRef = useRef<ReturnType<typeof animate> | null>(null);
@@ -351,8 +360,7 @@ function QuestOfferCard({
           : selectionStarted && !selected
             ? "blur(5px)"
             : "blur(0px)",
-        opacity:
-          (selectionStarted && !selected) || returningToMoods ? 0 : 1,
+        opacity: (selectionStarted && !selected) || returningToMoods ? 0 : 1,
         x:
           selectionStarted && !selected
             ? index === 0
@@ -433,7 +441,7 @@ function QuestOfferCard({
                 ease: CARD_FADE_EASE,
                 delay: positionDelay,
               },
-          }
+            }
       }
     >
       <button
@@ -471,78 +479,81 @@ function QuestOfferCard({
       >
         <motion.span
           className={styles.previewCardTilt}
-          drag={
-            isCompact &&
-            isTopCard &&
-            !selectionStarted &&
-            !dealingNewCards
-              ? "x"
-              : false
-          }
-          dragConstraints={{ left: 0, right: 0 }}
-          dragDirectionLock
+          drag={isCompact && isTopCard && !selectionStarted && !dealingNewCards}
+          dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+          // dragDirectionLock
           dragElastic={1}
           dragMomentum={false}
           onPointerDown={() => {
             suppressClickRef.current = false;
           }}
-          onDrag={(_, info) => {
-            if (Math.abs(info.offset.x) > 8) suppressClickRef.current = true;
-          }}
-          onDragEnd={(_, info) => {
-            const flicked =
-              Math.abs(info.offset.x) > 58 || Math.abs(info.velocity.x) > 520;
+          // onDrag={(_, info) => {
+          //   if (Math.abs(info.offset.x) > 8) suppressClickRef.current = true;
+          // }}
+          // onDragEnd={(_, info) => {
+          //   const flicked =
+          //     Math.abs(info.offset.x) > 58 || Math.abs(info.velocity.x) > 520;
 
-            if (flicked) {
-              const direction =
-                info.offset.x < 0 || info.velocity.x < -520 ? -1 : 1;
-              const compactCardWidth = Math.min(window.innerWidth * 0.8, 300);
-              const exitDistance = Math.max(
-                (window.innerWidth + compactCardWidth) / 2 + 12,
-                Math.abs(info.offset.x) + 140,
-              );
+          //   if (flicked) {
+          //     const direction =
+          //       info.offset.x < 0 || info.velocity.x < -520 ? -1 : 1;
+          //     const compactCardWidth = Math.min(window.innerWidth * 0.8, 300);
+          //     const exitDistance = Math.max(
+          //       (window.innerWidth + compactCardWidth) / 2 + 12,
+          //       Math.abs(info.offset.x) + 140,
+          //     );
 
-              onSwipeStart(item.offerId);
-              onCycle(1);
+          //     onSwipeStart(item.offerId);
+          //     onCycle(1);
 
-              if (reduceMotion) {
-                swipeX.set(0);
-                onSwipeComplete(item.offerId);
-              } else {
-                swipeAnimationRef.current?.stop();
-                swipeAnimationRef.current = animate(
-                  swipeX,
-                  direction * exitDistance,
-                  {
-                    duration: 0.2,
-                    ease: [0.22, 0.8, 0.24, 1],
-                    onComplete: () => {
-                      onSwipeReturnStart(item.offerId);
-                      swipeAnimationRef.current = animate(swipeX, 0, {
-                        type: "spring",
-                        stiffness: 420,
-                        damping: 34,
-                        mass: 0.58,
-                        restDelta: 0.5,
-                        restSpeed: 25,
-                        onComplete: () => onSwipeComplete(item.offerId),
-                      });
-                    },
-                  },
-                );
-              }
+          //     if (reduceMotion) {
+          //       swipeX.set(0);
+          //       onSwipeComplete(item.offerId);
+          //     } else {
+          //       swipeAnimationRef.current?.stop();
+          //       swipeAnimationRef.current = animate(
+          //         swipeX,
+          //         direction * exitDistance,
+          //         {
+          //           duration: 0.2,
+          //           ease: [0.22, 0.8, 0.24, 1],
+          //           onComplete: () => {
+          //             onSwipeReturnStart(item.offerId);
+          //             swipeAnimationRef.current = animate(swipeX, 0, {
+          //               type: "spring",
+          //               stiffness: 420,
+          //               damping: 34,
+          //               mass: 0.58,
+          //               restDelta: 0.5,
+          //               restSpeed: 25,
+          //               onComplete: () => onSwipeComplete(item.offerId),
+          //             });
+          //           },
+          //         },
+          //       );
+          //     }
+          //   }
+
+          //   window.setTimeout(() => {
+          //     suppressClickRef.current = false;
+          //   }, 0);
+          // }}
+          // onDrag={drag.onDrag}
+          onDrag={(event, info) => {
+            if (Math.hypot(info.offset.x, info.offset.y) > 8) {
+              suppressClickRef.current = true;
             }
 
-            window.setTimeout(() => {
-              suppressClickRef.current = false;
-            }, 0);
+            drag.onDrag(event, info);
           }}
+          onDragEnd={drag.onDragEnd}
           style={{
-            x: swipeX,
-            rotate: isCompact ? 0 : (CARD_ROTATIONS[index] ?? 0),
-            rotateX,
-            rotateY,
-            transformPerspective: 1_000,
+            x: drag.x,
+            y: drag.y,
+            rotate: isCompact ? drag.rotate : (CARD_ROTATIONS[index] ?? 0),
+            rotateX: isCompact ? drag.rotateX : rotateX,
+            rotateY: isCompact ? drag.rotateY : rotateY,
+            transformPerspective: 1000,
           }}
         >
           <span
@@ -580,10 +591,7 @@ function QuestOfferCard({
               objective={item.objective}
               suggestedDurationMinutes={item.suggestedDurationMinutes}
             >
-              <span
-                className={styles.newCardsShine}
-                aria-hidden="true"
-              />
+              <span className={styles.newCardsShine} aria-hidden="true" />
             </QuestCard>
             <QuestCardBack className={styles.newCardsCardBack} />
           </span>

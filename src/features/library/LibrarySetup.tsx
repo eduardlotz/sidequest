@@ -125,16 +125,20 @@ export function LibrarySetup({
               title={t("ui.library.overviewIntro")}
               footer={
                 <>
-                  <SolidButton size="large" variant="primary" onClick={completeSetup}>
+                  <SolidButton
+                    size="large"
+                    variant="primary"
+                    onClick={completeSetup}
+                  >
                     {t("ui.library.finishSetup")}
                   </SolidButton>
                   <SolidButton
                     size="large"
                     variant="ghost"
-                    iconLeft={<ChevronLeftIcon />}
+                    // iconLeft={<ChevronLeftIcon />}
                     onClick={() => setPersonal(false)}
                   >
-                    {t("ui.library.back")}
+                    {t("ui.library.cancel")}
                   </SolidButton>
                 </>
               }

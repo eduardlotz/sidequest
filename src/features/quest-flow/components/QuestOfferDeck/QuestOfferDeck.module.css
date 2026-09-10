@@ -3,9 +3,10 @@
   z-index: 4;
   display: flex;
   width: 100%;
-  height: var(--quest-deck-height);
+  /* height: var(--quest-deck-height); */
+  height: calc(var(--quest-deck-height) - 3rem);
   min-height: 0;
-  padding-top: 12px;
+  padding-top: 1rem;
   align-self: center;
   align-items: flex-start;
   justify-content: center;
@@ -32,11 +33,11 @@
 }
 
 .previewCardSlot[data-position="center"] {
-  top: -12px;
+  top: -24px;
 }
 
 .previewCardSlot + .previewCardSlot {
-  margin-left: clamp(-60px, calc(16.667cqw - 176.667px), -40px);
+  margin-left: clamp(-60px, calc(15cqw - 180px), -40px);
 }
 
 .previewCardSlot::before {
@@ -62,8 +63,7 @@
   filter: blur(0) !important;
 }
 
-:global([data-active-handoff="pending"])
-  .previewCardProjection[data-selected] {
+:global([data-active-handoff="pending"]) .previewCardProjection[data-selected] {
   visibility: visible !important;
 }
 
@@ -253,8 +253,7 @@
   transition: none;
 }
 
-:global([data-play-layout="compact"])
-  .previewCardSlot[data-swipe-returning] {
+:global([data-play-layout="compact"]) .previewCardSlot[data-swipe-returning] {
   z-index: 0;
   pointer-events: none;
 }
