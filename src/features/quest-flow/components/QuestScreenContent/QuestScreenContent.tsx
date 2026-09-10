@@ -370,7 +370,7 @@ export function QuestScreenContent({
                               className={styles.moodEditButton}
                               size="small"
                               type="button"
-                              variant="soft"
+                              variant="secondary"
                               aria-describedby="change-mood-tooltip"
                               onClick={editMood}
                             >

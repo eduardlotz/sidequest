@@ -148,7 +148,7 @@
   display: inline-flex;
 }
 
-.moodEditButton[data-variant="soft"] {
+.moodEditButton[data-variant="secondary"] {
   padding-inline: 12px;
   border-radius: 12px;
 }

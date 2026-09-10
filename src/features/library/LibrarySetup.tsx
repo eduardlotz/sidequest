@@ -157,7 +157,7 @@ export function LibrarySetup({
                   ref={informationTriggerRef}
                   iconLeft={<InfoIcon weight="bold" />}
                   size="medium"
-                  variant="soft"
+                  variant="secondary"
                   onClick={() => setInformationOpen(true)}
                 >
                   {t("ui.library.moreInformation")}
@@ -165,7 +165,7 @@ export function LibrarySetup({
                 <SolidButton
                   iconLeft={<GlobeIcon weight="bold" />}
                   size="medium"
-                  variant="soft"
+                  variant="secondary"
                   onClick={() =>
                     void i18n.changeLanguage(language === "en" ? "de" : "en")
                   }
@@ -178,7 +178,7 @@ export function LibrarySetup({
                   })}
                   iconLeft={<ContrastIcon />}
                   size="medium"
-                  variant="soft"
+                  variant="secondary"
                   onClick={() => onThemeChange(nextTheme)}
                 >
                   {t("ui.library.changeTheme")}
@@ -236,7 +236,7 @@ export function LibrarySetup({
               aria-label={t("ui.library.closeInformation")}
               iconLeft={<XIcon weight="bold" />}
               size="medium"
-              variant="soft"
+              variant="secondary"
               onClick={closeInformation}
             />
             <motion.div

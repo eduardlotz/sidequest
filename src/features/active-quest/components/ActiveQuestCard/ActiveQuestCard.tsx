@@ -1299,7 +1299,7 @@ export function ActiveQuestCard({
                 <SolidButton
                   size="small"
                   type="button"
-                  variant="soft"
+                  variant="secondary"
                   onClick={returnToSelection}
                 >
                   <span>{t("ui.timer.backToSelection")}</span>

@@ -10,8 +10,21 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  padding-block: 10px 16px;
   padding-inline: var(--library-row-inset);
   font-size: 14px;
+
+  h3 {
+    margin: 0;
+    font-size: inherit;
+    font-weight: 600;
+  }
+}
+
+.meta {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
 }
 
 .emptyState {

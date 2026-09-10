@@ -422,7 +422,7 @@ export function CustomGameEditor({
                   {capabilityIds.length ? (
                     <SolidButton
                       size="small"
-                      variant="soft"
+                      variant="highlighted"
                       onClick={() => {
                         setPendingActivities(capabilityIds);
                         changePage("activities");
@@ -451,9 +451,8 @@ export function CustomGameEditor({
                     <EyesIcon aria-hidden />
                     <strong>{t("ui.library.chooseActivities")}</strong>
                     <SolidButton
-                      size="small"
-                      variant="soft"
-                      iconLeft={<span aria-hidden>+</span>}
+                      size="medium"
+                      variant="highlighted"
                       onClick={() => {
                         setPendingActivities(capabilityIds);
                         changePage("activities");
@@ -567,7 +566,7 @@ export function CustomGameEditor({
                 {page === "quests" && (
                   <SolidButton
                     size="small"
-                    variant="soft"
+                    variant="secondary"
                     onClick={() => setPendingOverrides({})}
                   >
                     {t("ui.library.resetMatches")}

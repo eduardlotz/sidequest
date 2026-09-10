@@ -47,6 +47,10 @@ export const englishLibrary = {
   setupTitle: "Welcome to sidesidequest",
   setupDescription: "Start with a curated games collection or make your own.",
   curatedHeading: "Starter collection",
+  supportedGames: "Supported games",
+  noCuratedGames: "No starter games selected",
+  selectGame: "Select game",
+  saveSelection: "Save",
   curatedDescription: "Games and series with quests made for them.",
   questMode: "Quests for {{game}}",
   curatedOnly: "Curated only",
@@ -58,6 +62,7 @@ export const englishLibrary = {
   customDescription:
     "Add any game and choose the activities its quests can use.",
   addGame: "Add game",
+  add: "Add",
   saveGame: "Save game",
   cancel: "Cancel",
   edit: "Edit",
@@ -264,6 +269,10 @@ export const germanLibrary = {
   setupDescription:
     "Starte mit einer ausgewählten Spielesammlung oder erstelle deine eigene.",
   curatedHeading: "Starter-Sammlung",
+  supportedGames: "Unterstützte Spiele",
+  noCuratedGames: "Keine Starter ausgewählt",
+  selectGame: "Spiel auswählen",
+  saveSelection: "Speichern",
   curatedDescription: "Spiele und Reihen mit eigenen Quests.",
   questMode: "Quests für {{game}}",
   curatedOnly: "Nur kuratierte",
@@ -275,6 +284,7 @@ export const germanLibrary = {
   customDescription:
     "Füge ein beliebiges Spiel hinzu und wähle die Aktivitäten für seine Quests.",
   addGame: "Spiel hinzufügen",
+  add: "Hinzufügen",
   saveGame: "Spiel speichern",
   cancel: "Abbrechen",
   edit: "Bearbeiten",

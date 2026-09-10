@@ -69,8 +69,4 @@
       border-radius: 5px;
     }
   }
-
-  [data-variant="soft"] {
-    background: var(--library-muted-surface);
-  }
 }

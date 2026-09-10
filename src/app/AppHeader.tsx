@@ -117,7 +117,7 @@ export function AppHeader({
                   aria-label={t("ui.nav.about")}
                   size="medium"
                   type="button"
-                  variant="soft"
+                  variant="secondary"
                 >
                   {/* {t("ui.nav.about")} */}
                   <InfoIcon weight="bold" />
@@ -129,7 +129,7 @@ export function AppHeader({
             <SolidButton
               size="medium"
               type="button"
-              variant="soft"
+              variant="secondary"
               // iconLeft={<GlobeIcon weight="bold" />}
               aria-label={t("ui.nav.switchLanguage", {
                 language: nextLanguageName,
@@ -189,7 +189,7 @@ export function AppHeader({
                   data-sound-click-skip
                   size="medium"
                   type="button"
-                  variant="soft"
+                  variant="secondary"
                   aria-label={t("ui.nav.profileLabel", {
                     points: formattedPoints,
                   })}
