@@ -2,7 +2,7 @@
   --completion-ray: rgb(33 33 33 / 0.055);
   position: relative;
   display: grid;
-  min-height: 100svh;
+  min-height: var(--app-height);
   grid-template-columns: minmax(0, min(50%, 576px)) minmax(0, 1fr);
   overflow: hidden;
 }
@@ -118,7 +118,7 @@
   position: relative;
   z-index: 4;
   min-width: 0;
-  height: 100svh;
+  height: var(--app-height);
   overflow: hidden;
   touch-action: none;
   translate: clamp(-16px, calc(2.353cqw - 41.88px), -8px) 0;
@@ -161,7 +161,11 @@
   --timer-size: clamp(250px, 18cqw, 300px);
   --timer-body-width: calc(100% - 10px);
   position: absolute;
-  top: clamp(30.7svh, calc(30.7svh + 4.235cqw - 46.585px), 32.5svh);
+  top: clamp(
+    calc(var(--app-height) * 0.307),
+    calc(var(--app-height) * 0.307 + 4.235cqw - 46.585px),
+    calc(var(--app-height) * 0.325)
+  );
   left: 50%;
   z-index: 7;
   width: var(--timer-size);
@@ -235,7 +239,11 @@
 
 .timerReturnControl {
   position: absolute;
-  top: clamp(52.5svh, calc(52.5svh + 3.529cqw - 38.824px), 54svh);
+  top: clamp(
+    calc(var(--app-height) * 0.525),
+    calc(var(--app-height) * 0.525 + 3.529cqw - 38.824px),
+    calc(var(--app-height) * 0.54)
+  );
   left: 50%;
   z-index: 12;
   margin: 0;
@@ -250,7 +258,11 @@
 .timerHint {
   position: absolute;
   right: 24px;
-  bottom: clamp(22svh, calc(25svh - 7.059cqw + 77.65px), 25svh);
+  bottom: clamp(
+    calc(var(--app-height) * 0.22),
+    calc(var(--app-height) * 0.25 - 7.059cqw + 77.65px),
+    calc(var(--app-height) * 0.25)
+  );
   left: 24px;
   z-index: 4;
   display: flex;
@@ -509,7 +521,7 @@
 :global([data-play-layout="compact"]) .activeQuest {
   --active-card-height: calc(var(--quest-card-width) / 0.7);
   display: block;
-  min-height: 100svh;
+  min-height: var(--app-height);
   overflow: hidden;
 }
 
@@ -579,7 +591,7 @@
 :global([data-play-layout="compact"]) .timerRig {
   position: absolute;
   width: 100%;
-  height: 80svh;
+  height: calc(var(--app-height) * 0.8);
   overflow: hidden;
   border-top: 0;
   inset: 0 0 auto;
@@ -589,7 +601,7 @@
 :global([data-play-layout="compact"])
   .activeQuest[data-phase="paused"]
   .timerRig {
-  height: 100svh;
+  height: var(--app-height);
 }
 
 :global([data-play-layout="compact"]) .timerPosition {
@@ -602,7 +614,7 @@
   /* top: 0; */
   /* bottom: auto; */
   top: calc(
-    100svh - (var(--active-card-height) / 2) - clamp(180px, 35vh, 300px)
+    var(--app-height) - (var(--active-card-height) / 2) - clamp(180px, 35vh, 300px)
   );
   left: 50%;
 

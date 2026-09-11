@@ -56,7 +56,7 @@
   top: 79px;
   bottom: auto;
   height: auto;
-  max-height: calc(100svh - 98px);
+  max-height: calc(var(--app-height) - 98px);
   padding: 0 32px 0 0;
 }
 

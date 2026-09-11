@@ -389,6 +389,34 @@ export function QuestScreenContent({
                       </header> */}
 
                       <div className={styles.questDeckGroup}>
+                        <QuestOfferDeck
+                          items={offeredQuests}
+                          entryMotion={questEntryMotion}
+                          layoutSessionId={questLayoutSessionId}
+                          reduceMotion={reduceMotion}
+                          returningQuestId={
+                            returnedFromActive
+                              ? lastActiveQuestIdRef.current
+                              : undefined
+                          }
+                          returningToMoods={editingMood}
+                          newCardsSequence={newCardsSequence}
+                          newCardsPhase={newCardsPhase}
+                          onSelectionStart={(previewRotation) => {
+                            setNewCardsSequence(0);
+                            setNewCardsPhase("idle");
+                            setQuestSelectionClosing(true);
+                            setActiveHandoffStarted(false);
+                            setActiveEntryRotation(previewRotation);
+                          }}
+                          onSelect={(questId) => {
+                            onRevealQuest(questId);
+                            window.requestAnimationFrame(() =>
+                              setActiveHandoffStarted(true),
+                            );
+                          }}
+                        />
+
                         <motion.div
                           className={styles.newCardsControl}
                           initial={reduceMotion ? false : { opacity: 0, y: 8 }}
@@ -420,34 +448,6 @@ export function QuestScreenContent({
                             onClick={dealNewCards}
                           />
                         </motion.div>
-
-                        <QuestOfferDeck
-                          items={offeredQuests}
-                          entryMotion={questEntryMotion}
-                          layoutSessionId={questLayoutSessionId}
-                          reduceMotion={reduceMotion}
-                          returningQuestId={
-                            returnedFromActive
-                              ? lastActiveQuestIdRef.current
-                              : undefined
-                          }
-                          returningToMoods={editingMood}
-                          newCardsSequence={newCardsSequence}
-                          newCardsPhase={newCardsPhase}
-                          onSelectionStart={(previewRotation) => {
-                            setNewCardsSequence(0);
-                            setNewCardsPhase("idle");
-                            setQuestSelectionClosing(true);
-                            setActiveHandoffStarted(false);
-                            setActiveEntryRotation(previewRotation);
-                          }}
-                          onSelect={(questId) => {
-                            onRevealQuest(questId);
-                            window.requestAnimationFrame(() =>
-                              setActiveHandoffStarted(true),
-                            );
-                          }}
-                        />
 
                         <span className={styles.moodEditControl}>
                           <SolidButton

@@ -32,6 +32,7 @@
 
 :root {
   color-scheme: light;
+  --app-height: min(100svh, var(--visible-viewport-height, 100svh));
   --color-canvas: #f2f2f9;
   --color-canvas-gradient: linear-gradient(180deg, #f9f9fa 100%, #efeff2 100%);
   --color-canvas-rgb: 242 242 249;
@@ -137,14 +138,14 @@
 
 html {
   min-width: 320px;
-  min-height: 100%;
+  min-height: var(--app-height);
   background: var(--color-canvas);
   transition: background-color 180ms ease;
 }
 
 body {
   min-width: 320px;
-  min-height: 100svh;
+  min-height: var(--app-height);
   margin: 0;
   overflow-x: hidden;
 }

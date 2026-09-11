@@ -1,6 +1,6 @@
 .app {
   position: relative;
-  min-height: 100svh;
+  min-height: var(--app-height);
   overflow: hidden;
   background: var(--color-canvas);
   color: var(--color-text);
@@ -49,11 +49,11 @@
 }
 
 .main {
-  min-height: 100svh;
+  min-height: var(--app-height);
 }
 
 .app:has([data-play-layout="compact"]) {
-  height: 100svh;
+  height: var(--app-height);
 }
 
 .app[data-screen="setup"] {

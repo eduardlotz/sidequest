@@ -1,9 +1,11 @@
 .arcDeck {
-  --arc-track-top: clamp(84px, calc(37svh - 223px), 110px);
+  --arc-track-top: clamp(84px, calc(var(--app-height) * 0.37 - 223px), 110px);
   --mood-card-width: var(--mood-card-inline-size);
   position: relative;
   width: 100%;
-  height: calc(100svh - var(--mood-screen-top) - var(--mood-header-height));
+  height: calc(
+    var(--app-height) - var(--mood-screen-top) - var(--mood-header-height)
+  );
   min-height: 0;
   overflow: hidden;
   overflow-x: clip;
@@ -275,7 +277,7 @@
   .arcDeck {
     --mood-card-width: min(
       var(--mood-card-inline-size),
-      calc(133.333svh - 332px)
+      calc(var(--app-height) * 1.33333 - 332px)
     );
   }
 }
