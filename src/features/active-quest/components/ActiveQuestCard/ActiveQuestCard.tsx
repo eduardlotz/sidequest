@@ -1016,6 +1016,8 @@ export function ActiveQuestCard({
                       className={styles.activeQuestCard}
                       completed={showFinishedFace}
                       genres={quest.genres}
+          type={quest.type}
+          tags={quest.tags}
                       game={quest.game}
                       minimumDurationMinutes={quest.minimumDurationMinutes}
                       moodTitle={quest.mood.title}

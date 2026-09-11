@@ -2,73 +2,133 @@ import { defineGameQuests } from "../defineGameQuests";
 
 export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
   {
-    id: "stay-in-orbit", moods: ["explore", "focused"], minutes: 20, sources: ["nms-player-rules"],
-    en: { name: "Stay in Orbit", objective: "In **No Man's Sky**, start at a space station with a working ship and room for cargo. Mine asteroids for gold, silver, and tritium, then **sell some gold or silver at the station and refuel your pulse engine with the mined tritium**. Land on no planet and visit no Anomaly during the trip." },
-    de: { name: "Im Orbit bleiben", objective: "Starte in **No Man's Sky** an einer Raumstation mit flugfähigem Schiff und Platz für Fracht. Baue Gold, Silber und Tritium aus Asteroiden ab. **Verkaufe Gold oder Silber an der Station und betanke den Impulsantrieb mit dem abgebauten Tritium**. Keine Planetenlandung und kein Anomalie-Besuch auf diesem Ausflug." },
+    "id": "planet-field-card",
+    "moods": [
+      "create",
+      "focused"
+    ],
+    "type": "creation",
+    "tags": [
+      "photography",
+      "exploration"
+    ],
+    "minutes": 20,
+    "minimum": 2,
+    "en": {
+      "name": "Planet Field Card",
+      "objective": "On a planet with land animals in **No Man’s Sky**, scan an unfamiliar animal, plant, and mineral. **Save a photo of the animal in its habitat and upload the three discoveries**."
+    },
+    "de": {
+      "name": "Steckbrief eines Planeten",
+      "objective": "Scanne in **No Man’s Sky** auf einem Planeten mit Landtieren ein unbekanntes Tier, eine Pflanze und ein Mineral. **Fotografiere das Tier in seinem Lebensraum und lade die drei Entdeckungen hoch**."
+    }
   },
   {
-    id: "planet-field-card", moods: ["create", "curious"], minutes: 25, sources: ["nms-photo-hobby"],
-    en: { name: "Planet Field Card", objective: "On a planet with land animals in **No Man's Sky**, scan one previously unscanned animal, plant, and mineral. **Save a Photo Mode picture of the scanned animal with your ship in the background**, then upload the three discoveries. Do not rename another player's discoveries." },
-    de: { name: "Steckbrief eines Planeten", objective: "Scanne in **No Man's Sky** auf einem Planeten mit Landtieren je ein noch ungescanntes Tier, eine Pflanze und ein Mineral. **Speichere im Fotomodus ein Bild des gescannten Tiers mit deinem Schiff im Hintergrund** und lade die drei Entdeckungen hoch. Benenne keine Entdeckungen anderer Spieler um." },
+    "id": "salvage-repair",
+    "moods": [
+      "progress",
+      "focused"
+    ],
+    "type": "objective",
+    "tags": [
+      "crafting"
+    ],
+    "minutes": 25,
+    "minimum": 2,
+    "en": {
+      "name": "Back in Service",
+      "objective": "Use a crashed ship you already claimed in **No Man’s Sky**. Pick one damaged slot with materials available nearby. **Gather or refine those materials and repair the slot**, buying no supplies."
+    },
+    "de": {
+      "name": "Wieder einsatzbereit",
+      "objective": "Nimm in **No Man’s Sky** ein bereits beanspruchtes Schiffswrack. Wähle einen beschädigten Platz, dessen Materialien in der Nähe verfügbar sind. **Sammle oder veredle sie und repariere den Platz**, ohne Vorräte zu kaufen."
+    }
   },
   {
-    id: "salvage-repair", moods: ["progress", "focused"], minutes: 30,
-    en: { name: "Back in Service", objective: "In **No Man's Sky**, use a crashed ship you have already claimed. Pick one damaged slot whose materials you can gather nearby. **Repair that slot using only materials gathered or refined this trip**, without buying supplies." },
-    de: { name: "Wieder einsatzbereit", objective: "Nimm in **No Man's Sky** ein bereits beanspruchtes Schiffswrack. Wähle einen beschädigten Platz, dessen Materialien du in der Nähe sammeln kannst. **Repariere ihn nur mit auf diesem Ausflug gesammelten oder veredelten Materialien**, ohne Vorräte zu kaufen." },
+    "id": "new-companion",
+    "moods": [
+      "relax",
+      "explore"
+    ],
+    "type": "inspiration",
+    "tags": [
+      "animals",
+      "exploration"
+    ],
+    "minutes": 20,
+    "minimum": 1,
+    "en": {
+      "name": "New Travel Buddy",
+      "objective": "On a planet in **No Man’s Sky**, bring Creature Pellets and spend time with the animals you meet. Feed an approachable creature and see whether you want it along for your travels; adoption is optional."
+    },
+    "de": {
+      "name": "Neue Reisebegleitung",
+      "objective": "Nimm in **No Man’s Sky** Kreaturenpellets mit auf einen Planeten und beschäftige dich mit den Tieren, denen du begegnest. Füttere ein zutrauliches Wesen und schau, ob du es auf Reisen dabeihaben möchtest. Du musst es nicht adoptieren."
+    }
   },
   {
-    id: "buried-freighter", moods: ["explore", "curious"], minutes: 25,
-    en: { name: "Under the Wreck", objective: "At a crashed freighter you have found in **No Man's Sky**, use the Terrain Manipulator to uncover a buried cargo container. Gather its needed repair materials nearby, then **open the container and bring its contents back to your ship**." },
-    de: { name: "Unter dem Wrack", objective: "Lege bei einem entdeckten Frachterwrack in **No Man's Sky** mit dem Terrainmanipulator einen vergrabenen Frachtbehälter frei. Sammle die nötigen Reparaturmaterialien in der Nähe. **Öffne den Behälter und bring seinen Inhalt zu deinem Schiff**." },
+    "id": "cronus-tasting",
+    "moods": [
+      "curious",
+      "create"
+    ],
+    "type": "experiment",
+    "tags": [
+      "cooking"
+    ],
+    "minutes": 20,
+    "minimum": 2,
+    "en": {
+      "name": "For the Cook",
+      "objective": "With a Nutrient Processor and Anomaly access in **No Man’s Sky**, cook a dish from ingredients you already own. **Offer a serving to Cronus and hear his verdict**. No particular rating is required."
+    },
+    "de": {
+      "name": "Für den Koch",
+      "objective": "Koche in **No Man’s Sky** mit einem Nährstoffprozessor ein Gericht aus vorhandenen Zutaten; du brauchst Zugang zur Anomalie. **Gib Cronus eine Portion und hör dir sein Urteil an**. Eine bestimmte Bewertung ist nicht nötig."
+    }
   },
   {
-    id: "new-companion", moods: ["relax", "explore"], minutes: 20,
-    en: { name: "New Travel Buddy", objective: "In **No Man's Sky**, with Creature Pellets and a free companion slot, feed a land animal that offers adoption. **Adopt it, give it a name, and save a photo of you together beside your ship**. Leave the other animals alone." },
-    de: { name: "Neue Reisebegleitung", objective: "Füttere in **No Man's Sky** mit Kreaturenpellets ein Landtier, das du adoptieren kannst; du brauchst einen freien Begleiterplatz. **Adoptiere es, gib ihm einen Namen und speichere ein gemeinsames Foto neben deinem Schiff**. Lass die anderen Tiere in Ruhe." },
+    "id": "seafood-supper",
+    "moods": [
+      "relax",
+      "progress"
+    ],
+    "type": "objective",
+    "tags": [
+      "fishing",
+      "cooking"
+    ],
+    "minutes": 20,
+    "minimum": 2,
+    "en": {
+      "name": "Today's Catch",
+      "objective": "Bring a Fishing Rig and Nutrient Processor to the coast in **No Man’s Sky**. Catch a fish the processor accepts, then **cook and eat one serving from that catch**."
+    },
+    "de": {
+      "name": "Frisch gefangen",
+      "objective": "Nimm in **No Man’s Sky** Angelausrüstung und Nährstoffprozessor mit zur Küste. Fange einen Fisch, den der Prozessor annimmt, und **koche und iss eine Portion aus diesem Fang**."
+    }
   },
   {
-    id: "cronus-tasting", moods: ["curious", "create"], minutes: 25,
-    en: { name: "For the Cook", objective: "In **No Man's Sky**, with a Nutrient Processor and Anomaly access, gather ingredients for one cooking recipe you know. Cook it yourself, then **take one serving to Cronus on the Anomaly and have him judge it**." },
-    de: { name: "Für den Koch", objective: "Wenn du in **No Man's Sky** einen Nährstoffprozessor und Zugang zur Anomalie hast, sammle Zutaten für ein bekanntes Kochrezept. Koche es selbst und **lass Cronus auf der Anomalie eine Portion bewerten**." },
-  },
-  {
-    id: "night-power", moods: ["create", "focused"], minutes: 30,
-    en: { name: "After Sunset", objective: "At a base in **No Man's Sky**, with solar panels, batteries, and a teleporter unlocked, build a solar-powered teleporter with battery storage. Charge it during daylight, then **use it after sunset and teleport back to your base**." },
-    de: { name: "Nach Sonnenuntergang", objective: "Baue an einer Basis in **No Man's Sky** mit freigeschalteten Solarmodulen, Batterien und Teleporter einen solarbetriebenen Teleporter mit Batteriespeicher. Lade ihn tagsüber auf. **Nutze ihn nach Sonnenuntergang und teleportiere zurück zur Basis**." },
-  },
-  {
-    id: "alien-conversation", moods: ["curious", "low-energy"], minutes: 15,
-    en: { name: "Try the New Words", objective: "On a space station in **No Man's Sky**, ask three aliens of the same race for a new word. Then find one who offers language practice and **finish one practice conversation using the words you can now recognize**." },
-    de: { name: "Neue Wörter testen", objective: "Bitte auf einer Raumstation in **No Man's Sky** drei Aliens derselben Spezies um ein neues Wort. Suche danach jemanden, der Sprachübungen anbietet, und **beende ein Übungsgespräch mit den Wörtern, die du jetzt erkennst**." },
-  },
-  {
-    id: "buried-blueprint", moods: ["progress", "explore"], minutes: 25,
-    en: { name: "Dig to Build", objective: "In **No Man's Sky**, pin a building blueprint you can buy with Salvaged Data. Dig up enough Buried Technology Modules to buy it, then **unlock the blueprint and build its first copy at your base**. Use no stored Salvaged Data." },
-    de: { name: "Graben und Bauen", objective: "Markiere in **No Man's Sky** einen Bauplan, den du mit geborgenen Daten kaufen kannst. Grabe genug vergrabene Technologiemodule aus. **Schalte den Plan frei und baue das erste Exemplar an deiner Basis**. Nutze keine gelagerten geborgenen Daten." },
-  },
-  {
-    id: "trade-manifest", moods: ["focused", "curious"], minutes: 25,
-    en: { name: "One Cargo Run", objective: "In **No Man's Sky**, with warp travel ready, buy one stack of trade goods whose description names a buyer economy. Find a system with that economy and **sell the stack there for more than you paid**. Carry only that trade cargo." },
-    de: { name: "Eine Frachtfahrt", objective: "Kaufe in **No Man's Sky** mit einsatzbereitem Warpantrieb einen Stapel Handelswaren, dessen Beschreibung eine Käuferwirtschaft nennt. Finde ein System mit dieser Wirtschaft und **verkaufe den Stapel dort teurer als beim Einkauf**. Nimm keine andere Handelsfracht mit." },
-  },
-  {
-    id: "derelict-records", moods: ["challenge", "curious"], minutes: 30,
-    en: { name: "The Crew's Story", objective: "In **No Man's Sky**, use a derelict freighter you can already access. Recover its Crew Manifest and Captain's Log while reading the crew records along the way. **Turn both documents in to a Guild Envoy** after leaving the wreck." },
-    de: { name: "Geschichte der Crew", objective: "Betritt in **No Man's Sky** einen bereits zugänglichen verlassenen Frachter. Berge Mannschaftsliste und Kapitänslogbuch und lies unterwegs die Aufzeichnungen der Crew. **Gib beide Dokumente nach der Rückkehr bei einem Gildengesandten ab**." },
-  },
-  {
-    id: "seafood-supper", moods: ["relax", "progress"], minutes: 25,
-    en: { name: "Today's Catch", objective: "In **No Man's Sky**, bring your fishing rig and Nutrient Processor to the coast. Catch a fish accepted by a seafood recipe you know, then **cook and eat one serving made from that catch**. Do not use fish from storage." },
-    de: { name: "Frisch gefangen", objective: "Nimm in **No Man's Sky** deine Angelausrüstung und den Nährstoffprozessor mit zur Küste. Fange einen Fisch für ein bekanntes Fischrezept. **Koche und iss eine Portion aus diesem Fang**. Fische aus dem Lager zählen nicht." },
-  },
-  {
-    id: "exocraft-recovery", moods: ["restless", "explore"], minutes: 25,
-    en: { name: "Ground Crew", objective: "In **No Man's Sky**, with an Exocraft ready, mark a Buried Technology Module at least 500 units from your ship. Drive there, recover its Salvaged Data, and **return to the ship by Exocraft without summoning either vehicle**." },
-    de: { name: "Bodenteam", objective: "Markiere in **No Man's Sky** mit einsatzbereitem Exofahrzeug ein vergrabenes Technologiemodul mindestens 500 Einheiten vom Schiff entfernt. Fahre hin, berge die Daten und **kehre im Exofahrzeug zurück, ohne ein Fahrzeug herbeizurufen**." },
-  },
-  {
-    id: "farm-module", moods: ["create", "overwhelmed"], minutes: 20,
-    en: { name: "One Crop Room", objective: "In **No Man's Sky**, with indoor farming unlocked, build a small room at your base for four powered Hydroponic Trays. **Plant the same unlocked crop in all four trays**, add a light, and leave the rest of the base as it is." },
-    de: { name: "Ein Pflanzraum", objective: "Baue in **No Man's Sky** mit freigeschaltetem Innenanbau einen kleinen Raum für vier mit Strom versorgte Hydrokulturtröge. **Pflanze in alle vier dieselbe freigeschaltete Pflanze**, bring Licht an und lass den Rest der Basis so, wie er ist." },
-  },
+    "id": "exocraft-recovery",
+    "moods": [
+      "restless",
+      "explore"
+    ],
+    "type": "objective",
+    "tags": [
+      "driving",
+      "exploration"
+    ],
+    "minutes": 20,
+    "minimum": 2,
+    "en": {
+      "name": "Ground Crew",
+      "objective": "With an Exocraft ready in **No Man’s Sky**, mark a nearby Buried Technology Module with your visor. Drive there, dig up the Salvaged Data, and **return to your ship in the same Exocraft** without summoning either vehicle."
+    },
+    "de": {
+      "name": "Bodenteam",
+      "objective": "Markiere in **No Man’s Sky** mit dem Visier ein nahes vergrabenes Technologiemodul; dein Exofahrzeug muss bereitstehen. Fahre hin, grabe die geborgenen Daten aus und **kehre im selben Exofahrzeug zum Schiff zurück**, ohne ein Fahrzeug herbeizurufen."
+    }
+  }
 ]);

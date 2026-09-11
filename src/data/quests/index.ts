@@ -6,6 +6,7 @@ import {
   type QuestCoreDefinition,
   type QuestTranslation,
 } from "../questTypes";
+import { isQuestTypeAllowed } from "../questTraits";
 import { challengeQuests } from "./challenge";
 import { connectQuests } from "./connect";
 import { createQuests } from "./create";
@@ -29,7 +30,7 @@ export type {
   QuestTranslation,
 } from "../questTypes";
 
-const MOOD_QUESTS = {
+const MOOD_QUESTS: Record<MoodId, readonly AuthoredQuestDefinition[]> = {
   relax: relaxQuests,
   explore: exploreQuests,
   progress: progressQuests,
@@ -42,13 +43,21 @@ const MOOD_QUESTS = {
   focused: focusedQuests,
   curious: curiousQuests,
   "low-energy": lowEnergyQuests,
-} satisfies Record<MoodId, readonly AuthoredQuestDefinition[]>;
+};
 
 export const QUEST_CATALOG: readonly AuthoredQuestDefinition[] = [
   ...MOOD_IDS.flatMap((moodId) => MOOD_QUESTS[moodId]),
   ...reusableQuests,
   ...exclusiveQuests,
 ];
+
+// Catch authoring mistakes at the catalogue boundary, before any screen or store
+// can use an incompatible pairing. Eligibility also consults the same table.
+for (const quest of QUEST_CATALOG) {
+  if (quest.moodIds.some((moodId) => !isQuestTypeAllowed(quest.type, moodId))) {
+    throw new Error(`Quest ${quest.id} has a mood incompatible with ${quest.type}`);
+  }
+}
 
 export const QUEST_TRANSLATIONS_BY_ID = Object.fromEntries(
   QUEST_CATALOG.map(({ id, translations }) => [id, translations]),
@@ -79,6 +88,8 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
   ({
     id,
     moodIds,
+    type,
+    tags,
     minimumDurationMinutes,
     suggestedDurationMinutes,
     genres,
@@ -89,6 +100,8 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
   }) => ({
     id,
     moodIds,
+    type,
+    tags,
     minimumDurationMinutes,
     suggestedDurationMinutes,
     genres,
@@ -105,7 +118,7 @@ export const QUEST_CORES_BY_ID = Object.fromEntries(
 
 export const QUESTS_BY_MOOD = MOOD_IDS.reduce(
   (decks, moodId) => {
-    decks[moodId] = QUESTS.filter((quest) => quest.moodIds.includes(moodId));
+    decks[moodId] = QUESTS.filter((quest) => quest.moodIds.includes(moodId) && isQuestTypeAllowed(quest.type, moodId));
     return decks;
   },
   {} as Record<MoodId, readonly MoodQuestDefinition[]>,
@@ -118,5 +131,5 @@ export function questsForMood(moodId: MoodId): readonly MoodQuestDefinition[] {
 export function questCoresForMood(
   moodId: MoodId,
 ): readonly QuestCoreDefinition[] {
-  return QUEST_CORES.filter((quest) => quest.moodIds.includes(moodId));
+  return QUEST_CORES.filter((quest) => quest.moodIds.includes(moodId) && isQuestTypeAllowed(quest.type, moodId));
 }

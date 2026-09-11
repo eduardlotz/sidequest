@@ -584,6 +584,8 @@ function QuestOfferCard({
             <QuestCard
               className={`${styles.questSelectionCard} ${styles.newCardsCardFront}`}
               genres={item.genres}
+          type={item.type}
+          tags={item.tags}
               game={item.game}
               minimumDurationMinutes={item.minimumDurationMinutes}
               moodTitle={item.mood.title}

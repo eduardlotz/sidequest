@@ -2,73 +2,154 @@ import { defineGameQuests } from "../defineGameQuests";
 
 export const minecraftQuests = defineGameQuests("minecraft", [
   {
-    id: "working-fishing-pier", moods: ["create", "relax"], minutes: 30, sources: ["minecraft-fishing-pier"],
-    en: { name: "Open the Pier", objective: "In **Minecraft Survival**, build a wooden pier at your village's nearest shore with a barrel, two lights, and space to cast into open water. **Catch a fish from the pier and store it in the barrel**. Keep the water in front of the casting spot uncovered." },
-    de: { name: "Der Steg ist offen", objective: "Baue in **Minecraft im Überlebensmodus** am nächsten Dorfufer einen Holzsteg mit Fass, zwei Lichtern und Platz zum Angeln ins offene Wasser. **Fange vom Steg einen Fisch und lege ihn ins Fass**. Lass das Wasser vor dem Angelplatz unbedeckt." },
+    "id": "working-fishing-pier",
+    "moods": [
+      "create",
+      "relax"
+    ],
+    "type": "creation",
+    "tags": [
+      "building",
+      "fishing"
+    ],
+    "minutes": 25,
+    "minimum": 2,
+    "en": {
+      "name": "Open the Pier",
+      "objective": "At a shore near home in **Minecraft**, build a small pier with a barrel and lighting. Leave open water in front of the casting spot, then **catch one fish from the pier and store it in the barrel**."
+    },
+    "de": {
+      "name": "Der Steg ist offen",
+      "objective": "Baue in **Minecraft** an einem Ufer nahe deinem Zuhause einen kleinen Steg mit Fass und Beleuchtung. Lass vor dem Angelplatz offenes Wasser und **fange vom Steg einen Fisch, den du ins Fass legst**."
+    }
   },
   {
-    id: "village-mine-stairs", moods: ["progress", "create"], minutes: 25, sources: ["minecraft-village-worker"],
-    en: { name: "A Proper Mine Entrance", objective: "In **Minecraft Survival**, beside your village, dig a staircase twelve blocks down without digging straight beneath yourself. Add stairs and a torch every four steps. **Walk back up without jumping and place a chest containing sixteen mined cobblestone at the entrance**." },
-    de: { name: "Ein richtiger Mineneingang", objective: "Grabe in **Minecraft im Überlebensmodus** neben deinem Dorf einen Treppengang zwölf Blöcke tief, ohne direkt unter dir abzubauen. Setze Treppen und alle vier Stufen eine Fackel. **Laufe ohne Springen hinauf und stelle am Eingang eine Truhe mit sechzehn abgebauten Bruchsteinen auf**." },
+    "id": "village-payday",
+    "moods": [
+      "progress",
+      "relax"
+    ],
+    "type": "objective",
+    "tags": [
+      "farming",
+      "trading"
+    ],
+    "minutes": 20,
+    "minimum": 2,
+    "en": {
+      "name": "Village Payday",
+      "objective": "In **Minecraft Survival**, use an established wheat field and a farmer who buys wheat. **Harvest enough for one trade, replant the harvested spaces, and earn the emeralds**. Leave the village’s hay bales alone."
+    },
+    "de": {
+      "name": "Zahltag im Dorf",
+      "objective": "Nutze in **Minecraft im Überlebensmodus** ein bestehendes Weizenfeld und einen Bauern, der Weizen kauft. **Ernte genug für einen Handel, säe die abgeernteten Stellen neu ein und verdiene die Smaragde**. Lass die Heuballen im Dorf stehen."
+    }
   },
   {
-    id: "village-payday", moods: ["progress", "relax"], minutes: 25, sources: ["minecraft-village-worker"],
-    en: { name: "Village Payday", objective: "In **Minecraft Survival**, find a farmer who buys wheat. Grow and harvest enough for one trade, replant every patch you harvested, then **earn emeralds from your own crop**. Leave the village's hay bales alone." },
-    de: { name: "Zahltag im Dorf", objective: "Such in **Minecraft im Überlebensmodus** einen Bauern, der Weizen kauft. Baue genug für einen Handel an, ernte und bepflanze alle abgeernteten Felder neu. **Verdiene Smaragde mit deiner eigenen Ernte**, ohne die Heuballen im Dorf zu nehmen." },
+    "id": "furnace-shift",
+    "moods": [
+      "create",
+      "focused"
+    ],
+    "type": "creation",
+    "tags": [
+      "automation",
+      "cooking"
+    ],
+    "minutes": 25,
+    "minimum": 2,
+    "en": {
+      "name": "Furnace Shift",
+      "objective": "In **Minecraft**, connect an input chest, fuel chest, and output chest to a furnace with hoppers. Load eight raw food items and enough fuel. **Collect all eight cooked items from the output chest** without moving them through the furnace by hand."
+    },
+    "de": {
+      "name": "Ofendienst",
+      "objective": "Verbinde in **Minecraft** eine Truhe für Zutaten, eine für Brennstoff und eine für die Ausgabe über Trichter mit einem Ofen. Fülle acht rohe Lebensmittel und genug Brennstoff ein. **Hole alle acht fertigen Lebensmittel aus der Ausgabetruhe**, ohne sie von Hand durch den Ofen zu bewegen."
+    }
   },
   {
-    id: "trade-road", moods: ["create", "explore"], minutes: 30, sources: ["minecraft-village-worker"],
-    en: { name: "Trade Road", objective: "In **Minecraft**, use two villages you have already found near each other. Mark a walkable route between their bells with signs and torches, then **walk it from bell to bell without opening your coordinates**." },
-    de: { name: "Handelsweg", objective: "Nimm in **Minecraft** zwei bereits entdeckte Dörfer, die nah beieinander liegen. Markiere einen begehbaren Weg zwischen ihren Glocken mit Schildern und Fackeln. **Laufe von Glocke zu Glocke, ohne die Koordinaten zu öffnen**." },
+    "id": "note-block-doorbell",
+    "moods": [
+      "create",
+      "curious"
+    ],
+    "type": "experiment",
+    "tags": [
+      "automation"
+    ],
+    "minutes": 20,
+    "minimum": 2,
+    "en": {
+      "name": "Someone's Home",
+      "objective": "In **Minecraft**, wire a button to three differently tuned note blocks with repeaters. Adjust the repeater delays until **one press plays the three notes separately in order**. Try a second rhythm before keeping one."
+    },
+    "de": {
+      "name": "Jemand zu Hause",
+      "objective": "Verbinde in **Minecraft** einen Knopf über Verstärker mit drei unterschiedlich gestimmten Notenblöcken. Stelle die Verzögerungen so ein, dass **ein Druck die drei Töne einzeln nacheinander abspielt**. Probiere einen zweiten Rhythmus, bevor du einen behältst."
+    }
   },
   {
-    id: "golem-care", moods: ["low-energy", "progress"], minutes: 10, sources: ["minecraft-village-worker"],
-    en: { name: "Patch the Guard", objective: "In **Minecraft**, find a village iron golem with visible cracks. Use iron ingots to **repair it until the cracks are gone**, then add lighting around its village bell. Do not hurt the golem to create the damage." },
-    de: { name: "Wache flicken", objective: "Such in **Minecraft** einen Eisengolem im Dorf, der sichtbare Risse hat. **Repariere ihn mit Eisenbarren, bis die Risse weg sind**, und beleuchte danach den Platz um die Dorfglocke. Verletze den Golem nicht extra dafür." },
+    "id": "smoke-and-honey",
+    "moods": [
+      "relax",
+      "curious"
+    ],
+    "type": "objective",
+    "tags": [
+      "farming"
+    ],
+    "minutes": 15,
+    "minimum": 2,
+    "en": {
+      "name": "Smoke and Honey",
+      "objective": "Bring a glass bottle and campfire to a full bee nest in **Minecraft**. Put the lit campfire underneath so its smoke reaches the nest, then **collect one honey bottle without angering the bees**. Extinguish the fire afterward."
+    },
+    "de": {
+      "name": "Rauch und Honig",
+      "objective": "Bring in **Minecraft** eine Glasflasche und ein Lagerfeuer zu einem vollen Bienennest. Stelle das brennende Lagerfeuer darunter, sodass der Rauch das Nest erreicht, und **fülle eine Honigflasche, ohne die Bienen wütend zu machen**. Lösche danach das Feuer."
+    }
   },
   {
-    id: "furnace-shift", moods: ["create", "focused"], minutes: 25,
-    en: { name: "Furnace Shift", objective: "In **Minecraft**, connect chests and hoppers to a furnace so it takes fuel and raw food and stores the cooked food by itself. Load eight raw food items and enough fuel, then **collect all eight from the output chest** without opening the furnace." },
-    de: { name: "Ofendienst", objective: "Verbinde in **Minecraft** Truhen und Trichter mit einem Ofen, damit er Brennstoff und rohes Essen bekommt und fertiges Essen ablegt. Fülle acht rohe Lebensmittel und genug Brennstoff ein. **Hole alle acht aus der Ausgabetruhe**, ohne den Ofen zu öffnen." },
+    "id": "second-chance-villager",
+    "moods": [
+      "progress",
+      "focused"
+    ],
+    "type": "objective",
+    "tags": [
+      "no-kills"
+    ],
+    "minutes": 20,
+    "minimum": 2,
+    "en": {
+      "name": "Second Chance",
+      "objective": "In **Minecraft Survival**, with a zombie villager, golden apple, and splash potion of Weakness ready, shelter the villager from sunlight. Apply Weakness, feed it the apple, and **keep it safe through the cure**."
+    },
+    "de": {
+      "name": "Zweite Chance",
+      "objective": "Wenn in **Minecraft im Überlebensmodus** ein Zombiedorfbewohner, ein goldener Apfel und ein Wurftrank der Schwäche bereit sind, schütze den Dorfbewohner vor Sonnenlicht. Wirf den Trank, gib ihm den Apfel und **halte ihn bis zum Ende der Heilung sicher**."
+    }
   },
   {
-    id: "two-chest-sorter", moods: ["create", "challenge"], minutes: 30,
-    en: { name: "Sort It Out", objective: "In **Minecraft**, build a hopper and redstone sorter that sends cobblestone to one chest and other items to another. Put in sixteen cobblestone and sixteen dirt, then **check that each chest received only its sixteen items**." },
-    de: { name: "Alles sortiert", objective: "Baue in **Minecraft** mit Trichtern und Redstone einen Sortierer: Bruchstein kommt in eine Truhe, andere Gegenstände in eine zweite. Gib sechzehn Bruchstein und sechzehn Erde hinein. **In jeder Truhe müssen nur die passenden sechzehn Blöcke landen**." },
-  },
-  {
-    id: "note-block-doorbell", moods: ["create", "curious"], minutes: 25,
-    en: { name: "Someone's Home", objective: "In **Minecraft**, build a doorbell with a button, redstone repeaters, and three note blocks tuned to different notes. **Make one button press play all three notes in order**, then hide the wiring without breaking the tune." },
-    de: { name: "Jemand zu Hause", objective: "Baue in **Minecraft** eine Türklingel mit Knopf, Redstone-Verstärkern und drei Notenblöcken mit verschiedenen Tönen. **Ein Knopfdruck soll alle drei Töne nacheinander spielen**. Verstecke danach die Leitungen, ohne die Melodie zu verändern." },
-  },
-  {
-    id: "smoke-and-honey", moods: ["relax", "curious"], minutes: 15,
-    en: { name: "Smoke and Honey", objective: "In **Minecraft**, bring a bottle and campfire to a bee nest dripping with honey. Let campfire smoke reach the nest and **collect one honey bottle without making the bees angry**. Put out the fire afterward." },
-    de: { name: "Rauch und Honig", objective: "Bring in **Minecraft** eine Flasche und ein Lagerfeuer zu einem Bienennest, aus dem Honig tropft. Lass Rauch ans Nest kommen und **fülle eine Honigflasche, ohne die Bienen wütend zu machen**. Lösche danach das Feuer." },
-  },
-  {
-    id: "second-chance-villager", moods: ["progress", "focused"], minutes: 25,
-    en: { name: "Second Chance", objective: "In **Minecraft Survival**, with a golden apple and a splash potion of Weakness ready, shelter one zombie villager from sunlight. Apply Weakness, feed it the apple, and **keep it safe until it becomes a villager**." },
-    de: { name: "Zweite Chance", objective: "Wenn du in **Minecraft im Überlebensmodus** einen goldenen Apfel und einen Wurftrank der Schwäche hast, schütze einen Zombiedorfbewohner vor Sonnenlicht. Wirf den Trank, gib ihm den Apfel und **halte ihn am Leben, bis er wieder ein Dorfbewohner ist**." },
-  },
-  {
-    id: "nether-walkway", moods: ["focused", "create"], minutes: 30,
-    en: { name: "Safe Through Nether", objective: "In **Minecraft**, use two already linked Nether portals. Build walls and a roof around the path between them, seal holes in the floor, then **walk from one portal to the other without leaving the covered route**." },
-    de: { name: "Sicher durch den Nether", objective: "Nimm in **Minecraft** zwei bereits verbundene Netherportale. Sichere den Weg dazwischen mit Wänden und einem Dach und schließe Löcher im Boden. **Laufe von einem Portal zum anderen, ohne den geschützten Weg zu verlassen**." },
-  },
-  {
-    id: "map-home", moods: ["explore", "curious"], minutes: 25,
-    en: { name: "Put Home on Paper", objective: "In **Minecraft**, start an empty map at your base. Explore on foot until the map has no blank patches, then **place the finished map in an item frame at home**. Bring a compass instead of using coordinates." },
-    de: { name: "Zuhause auf Papier", objective: "Öffne in **Minecraft** eine leere Karte bei deiner Basis. Erkunde die Gegend zu Fuß, bis keine leeren Stellen mehr auf der Karte sind. **Hänge die fertige Karte zu Hause in einen Rahmen**. Nimm einen Kompass statt der Koordinaten." },
-  },
-  {
-    id: "village-banner", moods: ["create", "relax"], minutes: 20, sources: ["minecraft-village-worker"],
-    en: { name: "Village Colors", objective: "In **Minecraft**, use a loom to give your village a banner with two pattern layers. Make a matching second banner and **place one by the bell and one at your home**, so the two places share a flag." },
-    de: { name: "Dorffarben", objective: "Gestalte in **Minecraft** am Webstuhl ein Banner fürs Dorf mit zwei Musterschichten. Mache ein zweites gleiches Banner und **stelle eines an die Glocke und eines an dein Haus**, damit beide Orte dieselbe Flagge haben." },
-  },
-  {
-    id: "minecart-delivery", moods: ["create", "challenge"], minutes: 30, sources: ["minecraft-village-worker"],
-    en: { name: "Rail Delivery", objective: "In **Minecraft**, connect your mine entrance and storage with rails, powered rails, and a chest minecart. Send sixteen freshly mined cobblestone along the track and **unload all sixteen at storage without carrying them there yourself**." },
-    de: { name: "Lieferung auf Schienen", objective: "Verbinde in **Minecraft** deinen Mineneingang und dein Lager mit Schienen, Antriebsschienen und einer Güterlore. Schicke sechzehn frisch abgebaute Bruchsteine los. **Lade alle sechzehn im Lager aus, ohne sie selbst dorthin zu tragen**." },
-  },
+    "id": "map-home",
+    "moods": [
+      "explore",
+      "curious"
+    ],
+    "type": "objective",
+    "tags": [
+      "exploration",
+      "on-foot"
+    ],
+    "minutes": 25,
+    "minimum": 2,
+    "en": {
+      "name": "Put Home on Paper",
+      "objective": "Open a new, unexpanded map at your base in **Minecraft**. Explore its area on foot until **all blank patches are filled**, then display it in an item frame at home. Bring food and an empty map before starting."
+    },
+    "de": {
+      "name": "Zuhause auf Papier",
+      "objective": "Öffne in **Minecraft** an deiner Basis eine neue, nicht vergrößerte Karte. Erkunde ihr Gebiet zu Fuß, bis **alle leeren Stellen ausgefüllt sind**, und hänge sie zu Hause in einen Rahmen. Nimm vorher Essen und eine leere Karte mit."
+    }
+  }
 ]);

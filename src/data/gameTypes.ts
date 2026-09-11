@@ -1,32 +1,24 @@
 import type { MoodId } from "./questTypes";
 
-export const COMBAT_CAPABILITY_IDS = [
-  "pistols",
-  "rifles",
-  "bows",
-  "melee-weapons",
-  "fist-fights",
-  "magic",
-] as const;
-
 export const GAME_CAPABILITY_IDS = [
   "open-world",
   "missions-or-levels",
   "rounds-or-matches",
-  "combat",
-  ...COMBAT_CAPABILITY_IDS,
+  "combat-loadouts",
+  "combat-spells",
   "space-exploration",
   "swimming",
   "boss-fights",
   "stealth",
-  "equipment-loadouts",
   "puzzles",
   "building",
   "crafting",
   "fishing",
   "cooking",
-  "farming-or-care",
-  "driving-or-racing",
+  "grow-crops",
+  "animal-care",
+  "free-driving",
+  "racing",
   "advanced-traversal",
   "customization",
   "photo-mode",
@@ -39,7 +31,7 @@ export const GAME_CAPABILITY_IDS = [
   "animal-companions",
   "skate-tricks",
   "sports-goals",
-  "extraction-runs",
+  "extraction-runs"
 ] as const;
 
 export type GameCapabilityId = (typeof GAME_CAPABILITY_IDS)[number];

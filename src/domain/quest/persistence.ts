@@ -29,6 +29,7 @@ import {
   favoriteMoodId,
   finiteNumber,
   generateQuestOffers,
+  isQuestOfferSetValid,
   moodSelectionExpired,
   safeAdd,
   safeNonNegativeInteger,
@@ -147,7 +148,7 @@ function sanitizedOfferSet(
       (candidate) => candidate.id === offer.game?.id,
     );
     return game?.questIds.includes(offer.questId)
-      ? [createQuestOffer(moodId, offer.questId, game)]
+      ? [createQuestOffer(moodId, offer.questId, game, offer.role)]
       : [];
   });
   const uniqueOffers = validOffers.filter(
@@ -156,19 +157,7 @@ function sanitizedOfferSet(
         (candidate) => candidate.questId === offer.questId,
       ) === index,
   );
-  const compatibleIds = new Set(
-    libraryGames
-      .flatMap((game) => game.questIds)
-      .filter((id) => {
-        const quest = QUEST_CORES_BY_ID[id];
-        return quest?.gameBindable && quest.moodIds.includes(moodId);
-      }),
-  );
-  const expectedBoundCount = Math.min(2, compatibleIds.size);
-  if (
-    uniqueOffers.length !== QUEST_OFFER_COUNT ||
-    uniqueOffers.filter((offer) => offer.game).length !== expectedBoundCount
-  ) {
+  if (!isQuestOfferSetValid(moodId, uniqueOffers, libraryGames)) {
     return generateQuestOffers(moodId, libraryGames, random);
   }
   return uniqueOffers.slice(0, QUEST_OFFER_COUNT);
@@ -183,7 +172,8 @@ function questOfferFromUnknown(
   if (!quest || !quest.moodIds.includes(moodId)) return null;
   const game = gameReferenceFromUnknown(value.game);
   if ((game && !quest.gameBindable) || (!game && !quest.universal)) return null;
-  return createQuestOffer(moodId, value.questId, game);
+  if (value.role !== "library" && value.role !== "inspiration" && value.role !== "directed") return null;
+  return createQuestOffer(moodId, value.questId, game, value.role);
 }
 
 function profileFromUnknown(value: unknown): UserProfile {

@@ -1,12 +1,14 @@
+import type { QuestTypeId, QuestTagId } from "../questTraits";
 import type { AuthoredQuestDefinition, MoodId } from "../questTypes";
 
 type GameQuest = {
   id: string;
   moods: readonly MoodId[];
+  type: QuestTypeId;
+  tags: readonly QuestTagId[];
   minutes: number;
   minimum?: number;
   installments?: readonly string[];
-  sources?: readonly string[];
   en: { name: string; objective: string };
   de: { name: string; objective: string };
 };
@@ -18,6 +20,8 @@ export function defineGameQuests(
   return quests.map((quest) => ({
     id: `${gameId}-${quest.id}`,
     moodIds: quest.moods,
+    type: quest.type,
+    tags: quest.tags,
     minimumDurationMinutes: quest.minimum ?? 2,
     suggestedDurationMinutes: quest.minutes,
     genres: [],
@@ -25,7 +29,6 @@ export function defineGameQuests(
     curated: {
       gameId,
       installmentIds: quest.installments ?? [],
-      sourceIds: quest.sources ?? [],
     },
     translations: {
       en: { ...quest.en, gameObjective: quest.en.objective },

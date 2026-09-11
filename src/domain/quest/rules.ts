@@ -10,6 +10,8 @@ import {
   POINTS_DURATION_CAP_MS,
   POINTS_PER_MINUTE,
   QUEST_OFFER_COUNT,
+  QUEST_OFFER_ROLES,
+  type QuestOfferRole,
   type CompletedSession,
   type QuestOffer,
   type QuestSession,
@@ -36,77 +38,93 @@ export function generateQuestOffers(
   libraryGames: readonly LibraryGame[] = [],
   random: () => number = Math.random,
   excludedOfferIds: ReadonlySet<string> = new Set(),
-  count = QUEST_OFFER_COUNT,
-  gameBoundTarget = Math.min(2, count),
+  roles: readonly QuestOfferRole[] = QUEST_OFFER_ROLES,
   excludedQuestIds: ReadonlySet<string> = new Set(),
 ): QuestOffer[] {
-  const eligible = questCoresForMood(moodId);
-  const eligibleById = new Map(eligible.map((quest) => [quest.id, quest]));
+  const pools = questOfferPools(moodId, libraryGames);
   const selected: QuestOffer[] = [];
   const selectedQuestIds = new Set(excludedQuestIds);
-  const usedGameIds = new Set<string>();
-  const boundPool = libraryGames.flatMap((game) =>
-    game.questIds.flatMap((questId) =>
-      eligibleById.get(questId)?.gameBindable
-        ? [createQuestOffer(moodId, questId, game)]
-        : [],
-    ),
-  );
-  const universalPool = eligible
-    .filter((quest) => quest.universal)
-    .map((quest) => createQuestOffer(moodId, quest.id, null));
 
-  function pick(pool: readonly QuestOffer[], preferDifferentGame = false) {
-    const available = pool.filter(
-      (offer) => !selectedQuestIds.has(offer.questId),
-    );
+  function pick(pool: readonly QuestOffer[], role: QuestOfferRole) {
+    const available = pool.filter((offer) => !selectedQuestIds.has(offer.questId));
     const fresh = available.filter((offer) => !excludedOfferIds.has(offer.id));
     const candidates = fresh.length ? fresh : available;
-    const differentGames = preferDifferentGame
-      ? candidates.filter(
-          (offer) => offer.game && !usedGameIds.has(offer.game.id),
-        )
-      : [];
-    const choices = differentGames.length ? differentGames : candidates;
-    // Choose a game first so a large quest catalogue does not dominate the deal.
-    const gameIds = Array.from(
-      new Set(choices.map((offer) => offer.game?.id ?? null)),
-    );
+    // Choose a game first so large curated catalogues do not dominate the deal.
+    const gameIds = Array.from(new Set(candidates.map((offer) => offer.game?.id ?? null)));
     const gameId = sampleWithoutReplacement(gameIds, 1, random)[0];
     const offer = sampleWithoutReplacement(
-      choices.filter((candidate) => (candidate.game?.id ?? null) === gameId),
+      candidates.filter((candidate) => (candidate.game?.id ?? null) === gameId),
       1,
       random,
     )[0];
     if (!offer) return false;
-    selected.push(offer);
+    selected.push({ ...offer, role });
     selectedQuestIds.add(offer.questId);
-    if (offer.game) usedGameIds.add(offer.game.id);
     return true;
   }
 
-  const boundCount = Math.max(0, Math.min(count, gameBoundTarget));
-  for (let index = 0; index < boundCount; index += 1) {
-    if (!pick(boundPool, true)) break;
+  for (const role of roles) {
+    if (role === "library") {
+      // Authored for the selected game first; exact compatible templates second.
+      // An empty or incompatible library still receives three distinct choices.
+      pick(pools.curated, role) || pick(pools.bound, role) ||
+        pick(pools.directed, role) || pick(pools.inspiration, role);
+    } else {
+      pick(pools[role], role);
+    }
   }
-  // Unbound cards also cover empty libraries and features with no matching mood.
-  while (selected.length < count && pick(universalPool)) {
-    /* Fill open slots. */
-  }
-  while (selected.length < count && pick(boundPool, true)) {
-    /* Sparse catalogue fallback. */
-  }
-  return sampleWithoutReplacement(selected, selected.length, random);
+  return selected;
+}
+
+function questOfferPools(moodId: MoodId, libraryGames: readonly LibraryGame[]) {
+  const eligible = questCoresForMood(moodId);
+  const eligibleById = new Map(eligible.map((quest) => [quest.id, quest]));
+  const bound = libraryGames.flatMap((game) => game.questIds.flatMap((id) => {
+    const quest = eligibleById.get(id);
+    return quest?.gameBindable && (!quest.curated || quest.curated.gameId === game.id)
+      ? [createQuestOffer(moodId, id, game, "library")]
+      : [];
+  }));
+  const universal = eligible.filter((quest) => quest.universal);
+  return {
+    curated: bound.filter((offer) => QUEST_CORES_BY_ID[offer.questId].curated),
+    bound,
+    inspiration: universal.filter((quest) => quest.type === "inspiration")
+      .map((quest) => createQuestOffer(moodId, quest.id, null, "inspiration")),
+    directed: universal.filter((quest) => quest.type !== "inspiration")
+      .map((quest) => createQuestOffer(moodId, quest.id, null, "directed")),
+  };
+}
+
+export function isQuestOfferSetValid(
+  moodId: MoodId,
+  offers: readonly QuestOffer[],
+  libraryGames: readonly LibraryGame[],
+) {
+  if (offers.length !== QUEST_OFFER_COUNT ||
+      new Set(offers.map((offer) => offer.questId)).size !== QUEST_OFFER_COUNT) return false;
+  const pools = questOfferPools(moodId, libraryGames);
+  return QUEST_OFFER_ROLES.every((role, index) => {
+    const offer = offers[index];
+    if (offer.role !== role) return false;
+    const pool = role === "library"
+      ? pools.curated.length ? pools.curated : pools.bound.length ? pools.bound
+        : [...pools.directed, ...pools.inspiration]
+      : pools[role];
+    return pool.some((candidate) => candidate.id === offer.id);
+  });
 }
 
 export function createQuestOffer(
   moodId: MoodId,
   questId: string,
   game: LibraryGame | GameReference | null,
+  role: QuestOfferRole = game ? "library" : QUEST_CORES_BY_ID[questId]?.type === "inspiration" ? "inspiration" : "directed",
 ): QuestOffer {
   const gameReference = game ? gameReferenceFrom(game) : null;
   return {
     id: questOfferId(moodId, questId, gameReference?.id ?? null),
+    role,
     moodId,
     questId,
     game: gameReference,
@@ -253,8 +271,7 @@ export function rotateSessionOffer(
     libraryGames,
     random,
     new Set(moodOffers.map((offer) => offer.id)),
-    1,
-    session.game ? 1 : 0,
+    [moodOffers[slotIndex].role],
     new Set(
       moodOffers
         .filter((_, index) => index !== slotIndex)

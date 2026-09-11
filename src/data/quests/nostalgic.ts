@@ -1,202 +1,98 @@
-import { defineMoodQuests } from "./defineMoodQuests";
+import type { AuthoredQuestDefinition } from "../questTypes";
 
-export const nostalgicQuests = defineMoodQuests("nostalgic", [
+export const nostalgicQuests = [
   {
-    id: "childhood-save",
-    minimumDurationMinutes: 5,
-    suggestedDurationMinutes: 20,
-    genres: ["Retro", "Story"],
-    translations: {
-      en: {
-        name: "Childhood Save",
-        objective:
-          "Open a game you played often as a child and continue any save you can still access. Reach **one new checkpoint** without looking up what you used to do next.",
+    "id": "childhood-save",
+    "moodIds": [
+      "nostalgic"
+    ],
+    "type": "inspiration",
+    "tags": [
+      "replay"
+    ],
+    "minimumDurationMinutes": 1,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Childhood Save",
+        "objective": "Reopen a **game you spent afternoons with as a child**. Visit the level or place you still picture first and play it the way you remember. No progress required."
       },
-      de: {
-        name: "Kindheitsspielstand",
-        objective:
-          "Starte ein Spiel, das du als Kind oft gespielt hast, und lade einen Spielstand, den du noch hast. Erreiche **einen neuen Speicherpunkt**, ohne nachzuschlagen, wie es weitergeht.",
-      },
-    },
+      "de": {
+        "name": "Spielstand von früher",
+        "objective": "Öffne ein **Spiel, mit dem du als Kind ganze Nachmittage verbracht hast**. Besuche das Level oder den Ort, der dir zuerst einfällt, und spiele wie damals. Du musst nichts voranbringen."
+      }
+    }
   },
   {
-    id: "first-console",
-    minimumDurationMinutes: 5,
-    suggestedDurationMinutes: 15,
-    genres: ["Retro", "Platformer"],
-    translations: {
-      en: {
-        name: "First Console",
-        objective:
-          "Choose a game from the earliest console or device you remember using. Start from its beginning and finish **the first level, race, or match**.",
+    "id": "back-then",
+    "moodIds": [
+      "nostalgic"
+    ],
+    "type": "inspiration",
+    "tags": [
+      "replay"
+    ],
+    "minimumDurationMinutes": 1,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Back Then",
+        "objective": "Choose a **game tied to someone you used to play with**. Return to the map, mode, or character you shared, even if you are playing alone today."
       },
-      de: {
-        name: "Erste Konsole",
-        objective:
-          "Wähle ein Spiel von der ersten Konsole oder dem frühesten Gerät, an das du dich erinnerst. Fang von vorn an und beende **das erste Level, Rennen oder Match**.",
-      },
-    },
+      "de": {
+        "name": "Weißt du noch",
+        "objective": "Nimm ein **Spiel, das dich an jemanden erinnert, mit dem du früher gespielt hast**. Kehre zu eurer Karte, eurem Modus oder eurer Figur zurück, auch wenn du heute allein spielst."
+      }
+    }
   },
   {
-    id: "classic-route",
-    minimumDurationMinutes: 5,
-    suggestedDurationMinutes: 15,
-    genres: ["Racing", "Retro"],
-    translations: {
-      en: {
-        name: "Classic Route",
-        objective:
-          "Open an older racing game with a track you remember. Drive **one full race** using the car or vehicle you chose most often back then.",
+    "id": "screenshot-return",
+    "moodIds": [
+      "nostalgic"
+    ],
+    "type": "objective",
+    "tags": [
+      "photography",
+      "replay"
+    ],
+    "minimumDurationMinutes": 2,
+    "suggestedDurationMinutes": 15,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Same Place Again",
+        "objective": "Find an **old screenshot from a game you can still launch**. Return to that location, match the original camera angle, and **save a new screenshot beside the old one**."
       },
-      de: {
-        name: "Klassische Strecke",
-        objective:
-          "Öffne ein älteres Rennspiel mit einer Strecke, an die du dich erinnerst. Fahre **ein vollständiges Rennen** mit dem Fahrzeug, das du damals am häufigsten gewählt hast.",
-      },
-    },
+      "de": {
+        "name": "Wieder am selben Ort",
+        "objective": "Suche einen **alten Screenshot aus einem Spiel, das du noch starten kannst**. Kehre an den Ort zurück, stelle den damaligen Blickwinkel nach und **speichere ein neues Bild neben dem alten**."
+      }
+    }
   },
   {
-    id: "old-high-score",
-    minimumDurationMinutes: 5,
-    suggestedDurationMinutes: 20,
-    genres: ["Arcade", "Retro"],
-    translations: {
-      en: {
-        name: "Old High Score",
-        objective:
-          "Return to an arcade-style game whose scoring you still understand. Make **three complete attempts** and keep the best score without restarting a weak run.",
+    "id": "classic-route",
+    "moodIds": [
+      "nostalgic"
+    ],
+    "type": "objective",
+    "tags": [
+      "racing",
+      "replay"
+    ],
+    "minimumDurationMinutes": 2,
+    "suggestedDurationMinutes": 15,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "The Old Route",
+        "objective": "Open an **older racing game with a track and car you remember using**. Bring that car back to the track and **finish one race**, whatever your place."
       },
-      de: {
-        name: "Alter Highscore",
-        objective:
-          "Starte wieder ein Arcade-Spiel, dessen Punktewertung du noch kennst. Spiele **drei Versuche bis zum Ende** und merke dir das beste Ergebnis. Starte auch nach Fehlern nicht neu.",
-      },
-    },
-  },
-  {
-    id: "the-movie-years",
-    minimumDurationMinutes: 8,
-    suggestedDurationMinutes: 25,
-    genres: ["Story", "Adventure"],
-    translations: {
-      en: {
-        name: "The Movie Years",
-        objective:
-          "Choose a game that takes place in **the same time period as a movie you have watched**. Complete one scene, mission, or chapter that could belong beside that movie.",
-      },
-      de: {
-        name: "Wie im Film",
-        objective:
-          "Wähle ein Spiel, das **in derselben Zeit spielt wie ein Film, den du gesehen hast**. Beende eine Szene, Mission oder ein Kapitel, das auch in diesen Film passen würde.",
-      },
-    },
-  },
-  {
-    id: "back-then",
-    minimumDurationMinutes: 5,
-    suggestedDurationMinutes: 20,
-    genres: ["Multiplayer", "Retro"],
-    translations: {
-      en: {
-        name: "Back Then",
-        objective:
-          "Open a game tied to a person you used to play with, even if you play alone today. Recreate **one mode, map, or rule set** you both chose and finish one round.",
-      },
-      de: {
-        name: "Wie damals",
-        objective:
-          "Starte ein Spiel, das du mit einer bestimmten Person verbindest, auch wenn du heute allein spielst. Wähle **einen Modus, eine Karte oder eine Regel von damals** und spiele damit eine Runde bis zum Ende.",
-      },
-    },
-  },
-  {
-    id: "screenshot-return",
-    minimumDurationMinutes: 5,
-    suggestedDurationMinutes: 20,
-    genres: ["Open World", "Adventure"],
-    translations: {
-      en: {
-        name: "Screenshot Return",
-        objective:
-          "Choose **the oldest saved screenshot from a game you can still launch**. Return to the place shown, match the old camera angle, and **capture a new screenshot from the same spot**.",
-      },
-      de: {
-        name: "Zurück zum Foto",
-        objective:
-          "Nimm **den ältesten gespeicherten Screenshot aus einem Spiel, das du noch starten kannst**. Such den gezeigten Ort, stell denselben Blickwinkel nach und **mach dort einen neuen Screenshot**.",
-      },
-    },
-  },
-  {
-    id: "series-beginning",
-    minimumDurationMinutes: 5,
-    suggestedDurationMinutes: 20,
-    genres: ["Retro", "Adventure"],
-    translations: {
-      en: {
-        name: "Series Beginning",
-        objective:
-          "Pick **the oldest installed entry from a series you still play**. Start a new save with the defaults and finish **its opening level, mission, or match**.",
-      },
-      de: {
-        name: "Anfang der Reihe",
-        objective:
-          "Nimm **den ältesten installierten Teil einer Reihe, die du noch spielst**. Starte mit den Vorgaben einen neuen Spielstand und beende **das erste Level, die erste Mission oder das erste Match**.",
-      },
-    },
-  },
-  {
-    id: "old-main",
-    minimumDurationMinutes: 5,
-    suggestedDurationMinutes: 20,
-    genres: ["Fighting", "Multiplayer"],
-    translations: {
-      en: {
-        name: "Old Main",
-        objective:
-          "Open a **roster game you played often years ago** and choose the character, team, or vehicle you used most back then. Finish **three rounds without switching away**.",
-      },
-      de: {
-        name: "Alter Main",
-        objective:
-          "Starte ein früher oft gespieltes **Spiel mit Charakter-, Team- oder Fahrzeugauswahl**. Nimm die Figur, das Team oder das Fahrzeug, das du damals gewählt hast, und beende **drei Runden, ohne zu wechseln**.",
-      },
-    },
-  },
-  {
-    id: "remaster-reunion",
-    minimumDurationMinutes: 8,
-    suggestedDurationMinutes: 25,
-    genres: ["Adventure"],
-    translations: {
-      en: {
-        name: "Remaster Reunion",
-        objective:
-          "Choose a **remake or remaster of a game whose original you finished**. Start from the beginning with default settings and reach **the first checkpoint or completed scene**.",
-      },
-      de: {
-        name: "Wiedersehen im Remaster",
-        objective:
-          "Nimm das **Remake oder Remaster eines Spiels, dessen Original du beendet hast**. Starte mit den Vorgaben von vorn und erreiche **den ersten Speicherpunkt oder das Ende der ersten Szene**.",
-      },
-    },
-  },
-  {
-    id: "old-cheat-code",
-    minimumDurationMinutes: 5,
-    suggestedDurationMinutes: 20,
-    genres: ["Retro", "Arcade"],
-    translations: {
-      en: {
-        name: "Old Cheat Code",
-        objective:
-          "Open a **game from childhood with a cheat or modifier you still remember**. Enable that option, start the first available level, and **finish the level with the cheat active**.",
-      },
-      de: {
-        name: "Alter Cheatcode",
-        objective:
-          "Starte ein **Spiel aus deiner Kindheit mit einem Cheat oder Modifikator, den du noch kennst**. Aktiviere ihn, nimm das erste verfügbare Level und **spiele es mit dem Cheat zu Ende**.",
-      },
-    },
-  },
-]);
+      "de": {
+        "name": "Die alte Strecke",
+        "objective": "Starte ein **älteres Rennspiel mit einer Strecke und einem Wagen von damals**. Fahre mit diesem Wagen **ein Rennen auf der Strecke zu Ende**, egal auf welchem Platz."
+      }
+    }
+  }
+] satisfies readonly AuthoredQuestDefinition[];

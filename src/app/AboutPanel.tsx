@@ -1,11 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { WordmarkLogo } from "../assets/wordmark";
-import { ResponsiveNestedDrawer } from "../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
-import { SolidButton } from "../shared/ui/SolidButton/SolidButton";
 import { TiltedElement } from "../shared/ui/TiltedElement/TiltedElement";
-import { QuestSourcesPanel } from "./QuestSourcesPanel";
 import styles from "./AboutPanel.module.css";
 
 type Props = {
@@ -20,20 +17,11 @@ export function AboutPanel({
   reduceMotion,
 }: Props) {
   const { t } = useTranslation();
-  const [sourcesOpen, setSourcesOpen] = useState(false);
 
   useEffect(() => {
     if (presentation === "page") onPageChange?.();
-  }, [onPageChange, presentation, sourcesOpen]);
+  }, [onPageChange, presentation]);
 
-  if (presentation === "page" && sourcesOpen) {
-    return (
-      <QuestSourcesPanel
-        presentation="page"
-        onBack={() => setSourcesOpen(false)}
-      />
-    );
-  }
 
   const title = <h2 id="about-title">{t("ui.about.title")}</h2>;
   const description = <p>{t("ui.about.description")}</p>;
@@ -89,31 +77,7 @@ export function AboutPanel({
         <section className={styles.aboutSection}>
           <h3>{t("ui.about.sourcesHeading")}</h3>
           <p>{t("ui.about.sourcesBody")}</p>
-          {presentation === "drawer" ? (
-            <ResponsiveNestedDrawer
-              variant="about"
-              trigger={
-                <SolidButton
-                  className={styles.sourcesButton}
-                  size="small"
-                  variant="soft"
-                >
-                  {t("ui.about.sourcesButton")}
-                </SolidButton>
-              }
-            >
-              <QuestSourcesPanel />
-            </ResponsiveNestedDrawer>
-          ) : (
-            <SolidButton
-              className={styles.sourcesButton}
-              size="small"
-              variant="ghost"
-              onClick={() => setSourcesOpen(true)}
-            >
-              {t("ui.about.sourcesButton")}
-            </SolidButton>
-          )}
+
         </section>
       </div>
 

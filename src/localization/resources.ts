@@ -33,17 +33,7 @@ export const englishUi = {
       "For a series, select the entries you actually play so installment-specific quests stay accurate. You can edit the library later from your profile. Cards without a named game still work with any library.",
     sourcesHeading: "Where do the ideas come from?",
     sourcesBody:
-      "A few curated quests are based on ideas that players have shared on Reddit; the rest are inspired by what the game itself makes possible.",
-    sourcesButton: "Reddit sources",
-    sourcesTitle: "Reddit sources",
-    sourcesDescription:
-      "Each note explains what I took from the original idea.",
-    sourcesBack: "Back to Info",
-    sourcesOpen: "Open Reddit thread",
-    sourcesQuestNames: "Inspired quests",
-    sourcesResearchOnly: "Used for background research",
-    sourcesLinkHint:
-      "Links open Reddit in a new tab. Original thread titles are kept as written.",
+      "I write quests around the ways a game can be played: its places, systems, and the ideas players try. Each one gets a mood and a clear kind of session, from open inspiration to a focused challenge.",
     coinsHeading: "What do I do with the coins?",
     coinEarning: "The longer you spend on a quest, the more coins you earn.",
     coinSpending:
@@ -225,17 +215,7 @@ export const germanUi = {
       "Bei einer Reihe wählst du die Teile, die du wirklich spielst, damit Quests für einzelne Teile stimmen. Die Bibliothek kannst du später im Profil ändern. Karten ohne festes Spiel funktionieren weiterhin mit jeder Bibliothek.",
     sourcesHeading: "Woher kommen die Ideen?",
     sourcesBody:
-      "Ein paar kuratierte Quests entstehen aus Ideen, die Spieler auf Reddit geteilt haben, die restlichen entstehen aus dem, was ein Spiel so möglich macht.",
-    sourcesButton: "Reddit-Quellen",
-    sourcesTitle: "Reddit-Quellen",
-    sourcesDescription:
-      "Bei jedem steht bei, was ich aus der orignalen Idee mitgenommen haben.",
-    sourcesBack: "Zurück zur Info",
-    sourcesOpen: "Reddit-Thread öffnen",
-    sourcesQuestNames: "Davon inspirierte Quests",
-    sourcesResearchOnly: "Für die Hintergrundrecherche genutzt",
-    sourcesLinkHint:
-      "Links öffnen Reddit in einem neuen Tab. Die Originaltitel bleiben so, wie sie geschrieben wurden.",
+      "Ich schreibe Quests aus dem, was ein Spiel möglich macht: seinen Orten, Systemen und den Ideen, die Spieler ausprobieren. Jede bekommt eine passende Stimmung und eine Art zu spielen, von offener Inspiration bis zur gezielten Herausforderung.",
     coinsHeading: "Was mache ich mit den Münzen?",
     coinEarning:
       "Je länger du an einer Quest sitzt, desto mehr Münzen gibt es dafür.",

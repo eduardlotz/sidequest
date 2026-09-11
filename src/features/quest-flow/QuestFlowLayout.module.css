@@ -95,15 +95,21 @@
   --quest-deck-overhang: 80px;
   --quest-group-padding-top: 3rem;
   --quest-card-height: calc(var(--quest-card-width) / 0.7);
-  --quest-deck-height: calc(var(--quest-card-height) + var(--quest-deck-overhang));
+  --quest-deck-height: calc(
+    var(--quest-card-height) + var(--quest-deck-overhang)
+  );
   --quest-screen-top: clamp(74px, 7.2cqw, 92px);
   /* Keep the deck and its 28px action above the 36px Change Mood button. */
   --quest-screen-bottom: calc(40px + 36px + 1rem);
   --quest-card-width: min(
     var(--quest-card-inline-size),
     calc(
-      (var(--app-height) - var(--quest-screen-top) - var(--quest-group-padding-top) -
-        var(--quest-screen-bottom) - 1rem - 28px - var(--quest-deck-overhang)) * 0.7
+      (
+          var(--app-height) - var(--quest-screen-top) -
+            var(--quest-group-padding-top) - var(--quest-screen-bottom) - 1rem -
+            28px - var(--quest-deck-overhang)
+        ) *
+        0.7
     )
   );
   display: grid;
@@ -156,6 +162,8 @@
 
 .moodEditControl {
   position: absolute;
+  left: 0;
+  right: 0;
   bottom: 40px;
   margin-inline: auto;
   justify-self: center;
