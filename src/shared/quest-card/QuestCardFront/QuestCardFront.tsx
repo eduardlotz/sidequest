@@ -1,3 +1,6 @@
+import { useTranslation } from "react-i18next";
+import { QUEST_TYPES, QUEST_TAGS } from "../../../data/questTraits";
+import type { QuestTypeId, QuestTagId } from "../../../data/questTraits";
 import styles from "../QuestCard/QuestCard.module.css";
 import { WordmarkLogo } from "../../../assets/wordmark";
 import { QuestCardMeta } from "../QuestCardMeta/QuestCardMeta";
@@ -7,6 +10,8 @@ import type { GameReference } from "../../../data/gameTypes";
 type Props = {
   game: GameReference | null;
   genres: readonly string[];
+  type: QuestTypeId;
+  tags: readonly QuestTagId[];
   minimumDurationMinutes: number;
   moodTitle: string;
   name: string;
@@ -17,12 +22,20 @@ type Props = {
 export function QuestCardFront({
   game,
   genres,
+  type,
+  tags,
   minimumDurationMinutes,
   moodTitle,
   name,
   objective,
   suggestedDurationMinutes,
 }: Props) {
+  const { i18n } = useTranslation();
+  const language = i18n.resolvedLanguage?.startsWith("de") ? "de" : "en";
+  const labels = [QUEST_TYPES[type].title[language], ...Array.from(new Set([
+    ...tags.map((tag) => QUEST_TAGS[tag][language]),
+    ...genres,
+  ])).slice(0, 2)];
   return (
     <>
       <span className={styles.questCardFrontContent}>
@@ -38,18 +51,11 @@ export function QuestCardFront({
           <span className={styles.questCardFrontObjective}>
             <QuestObjectiveText objective={objective} />
           </span>
-          {genres.length > 0 ? (
-            <span className={styles.questCardGenres}>
-              {genres.map((genre, index) => (
-                <span
-                  className={styles.questCardGenre}
-                  key={`${genre}-${index}`}
-                >
-                  {genre}
-                </span>
-              ))}
-            </span>
-          ) : null}
+          <span className={styles.questCardGenres}>
+            {labels.map((label) => (
+              <span className={styles.questCardGenre} key={label}>{label}</span>
+            ))}
+          </span>
         </span>
       </span>
       <span className={styles.cardBrand} aria-hidden="true">

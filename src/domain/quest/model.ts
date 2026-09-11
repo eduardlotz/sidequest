@@ -3,7 +3,7 @@ import type { QuestDefinition } from "../../data/quests";
 import type { GameReference } from "../../data/gameTypes";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 13;
+export const STORE_VERSION = 14;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const NEW_CARDS_COST = 25;
 export const QUEST_OFFER_COUNT = 3;
@@ -59,7 +59,11 @@ export type CompletedSession = {
   completedAt: number;
 };
 
+export const QUEST_OFFER_ROLES = ["library", "inspiration", "directed"] as const;
+export type QuestOfferRole = (typeof QUEST_OFFER_ROLES)[number];
+
 export type QuestOffer = {
+  role: QuestOfferRole;
   id: string;
   moodId: MoodId;
   questId: string;

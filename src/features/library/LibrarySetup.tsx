@@ -320,6 +320,8 @@ function PreviewQuestCard({
         <QuestCard
           game={game}
           genres={quest.genres}
+          type={quest.type}
+          tags={quest.tags}
           minimumDurationMinutes={quest.minimumDurationMinutes}
           suggestedDurationMinutes={quest.suggestedDurationMinutes}
           moodTitle={t("ui.library.previewRelax")}

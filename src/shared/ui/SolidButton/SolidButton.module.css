@@ -42,7 +42,7 @@
     --button-font-size: 0.875rem;
     --button-icon-size: 1.0625rem;
     --button-inline-padding: 16px;
-    --button-radius: 18px;
+    --button-radius: 16px;
   }
 
   &[data-size="large"] {
@@ -51,7 +51,7 @@
     --button-font-size: 0.95rem;
     --button-icon-size: 1.125rem;
     --button-inline-padding: 22px;
-    --button-radius: 17px;
+    --button-radius: 18px;
   }
 
   &[data-icon-left="true"] {

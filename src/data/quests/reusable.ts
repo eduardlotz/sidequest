@@ -1,1384 +1,1208 @@
-import type { GameCapabilityId } from "../gameTypes";
-import type { AuthoredQuestDefinition, MoodId } from "../questTypes";
+import type { AuthoredQuestDefinition } from "../questTypes";
 
-type QuestRow = readonly [
-  id: string,
-  moods: readonly MoodId[],
-  englishName: string,
-  englishObjective: string,
-  germanName: string,
-  germanObjective: string,
-];
-
-function featureQuests(
-  capabilityIds: readonly GameCapabilityId[],
-  context: readonly [string, string],
-  rows: readonly QuestRow[],
-): AuthoredQuestDefinition[] {
-  return rows.map(([id, moodIds, name, objective, deName, deObjective]) => ({
-    id,
-    moodIds,
-    minimumDurationMinutes: 3,
-    suggestedDurationMinutes: 20,
+export const reusableQuests = [
+  {
+    id: "a-little-walk",
+    moodIds: ["relax", "low-energy", "nostalgic"],
+    type: "inspiration",
+    tags: ["free-roam", "on-foot"],
+    minimumDurationMinutes: 1,
+    suggestedDurationMinutes: 15,
     genres: [],
-    customGameCompatibility: { capabilityIds },
     translations: {
       en: {
-        name,
-        objective: `${context[0]} ${objective}`,
-        gameObjective: `In **{{game}}**: ${objective}`,
+        name: "A Little Walk",
+        objective:
+          "Open a **freely explorable game** and take a walk through a place you like. **Follow the scenery instead of objectives**. Go wherever looks interesting.",
+        gameObjective:
+          "In **{{game}}**: Take a walk through a place you like. **Follow the scenery instead of objectives**. Go wherever looks interesting.",
       },
       de: {
-        name: deName,
-        objective: `${context[1]} ${deObjective}`,
-        gameObjective: `In **{{game}}**: ${deObjective}`,
+        name: "Ein kleiner Spaziergang",
+        objective:
+          "Starte ein **frei erkundbares Spiel** und spaziere durch einen Ort, den du magst. **Folge der Umgebung statt Zielen**. Geh einfach dorthin, wo es interessant aussieht.",
+        gameObjective:
+          "In **{{game}}**: Spaziere durch einen Ort, den du magst. **Folge der Umgebung statt Zielen**. Geh einfach dorthin, wo es interessant aussieht.",
       },
     },
-  }));
-}
-
-// These quests deliberately need no feature beyond being able to play the game.
-// A custom game with no selected features still has a useful quest pool.
-export const reusableQuests: readonly AuthoredQuestDefinition[] = [
-  ...featureQuests(
-    ["magic"],
-    ["Choose an installed game with combat spells.", "Nimm ein installiertes Spiel mit Kampfzaubern."],
-    [
-      ["spell-single-school", ["focused", "challenge"], "One Spell Only",
-        "Keep the first damage spell in your current spell list. **Defeat three ordinary enemies using only that spell for damage**. No weapons, summons, or damaging items; death resets the count.",
-        "Nur ein Zauber", "Behalte den ersten Schadenszauber in deiner aktuellen Zauberliste. **Besiege drei gewöhnliche Gegner nur mit diesem Zauber als Schadensquelle**. Keine Waffen, Beschwörungen oder Schadensgegenstände; beim Tod beginnt der Zähler neu."],
-      ["spell-new-opener", ["curious", "progress"], "A Different Spell",
-        "Take the first unlocked damage spell you have not equipped. **Defeat one ordinary enemy with it as your only damage source**, then keep it equipped. Start with enough magic resource to cast it.",
-        "Ein anderer Zauber", "Nimm den ersten freigeschalteten Schadenszauber, den du nicht ausgerüstet hast. **Besiege einen gewöhnlichen Gegner nur mit diesem Zauber** und lass ihn ausgerüstet. Starte mit genug Zauberressourcen für den Einsatz."],
-      ["spell-no-refill", ["challenge", "restless"], "No Magic Bottles",
-        "Start at full magic resource with your current damage spells. **Win the next ordinary fight without using items to restore magic**. Deal damage only with spells. If you run dry before winning or die, restart with full magic resource.",
-        "Ohne Zaubertrank", "Starte mit voller Zauberressource und deinen aktuellen Schadenszaubern. **Gewinne den nächsten gewöhnlichen Kampf ohne Gegenstände, die Zauberressourcen auffüllen**. Verursache nur mit Zaubern Schaden. Sind deine Ressourcen vor dem Sieg leer oder stirbst du, starte mit vollen Zauberressourcen neu."],
-    ],
-  ),
-  ...featureQuests(
-    ["trading"],
-    ["Choose an installed game where you can buy and sell items.", "Nimm ein installiertes Spiel, in dem du Gegenstände kaufen und verkaufen kannst."],
-    [
-      ["trade-fund-a-purchase", ["focused", "progress"], "Sell Before Buying",
-        "At the nearest accessible merchant, note the cheapest item you can buy. **Sell unused items until this visit's earnings cover it, then buy one**. Spend no money from before the visit.",
-        "Erst verkaufen", "Merke dir beim nächsten erreichbaren Händler den günstigsten kaufbaren Gegenstand. **Verkaufe ungenutzte Gegenstände, bis die Einnahmen dieses Besuchs dafür reichen, und kaufe ihn einmal**. Gib kein Geld aus, das du vorher hattest."],
-      ["trade-three-kinds", ["overwhelmed", "low-energy"], "Three Things Less",
-        "Open your inventory at an accessible merchant. Take the first three different sellable items you are not using and **sell one of each without buying anything**. Leave equipped gear alone.",
-        "Drei Dinge weniger", "Öffne dein Inventar bei einem erreichbaren Händler. Nimm die ersten drei verschiedenen verkaufbaren Gegenstände, die du nicht nutzt, und **verkaufe je einen, ohne etwas zu kaufen**. Lass ausgerüstete Gegenstände in Ruhe."],
-      ["trade-one-category", ["relax", "focused"], "One Shelf Empty",
-        "At an accessible merchant, use the first inventory category containing unused sellable items. **Sell all unused items in that category and close the shop**, keeping equipped items. Buy nothing on this visit.",
-        "Ein Fach leer", "Nimm bei einem erreichbaren Händler die erste Inventarkategorie mit ungenutzten verkaufbaren Gegenständen. **Verkaufe alle ungenutzten Gegenstände darin und schließe den Laden**, ohne ausgerüstete Dinge abzugeben. Kaufe bei diesem Besuch nichts."],
-    ],
-  ),
-  ...featureQuests(
-    ["hunting"],
-    ["Choose an installed game where hunted animals yield materials.", "Nimm ein installiertes Spiel, in dem gejagte Tiere Materialien liefern."],
-    [
-      ["hunt-single-species", ["focused", "progress"], "One Species",
-        "The first huntable animal you spot sets the species. **Hunt and collect materials from two animals of that species**, leaving other animals alone unless they attack. Finish with both animals' materials collected.",
-        "Eine Tierart", "Das erste jagdbare Tier, das du siehst, legt die Art fest. **Erlege zwei Tiere dieser Art und sammle ihre Materialien**. Lass andere Tiere in Ruhe, solange sie dich nicht angreifen. Fertig bist du nach dem Einsammeln beider Beuten."],
-      ["hunt-on-foot", ["explore", "relax"], "Walk the Hunt",
-        "Start at the nearest accessible hunting area. **Hunt one animal, collect its materials, and return to your starting point on foot**. Use no mounts, vehicles, or fast travel during the outing.",
-        "Jagd zu Fuß", "Starte im nächsten erreichbaren Jagdgebiet. **Erlege ein Tier, sammle seine Materialien und kehre zu Fuß zum Ausgangspunkt zurück**. Nutze während des Ausflugs keine Reittiere, Fahrzeuge oder Schnellreise."],
-      ["hunt-one-weapon", ["challenge", "focused"], "Keep the Weapon",
-        "Keep your currently equipped hunting weapon for the outing. **Hunt and harvest two animals without switching weapons**, then return to your starting point. Do not use traps or companions to deal damage.",
-        "Eine Waffe behalten", "Behalte deine aktuell ausgerüstete Jagdwaffe für diesen Ausflug. **Erlege zwei Tiere und sammle ihre Beute ohne Waffenwechsel**, dann kehre zum Ausgangspunkt zurück. Lass Fallen und Begleiter keinen Schaden verursachen."],
-    ],
-  ),
-  ...featureQuests(
-    ["animal-companions"],
-    ["Choose an installed game with an animal companion you can command in combat.", "Nimm ein installiertes Spiel mit einem Tierbegleiter, dem du Kampfbefehle geben kannst."],
-    [
-      ["companion-first-strike", ["connect", "focused"], "Let Them Lead",
-        "Bring your current animal companion to three ordinary enemies. **Order the companion to land the first hit on each, then help finish all three fights**. Keep it alive; a defeated companion resets the count.",
-        "Lass es vorgehen", "Nimm deinen aktuellen Tierbegleiter zu drei gewöhnlichen Gegnern mit. **Lass ihn auf Befehl jeweils zuerst treffen und hilf dann, alle drei Kämpfe zu gewinnen**. Halte ihn am Leben; wird er besiegt, beginnt der Zähler neu."],
-      ["companion-no-player-damage", ["challenge", "curious"], "Their Fight",
-        "Order your animal companion to attack the next ordinary enemy. **Let it win that fight without dealing damage yourself**. You may move and heal; finish with your companion alive. Its defeat restarts the attempt.",
-        "Sein Kampf", "Befiehl deinem Tierbegleiter, den nächsten gewöhnlichen Gegner anzugreifen. **Lass ihn den Kampf gewinnen, ohne selbst Schaden zu verursachen**. Bewegung und Heilung sind erlaubt; dein Tier muss überleben. Wird es besiegt, starte neu."],
-      ["companion-last-hit", ["progress", "focused"], "Leave the Finish",
-        "In the next ordinary fight, weaken an enemy with your own attacks, then stop attacking. **Command your animal companion to land the finishing blow**. Finish the fight with both of you alive; if you kill that enemy yourself, retry on the next one.",
-        "Den Schluss überlassen", "Schwäche im nächsten gewöhnlichen Kampf einen Gegner mit eigenen Angriffen und hör dann auf anzugreifen. **Lass deinen Tierbegleiter auf Befehl den letzten Treffer landen**. Ihr müsst beide überleben; tötest du den Gegner selbst, versuche es beim nächsten."],
-    ],
-  ),
-  ...featureQuests(
-    ["skate-tricks"],
-    ["Choose an installed skateboarding game with flip tricks, grinds, and manuals.", "Nimm ein installiertes Skateboard-Spiel mit Fliptricks, Grinds und Manuals."],
-    [
-      ["skate-one-ledge", ["focused", "challenge"], "Both Ends",
-        "Find the nearest low grindable ledge. **Grind it from each end without bailing**, using the same grind type. Roll away on the board each time; finish after one landed run in each direction.",
-        "Von beiden Seiten", "Such die nächste niedrige grindbare Kante. **Grinde sie von beiden Enden aus ohne Sturz**, jeweils mit derselben Grind-Art. Rolle danach auf dem Board weiter; je ein gelandeter Durchlauf pro Richtung beendet die Quest."],
-      ["skate-manual-gap", ["curious", "progress"], "Between the Cracks",
-        "Find two nearby pavement seams on flat ground. **Hold one manual from the first seam to the second, then land a flip trick out of it**. A bail or dropping the manual early restarts the line.",
-        "Zwischen den Fugen", "Such zwei nahe Pflasterfugen auf ebenem Boden. **Halte einen Manual von der ersten bis zur zweiten Fuge und lande danach einen Fliptrick**. Ein Sturz oder ein zu früh beendeter Manual startet die Line neu."],
-      ["skate-three-flips", ["create", "restless"], "No Repeat Flips",
-        "At the nearest flat patch, **land three different flip tricks in one rolling line**. Use no grinds, manuals, or grabs. A repeated trick or bail restarts the line; finish by rolling away from the third landing.",
-        "Drei verschiedene Flips", "**Lande auf der nächsten ebenen Fläche drei verschiedene Fliptricks in einer durchgehenden Line**. Keine Grinds, Manuals oder Grabs. Wiederholung oder Sturz startet die Line neu; rolle nach der dritten Landung zum Abschluss weiter."],
-    ],
-  ),
-  ...featureQuests(
-    ["sports-goals"],
-    ["Choose an installed sports game with goals and a playable solo match.", "Nimm ein installiertes Sportspiel mit Toren und einem spielbaren Solo-Match."],
-    [
-      ["sports-comeback-attempt", ["challenge", "restless"], "Play from Behind",
-        "Start a solo match against the computer and let it score the first goal. Then **win from behind or finish three full matches trying**, with the same teams and difficulty. Do not restart after another conceded goal.",
-        "Rückstand drehen", "Starte ein Solo-Match gegen den Computer und lass ihn das erste Tor erzielen. **Gewinne nach Rückstand oder beende drei ganze Versuche** mit denselben Teams und derselben Schwierigkeit. Starte nach weiteren Gegentoren nicht neu."],
-      ["sports-shutout", ["focused", "challenge"], "Keep a Clean Sheet",
-        "Play a solo match against the computer at your usual difficulty. **Finish with at least one goal scored and none conceded**, or complete three full attempts. Keep the same teams; a conceded goal does not end the match early.",
-        "Die Null halten", "Spiele ein Solo-Match gegen den Computer auf deiner üblichen Schwierigkeit. **Beende es mit mindestens einem eigenen Tor und ohne Gegentor** oder spiele drei ganze Versuche. Behalte die Teams bei; ein Gegentor beendet das Match nicht vorzeitig."],
-      ["sports-answer-back", ["progress", "focused"], "Answer with a Goal",
-        "In a solo match against the computer, **score the next goal after conceding one**, then finish the match. Keep playing if the opponent scores twice; a later direct answer counts. Limit the session to three full matches.",
-        "Mit einem Tor antworten", "**Erziele in einem Solo-Match gegen den Computer direkt nach einem Gegentor das nächste Tor** und beende das Match. Trifft der Gegner zweimal, zählt auch eine spätere direkte Antwort. Spiele höchstens drei ganze Matches."],
-    ],
-  ),
-  ...featureQuests(
-    ["extraction-runs"],
-    ["Choose an installed extraction game where you keep carried loot after leaving a raid.", "Nimm ein installiertes Extraction-Spiel, in dem du Beute nach dem Raid behältst."],
-    [
-      ["extract-three-slots", ["overwhelmed", "focused"], "Three Slots, Then Out",
-        "Enter with at least three empty inventory slots. Once **three of those slots contain loot from this raid**, head straight to extraction without further looting. Finish when you leave with all three slots of loot; losing it restarts the attempt.",
-        "Drei Plätze, dann raus", "Starte mit mindestens drei leeren Inventarplätzen. Sobald **drei davon Beute aus diesem Raid enthalten**, gehe ohne weiteres Plündern zur Extraktion. Fertig bist du, wenn du diese Beute mit rausbringst; bei Verlust neu beginnen."],
-      ["extract-no-upgrades", ["challenge", "focused"], "The Kit You Brought",
-        "Bring your usual kit. **Extract with at least one looted item without equipping anything found during the raid**. Use only the weapons, armor, and consumables you brought; collected items stay packed until you are out.",
-        "Dein mitgebrachtes Kit", "Starte mit deinem üblichen Kit. **Extrahiere mit mindestens einem Beutestück, ohne Fundstücke im Raid auszurüsten**. Nutze nur mitgebrachte Waffen, Rüstung und Verbrauchsgegenstände; Beute bleibt bis zur Extraktion eingepackt."],
-      ["extract-one-container", ["low-energy", "relax"], "One Container Run",
-        "Open the first unopened loot container you reach. **Take at least one item from it and extract without searching another container**. If it is empty, the next unopened container becomes your target. A lost raid starts a new attempt.",
-        "Nur ein Behälter", "Öffne den ersten ungeplünderten Beutebehälter, den du erreichst. **Nimm mindestens einen Gegenstand daraus und extrahiere, ohne einen weiteren Behälter zu durchsuchen**. Ist er leer, zählt der nächste ungeöffnete Behälter. Bei Raid-Verlust neu beginnen."],
-    ],
-  ),
-  ...featureQuests(
-    ["hunting", "crafting"],
-    ["Choose a game with hunting and recipes that use animal materials.", "Nimm ein Spiel mit Jagd und Rezepten aus Tiermaterialien."],
-    [["hunt-craft-wear", ["progress", "create"], "Hide to Hand",
-      "Select the first unlocked equipment recipe that needs animal materials. **Hunt its missing animal materials, craft the item, and equip it**. Use stored non-animal ingredients, but buy no hides or meat.",
-      "Vom Fell zum Gegenstand", "Nimm das erste freigeschaltete Ausrüstungsrezept, das Tiermaterialien braucht. **Erjage die fehlenden Tiermaterialien, stelle den Gegenstand her und rüste ihn aus**. Andere Zutaten dürfen aus dem Lager kommen; kaufe keine Felle oder Fleischstücke."]],
-  ),
-  ...featureQuests(
-    ["fishing", "cooking"],
-    ["Choose a game where you can catch fish and cook them.", "Nimm ein Spiel, in dem du Fische fangen und zubereiten kannst."],
-    [["catch-cook-eat", ["relax", "progress"], "Fresh from the Water",
-      "Check the first unlocked fish dish and bring its non-fish ingredients. **Catch the required fish, cook the dish, and eat one serving**. Use no stored or purchased fish.",
-      "Frisch aus dem Wasser", "Sieh dir das erste freigeschaltete Fischgericht an und nimm die übrigen Zutaten mit. **Fange den nötigen Fisch, koche das Gericht und iss eine Portion**. Kein gelagerter oder gekaufter Fisch."]],
-  ),
-  ...featureQuests(
-    ["crafting", "trading"],
-    ["Choose a game where crafted items can be sold to merchants.", "Nimm ein Spiel, in dem Händler selbst hergestellte Gegenstände kaufen."],
-    [["craft-sell-resupply", ["focused", "progress"], "Make Your Own Budget",
-      "At the nearest merchant, note the price of one crafting ingredient you use. **Craft and sell enough items to buy one of that ingredient with these earnings alone**. Use materials you already own; finish with the new ingredient bought.",
-      "Selbst verdient", "Merke dir beim nächsten Händler den Preis einer Zutat, die du zum Herstellen nutzt. **Stelle Gegenstände her und verkaufe sie, bis die Einnahmen für diese eine Zutat reichen**. Nutze vorhandenes Material; der Kauf beendet die Quest."]],
-  ),
-  ...featureQuests(
-    ["building", "farming-or-care"],
-    ["Choose a game where you can build around a planted garden.", "Nimm ein Spiel, in dem du um einen bepflanzten Garten bauen kannst."],
-    [["garden-walkway", ["create", "focused"], "Room to Water",
-      "At your existing garden, **build a path from the entrance to every planted bed without removing crops**. Walk the whole path and tend each bed once; finish after reaching every bed without stepping through another bed.",
-      "Platz zum Gießen", "**Baue in deinem bestehenden Garten einen Weg vom Eingang zu jedem bepflanzten Beet, ohne Pflanzen zu entfernen**. Laufe den Weg ab und versorge jedes Beet einmal. Fertig bist du, wenn du alle erreichst, ohne durch andere Beete zu treten."]],
-  ),
-  ...featureQuests(
-    ["stealth", "collectibles"],
-    ["Choose a game with collectibles in guarded areas and stealth routes.", "Nimm ein Spiel mit Sammelobjekten in bewachten Gebieten und Schleichwegen."],
-    [["collectible-quiet-exit", ["explore", "challenge"], "Just the Collectible",
-      "Go to the nearest known uncollected item inside a guarded area. **Take it and leave without being detected or attacking anyone**. Leave other loot untouched; detection restarts the attempt from outside.",
-      "Nur das Sammelobjekt", "Gehe zum nächsten bekannten, noch fehlenden Sammelobjekt in einem bewachten Gebiet. **Hole es und verschwinde unentdeckt, ohne jemanden anzugreifen**. Lass andere Beute liegen; bei Entdeckung beginnt der Versuch von draußen neu."]],
-  ),
-  ...featureQuests(
-    ["equipment-loadouts", "missions-or-levels"],
-    ["Choose a game with replayable missions and changeable equipment.", "Nimm ein Spiel mit wiederholbaren Missionen und wechselbarer Ausrüstung."],
-    [["one-swap-replay", ["curious", "focused"], "Change One Variable",
-      "Replay the first completed mission with your current loadout. Swap only the first equipment slot for another owned item, then **finish that same mission again on the same difficulty**. Leave all other gear unchanged.",
-      "Nur ein Unterschied", "Wiederhole die erste abgeschlossene Mission mit deinem aktuellen Loadout. Tausche nur den ersten Ausrüstungsplatz gegen einen anderen vorhandenen Gegenstand und **beende dieselbe Mission erneut auf derselben Schwierigkeit**. Lass alle anderen Ausrüstungsteile unverändert."]],
-  ),
-  ...featureQuests(
-    ["puzzles", "missions-or-levels"],
-    ["Choose a puzzle game with replayable levels.", "Nimm ein Rätselspiel mit wiederholbaren Leveln."],
-    [["puzzle-rebuild-solution", ["nostalgic", "focused"], "From Memory",
-      "Replay the first completed puzzle level. **Solve it again without hints or a walkthrough**, relying on what you remember and the clues on screen. Finish at its level-complete screen.",
-      "Aus dem Gedächtnis", "Wiederhole das erste abgeschlossene Rätsellevel. **Löse es erneut ohne Hinweise oder Komplettlösung**, nur mit deiner Erinnerung und den sichtbaren Anhaltspunkten. Der Levelabschluss beendet die Quest."]],
-  ),
-  ...featureQuests(
-    ["driving-or-racing", "open-world"],
-    ["Choose a game with free-roam driving and a map.", "Nimm ein Spiel mit frei befahrbarer Welt und Karte."],
-    [["drive-map-once", ["explore", "focused"], "One Look at the Map",
-      "At the nearest road junction, check the route to the next town on your map once. **Drive there in your current vehicle without reopening the map or setting a waypoint**. Finish when you park inside the town; no fast travel.",
-      "Ein Blick auf die Karte", "Sieh dir an der nächsten Straßenkreuzung einmal den Weg zum nächsten Ort auf der Karte an. **Fahre mit deinem aktuellen Fahrzeug dorthin, ohne die Karte erneut zu öffnen oder einen Wegpunkt zu setzen**. Parke zum Abschluss im Ort; keine Schnellreise."]],
-  ),
-  ...featureQuests(
-    ["pistols"],
-    [
-      "Choose a game where you can use pistols.",
-      "Wähle ein Spiel mit Pistolen.",
-    ],
-    [
-      [
-        "pistol-three-encounters",
-        ["focused", "challenge"],
-        "Sidearm Session",
-        "Use **only a pistol for three familiar encounters**. Keep your usual movement and take cover between shots.",
-        "Nur die Seitenwaffe",
-        "Nutze in **drei vertrauten Kämpfen nur eine Pistole**. Bewege dich wie gewohnt und geh zwischen den Schüssen in Deckung.",
-      ],
-      [
-        "pistol-deliberate-shots",
-        ["focused", "low-energy"],
-        "Ten Deliberate Shots",
-        "In the next ordinary fight, **land ten pistol hits, aiming before every shot**, then finish the fight. Count only hits on enemies; a missed shot resets the hit count.",
-        "Zehn gezielte Schüsse",
-        "Lande im nächsten gewöhnlichen Kampf **zehn Pistolentreffer und ziele vor jedem Schuss**. Beende danach den Kampf. Zähle nur Gegnertreffer; ein Fehlschuss setzt den Zähler zurück.",
-      ],
-      [
-        "pistol-return",
-        ["nostalgic", "progress"],
-        "Old Sidearm",
-        "Equip **a pistol you have not used recently**. Finish one familiar encounter with it and decide whether to keep it equipped.",
-        "Alte Seitenwaffe",
-        "Rüste **eine Pistole aus, die du länger nicht benutzt hast**. Schaffe damit einen vertrauten Kampf und entscheide danach, ob du sie weiter nutzen möchtest.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["rifles"],
-    [
-      "Choose a game where you can use rifles.",
-      "Wähle ein Spiel mit Gewehren.",
-    ],
-    [
-      [
-        "rifle-single-bursts",
-        ["focused", "challenge"],
-        "Controlled Bursts",
-        "In the next ordinary fight, fire your rifle in **bursts of at most three shots, aiming again between bursts**. Defeat every opponent in that fight using only the rifle. Firing a longer burst restarts the attempt.",
-        "Kurze Feuerstöße",
-        "Schieße im nächsten gewöhnlichen Kampf mit deinem Gewehr **höchstens drei Schüsse pro Feuerstoß und ziele dazwischen neu**. Besiege alle Gegner dieses Kampfes nur mit dem Gewehr. Ein längerer Feuerstoß startet den Versuch neu.",
-      ],
-      [
-        "rifle-new-position",
-        ["explore", "curious"],
-        "A Different Angle",
-        "Find **three different firing positions** in a familiar rifle encounter. Land one hit from each before moving on.",
-        "Ein anderer Winkel",
-        "Such dir in einem vertrauten Gewehrkampf **drei verschiedene Schusspositionen**. Lande von jeder Position einen Treffer.",
-      ],
-      [
-        "rifle-familiar-run",
-        ["relax", "nostalgic"],
-        "Trusted Rifle",
-        "Take **your most familiar rifle** into one repeatable encounter. Finish it without changing weapons or adjusting the loadout.",
-        "Vertrautes Gewehr",
-        "Nimm **dein vertrautestes Gewehr** in einen wiederholbaren Kampf mit. Beende ihn, ohne die Waffe oder Ausrüstung zu wechseln.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["bows"],
-    ["Choose a game where you can use bows.", "Wähle ein Spiel mit Bögen."],
-    [
-      [
-        "bow-five-hits",
-        ["focused", "progress"],
-        "Five Arrows on Target",
-        "Use a bow to land **five deliberate hits** on practice targets or familiar enemies. Take time to learn the arrow flight between shots.",
-        "Fünf Pfeile im Ziel",
-        "Lande mit einem Bogen **fünf gezielte Treffer** auf Übungsziele oder vertraute Gegner. Beobachte zwischen den Schüssen die Flugbahn der Pfeile.",
-      ],
-      [
-        "bow-distance-study",
-        ["curious", "explore"],
-        "Arrow Flight",
-        "Try **three different distances with the same bow**. Land one hit from each distance and notice how your aim changes.",
-        "Die Flugbahn lesen",
-        "Probiere **drei verschiedene Entfernungen mit demselben Bogen** aus. Lande aus jeder Entfernung einen Treffer und achte darauf, wie du zielen musst.",
-      ],
-      [
-        "bow-only-encounter",
-        ["challenge", "focused"],
-        "String and Arrow",
-        "Complete **one familiar encounter using only a bow**. Movement and defensive abilities are allowed; stop after the encounter or fifteen minutes.",
-        "Sehne und Pfeil",
-        "Schaffe **einen vertrauten Kampf nur mit einem Bogen**. Bewegung und defensive Fähigkeiten sind erlaubt. Hör nach dem Kampf oder nach fünfzehn Minuten auf.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["melee-weapons"],
-    [
-      "Choose a game where you can use melee weapons.",
-      "Wähle ein Spiel mit Nahkampfwaffen.",
-    ],
-    [
-      [
-        "melee-three-openings",
-        ["focused", "challenge"],
-        "Close Enough",
-        "Use a melee weapon in **three encounters**. Wait for an opponent to miss before stepping in for your first attack each time.",
-        "Nah genug",
-        "Nutze in **drei Kämpfen eine Nahkampfwaffe**. Warte jedes Mal einen gegnerischen Fehlschlag ab, bevor du zum ersten Angriff ansetzt.",
-      ],
-      [
-        "melee-unfamiliar-weapon",
-        ["curious", "create"],
-        "Different Reach",
-        "Equip **one melee weapon you rarely use**. Try it against three familiar enemies and compare its reach with your usual weapon.",
-        "Andere Reichweite",
-        "Rüste **eine Nahkampfwaffe aus, die du selten nutzt**. Probiere sie an drei vertrauten Gegnern aus und vergleiche ihre Reichweite mit deiner üblichen Waffe.",
-      ],
-      [
-        "melee-old-favorite",
-        ["relax", "nostalgic"],
-        "Back to the Blade",
-        "Choose **your favorite melee weapon** and replay one familiar fight. Keep the same weapon throughout and stop after the fight.",
-        "Zurück zur Lieblingswaffe",
-        "Wähle **deine liebste Nahkampfwaffe** und wiederhole einen vertrauten Kampf. Bleib bei dieser Waffe und hör nach dem Kampf auf.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["fist-fights"],
-    [
-      "Choose a game where you can fight unarmed.",
-      "Wähle ein Spiel mit Faustkämpfen.",
-    ],
-    [
-      [
-        "fists-three-exchanges",
-        ["focused", "progress"],
-        "Three Exchanges",
-        "In a practice fight or familiar encounter, complete **three unarmed attack exchanges**. Move back out of reach after each exchange.",
-        "Dreimal zuschlagen",
-        "Schaffe in einem Übungskampf oder vertrauten Kampf **drei unbewaffnete Schlagwechsel**. Geh nach jedem Schlagwechsel wieder auf Abstand.",
-      ],
-      [
-        "fists-only-round",
-        ["challenge", "restless"],
-        "Empty Hands",
-        "Complete **one familiar fight using only your fists**. Defensive movement is allowed; stop after the fight or ten minutes.",
-        "Leere Hände",
-        "Bestreite **einen vertrauten Kampf nur mit deinen Fäusten**. Ausweichen ist erlaubt. Hör nach dem Kampf oder nach zehn Minuten auf.",
-      ],
-      [
-        "fists-read-opponent",
-        ["curious", "low-energy"],
-        "Read the Boxer",
-        "Spend **one unarmed practice round observing two attack patterns**. In the next round, try to avoid each pattern once before striking back.",
-        "Den Gegner lesen",
-        "Achte in **einer unbewaffneten Übungsrunde auf zwei Angriffsmuster**. Versuche in der nächsten Runde, jedem Muster einmal auszuweichen, bevor du zurückschlägst.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["space-exploration"],
-    [
-      "Choose a game where you can visit planets.",
-      "Wähle ein Spiel mit erkundbaren Planeten.",
-    ],
-    [
-      [
-        "planet-three-details",
-        ["explore", "curious"],
-        "Another World",
-        "Land on **one planet you have not visited**. Find three details about its terrain or wildlife before leaving.",
-        "Eine andere Welt",
-        "Lande auf **einem Planeten, den du noch nicht besucht hast**. Entdecke drei Besonderheiten der Landschaft oder Tierwelt, bevor du weiterfliegst.",
-      ],
-      [
-        "planet-slow-walk",
-        ["relax", "overwhelmed"],
-        "Planet Walk",
-        "On a safe planet, **walk away from your landing spot for five minutes**. Choose one view to pause at, then return to your ship.",
-        "Spaziergang auf fremdem Boden",
-        "Geh auf einem sicheren Planeten **fünf Minuten von deinem Landeplatz weg**. Bleib bei einer schönen Aussicht stehen und kehre dann zum Schiff zurück.",
-      ],
-      [
-        "planet-compare",
-        ["curious", "create"],
-        "Worlds Apart",
-        "Visit **two planets** and note one difference in their sky, terrain, and colors. Stop after your second landing.",
-        "Zwei Welten",
-        "Besuche **zwei Planeten** und merke dir je einen Unterschied am Himmel, im Gelände und bei den Farben. Hör nach deiner zweiten Landung auf.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["swimming"],
-    [
-      "Choose a game where you can swim and dive.",
-      "Wähle ein Spiel mit Schwimmen und Tauchen.",
-    ],
-    [
-      [
-        "swim-shore-route",
-        ["explore", "relax"],
-        "Along the Shore",
-        "Swim **between two visible landmarks** along a safe shoreline. Stay close enough to land to finish without running out of breath.",
-        "Am Ufer entlang",
-        "Schwimme an einem sicheren Ufer **zwischen zwei sichtbaren Orientierungspunkten**. Bleib nah genug am Land, um rechtzeitig wieder Luft holen zu können.",
-      ],
-      [
-        "dive-three-details",
-        ["curious", "focused"],
-        "Below the Surface",
-        "Make **three short dives** in a safe area. Notice a different underwater detail on each dive and return to the surface between them.",
-        "Unter der Oberfläche",
-        "Mach in einem sicheren Gebiet **drei kurze Tauchgänge**. Achte jedes Mal auf ein anderes Detail unter Wasser und tauche zwischendurch zum Luftholen auf.",
-      ],
-      [
-        "swim-return-trip",
-        ["progress", "low-energy"],
-        "There and Back",
-        "Choose **one nearby point you can safely swim to**. Swim there and back without taking on another objective.",
-        "Hin und zurück",
-        "Wähle **einen nahen Punkt, den du sicher schwimmend erreichst**. Schwimme hin und zurück, ohne unterwegs ein anderes Ziel anzufangen.",
-      ],
-    ],
-  ),
-
-  ...featureQuests(
-    [],
-    ["Choose any game.", "Starte ein beliebiges Spiel."],
-    [
-      [
-        "play-without-a-score",
-        ["relax", "overwhelmed"],
-        "No Score to Set",
-        "Play for **ten minutes without chasing a score or reward**. Stop at a natural break and notice one thing you enjoyed.",
-        "Ohne Bestmarke",
-        "Spiele **zehn Minuten, ohne auf Punkte oder Belohnungen hinzuarbeiten**. Hör an einer passenden Stelle auf und merke dir einen Moment, der dir Spaß gemacht hat.",
-      ],
-      [
-        "one-new-thing",
-        ["explore", "curious"],
-        "One New Thing",
-        "Try **one action or option you usually overlook**. Use it three times before deciding whether to keep it in your routine.",
-        "Etwas Neues",
-        "Probiere **eine Aktion oder Option aus, die du sonst kaum beachtest**. Nutze sie dreimal und entscheide danach, ob du sie öfter einsetzen möchtest.",
-      ],
-      [
-        "finish-one-small-goal",
-        ["progress", "focused"],
-        "Small Finish",
-        "Choose **one small unfinished goal** in your current game. Work only on that goal until it is done or twenty minutes have passed.",
-        "Kleiner Abschluss",
-        "Nimm dir **ein kleines Ziel vor, das noch offen ist**. Arbeite nur daran, bis du es geschafft hast oder zwanzig Minuten vergangen sind.",
-      ],
-      [
-        "invent-a-play-rule",
-        ["create", "challenge"],
-        "Your Own Rule",
-        "Invent **one harmless restriction** on how you normally play. Keep it for ten minutes, then decide what it changed.",
-        "Deine Spielregel",
-        "Denk dir **eine harmlose Einschränkung für deine Spielweise** aus. Halte sie zehn Minuten ein und überlege danach, was sich dadurch verändert hat.",
-      ],
-      [
-        "share-one-discovery",
-        ["connect", "curious"],
-        "Worth Sharing",
-        "Find **one detail you would show a friend**. Take a screenshot or write a short note about where to find it; sharing it is optional.",
-        "Zum Weitererzählen",
-        "Finde **ein Detail, das du jemandem zeigen möchtest**. Mach einen Screenshot oder notiere kurz den Fundort. Ob du deinen Fund teilst, bleibt dir überlassen.",
-      ],
-      [
-        "revisit-a-favorite",
-        ["nostalgic", "relax"],
-        "Still a Favorite",
-        "Return to **a familiar part of the game**. Spend ten minutes doing something you used to enjoy, without optimizing it.",
-        "Noch immer gut",
-        "Kehre zu **einem vertrauten Teil des Spiels** zurück. Mach zehn Minuten lang etwas, das dir früher Spaß gemacht hat, ohne dabei möglichst effizient sein zu wollen.",
-      ],
-      [
-        "one-thing-at-a-time",
-        ["overwhelmed", "focused"],
-        "Just This",
-        "Pick **one action you already know** and spend five minutes doing only that. Ignore optional goals until you finish.",
-        "Nur das hier",
-        "Nimm **eine Aktion, die du schon kennst**, und mach fünf Minuten lang nur das. Lass optionale Ziele so lange liegen.",
-      ],
-      [
-        "quick-return",
-        ["restless", "low-energy"],
-        "Quick Return",
-        "Play for **five minutes with your current setup**. At the next natural break, choose whether to continue or finish for today.",
-        "Kurz reinschauen",
-        "Spiele **fünf Minuten mit deinem aktuellen Setup**. Entscheide an der nächsten passenden Stelle, ob du weiterspielst oder für heute aufhörst.",
-      ],
-      [
-        "one-better-attempt",
-        ["challenge", "progress"],
-        "Another Approach",
-        "Choose **one small action that went badly last time**. Make three attempts, changing just one part of your approach between them.",
-        "Neuer Ansatz",
-        "Nimm dir **eine kleine Aktion vor, die beim letzten Mal nicht gut geklappt hat**. Versuche sie dreimal und ändere zwischen den Versuchen jeweils nur eine Sache.",
-      ],
-      [
-        "notice-three-details",
-        ["low-energy", "explore"],
-        "Take It In",
-        "Spend five minutes noticing **three visual or sound details** you normally miss. Pause your usual goal long enough to take them in.",
-        "Genau hinsehen",
-        "Achte fünf Minuten lang auf **drei Details im Bild oder Ton**, die dir sonst entgehen. Lass dein übliches Ziel dafür kurz liegen.",
-      ],
-      [
-        "make-a-mini-challenge",
-        ["create", "connect"],
-        "A Little Challenge",
-        "Design **a five-minute challenge using an action in this game**. Try it once yourself and write down the rule so someone else could play it.",
-        "Kleine Spielidee",
-        "Denk dir **eine Fünf-Minuten-Challenge mit einer Aktion aus dem Spiel** aus. Probiere sie einmal selbst und schreibe die Regel so auf, dass jemand anderes die Challenge spielen könnte.",
-      ],
-      [
-        "old-habit-new-try",
-        ["nostalgic", "restless"],
-        "Muscle Memory",
-        "Return to **one technique you have not used in a while**. Give yourself five minutes to remember it, then make one deliberate attempt.",
-        "Noch im Kopf",
-        "Probiere **eine Technik aus, die du länger nicht genutzt hast**. Übe sie fünf Minuten, um wieder reinzukommen, und versuche sie dann noch einmal gezielt anzuwenden.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["open-world"],
-    ["Choose an open-world game.", "Starte ein Open-World-Spiel."],
-    [
-      [
-        "follow-a-river",
-        ["explore", "relax"],
-        "Follow the Water",
-        "From the nearest reachable riverbank or shore, follow the water on foot to **the first bridge, dock, or building you reach**. Keep the water in sight and use no fast travel. Stop beside that landmark.",
-        "Am Wasser entlang",
-        "Folge vom nächsten erreichbaren Fluss- oder Seeufer aus dem Wasser zu Fuß bis zur **ersten Brücke, Anlegestelle oder zum ersten Gebäude**. Behalte das Wasser im Blick und nutze keine Schnellreise. Halte direkt am erreichten Orientierungspunkt an.",
-      ],
-      [
-        "landmark-navigation",
-        ["focused", "challenge"],
-        "By Landmarks",
-        "Choose a visible landmark and **reach it without opening the map**. Use the environment to correct your route.",
-        "Nach Augenmaß",
-        "Such dir einen markanten Punkt, den du sehen kannst, und **erreiche ihn, ohne die Karte zu öffnen**. Orientiere dich unterwegs an der Umgebung.",
-      ],
-      [
-        "roads-less-used",
-        ["curious", "restless"],
-        "The Other Turn",
-        "At the next three junctions, take **the route you know least**. Explore where the third choice leaves you for five minutes.",
-        "Anders abbiegen",
-        "Nimm an den nächsten drei Abzweigungen **den Weg, den du am wenigsten kennst**. Erkunde nach der dritten Abzweigung fünf Minuten lang die Umgebung.",
-      ],
-      [
-        "return-on-foot",
-        ["nostalgic", "low-energy"],
-        "The Way Back",
-        "Travel to **a nearby place you remember well**. Find one detail there that you had forgotten.",
-        "Der Rückweg",
-        "Geh oder reise zu **einem Ort in der Nähe, den du gut kennst**. Finde dort ein Detail, das du vergessen hattest.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["missions-or-levels"],
-    [
-      "Choose a game with missions or levels.",
-      "Starte ein Spiel mit Missionen oder Leveln.",
-    ],
-    [
-      [
-        "one-level-no-detours",
-        ["focused", "overwhelmed"],
-        "Straight Through",
-        "Finish **one available mission or level**. Leave optional detours for another session.",
-        "Direkt zum Ziel",
-        "Beende **eine verfügbare Mission oder ein Level**. Hebe dir optionale Umwege für später auf.",
-      ],
-      [
-        "replay-first-clear",
-        ["nostalgic", "relax"],
-        "Back to the Start",
-        "Replay **an early mission or level** you already cleared. Notice one section that now feels easier.",
-        "Zurück zum Anfang",
-        "Wiederhole **eine bereits geschaffte Mission oder ein bereits geschafftes Level vom Anfang des Spiels**. Achte auf einen Abschnitt, der dir heute leichter fällt.",
-      ],
-      [
-        "optional-objective",
-        ["progress", "curious"],
-        "A Different Goal",
-        "Choose **one optional objective inside an available mission or level**. Finish it before returning to your main task.",
-        "Ein anderes Ziel",
-        "Nimm dir **ein optionales Ziel in einer verfügbaren Mission oder einem Level** vor. Erledige es, bevor du dich wieder der Hauptaufgabe widmest.",
-      ],
-      [
-        "clean-level-retry",
-        ["challenge", "restless"],
-        "Cleaner Run",
-        "Replay the first mission or level you have already completed. **Finish it without dying or using a manual restart**, or complete three full attempts. Keep the difficulty unchanged.",
-        "Sauberer Durchlauf",
-        "Wiederhole die erste bereits abgeschlossene Mission oder das erste abgeschlossene Level. **Schaffe es ohne Tod und manuellen Neustart** oder beende drei ganze Versuche. Lass die Schwierigkeit unverändert.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["rounds-or-matches"],
-    [
-      "Choose a game with rounds or matches.",
-      "Starte ein Spiel mit Runden oder Matches.",
-    ],
-    [
-      [
-        "three-round-routine",
-        ["focused", "progress"],
-        "Three-Round Routine",
-        "Play **three rounds in the same mode**. Choose one habit to improve and keep your focus on it through all three.",
-        "Drei Runden",
-        "Spiele **drei Runden im selben Modus**. Wähle eine Gewohnheit, die du in allen drei Runden verbessern möchtest.",
-      ],
-      [
-        "one-unranked-match",
-        ["relax", "low-energy"],
-        "A Casual Round",
-        "Play **one match without a result target**. Stay until the end and notice one good decision you made.",
-        "Eine lockere Runde",
-        "Spiele **ein Match, ohne dir ein Ergebnis vorzunehmen**. Bleib bis zum Ende und merke dir eine Entscheidung, die dir gut gelungen ist.",
-      ],
-      [
-        "round-adaptation",
-        ["curious", "challenge"],
-        "Read the Round",
-        "After one round, choose **one recurring mistake**. Play two more rounds with a specific plan to avoid it.",
-        "Aus der Runde lernen",
-        "Überlege nach einer Runde, **welcher Fehler dir öfter passiert**. Spiele zwei weitere Runden mit einem konkreten Plan, wie du ihn vermeidest.",
-      ],
-      [
-        "single-mode-session",
-        ["overwhelmed", "restless"],
-        "Stay in the Mode",
-        "Pick the first familiar mode you see. Play **two complete rounds without switching modes**.",
-        "Im Modus bleiben",
-        "Nimm den ersten Modus, den du schon kennst. Spiele **zwei ganze Runden, ohne den Modus zu wechseln**.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["combat"],
-    ["Choose a game with combat.", "Starte ein Spiel mit Kämpfen."],
-    [
-      [
-        "defend-then-answer",
-        ["focused", "challenge"],
-        "Wait for an Opening",
-        "Let the next ordinary enemy attack first and avoid that attack before you strike. **Defeat three enemies this way**, never attacking before their first attack finishes. Taking damage before your first hit resets the count.",
-        "Die Lücke finden",
-        "Lass den nächsten gewöhnlichen Gegner zuerst angreifen und entgehe dem Angriff, bevor du zuschlägst. **Besiege drei Gegner so**, ohne vor dem Ende ihres ersten Angriffs anzugreifen. Schaden vor deinem ersten Treffer setzt den Zähler zurück.",
-      ],
-      [
-        "familiar-fight",
-        ["relax", "nostalgic"],
-        "A Familiar Fight",
-        "Return to **an enemy you know how to handle**. Complete three encounters using your most comfortable technique.",
-        "Vertrauter Kampf",
-        "Such dir **einen Gegner, mit dem du gut zurechtkommst**. Schaffe drei Kämpfe mit der Technik, die dir am vertrautesten ist.",
-      ],
-      [
-        "different-first-move",
-        ["curious", "create"],
-        "A New Opener",
-        "Start **three encounters with an action you rarely use**. Keep the rest of your usual approach and compare the results.",
-        "Neuer Auftakt",
-        "Beginne **drei Kämpfe mit einer Aktion, die du selten nutzt**. Spiele ansonsten wie gewohnt und vergleiche, wie die Kämpfe ausgehen.",
-      ],
-      [
-        "one-enemy-at-a-time",
-        ["overwhelmed", "progress"],
-        "One at a Time",
-        "In the next fight, **finish dealing with one opponent before changing targets**, whenever possible. Repeat for three encounters.",
-        "Einer nach dem anderen",
-        "Kümmere dich im nächsten Kampf möglichst **um einen Gegner nach dem anderen, ohne zwischendurch das Ziel zu wechseln**. Mach das in drei Kämpfen so.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["boss-fights"],
-    [
-      "Choose a game with a reachable boss.",
-      "Starte ein Spiel, in dem du einen Boss herausfordern kannst.",
-    ],
-    [
-      [
-        "read-the-boss",
-        ["curious", "focused"],
-        "Read the Boss",
-        "Spend one attempt identifying **three boss attack cues**. On the next attempt, respond deliberately to those cues; winning is optional.",
-        "Angriffe erkennen",
-        "Achte in einem Versuch auf **drei Anzeichen, an denen du Bossangriffe erkennst**. Reagiere im nächsten Versuch gezielt darauf. Du musst den Boss dabei nicht besiegen.",
-      ],
-      [
-        "boss-one-phase",
-        ["progress", "overwhelmed"],
-        "Just One Phase",
-        "Fight the next reachable boss with your current setup. **Reach its second phase without dying**, or finish three attempts if the boss has only one phase or you cannot reach the second. Do not change gear between attempts.",
-        "Nur eine Phase",
-        "Kämpfe mit deiner aktuellen Ausrüstung gegen den nächsten erreichbaren Boss. **Erreiche seine zweite Phase ohne Tod** oder beende drei Versuche, falls er nur eine Phase hat oder du die zweite nicht erreichst. Wechsle zwischen den Versuchen keine Ausrüstung.",
-      ],
-      [
-        "boss-patience",
-        ["challenge", "restless"],
-        "One Hit Is Enough",
-        "Fight a boss while allowing yourself **only one attack after each safe opening**. Continue for one full attempt.",
-        "Ein Treffer reicht",
-        "Greife im Bosskampf **bei jeder sicheren Gelegenheit nur einmal an**. Halte diese Regel einen ganzen Versuch lang ein.",
-      ],
-      [
-        "boss-comfort-run",
-        ["nostalgic", "low-energy"],
-        "An Old Opponent",
-        "Face **a familiar boss or its replay** with your usual setup. Spend one attempt remembering its rhythm rather than chasing a faster clear.",
-        "Alter Gegner",
-        "Kämpfe mit deinem gewohnten Setup **noch einmal gegen einen bekannten Boss**, gegebenenfalls im Wiederholungsmodus. Finde in einem Versuch wieder seinen Rhythmus, ohne möglichst schnell sein zu wollen.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["stealth"],
-    [
-      "Choose a game with stealth.",
-      "Starte ein Spiel, in dem du schleichen kannst.",
-    ],
-    [
-      [
-        "watch-one-patrol",
-        ["curious", "low-energy"],
-        "Watch the Patrol",
-        "Observe **one patrol's complete route** from cover. Move past it once without being detected.",
-        "Patrouille beobachten",
-        "Beobachte aus der Deckung **den vollständigen Weg einer Patrouille**. Schleiche danach einmal unentdeckt an ihr vorbei.",
-      ],
-      [
-        "quiet-entry-exit",
-        ["focused", "challenge"],
-        "In and Out",
-        "Enter and leave **one guarded area without being detected**. Choose your exit before you enter.",
-        "Rein und raus",
-        "Betritt und verlasse **einen bewachten Bereich unentdeckt**. Wähle deinen Fluchtweg schon vor dem Betreten.",
-      ],
-      [
-        "leave-them-standing",
-        ["create", "relax"],
-        "Leave Them Be",
-        "Sneak past **three opponents without attacking them**. Use timing, cover, or an available distraction.",
-        "Einfach vorbeigehen",
-        "Schleiche an **drei Gegnern vorbei, ohne sie anzugreifen**. Nutze Timing, Deckung oder eine verfügbare Ablenkung.",
-      ],
-      [
-        "stealth-new-route",
-        ["explore", "progress"],
-        "Another Way In",
-        "Find **a second entrance to a guarded area**. Use it to reach a place you previously approached from the front.",
-        "Ein anderer Eingang",
-        "Finde **einen zweiten Eingang zu einem bewachten Bereich**. Gelange darüber an einen Ort, den du bisher durch den Haupteingang betreten hast.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["equipment-loadouts"],
-    [
-      "Choose a game with changeable equipment.",
-      "Starte ein Spiel, in dem du deine Ausrüstung wechseln kannst.",
-    ],
-    [
-      [
-        "one-slot-swap",
-        ["curious", "progress"],
-        "One-Slot Swap",
-        "Change **one equipment slot to an item you already own**. Use it for ten minutes before changing anything else.",
-        "Ein Teil austauschen",
-        "Ersetze **einen ausgerüsteten Gegenstand durch einen anderen, den du schon besitzt**. Nutze ihn zehn Minuten, bevor du etwas anderes änderst.",
-      ],
-      [
-        "comfort-loadout",
-        ["relax", "overwhelmed"],
-        "Comfort Kit",
-        "Equip **a familiar setup** and play for ten minutes without opening the equipment menu again.",
-        "Vertraute Ausrüstung",
-        "Nutze **deine vertraute Ausrüstung** und spiele zehn Minuten, ohne das Ausrüstungsmenü erneut zu öffnen.",
-      ],
-      [
-        "forgotten-equipment",
-        ["nostalgic", "restless"],
-        "Out of Storage",
-        "Equip **one item you used earlier in your playthrough**. Give it a five-minute outing against an appropriate challenge.",
-        "Aus dem Lager",
-        "Rüste **einen früher genutzten Gegenstand** aus. Setze ihn fünf Minuten bei einer passenden Aufgabe ein.",
-      ],
-      [
-        "loadout-purpose",
-        ["create", "focused"],
-        "Built for a Purpose",
-        "Choose **one purpose for your equipment** and assemble a setup using only owned items. Try it for ten minutes and keep one useful change.",
-        "Für einen Zweck",
-        "Überlege, **was deine Ausrüstung leisten soll**, und stelle sie aus Gegenständen zusammen, die du schon besitzt. Probiere sie zehn Minuten aus und behalte eine Änderung bei, die sich bewährt hat.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["puzzles"],
-    ["Choose a game with puzzles.", "Starte ein Spiel mit Rätseln."],
-    [
-      [
-        "puzzle-before-touching",
-        ["focused", "low-energy"],
-        "Look First",
-        "Before interacting with a puzzle, **inspect every visible element**. Form one possible solution, then try it.",
-        "Erst hinschauen",
-        "Untersuche vor dem ersten Versuch **alle sichtbaren Elemente eines Rätsels**. Überlege dir eine Lösung und probiere sie aus.",
-      ],
-      [
-        "puzzle-no-hints",
-        ["challenge", "curious"],
-        "Your Own Solution",
-        "Take the first unfinished puzzle you can reach. **Solve it without hints or a walkthrough**, using only clues in the game. Stay with this puzzle until the game confirms the solution.",
-        "Deine eigene Lösung",
-        "Nimm das erste ungelöste Rätsel, das du erreichen kannst. **Löse es ohne Hinweise oder Komplettlösung**, nur mit Anhaltspunkten im Spiel. Bleib bei diesem Rätsel, bis das Spiel die Lösung bestätigt.",
-      ],
-      [
-        "explain-a-puzzle",
-        ["connect", "create"],
-        "Explain the Trick",
-        "Solve or revisit **one puzzle**, then describe its key idea in one sentence as if explaining it to a friend.",
-        "Den Trick erklären",
-        "Löse **ein Rätsel**, gern auch eines, das du schon kennst. Erkläre danach in einem Satz, worauf es bei der Lösung ankommt.",
-      ],
-      [
-        "puzzle-small-step",
-        ["progress", "overwhelmed"],
-        "One Piece Fits",
-        "Pick a puzzle you left unfinished. Find **one interaction that changes its state** and build your next attempt around it.",
-        "Ein Teil passt",
-        "Nimm ein Rätsel, das du liegen gelassen hast. Finde **eine Aktion, die am Rätsel etwas verändert**, und nutze das für deinen nächsten Lösungsversuch.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["building"],
-    [
-      "Choose a game with building tools.",
-      "Starte ein Spiel, in dem du bauen kannst.",
-    ],
-    [
-      [
-        "build-a-rest-stop",
-        ["create", "relax"],
-        "A Place to Rest",
-        "Build **a small resting spot with three placed objects**. Arrange it around a view or a path you already use.",
-        "Ein Platz zum Ausruhen",
-        "Baue **einen kleinen Ruheplatz aus drei Objekten**. Richte ihn so aus, dass man auf die Landschaft oder einen vertrauten Weg blickt.",
-      ],
-      [
-        "build-with-three-materials",
-        ["challenge", "focused"],
-        "Three Materials",
-        "Build **one small structure using at most three material types**. Finish its entrance and outline before adding decoration.",
-        "Drei Materialien",
-        "Errichte **ein kleines Bauwerk aus höchstens drei Materialarten**. Stelle den Eingang und die Grundform fertig, bevor du dekorierst.",
-      ],
-      [
-        "repair-one-corner",
-        ["progress", "overwhelmed"],
-        "That One Corner",
-        "Choose **one unfinished corner of an existing build**. Complete it without expanding the project.",
-        "Diese eine Ecke",
-        "Nimm dir **eine unfertige Ecke in einem bestehenden Bauwerk** vor. Stelle sie fertig, ohne das Projekt zu erweitern.",
-      ],
-      [
-        "build-a-memory",
-        ["nostalgic", "connect"],
-        "A Place You Know",
-        "Recreate **the entrance of a home you used to live in**, using at most ten placed pieces. Include its doorway and one feature beside it, then save the build. Leave the rest of the home for another session.",
-        "Ein vertrauter Ort",
-        "Baue **den Eingang eines früheren Zuhauses** aus höchstens zehn platzierten Teilen nach. Stelle die Türöffnung und ein Detail daneben fertig und speichere den Bau. Den Rest des Hauses hebst du dir für später auf.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["crafting"],
-    [
-      "Choose a game with crafting.",
-      "Starte ein Spiel, in dem du Gegenstände herstellen kannst.",
-    ],
-    [
-      [
-        "craft-unused-recipe",
-        ["curious", "create"],
-        "Untested Recipe",
-        "Craft **one unlocked item you have never made**. Use or place it once to discover what it does.",
-        "Unbekanntes Rezept",
-        "Stelle **einen freigeschalteten Gegenstand her, den du noch nie hergestellt hast**. Nutze oder platziere ihn einmal.",
-      ],
-      [
-        "craft-from-storage",
-        ["overwhelmed", "low-energy"],
-        "Already in Storage",
-        "Craft **three useful items using only materials you already have**. Skip gathering and shopping for this session.",
-        "Schon auf Vorrat",
-        "Stelle **drei nützliche Gegenstände nur aus vorhandenen Materialien** her. Sammeln und Einkaufen lässt du diesmal aus.",
-      ],
-      [
-        "gather-craft-use",
-        ["progress", "focused"],
-        "From Start to Finish",
-        "Choose one recipe. **Gather its missing materials, craft it, and use the result** before picking another recipe.",
-        "Vom Anfang bis zum Ende",
-        "Such dir ein Rezept aus. **Sammle die fehlenden Materialien, stelle den Gegenstand her und nutze ihn einmal**, bevor du das nächste Rezept wählst.",
-      ],
-      [
-        "craft-a-spare",
-        ["relax", "connect"],
-        "One in Reserve",
-        "Craft **one spare of an item you regularly need**. Put it somewhere you or a teammate will find it later.",
-        "Eins auf Vorrat",
-        "Stelle **einen Ersatz für einen Gegenstand her, den du regelmäßig brauchst**. Lagere ihn dort, wo du oder jemand aus deinem Team ihn später findet.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["fishing"],
-    [
-      "Choose a game with fishing.",
-      "Starte ein Spiel, in dem du angeln kannst.",
-    ],
-    [
-      [
-        "fish-one-spot",
-        ["relax", "low-energy"],
-        "Stay by the Water",
-        "Fish at **one spot until you catch three fish**. Keep the same spot even if the catches are ordinary.",
-        "Am Wasser bleiben",
-        "Angle **an einer Stelle, bis du drei Fische gefangen hast**. Bleib dort, auch wenn du nur gewöhnliche Fische fängst.",
-      ],
-      [
-        "fish-two-waters",
-        ["explore", "curious"],
-        "Different Waters",
-        "Catch **one fish in each of two different fishing spots**. Compare what you caught before moving on.",
-        "Andere Gewässer",
-        "Fange **an zwei verschiedenen Angelstellen je einen Fisch**. Vergleiche die Fänge, bevor du weiterziehst.",
-      ],
-      [
-        "fish-three-in-a-row",
-        ["challenge", "focused"],
-        "Steady Hands",
-        "At the nearest fishing spot, **land three catches in a row without losing a hooked fish**. Losing one resets the count. Keep the same rod and spot until the third catch.",
-        "Ruhige Hände",
-        "Fange am nächsten Angelplatz **drei Fische hintereinander, ohne einen gehakten Fisch zu verlieren**. Ein verlorener Fisch setzt den Zähler zurück. Behalte Angel und Platz bis zum dritten Fang bei.",
-      ],
-      [
-        "fish-for-supper",
-        ["progress", "overwhelmed"],
-        "One Good Catch",
-        "Catch **one fish and choose what to do with it**: keep, sell, donate, or release it using the options available.",
-        "Ein guter Fang",
-        "Fange **einen Fisch und entscheide, was mit ihm passiert**: behalten, verkaufen, spenden oder freilassen, je nach Spiel.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["cooking"],
-    [
-      "Choose a game with cooking.",
-      "Starte ein Spiel, in dem du kochen kannst.",
-    ],
-    [
-      [
-        "cook-a-new-dish",
-        ["curious", "create"],
-        "Something New",
-        "Cook **one available dish you have not made before**. Read what it does and decide when you would use it.",
-        "Etwas Neues kochen",
-        "Koche **ein freigeschaltetes Gericht, das du noch nie zubereitet hast**. Lies nach, welche Wirkung es hat, und überlege, wann du es gebrauchen kannst.",
-      ],
-      [
-        "cook-from-pantry",
-        ["relax", "low-energy"],
-        "From the Pantry",
-        "Make **two portions of a familiar dish with ingredients on hand**. Leave one ready for later if the game allows it.",
-        "Aus der Vorratskammer",
-        "Bereite **zwei Portionen eines vertrauten Gerichts aus vorhandenen Zutaten** zu. Hebe wenn möglich eine für später auf.",
-      ],
-      [
-        "cook-for-a-purpose",
-        ["progress", "focused"],
-        "A Meal with a Plan",
-        "Choose **one cooking result you want** and prepare a dish that provides it. Use it in the situation you planned for.",
-        "Essen mit Plan",
-        "Such dir **eine Wirkung aus, die dir ein Gericht geben soll**, und koche etwas Passendes. Nutze es in der Situation, für die du es zubereitet hast.",
-      ],
-      [
-        "cook-a-small-menu",
-        ["create", "connect"],
-        "A Small Menu",
-        "Take the first ingredient in your inventory that appears in three unlocked recipes. **Cook those three different dishes**, one serving each, using that ingredient in every dish. Finish when the third dish is cooked.",
-        "Ein kleines Menü",
-        "Nimm die erste Zutat in deinem Inventar, die in drei freigeschalteten Rezepten vorkommt. **Koche diese drei verschiedenen Gerichte**, je eine Portion mit dieser Zutat. Das dritte fertige Gericht beendet die Quest.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["farming-or-care"],
-    [
-      "Choose a game with plants, animals, or characters to care for.",
-      "Starte ein Spiel, in dem du Pflanzen, Tiere oder Figuren versorgst.",
-    ],
-    [
-      [
-        "care-first",
-        ["relax", "overwhelmed"],
-        "Care Comes First",
-        "Complete **three available care tasks** before pursuing other goals. Water, feed, clean, or tend to what needs you.",
-        "Erst versorgen",
-        "Erledige **drei anstehende Pflegeaufgaben**, bevor du andere Ziele verfolgst. Gieße, füttere, putze oder kümmere dich um ein noch unerfülltes Bedürfnis.",
-      ],
-      [
-        "one-patch-at-a-time",
-        ["focused", "progress"],
-        "A Small Routine",
-        "Choose **one patch, animal, or character** and finish all of its currently available care tasks. Keep the rest for later.",
-        "Kleine Routine",
-        "Wähle **ein Beet, ein Tier oder eine Figur** und erledige alle gerade verfügbaren Pflegeaufgaben dafür. Der Rest kann warten.",
-      ],
-      [
-        "care-and-observe",
-        ["curious", "low-energy"],
-        "A Little Attention",
-        "Care for **one plant, animal, or character**. Spend a few minutes observing what changes after your action.",
-        "Etwas Aufmerksamkeit",
-        "Versorge **eine Pflanze, ein Tier oder eine Figur**. Beobachte danach ein paar Minuten, was sich verändert.",
-      ],
-      [
-        "care-comfort-corner",
-        ["create", "connect"],
-        "A Better Routine",
-        "Improve **one part of your care routine**: put a needed item within reach or change the order of three tasks. Try the new routine once.",
-        "Besser versorgt",
-        "Verbessere **einen Teil deiner täglichen Versorgung**: Lege etwas griffbereit oder ändere die Reihenfolge von drei Aufgaben. Probiere den neuen Ablauf einmal aus.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["driving-or-racing"],
-    [
-      "Choose a game with drivable vehicles.",
-      "Starte ein Spiel, in dem du Fahrzeuge steuern kannst.",
-    ],
-    [
-      [
-        "drive-clean",
-        ["focused", "challenge"],
-        "A Clean Drive",
-        "Drive for **five minutes without hitting another vehicle or a barrier**. Restart your count after a collision.",
-        "Saubere Fahrt",
-        "Fahre **fünf Minuten, ohne mit Fahrzeugen oder Hindernissen zusammenzustoßen**. Beginne nach einer Kollision wieder bei null.",
-      ],
-      [
-        "drive-a-favorite",
-        ["relax", "nostalgic"],
-        "An Old Favorite",
-        "Drive **a vehicle you already know well** for ten minutes. Focus on the route and handling instead of speed.",
-        "Ein alter Favorit",
-        "Fahre **ein vertrautes Fahrzeug** zehn Minuten lang. Achte auf Strecke und Fahrgefühl statt auf Geschwindigkeit.",
-      ],
-      [
-        "drive-something-else",
-        ["curious", "restless"],
-        "Different Wheels",
-        "Choose **an available vehicle you rarely drive**. Spend ten minutes learning its steering and braking.",
-        "Andere Räder",
-        "Nimm **ein verfügbares Fahrzeug, das du selten fährst**. Lerne zehn Minuten lang, wie es lenkt und bremst.",
-      ],
-      [
-        "drive-one-route-twice",
-        ["progress", "overwhelmed"],
-        "Know the Route",
-        "Use the next available short race or a route between two nearby road junctions. **Drive it twice in the same vehicle, with no collisions on the second run**. Repeat the second run after a collision.",
-        "Die Strecke kennen",
-        "Nimm das nächste verfügbare kurze Rennen oder eine Strecke zwischen zwei nahen Straßenkreuzungen. **Fahre sie zweimal mit demselben Fahrzeug, beim zweiten Mal ohne Zusammenstoß**. Wiederhole den zweiten Lauf nach einem Unfall.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["advanced-traversal"],
-    [
-      "Choose a game with jumping, climbing, gliding, or movement tricks.",
-      "Starte ein Spiel, in dem du springen, klettern, gleiten oder Bewegungstricks ausführen kannst.",
-    ],
-    [
-      [
-        "movement-three-links",
-        ["restless", "challenge"],
-        "Link Three",
-        "Connect **three movement actions without stopping**. Practice the same sequence until you land it twice.",
-        "Drei Moves verbinden",
-        "Verbinde **drei Bewegungsaktionen ohne Pause**. Übe dieselbe Abfolge, bis sie zweimal klappt.",
-      ],
-      [
-        "movement-new-line",
-        ["create", "explore"],
-        "A New Line",
-        "Choose two nearby points and **connect them using a movement ability**. Find a second route between the same points.",
-        "Eine neue Linie",
-        "Such dir zwei Punkte in der Nähe und **gelange mit einer Bewegungsfähigkeit vom einen zum anderen**. Finde danach einen zweiten Weg zwischen ihnen.",
-      ],
-      [
-        "movement-one-landing",
-        ["focused", "progress"],
-        "Stick the Landing",
-        "Pick the nearest reachable ledge with room to stand. **Jump or glide onto it three times without falling**, returning to the same starting point each time. Touching the ground before the ledge resets the count.",
-        "Sauber landen",
-        "Nimm den nächsten erreichbaren Vorsprung, auf dem du stehen kannst. **Springe oder gleite dreimal darauf, ohne herunterzufallen**, jedes Mal vom selben Ausgangspunkt. Bodenberührung vor dem Vorsprung setzt den Zähler zurück.",
-      ],
-      [
-        "movement-familiar-route",
-        ["relax", "nostalgic"],
-        "A Familiar Flow",
-        "Repeat **a short movement route you enjoy** three times. Let the last run be about rhythm rather than speed.",
-        "Vertrauter Rhythmus",
-        "Wiederhole **eine kurze Strecke, auf der du dich gern bewegst**, dreimal. Achte beim letzten Durchlauf auf den Rhythmus statt aufs Tempo.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["customization"],
-    [
-      "Choose a game with editable appearances.",
-      "Starte ein Spiel, in dem du das Aussehen verändern kannst.",
-    ],
-    [
-      [
-        "two-color-look",
-        ["create", "focused"],
-        "Two Colors",
-        "Create **a look built around two colors** using unlocked options. Equip it and play with it for five minutes.",
-        "Zwei Farben",
-        "Gestalte mit freigeschalteten Optionen **einen Look mit zwei Farben**. Wähle ihn aus und spiele damit fünf Minuten.",
-      ],
-      [
-        "forgotten-cosmetic",
-        ["nostalgic", "curious"],
-        "Back in Style",
-        "Equip **one cosmetic option you have not used in a while**. Build the rest of the look around it and keep it for ten minutes.",
-        "Wieder in Mode",
-        "Nutze **eine kosmetische Anpassung, die du länger nicht verwendet hast**. Stimme den restlichen Look darauf ab und behalte ihn zehn Minuten.",
-      ],
-      [
-        "small-style-change",
-        ["low-energy", "overwhelmed"],
-        "One Small Change",
-        "Change **just one visible detail** of your current appearance. Keep it equipped through five minutes of play.",
-        "Kleine Veränderung",
-        "Ändere **nur ein sichtbares Detail** deines aktuellen Aussehens. Behalte es fünf Minuten im Spiel bei.",
-      ],
-      [
-        "theme-an-appearance",
-        ["connect", "relax"],
-        "Pick a Theme",
-        "Choose **a season, place, or memory** and make a look inspired by it using owned options. Save or equip the result.",
-        "Ein Thema wählen",
-        "Such dir **eine Jahreszeit, einen Ort oder eine Erinnerung** aus. Gestalte mit vorhandenen Optionen einen Look, der dazu passt, und speichere ihn oder wähle ihn aus.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["photo-mode"],
-    ["Choose a game with photo mode.", "Starte ein Spiel mit Fotomodus."],
-    [
-      [
-        "photo-three-angles",
-        ["create", "curious"],
-        "Three Angles",
-        "Photograph **the same subject from three different angles**. Keep the image that reveals something the other two miss.",
-        "Drei Blickwinkel",
-        "Fotografiere **dasselbe Motiv aus drei Blickwinkeln**. Behalte das Bild, das etwas zeigt, was auf den anderen fehlt.",
-      ],
-      [
-        "photo-negative-space",
-        ["focused", "relax"],
-        "Room to Breathe",
-        "Take **one photo with your subject off-center** and plenty of empty space. Adjust the camera before adding effects.",
-        "Platz zum Atmen",
-        "Mach **ein Foto, auf dem das Motiv seitlich statt in der Mitte steht**, und lass viel freien Raum. Richte zuerst die Kamera aus, bevor du Effekte hinzufügst.",
-      ],
-      [
-        "photo-small-detail",
-        ["explore", "low-energy"],
-        "A Small Detail",
-        "Find **one easily missed visual detail** and photograph it close up. Save the shot before moving on.",
-        "Ein kleines Detail",
-        "Finde **ein Detail, das man leicht übersieht**, und fotografiere es aus der Nähe. Speichere das Bild, bevor du weiterziehst.",
-      ],
-      [
-        "photo-postcard",
-        ["connect", "nostalgic"],
-        "A Postcard",
-        "Take **one photo of a place you would recommend visiting**. Give the saved image a short caption in a note if the game has no caption field.",
-        "Eine Postkarte",
-        "Fotografiere **einen Ort, den du weiterempfehlen würdest**. Schreibe eine kurze Bildunterschrift als Notiz, falls das Spiel kein Textfeld dafür hat.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["online-teamplay"],
-    [
-      "Choose a game you can play cooperatively online.",
-      "Starte ein Spiel, in dem du online mit anderen zusammenarbeiten kannst.",
-    ],
-    [
-      [
-        "follow-a-teammate",
-        ["connect", "low-energy"],
-        "Your Lead",
-        "Let **one teammate choose the next goal**. Help them work toward it for ten minutes before suggesting your own.",
-        "Du gehst vor",
-        "Lass **jemanden aus deinem Team das nächste Ziel wählen**. Hilf zehn Minuten dabei, bevor du etwas Eigenes vorschlägst.",
-      ],
-      [
-        "co-op-one-plan",
-        ["focused", "progress"],
-        "One Shared Plan",
-        "Agree on **one small goal with a teammate**. Work on it together until it is complete or twenty minutes have passed.",
-        "Ein gemeinsamer Plan",
-        "Vereinbart **ein kleines gemeinsames Ziel**. Arbeitet daran, bis es erledigt ist oder zwanzig Minuten vergangen sind.",
-      ],
-      [
-        "co-op-change-roles",
-        ["curious", "create"],
-        "Trade Places",
-        "Swap **one usual responsibility with a willing teammate** for ten minutes. Discuss one thing you noticed afterward.",
-        "Rollen tauschen",
-        "Tausche **eine deiner üblichen Aufgaben mit jemandem aus dem Team, der mitmachen möchte**. Behaltet die getauschten Aufgaben zehn Minuten bei und sprecht danach darüber, was euch aufgefallen ist.",
-      ],
-      [
-        "co-op-reliable-help",
-        ["relax", "overwhelmed"],
-        "An Extra Pair of Hands",
-        "Join someone you know and **offer one useful kind of help**. Stick to it for ten minutes without adding more goals.",
-        "Eine helfende Hand",
-        "Spiele mit jemandem, den du kennst, und **biete eine konkrete Hilfe an**. Bleib zehn Minuten dabei, ohne dir weitere Ziele vorzunehmen.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["local-multiplayer"],
-    [
-      "Choose a game with local multiplayer and someone nearby.",
-      "Starte mit jemandem vor Ort ein Spiel mit lokalem Multiplayer.",
-    ],
-    [
-      [
-        "couch-three-rounds",
-        ["connect", "restless"],
-        "Side by Side",
-        "Play together for **three rounds or fifteen minutes**. Let each person choose one setting or goal before you begin.",
-        "Nebeneinander",
-        "Spielt **drei Runden oder fünfzehn Minuten** zusammen. Legt vorher fest, dass jede Person eine Einstellung oder ein Ziel wählen darf.",
-      ],
-      [
-        "couch-teach-one-move",
-        ["connect", "focused"],
-        "Show Me That",
-        "Teach each other **one useful action**. Spend five minutes practicing each person's choice together.",
-        "Zeig mir das",
-        "Zeigt einander **je eine nützliche Aktion**. Übt beide Aktionen jeweils fünf Minuten lang zusammen.",
-      ],
-      [
-        "couch-old-favorite",
-        ["nostalgic", "relax"],
-        "Like Before",
-        "Choose **a familiar local mode** and play it together for ten minutes using the settings you both remember.",
-        "Wie früher",
-        "Wählt **einen vertrauten lokalen Modus** und spielt ihn zehn Minuten mit den Einstellungen, die ihr beide kennt.",
-      ],
-      [
-        "couch-friendly-rule",
-        ["create", "challenge"],
-        "House Rule",
-        "Agree on **one rule that makes play more even or amusing**. Keep it for ten minutes, with everyone free to end it early.",
-        "Hausregel",
-        "Vereinbart **eine Regel, die das Spiel ausgeglichener oder lustiger macht**. Spielt zehn Minuten damit. Wer möchte, kann die Regel vorher beenden.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["collectibles"],
-    [
-      "Choose a game with collectibles.",
-      "Starte ein Spiel mit Sammelobjekten.",
-    ],
-    [
-      [
-        "one-missing-collectible",
-        ["progress", "focused"],
-        "One Missing Piece",
-        "Choose **one collectible you have not found**. Search one likely area thoroughly before checking another.",
-        "Ein fehlendes Stück",
-        "Such dir **ein Sammelobjekt aus, das dir noch fehlt**. Durchsuche ein Gebiet, in dem du es vermutest, gründlich, bevor du woanders suchst.",
-      ],
-      [
-        "collectible-small-area",
-        ["explore", "overwhelmed"],
-        "Keep It Local",
-        "Search **one small area for collectibles** for ten minutes. Stay within that area even if another marker looks tempting.",
-        "In der Nähe bleiben",
-        "Durchsuche **zehn Minuten lang ein kleines Gebiet nach Sammelobjekten**. Bleib in diesem Gebiet, auch wenn anderswo eine Markierung lockt.",
-      ],
-      [
-        "collectible-look-back",
-        ["nostalgic", "low-energy"],
-        "What You Found",
-        "Review **three collectibles you already have**, then spend five minutes looking for one more of the same kind.",
-        "Schon gefunden",
-        "Sieh dir **drei bereits gefundene Sammelobjekte** an. Suche danach fünf Minuten nach einem weiteren derselben Art.",
-      ],
-      [
-        "collectible-no-guide",
-        ["challenge", "curious"],
-        "Follow the Clue",
-        "Look for **one collectible using only clues inside the game**. Give yourself fifteen minutes without an external guide.",
-        "Der Spur folgen",
-        "Suche **ein Sammelobjekt nur mithilfe von Hinweisen aus dem Spiel**. Nimm dir dafür fünfzehn Minuten, ohne eine externe Lösung nachzuschlagen.",
-      ],
-    ],
-  ),
-  ...featureQuests(
-    ["choices-or-lore"],
-    [
-      "Choose a game with dialogue, choices, or readable lore.",
-      "Starte ein Spiel mit Dialogen, Entscheidungen oder Texten zur Spielwelt.",
-    ],
-    [
-      [
-        "read-three-lore-details",
-        ["curious", "low-energy"],
-        "Between the Lines",
-        "Read or listen to **three pieces of dialogue or lore without skipping**. Find one detail that connects two of them.",
-        "Zwischen den Zeilen",
-        "Lies oder höre dir **drei Dialoge oder Texte zur Spielwelt vollständig an**, ohne etwas zu überspringen. Finde ein Detail, das zwei davon verbindet.",
-      ],
-      [
-        "follow-one-character",
-        ["connect", "explore"],
-        "Their Side of It",
-        "Find **one character's dialogue or lore entry**. Follow every available topic about them before returning to your usual goal.",
-        "Die andere Sicht",
-        "Such **ein Gespräch mit einer Figur oder einen Eintrag über sie**. Geh allen verfügbaren Gesprächsthemen oder Informationen zu ihr nach, bevor du dich wieder deinem üblichen Ziel widmest.",
-      ],
-      [
-        "lore-one-question",
-        ["focused", "progress"],
-        "One Question",
-        "Write down **one question about the world or a character**. Spend ten minutes looking for an answer inside the game.",
-        "Eine Frage",
-        "Notiere **eine Frage zur Welt oder einer Figur**. Suche zehn Minuten lang im Spiel nach einer Antwort.",
-      ],
-      [
-        "lore-revisit-a-story",
-        ["nostalgic", "relax"],
-        "A Story Again",
-        "Revisit **a conversation or lore entry you remember**. Read or listen to it fully and notice one detail you had forgotten.",
-        "Noch einmal hören",
-        "Rufe **ein bekanntes Gespräch oder einen Text zur Spielwelt** noch einmal auf. Lies oder höre alles vollständig und finde ein Detail, das du vergessen hattest.",
-      ],
-    ],
-  ),
-];
+    customGameCompatibility: {
+      capabilityIds: ["open-world"],
+    },
+  },
+  {
+    id: "beyond-the-map",
+    moodIds: ["explore", "curious"],
+    type: "objective",
+    tags: ["exploration", "on-foot"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "Beyond the Map",
+        objective:
+          "Open a **freely explorable game** and pick a landmark you have not visited. **Find your own way there and back** using the world around you.",
+        gameObjective:
+          "In **{{game}}**: Pick a landmark you have not visited. **Find your own way there and back** using the world around you.",
+      },
+      de: {
+        name: "Hinter der Karte",
+        objective:
+          "Starte ein **frei erkundbares Spiel** und wähle eine Landmarke, die du noch nicht besucht hast. **Finde selbst einen Weg hin und zurück** und orientiere dich an der Umgebung.",
+        gameObjective:
+          "In **{{game}}**: Wähle eine Landmarke, die du noch nicht besucht hast. **Finde selbst einen Weg hin und zurück** und orientiere dich an der Umgebung.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["open-world"],
+    },
+  },
+  {
+    id: "main-mission",
+    moodIds: ["progress", "focused"],
+    type: "objective",
+    tags: ["current-save"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "Move the Story",
+        objective:
+          "Open a **game with a current mission or level**. Continue where you left off and **complete the next main objective**. Stop at the next good save point.",
+        gameObjective:
+          "In **{{game}}**: Continue where you left off and **complete the next main objective**. Stop at the next good save point.",
+      },
+      de: {
+        name: "Story weiter",
+        objective:
+          "Starte ein **Spiel mit einer laufenden Mission oder einem Level**. Mach dort weiter und **erledige das nächste Hauptziel**. Hör bei der nächsten guten Speichermöglichkeit auf.",
+        gameObjective:
+          "In **{{game}}**: Mach dort weiter und **erledige das nächste Hauptziel**. Hör bei der nächsten guten Speichermöglichkeit auf.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["missions-or-levels"],
+    },
+  },
+  {
+    id: "one-level-no-detours",
+    moodIds: ["focused", "progress"],
+    type: "objective",
+    tags: ["current-save"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "Straight to the Exit",
+        objective:
+          "Open a **game with short missions or levels**. Start one and **follow the main route to the end**. Ignore optional rooms and collectibles.",
+        gameObjective:
+          "In **{{game}}**: Start a short mission or level and **follow the main route to the end**. Ignore optional rooms and collectibles.",
+      },
+      de: {
+        name: "Direkt zum Ausgang",
+        objective:
+          "Starte ein **Spiel mit kurzen Missionen oder Leveln**. Beginne einen Abschnitt und **folge dem Hauptweg bis zum Ende**. Lass optionale Räume und Sammelobjekte aus.",
+        gameObjective:
+          "In **{{game}}**: Beginne eine kurze Mission oder ein Level und **folge dem Hauptweg bis zum Ende**. Lass optionale Räume und Sammelobjekte aus.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["missions-or-levels"],
+    },
+  },
+  {
+    id: "default-round",
+    moodIds: ["overwhelmed", "low-energy"],
+    type: "objective",
+    tags: ["one-round"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 10,
+    genres: [],
+    translations: {
+      en: {
+        name: "One Round",
+        objective:
+          "Open a **familiar game with short rounds**. Keep your current setup and **play one full round**. Accept the result and stop there.",
+        gameObjective:
+          "In **{{game}}**: Keep your current setup and **play one full round**. Accept the result and stop there.",
+      },
+      de: {
+        name: "Eine Runde",
+        objective:
+          "Starte ein **bekanntes Spiel mit kurzen Runden**. Behalte dein aktuelles Setup und **spiele eine volle Runde**. Nimm das Ergebnis so an.",
+        gameObjective:
+          "In **{{game}}**: Behalte dein aktuelles Setup und **spiele eine volle Runde**. Nimm das Ergebnis so an.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["rounds-or-matches"],
+    },
+  },
+  {
+    id: "quick-matches",
+    moodIds: ["restless"],
+    type: "objective",
+    tags: ["one-round"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "Straight In",
+        objective:
+          "Open a **game with short rounds or matches**. Pick a mode you already know and **play two rounds back to back**. Keep the same setup.",
+        gameObjective:
+          "In **{{game}}**: Pick a mode you already know and **play two rounds back to back**. Keep the same setup.",
+      },
+      de: {
+        name: "Direkt rein",
+        objective:
+          "Starte ein **Spiel mit kurzen Runden oder Matches**. Nimm einen bekannten Modus und **spiele zwei Runden direkt hintereinander**. Behalte dasselbe Setup.",
+        gameObjective:
+          "In **{{game}}**: Nimm einen bekannten Modus und **spiele zwei Runden direkt hintereinander**. Behalte dasselbe Setup.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["rounds-or-matches"],
+    },
+  },
+  {
+    id: "starter-gear",
+    moodIds: ["challenge", "focused"],
+    type: "challenge",
+    tags: ["one-weapon", "three-attempts"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "One Weapon",
+        objective:
+          "Open a **game with selectable weapons**. Pick one weapon and **win a fight without switching**. Give yourself up to three attempts.",
+        gameObjective:
+          "In **{{game}}**: Pick one weapon and **win a fight without switching**. Give yourself up to three attempts.",
+      },
+      de: {
+        name: "Eine Waffe",
+        objective:
+          "Starte ein **Spiel mit auswählbaren Waffen**. Nimm eine Waffe und **gewinne einen Kampf ohne zu wechseln**. Du hast bis zu drei Versuche.",
+        gameObjective:
+          "In **{{game}}**: Nimm eine Waffe und **gewinne einen Kampf ohne zu wechseln**. Du hast bis zu drei Versuche.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["combat-loadouts"],
+    },
+  },
+  {
+    id: "one-slot-swap",
+    moodIds: ["curious", "focused"],
+    type: "experiment",
+    tags: ["loadout", "new-approach"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "One Slot Different",
+        objective:
+          "Open a **game with selectable weapons**. Swap your usual weapon for one you rarely use and **finish one fight with it**. Keep the rest of your gear.",
+        gameObjective:
+          "In **{{game}}**: Swap your usual weapon for one you rarely use and **finish one fight with it**. Keep the rest of your gear.",
+      },
+      de: {
+        name: "Ein Platz anders",
+        objective:
+          "Starte ein **Spiel mit auswählbaren Waffen**. Tausche deine übliche Waffe gegen eine selten genutzte und **beende einen Kampf damit**. Behalte den Rest deiner Ausrüstung.",
+        gameObjective:
+          "In **{{game}}**: Tausche deine übliche Waffe gegen eine selten genutzte und **beende einen Kampf damit**. Behalte den Rest deiner Ausrüstung.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["combat-loadouts"],
+    },
+  },
+  {
+    id: "spell-single-school",
+    moodIds: ["challenge", "focused"],
+    type: "challenge",
+    tags: ["spells", "one-weapon"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "One Spell Only",
+        objective:
+          "Open a **game with damage spells**. Pick one spell and **win a fight using only that spell for damage**. Try up to three times.",
+        gameObjective:
+          "In **{{game}}**: Pick one damage spell and **win a fight using only that spell for damage**. Try up to three times.",
+      },
+      de: {
+        name: "Nur ein Zauber",
+        objective:
+          "Starte ein **Spiel mit Schadenszaubern**. Wähle einen Zauber und **gewinne einen Kampf nur mit diesem Zauber als Schadensquelle**. Versuche es bis zu dreimal.",
+        gameObjective:
+          "In **{{game}}**: Wähle einen Schadenszauber und **gewinne einen Kampf nur mit diesem Zauber als Schadensquelle**. Versuche es bis zu dreimal.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["combat-spells"],
+    },
+  },
+  {
+    id: "spell-new-opener",
+    moodIds: ["curious"],
+    type: "experiment",
+    tags: ["spells", "new-approach"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "A Different Spell",
+        objective:
+          "Open a **game with damage spells**. Equip one you rarely use and **start the next fight with it**. Finish the fight however you like.",
+        gameObjective:
+          "In **{{game}}**: Equip a damage spell you rarely use and **start the next fight with it**. Finish the fight however you like.",
+      },
+      de: {
+        name: "Ein anderer Zauber",
+        objective:
+          "Starte ein **Spiel mit Schadenszaubern**. Rüste einen selten genutzten Zauber aus und **beginne den nächsten Kampf damit**. Danach kannst du frei weiterspielen.",
+        gameObjective:
+          "In **{{game}}**: Rüste einen selten genutzten Schadenszauber aus und **beginne den nächsten Kampf damit**. Danach kannst du frei weiterspielen.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["combat-spells"],
+    },
+  },
+  {
+    id: "planet-compare",
+    moodIds: ["explore", "curious"],
+    type: "experiment",
+    tags: ["space", "exploration"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 25,
+    genres: [],
+    translations: {
+      en: {
+        name: "Two Worlds",
+        objective:
+          "Open a **space game with landable planets**. Visit two different-looking planets and walk around both. **Take one screenshot on each planet**.",
+        gameObjective:
+          "In **{{game}}**: Visit two different-looking planets and walk around both. **Take one screenshot on each planet**.",
+      },
+      de: {
+        name: "Zwei Welten",
+        objective:
+          "Starte ein **Weltraumspiel mit begehbaren Planeten**. Besuche zwei unterschiedlich aussehende Planeten und erkunde beide zu Fuß. **Mach auf jedem ein Bildschirmfoto**.",
+        gameObjective:
+          "In **{{game}}**: Besuche zwei unterschiedlich aussehende Planeten und erkunde beide zu Fuß. **Mach auf jedem ein Bildschirmfoto**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["space-exploration"],
+    },
+  },
+  {
+    id: "swim-return-trip",
+    moodIds: ["explore", "restless"],
+    type: "objective",
+    tags: ["diving"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "Under and Back",
+        objective:
+          "Open a **game with swimming and diving**. Pick a visible point across the water and **swim there, dive, and return**.",
+        gameObjective:
+          "In **{{game}}**: Pick a visible point across the water and **swim there, dive, and return**.",
+      },
+      de: {
+        name: "Unter Wasser und zurück",
+        objective:
+          "Starte ein **Spiel mit Schwimmen und Tauchen**. Wähle einen sichtbaren Punkt am Wasser und **schwimme hin, tauche ab und kehre zurück**.",
+        gameObjective:
+          "In **{{game}}**: Wähle einen sichtbaren Punkt am Wasser und **schwimme hin, tauche ab und kehre zurück**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["swimming"],
+    },
+  },
+  {
+    id: "boss-practice",
+    moodIds: ["challenge", "focused"],
+    type: "challenge",
+    tags: ["boss", "three-attempts"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "Read the Boss",
+        objective:
+          "Open a **game with repeatable boss fights**. Focus on one attack that keeps catching you and try a different response. **Beat the boss or finish three attempts**.",
+        gameObjective:
+          "In **{{game}}**: Focus on one boss attack that keeps catching you and try a different response. **Beat the boss or finish three attempts**.",
+      },
+      de: {
+        name: "Den Boss lesen",
+        objective:
+          "Starte ein **Spiel mit wiederholbaren Bosskämpfen**. Achte auf einen Angriff, der dich oft trifft, und probiere eine andere Reaktion. **Besiege den Boss oder beende drei Versuche**.",
+        gameObjective:
+          "In **{{game}}**: Achte auf einen Bossangriff, der dich oft trifft, und probiere eine andere Reaktion. **Besiege den Boss oder beende drei Versuche**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["boss-fights"],
+    },
+  },
+  {
+    id: "quiet-entry-exit",
+    moodIds: ["challenge", "focused"],
+    type: "challenge",
+    tags: ["stealth", "no-detection"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "In and Out",
+        objective:
+          "Open a **game with stealth** and pick a guarded doorway or passage. **Sneak there and back without attacking anyone**. Try up to three times.",
+        gameObjective:
+          "In **{{game}}**: Pick a guarded doorway or passage. **Sneak there and back without attacking anyone**. Try up to three times.",
+      },
+      de: {
+        name: "Rein und raus",
+        objective:
+          "Starte ein **Spiel mit Stealth** und wähle eine bewachte Tür oder Passage. **Schleich dich hin und zurück, ohne jemanden anzugreifen**. Du hast bis zu drei Versuche.",
+        gameObjective:
+          "In **{{game}}**: Wähle eine bewachte Tür oder Passage. **Schleich dich hin und zurück, ohne jemanden anzugreifen**. Du hast bis zu drei Versuche.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["stealth"],
+    },
+  },
+  {
+    id: "watch-one-patrol",
+    moodIds: ["curious", "explore"],
+    type: "experiment",
+    tags: ["stealth", "new-approach"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "Watch the Patrol",
+        objective:
+          "Open a **stealth game with patrolling guards**. Watch one patrol from cover and find an opening. **Use it to sneak past unseen**.",
+        gameObjective:
+          "In **{{game}}**: Watch one patrol from cover and find an opening. **Use it to sneak past unseen**.",
+      },
+      de: {
+        name: "Die Patrouille",
+        objective:
+          "Starte ein **Schleichspiel mit patrouillierenden Wachen**. Beobachte eine Patrouille aus der Deckung und finde eine Lücke. **Nutze sie, um ungesehen vorbeizukommen**.",
+        gameObjective:
+          "In **{{game}}**: Beobachte eine Patrouille aus der Deckung und finde eine Lücke. **Nutze sie, um ungesehen vorbeizukommen**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["stealth"],
+    },
+  },
+  {
+    id: "puzzle-no-hints",
+    moodIds: ["challenge", "focused"],
+    type: "challenge",
+    tags: ["puzzles", "no-hints"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "No Hints",
+        objective:
+          "Open a **game with puzzles** and pick one unfinished puzzle. **Solve it without hints or a walkthrough**. Restarting and undo are fine.",
+        gameObjective:
+          "In **{{game}}**: Pick one unfinished puzzle and **solve it without hints or a walkthrough**. Restarting and undo are fine.",
+      },
+      de: {
+        name: "Ohne Hinweise",
+        objective:
+          "Starte ein **Spiel mit Rätseln** und nimm ein offenes Rätsel. **Löse es ohne Hinweise oder Komplettlösung**. Neustart und Rückgängig sind erlaubt.",
+        gameObjective:
+          "In **{{game}}**: Nimm ein offenes Rätsel und **löse es ohne Hinweise oder Komplettlösung**. Neustart und Rückgängig sind erlaubt.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["puzzles"],
+    },
+  },
+  {
+    id: "puzzle-small-step",
+    moodIds: ["relax", "low-energy", "overwhelmed"],
+    type: "objective",
+    tags: ["puzzles", "no-timer"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 10,
+    genres: [],
+    translations: {
+      en: {
+        name: "One Puzzle",
+        objective:
+          "Open a **relaxed puzzle game**. Pick one untimed puzzle and **solve just that one**. Use hints whenever you want.",
+        gameObjective:
+          "In **{{game}}**: Pick one untimed puzzle and **solve just that one**. Use hints whenever you want.",
+      },
+      de: {
+        name: "Ein Rätsel",
+        objective:
+          "Starte ein **entspanntes Rätselspiel**. Nimm ein Rätsel ohne Zeitlimit und **löse nur dieses eine**. Nutze Hinweise, wann du möchtest.",
+        gameObjective:
+          "In **{{game}}**: Nimm ein Rätsel ohne Zeitlimit und **löse nur dieses eine**. Nutze Hinweise, wann du möchtest.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["puzzles"],
+    },
+  },
+  {
+    id: "build-with-three-materials",
+    moodIds: ["create", "focused"],
+    type: "creation",
+    tags: ["building"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 25,
+    genres: [],
+    translations: {
+      en: {
+        name: "Three Materials",
+        objective:
+          "Open a **building game** and make a small shelter from three materials. **Add a roof and entrance**, then walk inside.",
+        gameObjective:
+          "In **{{game}}**: Build a small shelter from three materials. **Add a roof and entrance**, then walk inside.",
+      },
+      de: {
+        name: "Drei Materialien",
+        objective:
+          "Starte ein **Bauspiel** und baue aus drei Materialien einen kleinen Unterstand. **Füge Dach und Eingang hinzu** und geh hinein.",
+        gameObjective:
+          "In **{{game}}**: Baue aus drei Materialien einen kleinen Unterstand. **Füge Dach und Eingang hinzu** und geh hinein.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["building"],
+    },
+  },
+  {
+    id: "build-a-memory",
+    moodIds: ["create", "relax"],
+    type: "creation",
+    tags: ["building"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 25,
+    genres: [],
+    translations: {
+      en: {
+        name: "A Place from Memory",
+        objective:
+          "Open a **game with free building** and recreate the rough shape of a room you know. **Add the doorway and save it**. Keep the details simple.",
+        gameObjective:
+          "In **{{game}}**: Recreate the rough shape of a room you know. **Add the doorway and save it**. Keep the details simple.",
+      },
+      de: {
+        name: "Ein Raum aus Erinnerung",
+        objective:
+          "Starte ein **Spiel mit freiem Bauen** und baue grob einen Raum nach, den du kennst. **Füge die Türöffnung hinzu und speichere den Bau**. Details dürfen einfach bleiben.",
+        gameObjective:
+          "In **{{game}}**: Baue grob einen Raum nach, den du kennst. **Füge die Türöffnung hinzu und speichere den Bau**. Details dürfen einfach bleiben.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["building"],
+    },
+  },
+  {
+    id: "craft-from-storage",
+    moodIds: ["progress", "overwhelmed"],
+    type: "objective",
+    tags: ["crafting"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 10,
+    genres: [],
+    translations: {
+      en: {
+        name: "From Storage",
+        objective:
+          "Open a **game with crafting**. Pick a recipe you already have all materials for and **craft it once**. Do not gather or buy anything.",
+        gameObjective:
+          "In **{{game}}**: Pick a recipe you already have all materials for and **craft it once**. Do not gather or buy anything.",
+      },
+      de: {
+        name: "Aus dem Vorrat",
+        objective:
+          "Starte ein **Spiel mit Crafting**. Nimm ein Rezept, für das du schon alle Materialien hast, und **stelle es einmal her**. Sammle und kaufe nichts dazu.",
+        gameObjective:
+          "In **{{game}}**: Nimm ein Rezept, für das du schon alle Materialien hast, und **stelle es einmal her**. Sammle und kaufe nichts dazu.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["crafting"],
+    },
+  },
+  {
+    id: "craft-unused-recipe",
+    moodIds: ["curious", "progress"],
+    type: "objective",
+    tags: ["crafting", "new-approach"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "Unused Recipe",
+        objective:
+          "Open a **game with crafting** and find a recipe you have never made. Get any nearby materials you need and **craft it once**.",
+        gameObjective:
+          "In **{{game}}**: Find a recipe you have never made. Get any nearby materials you need and **craft it once**.",
+      },
+      de: {
+        name: "Neues Rezept",
+        objective:
+          "Starte ein **Spiel mit Crafting** und suche ein Rezept, das du noch nie hergestellt hast. Besorge fehlende Materialien in der Nähe und **stelle es einmal her**.",
+        gameObjective:
+          "In **{{game}}**: Suche ein Rezept, das du noch nie hergestellt hast. Besorge fehlende Materialien in der Nähe und **stelle es einmal her**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["crafting"],
+    },
+  },
+  {
+    id: "going-fishing",
+    moodIds: ["relax", "low-energy"],
+    type: "objective",
+    tags: ["fishing"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "Three Fish",
+        objective:
+          "Open a **game with fishing** and head to any fishing spot. **Catch three fish** of any kind.",
+        gameObjective:
+          "In **{{game}}**: Head to any fishing spot and **catch three fish** of any kind.",
+      },
+      de: {
+        name: "Drei Fische",
+        objective:
+          "Starte ein **Spiel mit Angeln** und geh zu einer beliebigen Angelstelle. **Fange drei Fische** deiner Wahl.",
+        gameObjective:
+          "In **{{game}}**: Geh zu einer beliebigen Angelstelle und **fange drei Fische** deiner Wahl.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["fishing"],
+    },
+  },
+  {
+    id: "fish-two-waters",
+    moodIds: ["explore"],
+    type: "objective",
+    tags: ["fishing", "exploration"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "Another Fishing Spot",
+        objective:
+          "Open a **game with several fishing spots**. Leave your usual spot and find somewhere different. **Catch one fish there**.",
+        gameObjective:
+          "In **{{game}}**: Leave your usual fishing spot and find somewhere different. **Catch one fish there**.",
+      },
+      de: {
+        name: "Eine andere Angelstelle",
+        objective:
+          "Starte ein **Spiel mit mehreren Angelstellen**. Verlasse deinen üblichen Platz und such dir einen anderen. **Fange dort einen Fisch**.",
+        gameObjective:
+          "In **{{game}}**: Verlasse deinen üblichen Angelplatz und such dir einen anderen. **Fange dort einen Fisch**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["fishing"],
+    },
+  },
+  {
+    id: "first-recipe",
+    moodIds: ["relax", "low-energy"],
+    type: "objective",
+    tags: ["cooking"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 10,
+    genres: [],
+    translations: {
+      en: {
+        name: "From the Pantry",
+        objective:
+          "Open a **game with cooking**. Pick a recipe you already have the ingredients for and **cook one portion**.",
+        gameObjective:
+          "In **{{game}}**: Pick a recipe you already have the ingredients for and **cook one portion**.",
+      },
+      de: {
+        name: "Aus der Vorratskammer",
+        objective:
+          "Starte ein **Spiel mit Kochen**. Nimm ein Rezept, für das du schon alle Zutaten hast, und **koche eine Portion**.",
+        gameObjective:
+          "In **{{game}}**: Nimm ein Rezept, für das du schon alle Zutaten hast, und **koche eine Portion**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["cooking"],
+    },
+  },
+  {
+    id: "cook-a-new-dish",
+    moodIds: ["curious", "progress"],
+    type: "objective",
+    tags: ["cooking", "new-approach"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "A New Dish",
+        objective:
+          "Open a **game with cooking** and choose a recipe you have never made. Get any missing ingredients nearby and **cook it once**.",
+        gameObjective:
+          "In **{{game}}**: Choose a recipe you have never made. Get any missing ingredients nearby and **cook it once**.",
+      },
+      de: {
+        name: "Ein neues Gericht",
+        objective:
+          "Starte ein **Spiel mit Kochen** und wähle ein Rezept, das du noch nie gemacht hast. Besorge fehlende Zutaten in der Nähe und **koche es einmal**.",
+        gameObjective:
+          "In **{{game}}**: Wähle ein Rezept, das du noch nie gemacht hast. Besorge fehlende Zutaten in der Nähe und **koche es einmal**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["cooking"],
+    },
+  },
+  {
+    id: "one-patch-at-a-time",
+    moodIds: ["relax", "progress", "low-energy"],
+    type: "objective",
+    tags: ["farming"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "One Patch",
+        objective:
+          "Open a **game with farming** and choose one planted patch. **Harvest everything that is ready and replant it**. Leave the rest of the farm alone.",
+        gameObjective:
+          "In **{{game}}**: Choose one planted patch. **Harvest everything that is ready and replant it**. Leave the rest of the farm alone.",
+      },
+      de: {
+        name: "Ein Beet",
+        objective:
+          "Starte ein **Spiel mit Landwirtschaft** und wähle ein bepflanztes Beet. **Ernte alles Reife und säe die freien Stellen neu ein**. Lass den Rest des Hofs in Ruhe.",
+        gameObjective:
+          "In **{{game}}**: Wähle ein bepflanztes Beet. **Ernte alles Reife und säe die freien Stellen neu ein**. Lass den Rest des Hofs in Ruhe.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["grow-crops"],
+    },
+  },
+  {
+    id: "care-first",
+    moodIds: ["relax", "low-energy"],
+    type: "objective",
+    tags: ["animals"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 10,
+    genres: [],
+    translations: {
+      en: {
+        name: "Feeding Time",
+        objective:
+          "Open a **game with animals in your care**. Visit them and **feed every animal that needs food**. Stop when everyone is taken care of.",
+        gameObjective:
+          "In **{{game}}**: Visit your animals and **feed every one that needs food**. Stop when everyone is taken care of.",
+      },
+      de: {
+        name: "Fütterungszeit",
+        objective:
+          "Starte ein **Spiel mit Tieren in deiner Obhut**. Besuch sie und **füttere jedes Tier, das Futter braucht**. Hör auf, wenn alle versorgt sind.",
+        gameObjective:
+          "In **{{game}}**: Besuch deine Tiere und **füttere jedes, das Futter braucht**. Hör auf, wenn alle versorgt sind.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["animal-care"],
+    },
+  },
+  {
+    id: "drive-one-route-twice",
+    moodIds: ["focused", "curious"],
+    type: "experiment",
+    tags: ["driving", "new-approach"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "The Same Road",
+        objective:
+          "Open a **free-roam driving game** and drive to a nearby landmark. **Take the same road back** and try to make the return smoother.",
+        gameObjective:
+          "In **{{game}}**: Drive to a nearby landmark. **Take the same road back** and try to make the return smoother.",
+      },
+      de: {
+        name: "Dieselbe Straße",
+        objective:
+          "Starte ein **Spiel mit freien Autofahrten** und fahr zu einer Landmarke in der Nähe. **Nimm dieselbe Strecke zurück** und versuch, die Rückfahrt ruhiger zu fahren.",
+        gameObjective:
+          "In **{{game}}**: Fahr zu einer Landmarke in der Nähe. **Nimm dieselbe Strecke zurück** und versuch, die Rückfahrt ruhiger zu fahren.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["free-driving"],
+    },
+  },
+  {
+    id: "drive-clean",
+    moodIds: ["focused"],
+    type: "challenge",
+    tags: ["racing"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "A Clean Race",
+        objective:
+          "Open a **racing game** and pick a familiar track. **Finish one race without hitting barriers or other cars**. Try up to three races.",
+        gameObjective:
+          "In **{{game}}**: Pick a familiar track and **finish one race without hitting barriers or other cars**. Try up to three races.",
+      },
+      de: {
+        name: "Ein sauberes Rennen",
+        objective:
+          "Starte ein **Rennspiel** und nimm eine bekannte Strecke. **Beende ein Rennen ohne Begrenzungen oder andere Autos zu berühren**. Du hast bis zu drei Rennen.",
+        gameObjective:
+          "In **{{game}}**: Nimm eine bekannte Strecke und **beende ein Rennen ohne Begrenzungen oder andere Autos zu berühren**. Du hast bis zu drei Rennen.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["racing"],
+    },
+  },
+  {
+    id: "movement-new-line",
+    moodIds: ["explore", "restless"],
+    type: "objective",
+    tags: ["traversal", "new-approach"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "A New Way Up",
+        objective:
+          "Open a **game with advanced movement** and pick a reachable ledge or platform. **Find a new route there and return to where you started**.",
+        gameObjective:
+          "In **{{game}}**: Pick a reachable ledge or platform. **Find a new route there and return to where you started**.",
+      },
+      de: {
+        name: "Ein neuer Weg",
+        objective:
+          "Starte ein **Spiel mit besonderen Bewegungsmöglichkeiten** und wähle einen erreichbaren Vorsprung oder eine Plattform. **Finde einen neuen Weg dorthin und kehre zum Start zurück**.",
+        gameObjective:
+          "In **{{game}}**: Wähle einen erreichbaren Vorsprung oder eine Plattform. **Finde einen neuen Weg dorthin und kehre zum Start zurück**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["advanced-traversal"],
+    },
+  },
+  {
+    id: "two-color-look",
+    moodIds: ["create", "relax"],
+    type: "creation",
+    tags: ["outfit", "two-colors"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "Two Colors",
+        objective:
+          "Open a **game with appearance customization**. Make a look from items you own using **two main colors**. Equip it and see it in gameplay.",
+        gameObjective:
+          "In **{{game}}**: Make a look from items you own using **two main colors**. Equip it and see it in gameplay.",
+      },
+      de: {
+        name: "Zwei Farben",
+        objective:
+          "Starte ein **Spiel mit Aussehensanpassung**. Erstelle aus vorhandenen Dingen einen Look mit **zwei Hauptfarben**. Zieh ihn an und sieh ihn dir im Spiel an.",
+        gameObjective:
+          "In **{{game}}**: Erstelle aus vorhandenen Dingen einen Look mit **zwei Hauptfarben**. Zieh ihn an und sieh ihn dir im Spiel an.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["customization"],
+    },
+  },
+  {
+    id: "photo-three-angles",
+    moodIds: ["create", "focused"],
+    type: "creation",
+    tags: ["photography"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "Three Angles",
+        objective:
+          "Open a **game with photo mode** and pick one subject. Take a close-up, a low-angle shot, and a wide shot. **Save all three photos**.",
+        gameObjective:
+          "In **{{game}}**: Pick one subject. Take a close-up, a low-angle shot, and a wide shot. **Save all three photos**.",
+      },
+      de: {
+        name: "Drei Blickwinkel",
+        objective:
+          "Starte ein **Spiel mit Fotomodus** und wähle ein Motiv. Fotografiere es nah, von unten und in einer weiten Ansicht. **Speichere alle drei Bilder**.",
+        gameObjective:
+          "In **{{game}}**: Wähle ein Motiv. Fotografiere es nah, von unten und in einer weiten Ansicht. **Speichere alle drei Bilder**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["photo-mode"],
+    },
+  },
+  {
+    id: "photo-small-detail",
+    moodIds: ["relax", "create"],
+    type: "creation",
+    tags: ["photography"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 10,
+    genres: [],
+    translations: {
+      en: {
+        name: "A Small Detail",
+        objective:
+          "Open a **game with photo mode** and look for a small detail nearby. **Take a close-up that fills the frame**.",
+        gameObjective:
+          "In **{{game}}**: Look for a small detail nearby and **take a close-up that fills the frame**.",
+      },
+      de: {
+        name: "Ein kleines Detail",
+        objective:
+          "Starte ein **Spiel mit Fotomodus** und such nach einem kleinen Detail in deiner Nähe. **Mach eine Nahaufnahme, die das Bild ausfüllt**.",
+        gameObjective:
+          "In **{{game}}**: Such nach einem kleinen Detail in deiner Nähe und **mach eine Nahaufnahme, die das Bild ausfüllt**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["photo-mode"],
+    },
+  },
+  {
+    id: "follow-a-teammate",
+    moodIds: ["connect"],
+    type: "objective",
+    tags: ["co-op", "support"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "Stay Together",
+        objective:
+          "Open an **online team game** and join a teammate working on an objective. **Stay with them and help until the objective or round ends**.",
+        gameObjective:
+          "In **{{game}}**: Join a teammate working on an objective. **Stay with them and help until the objective or round ends**.",
+      },
+      de: {
+        name: "Zusammenbleiben",
+        objective:
+          "Starte ein **Online-Teamspiel** und schließ dich einem Teammitglied mit einem Ziel an. **Bleib dabei und hilf, bis das Ziel oder die Runde endet**.",
+        gameObjective:
+          "In **{{game}}**: Schließ dich einem Teammitglied mit einem Ziel an. **Bleib dabei und hilf, bis das Ziel oder die Runde endet**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["online-teamplay"],
+    },
+  },
+  {
+    id: "couch-three-rounds",
+    moodIds: ["connect", "nostalgic"],
+    type: "objective",
+    tags: ["local-play"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "Three Turns Each",
+        objective:
+          "Open a **local multiplayer game** with someone beside you. Pick a short mode and **play three turns each**. Pass the controls after every turn.",
+        gameObjective:
+          "In **{{game}}**: Pick a short mode and **play three turns each**. Pass the controls after every turn.",
+      },
+      de: {
+        name: "Drei Runden pro Person",
+        objective:
+          "Starte mit jemandem ein **lokales Mehrspielerspiel**. Wählt einen kurzen Modus und **spielt je drei Runden**. Gebt die Steuerung nach jeder Runde weiter.",
+        gameObjective:
+          "In **{{game}}**: Wählt einen kurzen Modus und **spielt je drei Runden**. Gebt die Steuerung nach jeder Runde weiter.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["local-multiplayer"],
+    },
+  },
+  {
+    id: "one-missing-collectible",
+    moodIds: ["progress", "focused"],
+    type: "objective",
+    tags: ["collectibles"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "One Gap Less",
+        objective:
+          "Start a **game with collectibles** and pick a collectible that you can find on your own. Get the item **without using any guidelines or external aids**.",
+        gameObjective:
+          "In **{{game}}**: Pick a **collectible** that you can find on your own. Get the item **without using any guidelines or external aids**.",
+      },
+      de: {
+        name: "Eine Lücke weniger",
+        objective:
+          "Starte ein **Spiel mit Sammelobjekten** und wähle ein Item, das du ohne Hilfe finden kannst. Sammle das Collectible ein, **ohne Guidelines oder externe Hilfsmittel** zu benutzen.",
+        gameObjective:
+          "In **{{game}}**: Wähl ein **Sammelobjekt** aus, das dir noch fehlt und du ohne Hilfe finden kannst. Sammle das Collectible ein, **ohne Guidelines oder externe Hilfsmittel** zu benutzen.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["collectibles"],
+    },
+  },
+  {
+    id: "follow-one-character",
+    moodIds: ["curious", "low-energy"],
+    type: "objective",
+    tags: ["dialogue", "story"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "Hear Them Out",
+        objective:
+          "Open a **game with optional conversations or story entries**. Pick one you have not finished and **read or listen to it all the way through**.",
+        gameObjective:
+          "In **{{game}}**: Pick one unfinished conversation or story entry and **read or listen to it all the way through**.",
+      },
+      de: {
+        name: "Erst mal zuhören",
+        objective:
+          "Starte ein **Spiel mit optionalen Gesprächen oder Storyeinträgen**. Wähle einen ungelesenen Eintrag und **lies oder hör ihn bis zum Ende**.",
+        gameObjective:
+          "In **{{game}}**: Wähle ein ungelesenes Gespräch oder einen Storyeintrag und **lies oder hör ihn bis zum Ende**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["choices-or-lore"],
+    },
+  },
+  {
+    id: "trade-three-kinds",
+    moodIds: ["overwhelmed", "low-energy", "progress"],
+    type: "objective",
+    tags: ["trading"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 10,
+    genres: [],
+    translations: {
+      en: {
+        name: "Three Things Less",
+        objective:
+          "Open a **game with merchants** and visit one nearby. **Sell three items you do not use** and buy a new item with your earned money at the next merchant you can find.",
+        gameObjective:
+          "In **{{game}}**: Visit a merchant and **sell three items you do not use**. Buy a new item with your earned money at the next merchant you can find.",
+      },
+      de: {
+        name: "Drei Dinge weniger",
+        objective:
+          "Starte ein **Spiel mit Händlern** und besuch einen in der Nähe. **Verkaufe drei Gegenstände, die du nicht nutzt** und kauf dir von dem Geld ein neues Item bei dem nächsten Händler, den du finden kannst.",
+        gameObjective:
+          "In **{{game}}**: Besuch einen Händler und **verkaufe drei Gegenstände, die du nicht nutzt**. Kauf dir von dem Geld ein neues Item bei dem nächsten Händler, den du finden kannst.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["trading"],
+    },
+  },
+  {
+    id: "hunt-single-species",
+    moodIds: ["focused", "progress"],
+    type: "objective",
+    tags: ["hunting"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "One Species",
+        objective:
+          "Open a **game with hunting**. Let the first huntable animal you find set the species. **Hunt two of that species and collect their materials**.",
+        gameObjective:
+          "In **{{game}}**: Let the first huntable animal you find set the species. **Hunt two of that species and collect their materials**.",
+      },
+      de: {
+        name: "Eine Tierart",
+        objective:
+          "Starte ein **Spiel mit Jagd**. Das erste jagdbare Tier bestimmt die Art. **Erlege zwei Tiere dieser Art und sammle ihre Materialien**.",
+        gameObjective:
+          "In **{{game}}**: Das erste jagdbare Tier bestimmt die Art. **Erlege zwei Tiere dieser Art und sammle ihre Materialien**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["hunting"],
+    },
+  },
+  {
+    id: "companion-first-strike",
+    moodIds: ["focused", "curious"],
+    type: "experiment",
+    tags: ["new-approach"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 15,
+    genres: [],
+    translations: {
+      en: {
+        name: "Let Them Lead",
+        objective:
+          "Open a **game with a combat companion**. Let your companion start the next fight, then join in. **Finish the fight together**.",
+        gameObjective:
+          "In **{{game}}**: Let your companion start the next fight, then join in. **Finish the fight together**.",
+      },
+      de: {
+        name: "Begleiter zuerst",
+        objective:
+          "Starte ein **Spiel mit einem Begleiter im Kampf**. Lass deinen Begleiter den nächsten Kampf beginnen und greif danach ein. **Beendet den Kampf zusammen**.",
+        gameObjective:
+          "In **{{game}}**: Lass deinen Begleiter den nächsten Kampf beginnen und greif danach ein. **Beendet den Kampf zusammen**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["animal-companions"],
+    },
+  },
+  // {
+  //   id: "skate-three-flips",
+  //   moodIds: ["curious"],
+  //   type: "experiment",
+  //   tags: ["skating", "new-approach"],
+  //   minimumDurationMinutes: 2,
+  //   suggestedDurationMinutes: 15,
+  //   genres: [],
+  //   translations: {
+  //     en: {
+  //       name: "Three Flips",
+  //       objective:
+  //         "Open a **skating game** and find a flat spot. Pick three different flip tricks and **land each one once**.",
+  //       gameObjective:
+  //         "In **{{game}}**: Find a flat spot. Pick three different flip tricks and **land each one once**.",
+  //     },
+  //     de: {
+  //       name: "Drei Flips",
+  //       objective:
+  //         "Starte ein **Skatespiel** und such eine flache Stelle. Wähle drei verschiedene Flip-Tricks und **lande jeden einmal**.",
+  //       gameObjective:
+  //         "In **{{game}}**: Such eine flache Stelle. Wähle drei verschiedene Flip-Tricks und **lande jeden einmal**.",
+  //     },
+  //   },
+  //   customGameCompatibility: {
+  //     capabilityIds: ["skate-tricks"],
+  //   },
+  // },
+  {
+    id: "sports-answer-back",
+    moodIds: ["challenge", "restless"],
+    type: "challenge",
+    tags: ["vs-bots", "three-attempts"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "Answer Back",
+        objective:
+          "Open a **sports game against the CPU** and **win with a two-point lead**. Try up to three matches.",
+        gameObjective:
+          "In **{{game}}**: Start a match against the CPU and **win with a two-point lead**. Try up to three matches.",
+      },
+      de: {
+        name: "Antworten",
+        objective:
+          "Starte ein **Sportspiel gegen den Computer** und gewinne mit *zwei Punkten in Führung**. Du hast drei Versuche.",
+        gameObjective:
+          "In **{{game}}**: Starte ein Match gegen den Computer und gewinne mit **zwei Punkten in Führung**. Du hast drei Versuche.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["sports-goals"],
+    },
+  },
+  {
+    id: "extract-one-container",
+    moodIds: ["focused", "challenge"],
+    type: "challenge",
+    tags: ["extraction"],
+    minimumDurationMinutes: 2,
+    suggestedDurationMinutes: 20,
+    genres: [],
+    translations: {
+      en: {
+        name: "One Container",
+        objective:
+          "Open a **solo extraction game** and start a run with your usual gear. Loot only the **first three containers** you reach and **extract with what you found**.",
+        gameObjective:
+          "In **{{game}}**: Start a solo run with your usual gear. Loot only the **first three containers** you reach and **extract with what you found**.",
+      },
+      de: {
+        name: "Ein Behälter",
+        objective:
+          "Starte ein **Extraktionsspiel im Solo-Modus** mit deiner üblichen Ausrüstung. Plündere nur die **ersten drei Behälter** und **extrahiere mit deiner Beute**.",
+        gameObjective:
+          "In **{{game}}**: Starte einen Solo-Durchlauf mit deiner üblichen Ausrüstung. Plündere nur die **ersten drei Behälter** und **extrahiere mit deiner Beute**.",
+      },
+    },
+    customGameCompatibility: {
+      capabilityIds: ["extraction-runs"],
+    },
+  },
+] satisfies readonly AuthoredQuestDefinition[];

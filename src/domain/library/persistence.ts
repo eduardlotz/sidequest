@@ -22,9 +22,20 @@ export function migratePersistedLibraryState(
   persistedState: unknown,
   version: number,
 ): PersistedLibraryState {
-  return version === LIBRARY_STORE_VERSION
-    ? sanitizePersistedLibraryState(persistedState)
-    : { ...DEFAULT_LIBRARY_STATE };
+  if (version !== 1 && version !== LIBRARY_STORE_VERSION) {
+    return { ...DEFAULT_LIBRARY_STATE };
+  }
+  const state = sanitizePersistedLibraryState(persistedState);
+  if (version === 1) {
+    // Old per-quest approvals do not guarantee the rewritten objective fits.
+    // Preserve the library and still-valid activities, then recalculate matches.
+    return {
+      ...state,
+      customGames: state.customGames.map((game) => ({ ...game, questOverrides: {} })),
+      revision: state.revision + 1,
+    };
+  }
+  return state;
 }
 
 export function sanitizePersistedLibraryState(

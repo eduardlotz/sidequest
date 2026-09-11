@@ -1,3 +1,4 @@
+import type { QuestTypeId, QuestTagId } from "./questTraits";
 import type { GameCapabilityId } from "./gameTypes";
 
 export const MOOD_IDS = [
@@ -32,12 +33,13 @@ export type QuestTranslation = {
 export type CuratedQuestDetails = {
   gameId: string;
   installmentIds: readonly string[];
-  sourceIds: readonly string[];
 };
 
 export type AuthoredQuestDefinition = {
   id: string;
   moodIds: readonly MoodId[];
+  type: QuestTypeId;
+  tags: readonly QuestTagId[];
   minimumDurationMinutes: number;
   suggestedDurationMinutes: number;
   genres: readonly string[];
@@ -53,6 +55,8 @@ export type AuthoredQuestDefinition = {
 export type MoodQuestDefinition = {
   id: string;
   moodIds: readonly MoodId[];
+  type: QuestTypeId;
+  tags: readonly QuestTagId[];
   name: string;
   objective: string;
   gameObjective?: string;
@@ -72,6 +76,8 @@ export type QuestCoreDefinition = Pick<
   MoodQuestDefinition,
   | "id"
   | "moodIds"
+  | "type"
+  | "tags"
   | "minimumDurationMinutes"
   | "suggestedDurationMinutes"
   | "genres"

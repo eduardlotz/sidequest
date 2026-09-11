@@ -1,3 +1,4 @@
+import type { QuestTypeId, QuestTagId } from "../../../data/questTraits";
 import { motion, type HTMLMotionProps } from "motion/react";
 import type { ReactNode } from "react";
 import styles from "./QuestCard.module.css";
@@ -10,6 +11,8 @@ type Props = {
   completed?: boolean;
   game?: GameReference | null;
   genres: readonly string[];
+  type: QuestTypeId;
+  tags: readonly QuestTagId[];
   minimumDurationMinutes: number;
   moodTitle: string;
   name: string;
@@ -24,6 +27,8 @@ export function QuestCard({
   completed = false,
   game = null,
   genres,
+  type,
+  tags,
   minimumDurationMinutes,
   moodTitle,
   name,
@@ -41,6 +46,8 @@ export function QuestCard({
       <QuestCardFront
         game={game}
         genres={genres}
+        type={type}
+        tags={tags}
         minimumDurationMinutes={minimumDurationMinutes}
         moodTitle={moodTitle}
         name={name}

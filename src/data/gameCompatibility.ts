@@ -1,4 +1,4 @@
-import { COMBAT_CAPABILITY_IDS, type GameCapabilityId } from "./gameTypes";
+import type { GameCapabilityId } from "./gameTypes";
 
 export function matchesGameCapabilities(
   capabilities: ReadonlySet<GameCapabilityId>,
@@ -7,11 +7,8 @@ export function matchesGameCapabilities(
     match?: "all" | "any";
   },
 ) {
-  const expanded = new Set(capabilities);
-  if (COMBAT_CAPABILITY_IDS.some((id) => capabilities.has(id)))
-    expanded.add("combat");
-  if (!compatibility) return false;
+  if (!compatibility || compatibility.capabilityIds.length === 0) return false;
   return compatibility.match === "any"
-    ? compatibility.capabilityIds.some((id) => expanded.has(id))
-    : compatibility.capabilityIds.every((id) => expanded.has(id));
+    ? compatibility.capabilityIds.some((id) => capabilities.has(id))
+    : compatibility.capabilityIds.every((id) => capabilities.has(id));
 }
