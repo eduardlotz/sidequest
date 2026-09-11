@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { AppHeader } from "./app/AppHeader";
 import { useThemeChoice } from "./app/hooks/useThemeChoice";
+import { useViewportHeight } from "./app/hooks/useViewportHeight";
 import { useCoinBalanceAnimation } from "./app/hooks/useCoinBalanceAnimation";
 import { QuestScreen } from "./features/quest-flow/QuestScreen";
 import { LibrarySetup } from "./features/library/LibrarySetup";
@@ -13,6 +14,7 @@ import { useLibraryStore } from "./stores/useLibraryStore";
 import styles from "./App.module.css";
 
 export function App() {
+  useViewportHeight();
   const { t } = useTranslation();
   const reduceMotion = Boolean(useReducedMotion());
   const profileTriggerRef = useRef<HTMLButtonElement>(null);

@@ -1,6 +1,7 @@
 .questCardSurface {
   --tilt-x: 0deg;
   --tilt-y: 0deg;
+  --quest-card-type-unit: var(--quest-card-small-type-unit, 1rem);
   position: relative;
   display: flex;
   width: 100%;
@@ -143,7 +144,11 @@
 
 .questCardMood {
   color: var(--accent);
-  font-size: clamp(0.78rem, 3.8cqw, 1.15rem);
+  font-size: clamp(
+    calc(0.78 * var(--quest-card-type-unit)),
+    3.8cqw,
+    1.15rem
+  );
   font-weight: 720;
   letter-spacing: -0.035em;
   line-height: 1.05;
@@ -152,7 +157,7 @@
 .questCardName {
   overflow: hidden;
   color: #8f8f98;
-  font-size: clamp(0.68rem, 3cqw, 0.92rem);
+  font-size: clamp(calc(0.68 * var(--quest-card-type-unit)), 3cqw, 0.92rem);
   font-weight: 680;
   letter-spacing: -0.025em;
   line-height: 1.15;
@@ -166,7 +171,7 @@
   min-width: 0;
   align-items: center;
   color: #d8d8df;
-  font-size: clamp(0.68rem, 3cqw, 0.92rem);
+  font-size: clamp(calc(0.68 * var(--quest-card-type-unit)), 3cqw, 0.92rem);
   font-weight: 700;
   gap: clamp(5px, 1.6cqw, 8px);
   letter-spacing: -0.025em;
@@ -182,7 +187,7 @@
 .questCardDuration {
   flex: 0 0 auto;
   color: #c7c7cd;
-  font-size: clamp(0.7rem, 3.1cqw, 0.94rem);
+  font-size: clamp(calc(0.7 * var(--quest-card-type-unit)), 3.1cqw, 0.94rem);
   font-variant-numeric: tabular-nums;
   font-weight: 700;
   letter-spacing: -0.035em;
@@ -221,7 +226,7 @@
 
 .questCardFrontName {
   color: #f6f6fa;
-  font-size: clamp(1.85rem, 8.5cqw, 3.1rem);
+  font-size: clamp(calc(1.85 * var(--quest-card-type-unit)), 8.5cqw, 3.1rem);
   font-weight: 700;
   letter-spacing: -0.055em;
   line-height: 0.98;
@@ -231,7 +236,7 @@
 
 .questCardFrontObjective {
   color: rgb(246 246 250 / 0.82);
-  font-size: clamp(0.78rem, 3.15cqw, 1rem);
+  font-size: clamp(calc(0.78 * var(--quest-card-type-unit)), 3.15cqw, 1rem);
   font-weight: 620;
   letter-spacing: normal;
   line-height: 1.32;
@@ -258,7 +263,7 @@
   border-radius: 999px;
   background: rgb(246 246 250 / 0.1);
   color: rgb(246 246 250 / 0.72);
-  font-size: clamp(0.62rem, 2.8cqw, 0.78rem);
+  font-size: clamp(calc(0.62 * var(--quest-card-type-unit)), 2.8cqw, 0.78rem);
   font-weight: 700;
   letter-spacing: -0.025em;
   line-height: 1;

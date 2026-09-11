@@ -2,7 +2,7 @@
   display: flex;
   height: auto;
   min-height: 0;
-  max-height: calc(100svh - 98px);
+  max-height: calc(var(--app-height) - 98px);
   overflow: hidden;
   border-radius: 20px;
   background: var(--color-surface);
@@ -379,7 +379,7 @@
 /* Profile overview only; nested history panels retain their own layout. */
 .profileOverview {
   --profile-muted-surface: rgb(var(--color-text-rgb) / 0.05);
-  height: min(710px, calc(100svh - 98px));
+  height: min(710px, calc(var(--app-height) - 98px));
   border-radius: 24px;
 }
 .profileOverview .profileDrawerHeader {

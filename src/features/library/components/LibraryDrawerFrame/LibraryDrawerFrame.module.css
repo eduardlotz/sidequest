@@ -1,7 +1,7 @@
 .drawer {
   display: flex;
   flex-direction: column;
-  height: min(760px, calc(100svh - 98px));
+  height: min(760px, calc(var(--app-height) - 98px));
   min-height: 0;
   background: var(--color-surface);
   border-radius: 24px;

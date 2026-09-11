@@ -3,8 +3,7 @@
   z-index: 4;
   display: flex;
   width: 100%;
-  /* height: var(--quest-deck-height); */
-  height: calc(var(--quest-deck-height) - 3rem);
+  height: var(--quest-deck-height);
   min-height: 0;
   padding-top: 1rem;
   align-self: center;
@@ -88,6 +87,8 @@
 }
 
 .questSelectionCard {
+  /* Below the normal 255px card width, let its minimum text sizes shrink too. */
+  --quest-card-small-type-unit: min(1rem, calc(100cqw / 255 * 16));
   transition:
     box-shadow 320ms ease,
     filter 180ms ease,
