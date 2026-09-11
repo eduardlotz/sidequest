@@ -31,9 +31,6 @@ export const englishUi = {
       "Choose from the starter collection or add any game yourself. Starter games receive their own curated quests plus flexible quests that fit their features.",
     libraryChoice:
       "For a series, select the entries you actually play so installment-specific quests stay accurate. You can edit the library later from your profile. Cards without a named game still work with any library.",
-    sourcesHeading: "Where do the ideas come from?",
-    sourcesBody:
-      "I write quests around the ways a game can be played: its places, systems, and the ideas players try. Each one gets a mood and a clear kind of session, from open inspiration to a focused challenge.",
     coinsHeading: "What do I do with the coins?",
     coinEarning: "The longer you spend on a quest, the more coins you earn.",
     coinSpending:
@@ -213,9 +210,6 @@ export const germanUi = {
       "Wähle aus der Starter-Sammlung oder füge selbst ein beliebiges Spiel hinzu. Spiele aus der Sammlung bekommen eigene kuratierte Quests und flexible Quests, die zu ihren Features passen.",
     libraryChoice:
       "Bei einer Reihe wählst du die Teile, die du wirklich spielst, damit Quests für einzelne Teile stimmen. Die Bibliothek kannst du später im Profil ändern. Karten ohne festes Spiel funktionieren weiterhin mit jeder Bibliothek.",
-    sourcesHeading: "Woher kommen die Ideen?",
-    sourcesBody:
-      "Ich schreibe Quests aus dem, was ein Spiel möglich macht: seinen Orten, Systemen und den Ideen, die Spieler ausprobieren. Jede bekommt eine passende Stimmung und eine Art zu spielen, von offener Inspiration bis zur gezielten Herausforderung.",
     coinsHeading: "Was mache ich mit den Münzen?",
     coinEarning:
       "Je länger du an einer Quest sitzt, desto mehr Münzen gibt es dafür.",

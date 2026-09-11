@@ -1,7 +1,7 @@
 import { CURATED_GAMES, CURATED_GAMES_BY_ID } from "../../data/games";
 import { QUEST_CORES, QUEST_CORES_BY_ID } from "../../data/quests";
 import type { GameCapabilityId } from "../../data/gameTypes";
-import { matchesGameCapabilities } from "../../data/gameCompatibility";
+import { matchesCustomGame } from "../../data/gameCompatibility";
 import {
   DEFAULT_CURATED_PREFERENCES,
   type CustomGame,
@@ -67,10 +67,11 @@ export function libraryGamesFromState(state: LibraryState): LibraryGame[] {
 
 export function customGameQuestIds(game: CustomGame): string[] {
   const capabilities = new Set<GameCapabilityId>(game.capabilityIds);
+  const genres = new Set(game.genreIds);
   return CUSTOM_GAME_QUESTS.filter((quest) => {
     const override = game.questOverrides[quest.id];
     if (override !== undefined) return override;
-    return matchesGameCapabilities(capabilities, quest.customGameCompatibility);
+    return matchesCustomGame(capabilities, genres, quest.customGameCompatibility);
   }).map((quest) => quest.id);
 }
 

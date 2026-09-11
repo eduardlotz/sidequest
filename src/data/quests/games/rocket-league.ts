@@ -11,8 +11,8 @@ export const rocketLeagueQuests = defineGameQuests("rocket-league", [
     "tags": [
       "vs-bots"
     ],
-    "minutes": 15,
-    "minimum": 2,
+    "minutes": 25,
+    "minimum": 5,
     "en": {
       "name": "Small Pads Only",
       "objective": "In **Rocket League**, play a Soccar exhibition against bots with normal boost settings. **Finish the match using only small boost pads and register a goal or save**. Starting boost is allowed; try at most three matches."
@@ -33,8 +33,8 @@ export const rocketLeagueQuests = defineGameQuests("rocket-league", [
       "vs-bots",
       "three-attempts"
     ],
-    "minutes": 20,
-    "minimum": 2,
+    "minutes": 25,
+    "minimum": 5,
     "en": {
       "name": "Off the Wall",
       "objective": "In **Rocket League**, try side-wall bank shots in a Soccar exhibition against bots. **Score after your shot bounces off a side wall, then finish the match**. After three full matches, stop even if none went in."
@@ -56,7 +56,7 @@ export const rocketLeagueQuests = defineGameQuests("rocket-league", [
       "support"
     ],
     "minutes": 10,
-    "minimum": 2,
+    "minimum": 3,
     "en": {
       "name": "Back Post Route",
       "objective": "In **Rocket League Casual 2v2**, rotate back toward the goalpost farther from the ball after your attacks, collecting small pads on the way. **Use that return route three times and finish the match** without abandoning your teammate."

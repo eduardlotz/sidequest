@@ -10,17 +10,17 @@ export const lowEnergyQuests = [
     "tags": [
       "dialogue"
     ],
-    "minimumDurationMinutes": 1,
+    "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
     "genres": [],
     "translations": {
       "en": {
         "name": "Let the Story Run",
-        "objective": "Continue a **visual novel with auto-read**. Let the dialogue play and make choices as they come, without setting a chapter target. Stop at a pause that suits you."
+        "objective": "Continue a **visual novel with auto-read**. **Let the dialogue play** and make choices as they come. Stop whenever you like."
       },
       "de": {
         "name": "Die Geschichte läuft",
-        "objective": "Setze eine **Visual Novel mit automatischem Textlauf** fort. Lass die Dialoge laufen und entscheide, wenn du gefragt wirst. Du musst kein Kapitel schaffen; hör an einer passenden Pause auf."
+        "objective": "Setze eine **Visual Novel mit automatischem Textlauf** fort. **Lass die Dialoge laufen** und entscheide, wenn du gefragt wirst. Hör auf, wann du möchtest."
       }
     }
   },
@@ -33,17 +33,17 @@ export const lowEnergyQuests = [
     "tags": [
       "free-roam"
     ],
-    "minimumDurationMinutes": 1,
-    "suggestedDurationMinutes": 15,
+    "minimumDurationMinutes": 2,
+    "suggestedDurationMinutes": 10,
     "genres": [],
     "translations": {
       "en": {
         "name": "Museum Visit",
-        "objective": "Open a **game with a museum or gallery you can walk through peacefully**. Browse the exhibits already on display and linger at the ones that catch your eye."
+        "objective": "Visit a peaceful **museum or gallery in a game**. **Browse the exhibits** and linger at whatever catches your eye."
       },
       "de": {
         "name": "Museumsbesuch",
-        "objective": "Starte ein **Spiel mit einem Museum oder einer Galerie, durch die du in Ruhe gehen kannst**. Schau dir die vorhandenen Ausstellungsstücke an und bleib bei denen stehen, die dich interessieren."
+        "objective": "Besuche ein ruhiges **Museum oder eine Galerie in einem Spiel**. **Schau dir die Ausstellungsstücke an** und bleib bei denen stehen, die dich interessieren."
       }
     }
   },
@@ -63,11 +63,11 @@ export const lowEnergyQuests = [
     "translations": {
       "en": {
         "name": "One Hand",
-        "objective": "Open **digital solitaire in an untimed mode**. Accept the first deal and play one hand, using undo or hints freely. Finish when **you clear the cards or have no moves left**."
+        "objective": "Open **digital solitaire without a timer**. Play the first deal until **you clear the cards or run out of moves**. Undo and hints are allowed."
       },
       "de": {
         "name": "Eine Partie",
-        "objective": "Öffne **digitales Solitaire ohne Zeitlimit**. Nimm die erste Auslage und spiele eine Partie; Rückgängig und Hinweise sind erlaubt. **Alle Karten abgelegt oder kein Zug mehr möglich** beendet die Aufgabe."
+        "objective": "Öffne **digitales Solitaire ohne Zeitlimit**. Spiele die erste Auslage, bis **alle Karten abgelegt sind oder kein Zug mehr möglich ist**. Rückgängig und Hinweise sind erlaubt."
       }
     }
   },
@@ -94,5 +94,27 @@ export const lowEnergyQuests = [
         "objective": "Nimm ein **digitales Puzzle mit höchstens fünfzig Teilen**. Nutze das Vorschaubild und Sortierhilfen und **setze das letzte Teil ein**."
       }
     }
-  }
+  },
+
+  {
+    "id": "hidden-object-browse",
+    "moodIds": [
+      "low-energy"
+    ],
+    "type": "inspiration",
+    "tags": [],
+    "minimumDurationMinutes": 2,
+    "suggestedDurationMinutes": 15,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Hidden Details",
+        "objective": "Open **a hidden-object game without a timer**. **Browse the scene for hidden details** and use hints whenever you like. Stop when you have seen enough."
+      },
+      "de": {
+        "name": "Versteckte Details",
+        "objective": "Starte **ein Wimmelbildspiel ohne Zeitlimit**. **Suche in der Szene nach versteckten Details** und nutze Hinweise nach Bedarf. Hör auf, wenn du genug gesehen hast."
+      }
+    }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];

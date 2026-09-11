@@ -13,7 +13,7 @@ export const minecraftQuests = defineGameQuests("minecraft", [
       "fishing"
     ],
     "minutes": 25,
-    "minimum": 2,
+    "minimum": 5,
     "en": {
       "name": "Open the Pier",
       "objective": "At a shore near home in **Minecraft**, build a small pier with a barrel and lighting. Leave open water in front of the casting spot, then **catch one fish from the pier and store it in the barrel**."
@@ -35,7 +35,7 @@ export const minecraftQuests = defineGameQuests("minecraft", [
       "trading"
     ],
     "minutes": 20,
-    "minimum": 2,
+    "minimum": 3,
     "en": {
       "name": "Village Payday",
       "objective": "In **Minecraft Survival**, use an established wheat field and a farmer who buys wheat. **Harvest enough for one trade, replant the harvested spaces, and earn the emeralds**. Leave the village’s hay bales alone."
@@ -57,7 +57,7 @@ export const minecraftQuests = defineGameQuests("minecraft", [
       "cooking"
     ],
     "minutes": 25,
-    "minimum": 2,
+    "minimum": 5,
     "en": {
       "name": "Furnace Shift",
       "objective": "In **Minecraft**, connect an input chest, fuel chest, and output chest to a furnace with hoppers. Load eight raw food items and enough fuel. **Collect all eight cooked items from the output chest** without moving them through the furnace by hand."
@@ -78,7 +78,7 @@ export const minecraftQuests = defineGameQuests("minecraft", [
       "automation"
     ],
     "minutes": 20,
-    "minimum": 2,
+    "minimum": 3,
     "en": {
       "name": "Someone's Home",
       "objective": "In **Minecraft**, wire a button to three differently tuned note blocks with repeaters. Adjust the repeater delays until **one press plays the three notes separately in order**. Try a second rhythm before keeping one."
@@ -98,7 +98,7 @@ export const minecraftQuests = defineGameQuests("minecraft", [
     "tags": [
       "farming"
     ],
-    "minutes": 15,
+    "minutes": 10,
     "minimum": 2,
     "en": {
       "name": "Smoke and Honey",
@@ -119,8 +119,8 @@ export const minecraftQuests = defineGameQuests("minecraft", [
     "tags": [
       "no-kills"
     ],
-    "minutes": 20,
-    "minimum": 2,
+    "minutes": 10,
+    "minimum": 3,
     "en": {
       "name": "Second Chance",
       "objective": "In **Minecraft Survival**, with a zombie villager, golden apple, and splash potion of Weakness ready, shelter the villager from sunlight. Apply Weakness, feed it the apple, and **keep it safe through the cure**."
@@ -141,8 +141,8 @@ export const minecraftQuests = defineGameQuests("minecraft", [
       "exploration",
       "on-foot"
     ],
-    "minutes": 25,
-    "minimum": 2,
+    "minutes": 30,
+    "minimum": 5,
     "en": {
       "name": "Put Home on Paper",
       "objective": "Open a new, unexpanded map at your base in **Minecraft**. Explore its area on foot until **all blank patches are filled**, then display it in an item frame at home. Bring food and an empty map before starting."

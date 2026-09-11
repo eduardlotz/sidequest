@@ -12,7 +12,7 @@ export const fortniteQuests = defineGameQuests("fortnite", [
       "one-weapon",
       "one-round"
     ],
-    "minutes": 25,
+    "minutes": 30,
     "minimum": 2,
     "en": {
       "name": "First Gun Stays",
@@ -33,7 +33,7 @@ export const fortniteQuests = defineGameQuests("fortnite", [
     "tags": [
       "new-approach"
     ],
-    "minutes": 25,
+    "minutes": 30,
     "minimum": 2,
     "en": {
       "name": "Let It Recharge",
@@ -55,7 +55,7 @@ export const fortniteQuests = defineGameQuests("fortnite", [
       "building",
       "one-round"
     ],
-    "minutes": 25,
+    "minutes": 30,
     "minimum": 2,
     "en": {
       "name": "Timber Cover",

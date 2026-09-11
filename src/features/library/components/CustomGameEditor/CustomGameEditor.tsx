@@ -25,7 +25,13 @@ import {
   type GameIconId,
 } from "../../../../data/gameTypes";
 import { GAME_PICKER_COLOR_IDS, gameColor } from "../../../../data/gameVisuals";
-import { matchesGameCapabilities } from "../../../../data/gameCompatibility";
+import { matchesCustomGame } from "../../../../data/gameCompatibility";
+import {
+  GAME_GENRES,
+  GAME_GENRE_IDS,
+  suggestedGameCapabilities,
+  type GameGenreId,
+} from "../../../../data/gameGenres";
 import type {
   CustomGame,
   CustomGameInput,
@@ -48,16 +54,19 @@ import { LIBRARY_SELECTION_SPRING } from "../../../../shared/motion/transitions"
 import styles from "./CustomGameEditor.module.css";
 
 const ICONS_PER_PAGE = 10;
-const activityCounts = Object.fromEntries(
-  GAME_CAPABILITY_IDS.map((id) => [
-    id,
-    CUSTOM_GAME_QUESTS.filter(
-      (q) =>
-        q.customGameCompatibility?.capabilityIds.length &&
-        matchesGameCapabilities(new Set([id]), q.customGameCompatibility),
-    ).length,
-  ]),
-);
+function countActivityQuests(
+  capabilities: readonly GameCapabilityId[],
+  genres: readonly GameGenreId[],
+) {
+  const selectedGenres = new Set(genres);
+  return Object.fromEntries(GAME_CAPABILITY_IDS.map((id) => {
+    const withActivity = new Set([...capabilities, id]);
+    return [id, CUSTOM_GAME_QUESTS.filter((quest) =>
+      quest.customGameCompatibility?.capabilityIds.includes(id) &&
+      matchesCustomGame(withActivity, selectedGenres, quest.customGameCompatibility),
+    ).length];
+  }));
+}
 export function CustomGameEditor({
   game,
   onCancel,
@@ -90,6 +99,8 @@ export function CustomGameEditor({
     game?.capabilityIds ?? [],
   );
   const [pendingActivities, setPendingActivities] = useState(capabilityIds);
+  const [genreIds, setGenreIds] = useState<GameGenreId[]>(game?.genreIds ?? []);
+  const [pendingGenres, setPendingGenres] = useState(genreIds);
   const [questOverrides, setQuestOverrides] = useState(
     game?.questOverrides ?? {},
   );
@@ -109,12 +120,14 @@ export function CustomGameEditor({
     iconId,
     colorId,
     capabilityIds,
+    genreIds,
     questOverrides,
   };
   const automaticQuestIds = new Set(
     customGameQuestIds({
       ...draft,
       capabilityIds: pendingActivities,
+      genreIds: pendingGenres,
       questOverrides: {},
     }),
   );
@@ -122,15 +135,22 @@ export function CustomGameEditor({
     customGameQuestIds({
       ...draft,
       capabilityIds: pendingActivities,
+      genreIds: pendingGenres,
       questOverrides: pendingOverrides,
     }),
   );
   const query = search.trim().toLocaleLowerCase(language);
+  const suggestedActivities = useMemo(() => suggestedGameCapabilities(pendingGenres), [pendingGenres]);
+  const activityCounts = useMemo(() => countActivityQuests(pendingActivities, pendingGenres), [pendingActivities, pendingGenres]);
+  const savedActivityCounts = useMemo(() => countActivityQuests(capabilityIds, genreIds), [capabilityIds, genreIds]);
+  const genres = GAME_GENRE_IDS.filter((id) =>
+    GAME_GENRES[id].title[language].toLocaleLowerCase(language).includes(query),
+  );
   const activities = GAME_CAPABILITY_IDS.filter((id) =>
     t(`ui.library.capabilityLabels.${id}`)
       .toLocaleLowerCase(language)
       .includes(query),
-  );
+  ).sort((a, b) => Number(suggestedActivities.has(b)) - Number(suggestedActivities.has(a)));
   const reviewed = useMemo(
     () =>
       CUSTOM_GAME_QUESTS.flatMap((q) => {
@@ -150,7 +170,13 @@ export function CustomGameEditor({
     `${quest.name} ${quest.objective}`
       .toLocaleLowerCase(language)
       .includes(query),
-  );
+  ).sort((a, b) => Number(automaticQuestIds.has(b.id)) - Number(automaticQuestIds.has(a.id)));
+  function beginActivitySelection() {
+    setPendingActivities(capabilityIds);
+    setPendingGenres(genreIds);
+    setPendingOverrides(questOverrides);
+    changePage("activities");
+  }
   function changePage(next: typeof page) {
     const currentScroll =
       presentation === "drawer" && page === "appearance"
@@ -206,6 +232,7 @@ export function CustomGameEditor({
         iconId,
         colorId,
         capabilityIds,
+        genreIds,
         questOverrides,
       }) !== false
     );
@@ -277,6 +304,7 @@ export function CustomGameEditor({
         variant="primary"
         onClick={() => {
           setCapabilityIds(pendingActivities);
+          setGenreIds(pendingGenres);
           setQuestOverrides(pendingOverrides);
           if (presentation === "page") changePage("appearance");
         }}
@@ -336,16 +364,18 @@ export function CustomGameEditor({
                 <SolidButton
                   size="small"
                   variant="highlighted"
-                  onClick={() => {
-                    setPendingActivities(capabilityIds);
-                    changePage("activities");
-                  }}
+                  onClick={beginActivitySelection}
                 >
                   {t("ui.library.adjust")}
                 </SolidButton>,
               )
             : null}
         </div>
+        {genreIds.length > 0 && (
+          <div className={styles.summaryRow}>
+            <span>{genreIds.map((id) => GAME_GENRES[id].title[language]).join(" · ")}</span>
+          </div>
+        )}
         {capabilityIds.length ? (
           capabilityIds.map((id) => (
             <div className={styles.summaryRow} key={id}>
@@ -354,7 +384,7 @@ export function CustomGameEditor({
                 {t(`ui.library.capabilityLabels.${id}`)}
                 <small>
                   {t("ui.library.questCount", {
-                    count: activityCounts[id],
+                    count: savedActivityCounts[id],
                   })}
                 </small>
               </span>
@@ -368,10 +398,7 @@ export function CustomGameEditor({
               <SolidButton
                 size="medium"
                 variant="highlighted"
-                onClick={() => {
-                  setPendingActivities(capabilityIds);
-                  changePage("activities");
-                }}
+                onClick={beginActivitySelection}
               >
                 {t("ui.library.selectActivities")}
               </SolidButton>,
@@ -650,6 +677,32 @@ export function CustomGameEditor({
                     </button>
                   ))}
                 </div>
+                {page === "activities" && (
+                  <>
+                    <div className={styles.sectionHeading}>
+                      <InfoLabel label={t("ui.library.genres")} hint={t("ui.library.genresHint")} />
+                      <span>{t("ui.library.optional")}</span>
+                    </div>
+                    <div className={styles.genreChoices} role="group" aria-label={t("ui.library.genres")}>
+                      {genres.map((id) => (
+                        <SolidButton
+                          key={id}
+                          type="button"
+                          size="small"
+                          variant={pendingGenres.includes(id) ? "highlighted" : "soft"}
+                          aria-pressed={pendingGenres.includes(id)}
+                          onClick={() => setPendingGenres((ids) => ids.includes(id) ? ids.filter((candidate) => candidate !== id) : [...ids, id])}
+                        >
+                          {GAME_GENRES[id].title[language]}
+                        </SolidButton>
+                      ))}
+                    </div>
+                    <div className={styles.sectionHeading}>
+                      <InfoLabel label={t("ui.library.activitiesView")} hint={t("ui.library.activitySuggestionsHint")} />
+                      <span>{t("ui.library.questCount", { count: reviewedEnabled.size })}</span>
+                    </div>
+                  </>
+                )}
                 <div className={styles.activityList}>
                   {page === "activities"
                     ? activities.map((id) => (
@@ -670,6 +723,7 @@ export function CustomGameEditor({
                           <span>
                             {t(`ui.library.capabilityLabels.${id}`)}
                             <small>
+                              {suggestedActivities.has(id) && `${t("ui.library.suggestedActivity")} · `}
                               {t("ui.library.questCount", {
                                 count: activityCounts[id],
                               })}
@@ -709,7 +763,7 @@ export function CustomGameEditor({
                         </button>
                       ))}
                 </div>
-                {page === "activities" && !activities.length && (
+                {page === "activities" && !activities.length && !genres.length && (
                   <p className={styles.empty}>
                     {t("ui.library.noActivityResults")}
                   </p>

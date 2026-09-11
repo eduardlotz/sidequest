@@ -22,7 +22,6 @@ export function AboutPanel({
     if (presentation === "page") onPageChange?.();
   }, [onPageChange, presentation]);
 
-
   const title = <h2 id="about-title">{t("ui.about.title")}</h2>;
   const description = <p>{t("ui.about.description")}</p>;
 
@@ -72,12 +71,6 @@ export function AboutPanel({
           <h3>{t("ui.about.libraryHeading")}</h3>
           <p>{t("ui.about.libraryBody")}</p>
           <p>{t("ui.about.libraryChoice")}</p>
-        </section>
-
-        <section className={styles.aboutSection}>
-          <h3>{t("ui.about.sourcesHeading")}</h3>
-          <p>{t("ui.about.sourcesBody")}</p>
-
         </section>
       </div>
 

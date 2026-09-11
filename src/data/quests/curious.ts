@@ -10,17 +10,17 @@ export const curiousQuests = [
     "tags": [
       "first-play"
     ],
-    "minimumDurationMinutes": 1,
-    "suggestedDurationMinutes": 20,
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
     "genres": [],
     "translations": {
       "en": {
         "name": "A Different Genre",
-        "objective": "Open an **installed game from a genre you rarely play**. Start with its introduction and follow the parts that feel unfamiliar, without needing to get good at it today."
+        "objective": "Open **an installed game from an unfamiliar genre**. Start its introduction and **try what feels new**. You do not need to master it today."
       },
       "de": {
         "name": "Ein anderes Genre",
-        "objective": "Starte ein **installiertes Spiel aus einem Genre, das du selten spielst**. Fang mit der Einführung an und probiere aus, was dir ungewohnt vorkommt. Du musst heute noch nicht gut darin werden."
+        "objective": "Starte **ein installiertes Spiel aus einem ungewohnten Genre**. Beginne mit der Einführung und **probiere Neues aus**. Du musst es heute noch nicht meistern."
       }
     }
   },
@@ -33,17 +33,17 @@ export const curiousQuests = [
     "tags": [
       "story"
     ],
-    "minimumDurationMinutes": 1,
-    "suggestedDurationMinutes": 20,
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
     "genres": [],
     "translations": {
       "en": {
         "name": "The Same Era",
-        "objective": "Choose a **historical game set in the era of a film or series you recently watched**. Explore how the game portrays its streets, clothing, and daily life while you play."
+        "objective": "Choose **a historical game** from the era of a film or series you watched recently. **Explore its streets, clothing, and daily life**."
       },
       "de": {
         "name": "Dieselbe Epoche",
-        "objective": "Nimm ein **historisches Spiel aus der Zeit eines Films oder einer Serie, die du kürzlich gesehen hast**. Achte beim Spielen darauf, wie Straßen, Kleidung und Alltag dargestellt werden."
+        "objective": "Wähle **ein historisches Spiel** aus der Zeit eines kürzlich gesehenen Films oder einer Serie. **Erkunde seine Straßen, Kleidung und den Alltag**."
       }
     }
   },
@@ -57,17 +57,17 @@ export const curiousQuests = [
       "new-approach",
       "one-round"
     ],
-    "minimumDurationMinutes": 2,
+    "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
     "genres": [],
     "translations": {
       "en": {
         "name": "Someone New",
-        "objective": "Open a **roster game with short rounds**. Choose an unlocked character you have not played, read their abilities, and **use one unfamiliar ability during a complete round**."
+        "objective": "Open **a character-based game with short rounds**. Pick an unplayed, unlocked character and read their abilities. **Use an unfamiliar ability and finish the round**."
       },
       "de": {
         "name": "Jemand Neues",
-        "objective": "Starte ein **Spiel mit Figurenwahl und kurzen Runden**. Nimm eine freigeschaltete Figur, die du noch nicht gespielt hast, lies ihre Fähigkeiten und **setze eine unbekannte Fähigkeit in einer vollständigen Runde ein**."
+        "objective": "Starte **ein Spiel mit Figurenwahl und kurzen Runden**. Wähle eine ungespielte, freigeschaltete Figur und lies ihre Fähigkeiten. **Nutze eine unbekannte Fähigkeit und beende die Runde**."
       }
     }
   },
@@ -80,18 +80,42 @@ export const curiousQuests = [
     "tags": [
       "new-approach"
     ],
-    "minimumDurationMinutes": 2,
+    "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
         "name": "Change One Variable",
-        "objective": "Choose a **simulation with a short resettable scenario and result screen**. Run it once, change one available setting, then **replay the same scenario and compare the results**. Keep the other settings unchanged."
+        "objective": "Open **a simulation with a short replayable scenario**. Finish it, change one setting, and **replay it to compare the results**. Keep everything else the same."
       },
       "de": {
         "name": "Eine Variable ändern",
-        "objective": "Nimm eine **Simulation mit einem kurzen wiederholbaren Szenario und Ergebnisanzeige**. Spiele es einmal, ändere eine Einstellung und **wiederhole dasselbe Szenario, um die Ergebnisse zu vergleichen**. Lass die übrigen Einstellungen gleich."
+        "objective": "Starte **eine Simulation mit kurzem wiederholbarem Szenario**. Beende es, ändere eine Einstellung und **vergleiche die Ergebnisse einer Wiederholung**. Lass alles andere gleich."
       }
     }
-  }
+  },
+
+  {
+    "id": "different-viewpoint-session",
+    "moodIds": [
+      "curious"
+    ],
+    "type": "inspiration",
+    "tags": [
+      "story"
+    ],
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Another Perspective",
+        "objective": "Open **an adventure with several playable viewpoints**. Choose an unlocked chapter for another character and **see the world through their eyes**."
+      },
+      "de": {
+        "name": "Eine andere Perspektive",
+        "objective": "Starte **ein Abenteuerspiel mit mehreren spielbaren Perspektiven**. Wähle ein freigeschaltetes Kapitel einer anderen Figur und **sieh die Welt durch ihre Augen**."
+      }
+    }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];

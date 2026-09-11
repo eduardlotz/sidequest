@@ -12,7 +12,7 @@ export const skateQuests = defineGameQuests("skate", [
       "skating"
     ],
     "minutes": 15,
-    "minimum": 2,
+    "minimum": 3,
     "en": {
       "name": "One Street Line",
       "objective": "In **Skate 3**, set a session marker by a familiar low ledge. **Land a kickflip, grind the ledge, and land a pop shove-it in one rolling line**. Use your usual difficulty and retry from the marker after a bail."
@@ -36,7 +36,7 @@ export const skateQuests = defineGameQuests("skate", [
       "skating",
       "three-attempts"
     ],
-    "minutes": 20,
+    "minutes": 15,
     "minimum": 2,
     "en": {
       "name": "Own It Twice",
@@ -62,7 +62,7 @@ export const skateQuests = defineGameQuests("skate", [
       "building"
     ],
     "minutes": 20,
-    "minimum": 2,
+    "minimum": 3,
     "en": {
       "name": "One Prop Spot",
       "objective": "With Quick Drop unlocked in **skate. (2025)**, place a grindable prop beside a low ledge without blocking a challenge. **Link a grind on each in one line and roll away**. Remove the prop afterward."
@@ -87,7 +87,7 @@ export const skateQuests = defineGameQuests("skate", [
       "new-approach"
     ],
     "minutes": 15,
-    "minimum": 2,
+    "minimum": 3,
     "en": {
       "name": "Same Rail, Switch",
       "objective": "In **skate. (2025)**, set a session marker at an unfamiliar low rail. **Land a 50-50 grind in regular stance, then land it in switch** on the same rail. Roll away after each and compare the approach."

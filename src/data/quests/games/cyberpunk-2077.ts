@@ -12,8 +12,8 @@ export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
       "stealth",
       "no-kills"
     ],
-    "minutes": 25,
-    "minimum": 2,
+    "minutes": 30,
+    "minimum": 5,
     "en": {
       "name": "Borrowed Eyes",
       "objective": "With a cyberdeck in **Cyberpunk 2077**, choose an open theft gig with accessible security cameras. Scout through the cameras, then **take the target and leave unseen without killing or knocking out guards**. Device distractions are allowed."
@@ -35,7 +35,7 @@ export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
       "photography"
     ],
     "minutes": 20,
-    "minimum": 1,
+    "minimum": 3,
     "en": {
       "name": "Metro Postcards",
       "objective": "After getting your NCART pass in **Cyberpunk 2077**, ride the metro through Night City. Get off at a station you rarely use and wander its surrounding streets. Take a photo if a view catches your eye."
@@ -56,8 +56,8 @@ export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
       "outfit",
       "photography"
     ],
-    "minutes": 20,
-    "minimum": 2,
+    "minutes": 25,
+    "minimum": 5,
     "en": {
       "name": "District Uniform",
       "objective": "In **Cyberpunk 2077**, look at the clothes worn by three NPCs in your district. Borrow one color from them for an outfit made from your wardrobe, then **save the outfit and photograph V wearing it in that district**."
@@ -78,8 +78,8 @@ export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
       "no-kills",
       "story"
     ],
-    "minutes": 25,
-    "minimum": 2,
+    "minutes": 30,
+    "minimum": 5,
     "en": {
       "name": "Alive for Regina",
       "objective": "Track an unfinished Cyberpsycho Sighting in **Cyberpunk 2077**. Stop attacking as soon as the target falls, read the clues, and **send Regina the closing report with the target alive**."
@@ -100,7 +100,7 @@ export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
       "stealth",
       "new-approach"
     ],
-    "minutes": 15,
+    "minutes": 10,
     "minimum": 2,
     "en": {
       "name": "Wrong Way",
@@ -122,7 +122,7 @@ export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
       "traversal",
       "three-attempts"
     ],
-    "minutes": 15,
+    "minutes": 10,
     "minimum": 2,
     "en": {
       "name": "Above the Traffic",

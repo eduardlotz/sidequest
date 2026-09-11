@@ -10,17 +10,17 @@ export const createQuests = [
     "tags": [
       "building"
     ],
-    "minimumDurationMinutes": 1,
-    "suggestedDurationMinutes": 25,
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
         "name": "Tiny Home",
-        "objective": "Open a **sandbox building game** and start a home in a space smaller than you usually use. Play with the layout and see what you want to fit inside. It can stay unfinished."
+        "objective": "Open **a sandbox building game**. **Start a smaller home than usual** and try different layouts. It can stay unfinished."
       },
       "de": {
         "name": "Kleines Zuhause",
-        "objective": "Starte ein **Sandbox-Bauspiel** und beginne ein Haus auf weniger Platz als sonst. Probiere Grundrisse aus und schau, was du darin unterbringen möchtest. Es darf unfertig bleiben."
+        "objective": "Starte **ein Sandbox-Bauspiel**. **Beginne ein kleineres Haus als sonst** und probiere Grundrisse aus. Es darf unfertig bleiben."
       }
     }
   },
@@ -33,17 +33,17 @@ export const createQuests = [
     "tags": [
       "decorating"
     ],
-    "minimumDurationMinutes": 1,
+    "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
         "name": "Around One Object",
-        "objective": "Open a **game with furnished rooms you can redecorate**. Pick an object already in the room and let its color or shape guide the changes around it."
+        "objective": "Open **a game with rooms you can redecorate**. Pick an object already there and **let its color or shape guide your changes**."
       },
       "de": {
         "name": "Um einen Gegenstand",
-        "objective": "Starte ein **Spiel mit eingerichteten Räumen, die du umgestalten kannst**. Nimm einen Gegenstand im Raum und lass dich bei den Änderungen von seiner Farbe oder Form leiten."
+        "objective": "Starte **ein Spiel mit umgestaltbaren Räumen**. Wähle einen vorhandenen Gegenstand und **lass seine Farbe oder Form deine Änderungen bestimmen**."
       }
     }
   },
@@ -56,8 +56,8 @@ export const createQuests = [
     "tags": [
       "level-editor"
     ],
-    "minimumDurationMinutes": 2,
-    "suggestedDurationMinutes": 25,
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 30,
     "genres": [],
     "translations": {
       "en": {
@@ -79,8 +79,8 @@ export const createQuests = [
     "tags": [
       "rhythm"
     ],
-    "minimumDurationMinutes": 2,
-    "suggestedDurationMinutes": 25,
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 30,
     "genres": [],
     "translations": {
       "en": {
@@ -92,5 +92,29 @@ export const createQuests = [
         "objective": "Starte ein **Spiel mit einem Musik-Sequencer**. Baue einen Loop aus acht Takten mit Beat und Melodie, **höre ihn einmal ganz an und speichere ihn**."
       }
     }
-  }
+  },
+
+  {
+    "id": "workshop-inspiration",
+    "moodIds": [
+      "create"
+    ],
+    "type": "inspiration",
+    "tags": [
+      "building"
+    ],
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Borrow an Idea",
+        "objective": "Open **a building game with a community gallery**. Browse a few small creations and **try your own version of one idea** with your existing tools. It can stay unfinished."
+      },
+      "de": {
+        "name": "Eine Idee aufgreifen",
+        "objective": "Starte **ein Bauspiel mit Community-Galerie**. Schau dir ein paar kleine Kreationen an und **probiere deine eigene Version einer Idee** mit vorhandenen Werkzeugen. Sie darf unfertig bleiben."
+      }
+    }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];

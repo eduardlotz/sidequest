@@ -6,6 +6,7 @@ import {
   type GameIconId,
 } from "../../data/gameTypes";
 import { CURATED_GAMES_BY_ID } from "../../data/games";
+import { isGameGenreId } from "../../data/gameGenres";
 import { GAME_COLOR_IDS } from "../../data/gameVisuals";
 import { QUEST_CORES_BY_ID } from "../../data/quests";
 import {
@@ -111,6 +112,7 @@ export function sanitizeCustomGameInput(
     capabilityIds: uniqueStrings(value.capabilityIds).filter(
       isGameCapabilityId,
     ),
+    genreIds: uniqueStrings(value.genreIds).filter(isGameGenreId),
     questOverrides,
   };
 }

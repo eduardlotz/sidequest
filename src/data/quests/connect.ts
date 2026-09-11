@@ -10,17 +10,17 @@ export const connectQuests = [
     "tags": [
       "co-op"
     ],
-    "minimumDurationMinutes": 1,
-    "suggestedDurationMinutes": 20,
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
     "genres": [],
     "translations": {
       "en": {
         "name": "Back Together",
-        "objective": "Open a **co-op game you already share with someone**. Join their save or invite them into yours and spend this session following what they want to play."
+        "objective": "Open **a co-op game you share with someone**. Join each other’s save and **follow what they want to play today**."
       },
       "de": {
         "name": "Wieder zusammen",
-        "objective": "Starte ein **Koop-Spiel, das du schon mit jemandem spielst**. Tritt dem Spielstand der Person bei oder lade sie zu dir ein und richte dich heute danach, was sie spielen möchte."
+        "objective": "Starte **ein Koop-Spiel, das du mit jemandem teilst**. Besucht euren gemeinsamen Spielstand und **spielt heute das, worauf die andere Person Lust hat**."
       }
     }
   },
@@ -33,17 +33,17 @@ export const connectQuests = [
     "tags": [
       "local-play"
     ],
-    "minimumDurationMinutes": 1,
-    "suggestedDurationMinutes": 20,
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
     "genres": [],
     "translations": {
       "en": {
         "name": "Pass the Controller",
-        "objective": "With someone nearby, open a **local game built around short turns**. Trade the controller after each turn and talk through the good and ridiculous moments together."
+        "objective": "With someone nearby, open **a local game with short turns**. **Pass the controller after each turn** and talk about what goes well or hilariously wrong."
       },
       "de": {
         "name": "Controller weitergeben",
-        "objective": "Starte mit jemandem vor Ort ein **Spiel mit kurzen Zügen oder Versuchen**. Gebt den Controller nach jedem Zug weiter und kommentiert zusammen, was klappt oder völlig schiefgeht."
+        "objective": "Starte mit jemandem vor Ort **ein Spiel mit kurzen Zügen**. **Gebt den Controller nach jedem Zug weiter** und kommentiert, was klappt oder völlig schiefgeht."
       }
     }
   },
@@ -57,17 +57,17 @@ export const connectQuests = [
       "co-op",
       "support"
     ],
-    "minimumDurationMinutes": 2,
+    "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
         "name": "Join the Event",
-        "objective": "Open an **online game with an active public event on the map**. Join that event, contribute to its shared objective, and **stay through the result or reward**. Winning is not required."
+        "objective": "Join **an active public event in an online game**. Help with its shared objective and **stay through the result or reward**. Winning is not required."
       },
       "de": {
         "name": "Beim Event dabei",
-        "objective": "Starte ein **Online-Spiel mit einem laufenden öffentlichen Event auf der Karte**. Mach beim gemeinsamen Ziel mit und **bleib bis zum Ergebnis oder zur Belohnung**. Ein Sieg ist nicht nötig."
+        "objective": "Besuche **ein laufendes öffentliches Event in einem Onlinespiel**. Hilf beim gemeinsamen Ziel und **bleib bis zum Ergebnis oder zur Belohnung**. Ein Sieg ist nicht nötig."
       }
     }
   },
@@ -81,18 +81,43 @@ export const connectQuests = [
       "co-op",
       "support"
     ],
-    "minimumDurationMinutes": 2,
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 30,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Team Signals",
+        "objective": "Start **a co-op mission with pings**. Mark a route, a threat, and supplies along the way. **Stay with the team until the mission ends**. Voice chat is optional."
+      },
+      "de": {
+        "name": "Teamsignale",
+        "objective": "Starte **eine Koop-Mission mit Pings**. Markiere unterwegs einen Weg, eine Gefahr und Vorräte. **Bleib bis zum Missionsende beim Team**. Sprachchat ist freiwillig."
+      }
+    }
+  },
+
+  {
+    "id": "shared-puzzle-table",
+    "moodIds": [
+      "connect"
+    ],
+    "type": "inspiration",
+    "tags": [
+      "puzzles",
+      "local-play"
+    ],
+    "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
-        "name": "On the Same Page",
-        "objective": "Choose a **co-op mission with a ping system**. Use pings to point out a route, a threat, and supplies as your team reaches them. **Stay with the team until the mission ends**; no need to use voice chat."
+        "name": "Think Together",
+        "objective": "Open **a puzzle game with someone beside you**. Let one person control it and **take turns suggesting moves**. Talk through your ideas and use hints together."
       },
       "de": {
-        "name": "Auf einer Wellenlänge",
-        "objective": "Wähle eine **Koop-Mission mit Ping-System**. Markiere unterwegs einen Weg, eine Gefahr und Vorräte, wenn dein Team sie erreicht. **Bleib bis zum Missionsende beim Team**; Sprachchat ist nicht nötig."
+        "name": "Gemeinsam knobeln",
+        "objective": "Starte **ein Rätselspiel mit jemandem neben dir**. Eine Person übernimmt die Steuerung und **ihr schlagt abwechselnd Züge vor**. Sprecht über eure Ideen und nutzt gemeinsam Hinweise."
       }
     }
-  }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];
