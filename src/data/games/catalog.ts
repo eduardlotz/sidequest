@@ -120,8 +120,8 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
     "follow-a-teammate"
 ], []),
   game("skate", "Skate", [
-    "skate-one-ledge",
-    "skate-three-flips",
+    "skate-two-approaches",
+    "skate-flip-into-grind",
     "two-color-look",
     "a-little-walk"
 ], [{"id": "skate-3", "name": "Skate 3"}, {"id": "skate-2025", "name": "skate. (2025)"}]),

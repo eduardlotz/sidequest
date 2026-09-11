@@ -10,17 +10,17 @@ export const focusedQuests = [
     "tags": [
       "puzzles"
     ],
-    "minimumDurationMinutes": 1,
+    "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
         "name": "Listen Closely",
-        "objective": "Open a **puzzle or detective game where sound carries clues**. Put on headphones if available and give this session to listening and following those clues."
+        "objective": "Open **a puzzle or detective game with sound clues**. Put on headphones if you have them and **follow what you hear**."
       },
       "de": {
         "name": "Genau hinhören",
-        "objective": "Starte ein **Rätsel- oder Detektivspiel, in dem Geräusche Hinweise geben**. Setze Kopfhörer auf, wenn du welche hast, und widme dich in dieser Runde diesen Spuren."
+        "objective": "Starte **ein Rätsel- oder Detektivspiel mit akustischen Hinweisen**. Setze Kopfhörer auf, falls du welche hast, und **folge den Geräuschen**."
       }
     }
   },
@@ -33,17 +33,17 @@ export const focusedQuests = [
     "tags": [
       "loadout"
     ],
-    "minimumDurationMinutes": 1,
+    "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
         "name": "One Build",
-        "objective": "Return to a **deckbuilder or build-based RPG** with a setup you already enjoy. Play around what that setup does well and leave the search for a replacement build for later."
+        "objective": "Open **a deckbuilder or build-based RPG**. Take a setup you already enjoy and **play to its strengths**. Leave new builds for later."
       },
       "de": {
         "name": "Ein Build",
-        "objective": "Kehre in ein **Deckbuilding-Spiel oder Rollenspiel mit Builds** zurück, in dem du schon ein gern gespieltes Setup hast. Spiele seine Stärken aus; die Suche nach einem neuen Build hat Zeit."
+        "objective": "Starte **ein Deckbuilding-Spiel oder Rollenspiel mit Builds**. Nimm ein vertrautes Setup und **spiele seine Stärken aus**. Neue Builds kommen später."
       }
     }
   },
@@ -56,17 +56,17 @@ export const focusedQuests = [
     "tags": [
       "automation"
     ],
-    "minimumDurationMinutes": 2,
-    "suggestedDurationMinutes": 20,
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 30,
     "genres": [],
     "translations": {
       "en": {
         "name": "Find the Bottleneck",
-        "objective": "Open an **automation save with a stalled production line**. Trace the missing input back to its source and restore the supply. Finish when **three products arrive at that line’s output**."
+        "objective": "Open **an automation save with a stalled line**. Find and restore its missing input. **Watch three products reach the output**."
       },
       "de": {
         "name": "Finde den Engpass",
-        "objective": "Öffne einen **Automatisierungs-Spielstand mit einer stillstehenden Produktionslinie**. Verfolge die fehlende Zufuhr bis zur Ursache und stelle sie wieder her. **Drei Produkte am Ausgang der Linie** beenden die Aufgabe."
+        "objective": "Öffne **einen Automatisierungs-Spielstand mit einer stillstehenden Linie**. Finde und behebe die fehlende Zufuhr. **Warte auf drei fertige Produkte am Ausgang**."
       }
     }
   },
@@ -79,18 +79,40 @@ export const focusedQuests = [
     "tags": [
       "story"
     ],
-    "minimumDurationMinutes": 2,
+    "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
         "name": "Follow One Lead",
-        "objective": "Continue a **detective game with an active lead and evidence board**. Follow the current lead through its clues and conversations until **one new piece of evidence is recorded**."
+        "objective": "Continue **a detective game with an open lead and evidence board**. Follow its clues and conversations until **one new piece of evidence is recorded**."
       },
       "de": {
         "name": "Eine Spur verfolgen",
-        "objective": "Setze ein **Detektivspiel mit einer offenen Spur und einer Beweistafel** fort. Folge ihren Hinweisen und Gesprächen, bis **ein neuer Beweis festgehalten wird**."
+        "objective": "Setze **ein Detektivspiel mit offener Spur und Beweistafel** fort. Folge ihren Hinweisen und Gesprächen, bis **ein neuer Beweis festgehalten wird**."
       }
     }
-  }
+  },
+
+  {
+    "id": "turn-based-one-front",
+    "moodIds": [
+      "focused"
+    ],
+    "type": "inspiration",
+    "tags": [],
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 25,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "One Front",
+        "objective": "Open **a turn-based strategy save with several fronts**. **Focus on one region or group of units**. Handle the other fronts only when needed."
+      },
+      "de": {
+        "name": "Eine Front",
+        "objective": "Öffne **einen rundenbasierten Strategiespielstand mit mehreren Fronten**. **Kümmere dich um eine Region oder Einheitengruppe**. Versorge die anderen Fronten nur nach Bedarf."
+      }
+    }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];

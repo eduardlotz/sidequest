@@ -6,8 +6,8 @@ export const redDeadQuests = defineGameQuests("red-dead-redemption", [
     moods: ["relax", "low-energy"],
     type: "inspiration",
     tags: ["free-roam"],
-    minutes: 15,
-    minimum: 1,
+    minutes: 10,
+    minimum: 3,
     en: {
       name: "Camp Coffee",
       objective:
@@ -25,8 +25,8 @@ export const redDeadQuests = defineGameQuests("red-dead-redemption", [
     moods: ["challenge", "focused"],
     type: "challenge",
     tags: ["no-kills"],
-    minutes: 25,
-    minimum: 2,
+    minutes: 30,
+    minimum: 5,
     en: {
       name: "Bring Them In",
       objective:
@@ -45,7 +45,7 @@ export const redDeadQuests = defineGameQuests("red-dead-redemption", [
     type: "objective",
     tags: ["one-round"],
     minutes: 15,
-    minimum: 2,
+    minimum: 3,
     en: {
       name: "Liar’s Dice",
       objective:
@@ -64,7 +64,7 @@ export const redDeadQuests = defineGameQuests("red-dead-redemption", [
     type: "objective",
     tags: ["exploration"],
     minutes: 20,
-    minimum: 2,
+    minimum: 3,
     en: {
       name: "Wild Horse",
       objective:
@@ -82,8 +82,8 @@ export const redDeadQuests = defineGameQuests("red-dead-redemption", [
     moods: ["progress", "focused"],
     type: "objective",
     tags: ["hunting"],
-    minutes: 25,
-    minimum: 2,
+    minutes: 30,
+    minimum: 5,
     en: {
       name: "Perfect Rabbit",
       objective:
@@ -102,7 +102,7 @@ export const redDeadQuests = defineGameQuests("red-dead-redemption", [
     type: "objective",
     tags: ["exploration", "photography"],
     minutes: 20,
-    minimum: 2,
+    minimum: 3,
     en: {
       name: "Field Naturalist",
       objective:
@@ -121,7 +121,7 @@ export const redDeadQuests = defineGameQuests("red-dead-redemption", [
     type: "objective",
     tags: ["fishing"],
     minutes: 15,
-    minimum: 2,
+    minimum: 3,
     en: {
       name: "Catch and Release",
       objective:

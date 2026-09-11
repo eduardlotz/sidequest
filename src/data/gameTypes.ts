@@ -4,6 +4,7 @@ export const GAME_CAPABILITY_IDS = [
   "open-world",
   "missions-or-levels",
   "rounds-or-matches",
+  "whole-matches",
   "combat-loadouts",
   "combat-spells",
   "space-exploration",
@@ -31,7 +32,17 @@ export const GAME_CAPABILITY_IDS = [
   "animal-companions",
   "skate-tricks",
   "sports-goals",
-  "extraction-runs"
+  "extraction-runs",
+  "platforming",
+  "character-abilities",
+  "tactical-gadgets",
+  "scouting-tools",
+  "lanes-and-towers",
+  "time-trials",
+  "rhythm-play",
+  "card-decks",
+  "unit-command",
+  "automation",
 ] as const;
 
 export type GameCapabilityId = (typeof GAME_CAPABILITY_IDS)[number];

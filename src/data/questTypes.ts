@@ -1,5 +1,5 @@
 import type { QuestTypeId, QuestTagId } from "./questTraits";
-import type { GameCapabilityId } from "./gameTypes";
+import type { CustomGameCompatibility } from "./gameCompatibility";
 
 export const MOOD_IDS = [
   "low-energy",
@@ -45,10 +45,7 @@ export type AuthoredQuestDefinition = {
   genres: readonly string[];
   universal?: boolean;
   curated?: CuratedQuestDetails;
-  customGameCompatibility?: {
-    capabilityIds: readonly GameCapabilityId[];
-    match?: "all" | "any";
-  };
+  customGameCompatibility?: CustomGameCompatibility;
   translations: Readonly<Record<"en" | "de", QuestTranslation>>;
 };
 
@@ -66,10 +63,7 @@ export type MoodQuestDefinition = {
   universal: boolean;
   gameBindable: boolean;
   curated?: CuratedQuestDetails;
-  customGameCompatibility?: {
-    capabilityIds: readonly GameCapabilityId[];
-    match: "all" | "any";
-  };
+  customGameCompatibility?: CustomGameCompatibility & { match: "all" | "any" };
 };
 
 export type QuestCoreDefinition = Pick<

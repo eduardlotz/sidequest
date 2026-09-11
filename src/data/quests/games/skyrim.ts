@@ -13,7 +13,7 @@ export const skyrimQuests = defineGameQuests("skyrim", [
       "no-fast-travel"
     ],
     "minutes": 20,
-    "minimum": 1,
+    "minimum": 3,
     "en": {
       "name": "Roadside Blessing",
       "objective": "Return to Riverwood in **Skyrim** and walk the road toward Whiterun. Gather flowers or stop at the farms as you go, leaving fast travel and dungeon clearing for another session."
@@ -35,7 +35,7 @@ export const skyrimQuests = defineGameQuests("skyrim", [
       "crafting"
     ],
     "minutes": 20,
-    "minimum": 2,
+    "minimum": 3,
     "en": {
       "name": "Soul to Steel",
       "objective": "In **Skyrim**, bring Soul Trap, an empty petty soul gem, an unenchanted weapon, and a known weapon enchantment. **Trap a mudcrab’s soul, enchant the weapon with that gem, and equip it**."
@@ -55,8 +55,8 @@ export const skyrimQuests = defineGameQuests("skyrim", [
     "tags": [
       "crafting"
     ],
-    "minutes": 20,
-    "minimum": 2,
+    "minutes": 25,
+    "minimum": 5,
     "en": {
       "name": "Field Medicine",
       "objective": "In **Skyrim**, gather three blue mountain flowers and three orange butterfly wings. At an alchemy lab, **brew three Restore Health potions from those ingredients**. Buy none of the ingredients."

@@ -10,17 +10,17 @@ export const nostalgicQuests = [
     "tags": [
       "replay"
     ],
-    "minimumDurationMinutes": 1,
-    "suggestedDurationMinutes": 20,
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
     "genres": [],
     "translations": {
       "en": {
         "name": "Childhood Save",
-        "objective": "Reopen a **game you spent afternoons with as a child**. Visit the level or place you still picture first and play it the way you remember. No progress required."
+        "objective": "Open **a game you loved as a child**. Visit the first level or place you remember and **play it like you used to**. Progress can wait."
       },
       "de": {
         "name": "Spielstand von früher",
-        "objective": "Öffne ein **Spiel, mit dem du als Kind ganze Nachmittage verbracht hast**. Besuche das Level oder den Ort, der dir zuerst einfällt, und spiele wie damals. Du musst nichts voranbringen."
+        "objective": "Starte **ein Lieblingsspiel aus deiner Kindheit**. Besuche das Level oder den Ort, der dir zuerst einfällt, und **spiele wie damals**. Fortschritt kann warten."
       }
     }
   },
@@ -33,17 +33,17 @@ export const nostalgicQuests = [
     "tags": [
       "replay"
     ],
-    "minimumDurationMinutes": 1,
-    "suggestedDurationMinutes": 20,
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
     "genres": [],
     "translations": {
       "en": {
         "name": "Back Then",
-        "objective": "Choose a **game tied to someone you used to play with**. Return to the map, mode, or character you shared, even if you are playing alone today."
+        "objective": "Open **a game tied to an old gaming friend**. **Return to your shared map, mode, or character**, even if you are playing alone today."
       },
       "de": {
         "name": "Weißt du noch",
-        "objective": "Nimm ein **Spiel, das dich an jemanden erinnert, mit dem du früher gespielt hast**. Kehre zu eurer Karte, eurem Modus oder eurer Figur zurück, auch wenn du heute allein spielst."
+        "objective": "Starte **ein Spiel aus einer früheren Spielfreundschaft**. **Kehre zu eurer Karte, eurem Modus oder eurer Figur zurück**, auch wenn du heute allein spielst."
       }
     }
   },
@@ -58,16 +58,16 @@ export const nostalgicQuests = [
       "replay"
     ],
     "minimumDurationMinutes": 2,
-    "suggestedDurationMinutes": 15,
+    "suggestedDurationMinutes": 10,
     "genres": [],
     "translations": {
       "en": {
         "name": "Same Place Again",
-        "objective": "Find an **old screenshot from a game you can still launch**. Return to that location, match the original camera angle, and **save a new screenshot beside the old one**."
+        "objective": "Find **an old screenshot from a playable game**. Return to that spot and match its camera angle. **Save a new screenshot beside the old one**."
       },
       "de": {
         "name": "Wieder am selben Ort",
-        "objective": "Suche einen **alten Screenshot aus einem Spiel, das du noch starten kannst**. Kehre an den Ort zurück, stelle den damaligen Blickwinkel nach und **speichere ein neues Bild neben dem alten**."
+        "objective": "Such **einen alten Screenshot aus einem noch spielbaren Spiel**. Kehre an den Ort zurück und stelle den Blickwinkel nach. **Speichere ein neues Bild neben dem alten**."
       }
     }
   },
@@ -87,12 +87,36 @@ export const nostalgicQuests = [
     "translations": {
       "en": {
         "name": "The Old Route",
-        "objective": "Open an **older racing game with a track and car you remember using**. Bring that car back to the track and **finish one race**, whatever your place."
+        "objective": "Open **an older racing game**. Take a car you used to drive to a familiar track and **finish one race**. Your placing does not matter."
       },
       "de": {
         "name": "Die alte Strecke",
-        "objective": "Starte ein **älteres Rennspiel mit einer Strecke und einem Wagen von damals**. Fahre mit diesem Wagen **ein Rennen auf der Strecke zu Ende**, egal auf welchem Platz."
+        "objective": "Starte **ein älteres Rennspiel**. Nimm einen Wagen von früher auf eine vertraute Strecke und **fahre ein Rennen zu Ende**. Deine Platzierung ist egal."
       }
     }
-  }
+  },
+
+  {
+    "id": "return-to-first-character",
+    "moodIds": [
+      "nostalgic"
+    ],
+    "type": "inspiration",
+    "tags": [
+      "replay"
+    ],
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Your First Character",
+        "objective": "Load **your first character or an early save**. Revisit a place where you learned the game and **play with your old setup**. Change only what you need."
+      },
+      "de": {
+        "name": "Deine erste Figur",
+        "objective": "Lade **deine erste Figur oder einen frühen Spielstand**. Besuche einen Ort, an dem du das Spiel gelernt hast, und **spiele mit deinem alten Setup**. Ändere nur das Nötigste."
+      }
+    }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];

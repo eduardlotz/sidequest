@@ -10,17 +10,17 @@ export const challengeQuests = [
     "tags": [
       "one-life"
     ],
-    "minimumDurationMinutes": 1,
+    "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
         "name": "One Life",
-        "objective": "Launch a **roguelike where a death ends the run**. Take a run seriously from the first room: spend the resources you normally hoard and see how far you can push it."
+        "objective": "Open **a roguelike where death ends the run**. **Spend the resources you usually hoard** and see how far they take you."
       },
       "de": {
         "name": "Ein Leben",
-        "objective": "Starte ein **Roguelike, in dem der Tod den Durchlauf beendet**. Spiele von Anfang an auf Risiko: Nutze die Vorräte, die du sonst aufhebst, und schau, wie weit du kommst."
+        "objective": "Starte **ein Roguelike, in dem der Tod den Durchlauf beendet**. **Nutze die Vorräte, die du sonst aufhebst**, und schau, wie weit du kommst."
       }
     }
   },
@@ -33,17 +33,17 @@ export const challengeQuests = [
     "tags": [
       "rhythm"
     ],
-    "minimumDurationMinutes": 1,
-    "suggestedDurationMinutes": 15,
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
-        "name": "Just Beyond Comfortable",
-        "objective": "Open a **rhythm game** and play songs just above the difficulty you usually clear. Use the session to chase difficult patterns, without a required combo or score."
+        "name": "A Step Harder",
+        "objective": "Open **a rhythm game**. Choose songs just above your usual difficulty and **take on the harder patterns**. No required combo or score."
       },
       "de": {
-        "name": "Knapp über dem Limit",
-        "objective": "Starte ein **Rhythmusspiel** und spiele Songs knapp über der Schwierigkeit, die du normalerweise schaffst. Geh die schwierigen Muster an, ohne eine bestimmte Kombo oder Punktzahl erreichen zu müssen."
+        "name": "Eine Stufe schwerer",
+        "objective": "Starte **ein Rhythmusspiel**. Wähle Songs knapp über deiner üblichen Schwierigkeit und **probier die schwereren Muster**. Keine Pflichtkombo und kein Punkteziel."
       }
     }
   },
@@ -57,17 +57,17 @@ export const challengeQuests = [
       "racing",
       "three-attempts"
     ],
-    "minimumDurationMinutes": 2,
-    "suggestedDurationMinutes": 15,
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 25,
     "genres": [],
     "translations": {
       "en": {
         "name": "Beat Your Lap",
-        "objective": "In a **racing game with time trials**, set a clean lap on a familiar short track. Keep the car and settings, then **beat that lap within three more attempts**. The third result also ends the session."
+        "objective": "In **a racing time trial**, set a clean lap on a familiar short track. Keep the same setup and **beat your time within three more attempts**. Stop after the third result."
       },
       "de": {
         "name": "Schlag deine Runde",
-        "objective": "Fahre in einem **Rennspiel mit Zeitfahren** eine saubere Runde auf einer bekannten kurzen Strecke. Behalte Wagen und Einstellungen und **unterbiete die Zeit in höchstens drei weiteren Versuchen**. Nach dem dritten Ergebnis endet die Runde auch ohne Verbesserung."
+        "objective": "Fahre in **einem Rennspiel mit Zeitfahren** eine saubere Runde auf einer vertrauten kurzen Strecke. Behalte dein Setup und **unterbiete die Zeit in drei weiteren Versuchen**. Nach dem dritten Ergebnis ist Schluss."
       }
     }
   },
@@ -80,18 +80,42 @@ export const challengeQuests = [
     "tags": [
       "three-attempts"
     ],
-    "minimumDurationMinutes": 2,
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 25,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Land the Combo",
+        "objective": "Open **a fighting game with combo trials**. Learn an unfinished combo and **land it in a CPU match**. Finish that match or stop after three full matches."
+      },
+      "de": {
+        "name": "Die Kombo landen",
+        "objective": "Starte **ein Kampfspiel mit Kombo-Training**. Lerne eine offene Kombo und **lande sie in einem CPU-Match**. Beende dieses Match oder hör nach drei ganzen Matches auf."
+      }
+    }
+  },
+
+  {
+    "id": "precision-platformer-session",
+    "moodIds": [
+      "challenge"
+    ],
+    "type": "inspiration",
+    "tags": [
+      "traversal"
+    ],
+    "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
-        "name": "From Practice to Match",
-        "objective": "Open a **fighting game with combo trials and CPU matches**. Learn one unfinished combo trial, then **land that combo in a CPU match**. Play at most three matches; finish the match in which you land it."
+        "name": "Tricky Jumps",
+        "objective": "Open **a precision platformer with quick retries**. Pick an unlocked section and **work through its tricky jumps**. Take breaks between attempts whenever you like."
       },
       "de": {
-        "name": "Vom Training ins Match",
-        "objective": "Starte ein **Kampfspiel mit Kombo-Training und CPU-Matches**. Lerne eine noch offene Trainingskombo und **lande sie in einem CPU-Match**. Spiele höchstens drei Matches und beende das Match, in dem sie gelingt."
+        "name": "Knifflige Sprünge",
+        "objective": "Starte **einen Präzisionsplattformer mit schnellen Wiederholungen**. Wähle einen freigeschalteten Abschnitt und **probier seine kniffligen Sprünge**. Mach zwischen den Versuchen Pause, wann du möchtest."
       }
     }
-  }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];

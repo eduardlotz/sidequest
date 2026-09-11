@@ -11,17 +11,17 @@ export const exploreQuests = [
       "free-roam",
       "exploration"
     ],
-    "minimumDurationMinutes": 1,
-    "suggestedDurationMinutes": 20,
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
     "genres": [],
     "translations": {
       "en": {
         "name": "A Side Street",
-        "objective": "Open a **game with a city you have barely explored**. Leave the mission route and follow alleys, stairways, and open doorways. Let the city decide where this session goes."
+        "objective": "Open a game with **a city you barely know**. Leave the mission route and **follow alleys, stairs, and open doors**. See where they lead."
       },
       "de": {
         "name": "Eine Nebenstraße",
-        "objective": "Starte ein **Spiel mit einer Stadt, die du kaum kennst**. Verlasse den Missionsweg und folge Gassen, Treppen und offenen Türen. Schau, wohin dich die Stadt führt."
+        "objective": "Starte ein Spiel mit **einer Stadt, die du kaum kennst**. Verlasse den Missionsweg und **folge Gassen, Treppen und offenen Türen**. Schau, wohin sie führen."
       }
     }
   },
@@ -35,17 +35,17 @@ export const exploreQuests = [
       "diving",
       "exploration"
     ],
-    "minimumDurationMinutes": 1,
+    "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
         "name": "Deep Dive",
-        "objective": "Choose an **underwater exploration game** and head beyond the waters around your base. Follow an unfamiliar reef or tunnel, turning back when your air supply calls for it."
+        "objective": "Open **an underwater exploration game**. Leave the waters around your base and **follow an unfamiliar reef or tunnel**. Turn back before your air runs low."
       },
       "de": {
         "name": "Tauchgang",
-        "objective": "Nimm ein **Spiel mit Unterwasser-Erkundung** und verlasse die Gewässer um deine Basis. Folge einem unbekannten Riff oder Tunnel und kehre um, wenn dein Luftvorrat es verlangt."
+        "objective": "Starte **ein Spiel mit Unterwasser-Erkundung**. Verlasse die Gewässer um deine Basis und **folge einem unbekannten Riff oder Tunnel**. Kehre um, bevor die Luft knapp wird."
       }
     }
   },
@@ -58,17 +58,17 @@ export const exploreQuests = [
     "tags": [
       "exploration"
     ],
-    "minimumDurationMinutes": 2,
-    "suggestedDurationMinutes": 15,
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
         "name": "Beyond That Door",
-        "objective": "Continue a **game whose map shows unexplored room exits**. Follow the nearest reachable open edge, enter the new room, and **find its next exit or passage** before returning to the map."
+        "objective": "Open a game with **unexplored exits marked on its map**. Enter the nearest reachable new room and **find its next exit** before checking the map again."
       },
       "de": {
         "name": "Hinter der Tür",
-        "objective": "Setze ein **Spiel fort, dessen Karte unerforschte Raumausgänge zeigt**. Gehe zum nächsten erreichbaren offenen Rand, betritt den neuen Raum und **finde seinen nächsten Ausgang oder Durchgang**, bevor du wieder die Karte öffnest."
+        "objective": "Starte ein Spiel mit **markierten unerforschten Ausgängen auf der Karte**. Betritt den nächsten erreichbaren neuen Raum und **finde seinen nächsten Ausgang**, bevor du wieder die Karte öffnest."
       }
     }
   },
@@ -82,18 +82,42 @@ export const exploreQuests = [
       "traversal",
       "exploration"
     ],
-    "minimumDurationMinutes": 2,
-    "suggestedDurationMinutes": 15,
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
     "genres": [],
     "translations": {
       "en": {
         "name": "Over the Rooftops",
-        "objective": "In a **city game with climbable buildings**, look for a roof you have not visited. Find a way up from the street, then **cross to a second building and look for a route down**."
+        "objective": "Open **a city game with climbable buildings**. Climb to an unfamiliar roof, **cross to a second building**, and find a way down."
       },
       "de": {
         "name": "Über die Dächer",
-        "objective": "Suche in einem **Stadtspiel mit erkletterbaren Gebäuden** ein Dach, auf dem du noch nicht warst. Finde einen Weg von der Straße hinauf, **wechsle auf ein zweites Gebäude und suche dort einen Abstieg**."
+        "objective": "Starte **ein Stadtspiel mit erkletterbaren Gebäuden**. Steig auf ein unbekanntes Dach, **wechsle auf ein zweites Gebäude** und suche einen Abstieg."
       }
     }
-  }
+  },
+
+  {
+    "id": "follow-the-transit",
+    "moodIds": [
+      "explore"
+    ],
+    "type": "inspiration",
+    "tags": [
+      "exploration"
+    ],
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Next Stop",
+        "objective": "Open a game with **public transport and explorable stops**. Take an unfamiliar line and get off somewhere new. **Wander the streets around the stop**."
+      },
+      "de": {
+        "name": "Nächste Haltestelle",
+        "objective": "Starte ein Spiel mit **Nahverkehr und erkundbaren Haltestellen**. Nimm eine unbekannte Linie und steige an einem neuen Ort aus. **Streife durch die umliegenden Straßen**."
+      }
+    }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];

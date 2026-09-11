@@ -32,6 +32,14 @@ export function isQuestTypeAllowed(type: QuestTypeId, moodId: MoodId) {
 
 // Authored scan labels, independent of eligibility. A label never enables a quest.
 export const QUEST_TAGS = {
+  abilities: { en: "Abilities", de: "Fähigkeiten" },
+  gadgets: { en: "Gadgets", de: "Gadgets" },
+  scouting: { en: "Scouting", de: "Aufklärung" },
+  lanes: { en: "Lanes", de: "Lanes" },
+  "full-match": { en: "Full match", de: "Ganzes Match" },
+  "time-trial": { en: "Time trial", de: "Zeitrennen" },
+  cards: { en: "Cards", de: "Karten" },
+  units: { en: "Units", de: "Einheiten" },
   "free-roam": { en: "Free roam", de: "Freies Erkunden" },
   "on-foot": { en: "On foot", de: "Zu Fuß" },
   "no-fast-travel": { en: "No fast travel", de: "Keine Schnellreise" },

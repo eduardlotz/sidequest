@@ -6,7 +6,7 @@ export const relaxQuests = [
     moodIds: ["relax"],
     type: "inspiration",
     tags: ["driving", "no-timer"],
-    minimumDurationMinutes: 1,
+    minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
     genres: [],
     translations: {
@@ -27,7 +27,7 @@ export const relaxQuests = [
     moodIds: ["relax"],
     type: "inspiration",
     tags: ["space", "free-roam"],
-    minimumDurationMinutes: 1,
+    minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
     genres: [],
     translations: {
@@ -48,7 +48,7 @@ export const relaxQuests = [
     moodIds: ["relax"],
     type: "objective",
     tags: ["puzzles", "no-timer"],
-    minimumDurationMinutes: 2,
+    minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
     genres: [],
     translations: {
@@ -84,5 +84,27 @@ export const relaxQuests = [
           "Starte einen **Plattformer, den du gut kennst**, und spiele ein vertrautes Level noch einmal. Nutze beliebige Hilfen und **erreiche das Ende**. Punkte und Sammelobjekte sind egal.",
       },
     },
+  },
+
+  {
+    "id": "small-town-routine",
+    "moodIds": [
+      "relax"
+    ],
+    "type": "inspiration",
+    "tags": [],
+    "minimumDurationMinutes": 2,
+    "suggestedDurationMinutes": 15,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Around Town",
+        "objective": "Open **a gentle life sim** and visit a town you know. **Drop by familiar shops and neighbors**. Follow the day without an errands list."
+      },
+      "de": {
+        "name": "Im Ort unterwegs",
+        "objective": "Starte **eine ruhige Lebenssimulation** und besuche einen vertrauten Ort. **Schau bei bekannten Läden und Nachbarn vorbei**. Lass den Tag ohne Aufgabenliste laufen."
+      }
+    }
   },
 ] satisfies readonly AuthoredQuestDefinition[];

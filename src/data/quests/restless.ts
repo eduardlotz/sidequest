@@ -10,17 +10,17 @@ export const restlessQuests = [
     "tags": [
       "traversal"
     ],
-    "minimumDurationMinutes": 1,
+    "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
     "genres": [],
     "translations": {
       "en": {
         "name": "Keep Moving",
-        "objective": "Open a **movement game with free running, swinging, or grappling**. Leave mission markers aside and spend this session chaining the moves that keep you in motion."
+        "objective": "Open a game with **free running, swinging, or grappling**. **Chain the moves that keep you going**. Leave mission markers for another session."
       },
       "de": {
         "name": "In Bewegung",
-        "objective": "Starte ein **Spiel mit freiem Rennen, Schwingen oder Greifhaken**. Lass Missionsmarkierungen links liegen und verbinde die Bewegungen, mit denen du am besten in Fahrt bleibst."
+        "objective": "Starte ein Spiel mit **freiem Rennen, Schwingen oder Greifhaken**. **Verbinde die Bewegungen, die dich in Fahrt halten**. Missionsmarkierungen kommen ein andermal dran."
       }
     }
   },
@@ -33,17 +33,17 @@ export const restlessQuests = [
     "tags": [
       "racing"
     ],
-    "minimumDurationMinutes": 1,
+    "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
     "genres": [],
     "translations": {
       "en": {
         "name": "Flat Out",
-        "objective": "Pick an **arcade racer with quick races**. Jump into the car you already use and go straight to the track; spend this session racing instead of tuning."
+        "objective": "Open **an arcade racer with quick races**. Take your usual car and **head straight to the track**. Spend this session racing instead of tuning."
       },
       "de": {
         "name": "Vollgas",
-        "objective": "Nimm ein **Arcade-Rennspiel mit schnellen Rennen**. Steig in deinen gewohnten Wagen und fahr direkt auf die Strecke. Diese Runde gehört dem Fahren statt dem Tuning."
+        "objective": "Starte **ein Arcade-Rennspiel mit schnellen Rennen**. Nimm deinen gewohnten Wagen und **fahr direkt auf die Strecke**. Diese Session gehört dem Fahren statt dem Tuning."
       }
     }
   },
@@ -56,17 +56,17 @@ export const restlessQuests = [
     "tags": [
       "rhythm"
     ],
-    "minimumDurationMinutes": 2,
+    "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
     "genres": [],
     "translations": {
       "en": {
         "name": "Three Songs",
-        "objective": "Open a **rhythm game** and queue three songs: a warm-up, one at your usual difficulty, and one a step higher. **Play all three to their result screens**, with no restarts."
+        "objective": "Open **a rhythm game**. Pick an easy song, one at your usual difficulty, and one a step harder. **Finish all three without restarting**."
       },
       "de": {
         "name": "Drei Songs",
-        "objective": "Starte ein **Rhythmusspiel** und wähle drei Songs: einen zum Aufwärmen, einen auf deiner üblichen Stufe und einen etwas schwereren. **Spiele alle drei bis zum Ergebnis**, ohne neu zu starten."
+        "objective": "Starte **ein Rhythmusspiel**. Wähle einen leichten Song, einen auf deiner üblichen Stufe und einen etwas schwereren. **Spiele alle drei ohne Neustart zu Ende**."
       }
     }
   },
@@ -86,12 +86,34 @@ export const restlessQuests = [
     "translations": {
       "en": {
         "name": "Five in a Line",
-        "objective": "Open a **skating game that links tricks into a combo**. Use a familiar stretch and **bank five different tricks in one line without bailing**. Give it three attempts, then accept the result."
+        "objective": "Open **a skating game with trick combos**. On a familiar stretch, **land five different tricks in one line without falling**. Stop after success or three attempts."
       },
       "de": {
-        "name": "Fünf in einer Line",
-        "objective": "Nimm ein **Skatespiel, das Tricks zu einer Kombo verbindet**. Nutze einen bekannten Abschnitt und **lande fünf verschiedene Tricks in einer Line ohne Sturz**. Nach drei Versuchen akzeptierst du das Ergebnis."
+        "name": "Fünfer-Line",
+        "objective": "Starte **ein Skatespiel mit Trickkombos**. **Lande fünf verschiedene Tricks in einer Line ohne Sturz** auf einem vertrauten Abschnitt. Nach Erfolg oder drei Versuchen ist Schluss."
       }
     }
-  }
+  },
+
+  {
+    "id": "arcade-brawler-burst",
+    "moodIds": [
+      "restless"
+    ],
+    "type": "inspiration",
+    "tags": [],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Into the Brawl",
+        "objective": "Open **an arcade brawler with short stages**. Pick a familiar character and **jump into the next fight**. Leave scores and character comparisons for later."
+      },
+      "de": {
+        "name": "Rein ins Getümmel",
+        "objective": "Starte **ein Arcade-Prügelspiel mit kurzen Abschnitten**. Nimm eine vertraute Figur und **stürz dich ins nächste Gerangel**. Punkte und Figurenvergleiche kommen später."
+      }
+    }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];

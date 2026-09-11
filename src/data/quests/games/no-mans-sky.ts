@@ -12,8 +12,8 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
       "photography",
       "exploration"
     ],
-    "minutes": 20,
-    "minimum": 2,
+    "minutes": 25,
+    "minimum": 5,
     "en": {
       "name": "Planet Field Card",
       "objective": "On a planet with land animals in **No Man’s Sky**, scan an unfamiliar animal, plant, and mineral. **Save a photo of the animal in its habitat and upload the three discoveries**."
@@ -33,8 +33,8 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
     "tags": [
       "crafting"
     ],
-    "minutes": 25,
-    "minimum": 2,
+    "minutes": 30,
+    "minimum": 5,
     "en": {
       "name": "Back in Service",
       "objective": "Use a crashed ship you already claimed in **No Man’s Sky**. Pick one damaged slot with materials available nearby. **Gather or refine those materials and repair the slot**, buying no supplies."
@@ -56,7 +56,7 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
       "exploration"
     ],
     "minutes": 20,
-    "minimum": 1,
+    "minimum": 3,
     "en": {
       "name": "New Travel Buddy",
       "objective": "On a planet in **No Man’s Sky**, bring Creature Pellets and spend time with the animals you meet. Feed an approachable creature and see whether you want it along for your travels; adoption is optional."
@@ -77,7 +77,7 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
       "cooking"
     ],
     "minutes": 20,
-    "minimum": 2,
+    "minimum": 3,
     "en": {
       "name": "For the Cook",
       "objective": "With a Nutrient Processor and Anomaly access in **No Man’s Sky**, cook a dish from ingredients you already own. **Offer a serving to Cronus and hear his verdict**. No particular rating is required."
@@ -98,8 +98,8 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
       "fishing",
       "cooking"
     ],
-    "minutes": 20,
-    "minimum": 2,
+    "minutes": 25,
+    "minimum": 5,
     "en": {
       "name": "Today's Catch",
       "objective": "Bring a Fishing Rig and Nutrient Processor to the coast in **No Man’s Sky**. Catch a fish the processor accepts, then **cook and eat one serving from that catch**."
@@ -120,8 +120,8 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
       "driving",
       "exploration"
     ],
-    "minutes": 20,
-    "minimum": 2,
+    "minutes": 25,
+    "minimum": 5,
     "en": {
       "name": "Ground Crew",
       "objective": "With an Exocraft ready in **No Man’s Sky**, mark a nearby Buried Technology Module with your visor. Drive there, dig up the Salvaged Data, and **return to your ship in the same Exocraft** without summoning either vehicle."

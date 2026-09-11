@@ -4,6 +4,7 @@ import type {
   GameIconId,
   GameReference,
 } from "../../data/gameTypes";
+import type { GameGenreId } from "../../data/gameGenres";
 
 export const LIBRARY_STORE_KEY = "sidequest.library";
 export const LIBRARY_STORE_VERSION = 2;
@@ -27,6 +28,7 @@ export type CustomGame = {
   iconId: GameIconId;
   colorId: GameColorId;
   capabilityIds: GameCapabilityId[];
+  genreIds: GameGenreId[];
   questOverrides: QuestOverrides;
 };
 

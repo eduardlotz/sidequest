@@ -12,8 +12,8 @@ export const kingdomComeQuests = defineGameQuests("kingdom-come-deliverance", [
       "cooking",
       "trading"
     ],
-    "minutes": 25,
-    "minimum": 2,
+    "minutes": 30,
+    "minimum": 5,
     "en": {
       "name": "An Honest Night",
       "objective": "In **Kingdom Come: Deliverance (1)**, with the Marigold Decoction recipe known, gather nettles and marigolds and brew by hand. Sell your potions and **pay for an available inn room from those earnings**. No bought herbs or stolen goods."
@@ -36,8 +36,8 @@ export const kingdomComeQuests = defineGameQuests("kingdom-come-deliverance", [
     "tags": [
       "exploration"
     ],
-    "minutes": 25,
-    "minimum": 2,
+    "minutes": 30,
+    "minimum": 5,
     "en": {
       "name": "Read the Landscape",
       "objective": "In **Kingdom Come: Deliverance (1)**, bring a spade, lockpicks, and an unsolved treasure map for an accessible region. Use its roads, rivers, and buildings to **find and open that treasure chest**."
@@ -61,7 +61,7 @@ export const kingdomComeQuests = defineGameQuests("kingdom-come-deliverance", [
       "crafting"
     ],
     "minutes": 25,
-    "minimum": 2,
+    "minimum": 5,
     "en": {
       "name": "Made by Henry",
       "objective": "After learning smithing in **Kingdom Come: Deliverance II**, bring the materials for a sword sketch you own. Heat and hammer the blade yourself, then **finish and equip your own sword**."
@@ -84,8 +84,8 @@ export const kingdomComeQuests = defineGameQuests("kingdom-come-deliverance", [
     "tags": [
       "no-timer"
     ],
-    "minutes": 15,
-    "minimum": 1,
+    "minutes": 20,
+    "minimum": 3,
     "en": {
       "name": "Leave the Lucky Dice",
       "objective": "Sit down for tavern dice in **Kingdom Come: Deliverance II**. Use ordinary dice and a small stake you can spare; enjoy the table without a winnings target or a special build."
@@ -108,8 +108,8 @@ export const kingdomComeQuests = defineGameQuests("kingdom-come-deliverance", [
     "tags": [
       "parry"
     ],
-    "minutes": 20,
-    "minimum": 2,
+    "minutes": 15,
+    "minimum": 3,
     "en": {
       "name": "Wait for the Swing",
       "objective": "Once Bernard offers practice and you know perfect blocks in **Kingdom Come: Deliverance (1)**, start a practice sword fight. Attack only immediately after a perfect block and **land three counterattacks before ending practice**."
@@ -133,8 +133,8 @@ export const kingdomComeQuests = defineGameQuests("kingdom-come-deliverance", [
       "crafting",
       "new-approach"
     ],
-    "minutes": 25,
-    "minimum": 2,
+    "minutes": 30,
+    "minimum": 5,
     "en": {
       "name": "Fresh or Dried",
       "objective": "In **Kingdom Come: Deliverance II**, with an alchemy bench and drying rack accessible, gather herbs for two Marigold Decoctions. Dry one batch. **Brew both with the same steps and compare their quality** in your inventory."

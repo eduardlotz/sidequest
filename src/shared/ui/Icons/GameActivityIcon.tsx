@@ -28,11 +28,15 @@ import { SwordIcon } from "@phosphor-icons/react/dist/csr/Sword";
 import { TShirtIcon } from "@phosphor-icons/react/dist/csr/TShirt";
 import { TreasureChestIcon } from "@phosphor-icons/react/dist/csr/TreasureChest";
 import { UsersIcon } from "@phosphor-icons/react/dist/csr/Users";
+import { CardsIcon } from "@phosphor-icons/react/dist/csr/Cards";
+import { MusicNotesIcon } from "@phosphor-icons/react/dist/csr/MusicNotes";
+import { GearSixIcon } from "@phosphor-icons/react/dist/csr/GearSix";
 
 const activities = {
   "open-world": MapTrifoldIcon,
   "missions-or-levels": FlagIcon,
   "rounds-or-matches": GameControllerIcon,
+  "whole-matches": GameControllerIcon,
   "combat-loadouts": SwordIcon,
   "combat-spells": MagicWandIcon,
   "space-exploration": PlanetIcon,
@@ -61,6 +65,16 @@ const activities = {
   "skate-tricks": PersonSimpleSnowboardIcon,
   "sports-goals": SoccerBallIcon,
   "extraction-runs": DoorOpenIcon,
+  "platforming": PersonSimpleRunIcon,
+  "character-abilities": AlienIcon,
+  "tactical-gadgets": DetectiveIcon,
+  "scouting-tools": BinocularsIcon,
+  "lanes-and-towers": FlagIcon,
+  "time-trials": FlagIcon,
+  "rhythm-play": MusicNotesIcon,
+  "card-decks": CardsIcon,
+  "unit-command": UsersIcon,
+  "automation": GearSixIcon,
 } satisfies Record<GameCapabilityId, React.ComponentType<IconProps>>;
 
 export function GameActivityIcon({ capability, ...props }: IconProps & { capability: GameCapabilityId }) {
