@@ -6,9 +6,28 @@
 }
 
 .screen {
-  --quest-card-inline-size: clamp(255px, calc(36.111cqw - 41.111px), 320px);
-  /* --quest-card-inline-size: clamp(255px, calc(65cqh - 2rem), 320px); */
-  --quest-card-width: var(--quest-card-inline-size);
+  --quest-card-inline-size: clamp(
+    242px,
+    calc(34.305cqw - 39.055px),
+    400px
+  );
+  --quest-deck-overhang: 48px;
+  --quest-group-padding-top: clamp(
+    33px,
+    calc(var(--app-height) * 0.495 - 293.5px),
+    69px
+  );
+  --quest-screen-top: clamp(74px, 7.2cqw, 92px);
+  --quest-screen-bottom: calc(40px + 36px + 1rem);
+  --quest-card-available-height: calc(
+    var(--app-height) - var(--quest-screen-top) -
+      var(--quest-group-padding-top) - var(--quest-screen-bottom) - 1rem - 28px -
+      var(--quest-deck-overhang)
+  );
+  --quest-card-width: min(
+    var(--quest-card-inline-size),
+    calc(var(--quest-card-available-height) * 0.665)
+  );
   position: relative;
   container-type: inline-size;
 }
@@ -44,9 +63,17 @@
     88cqw,
     clamp(420px, calc(19.643cqw + 258.93px), 475px)
   );
+  --mood-card-width: min(
+    var(--mood-card-inline-size),
+    calc(var(--app-height) * 1.33333 - 332px)
+  );
   --mood-screen-top-inline: 92px;
   --mood-header-height-inline: 78px;
-  --mood-screen-top-height: clamp(56px, calc(var(--app-height) - 609px), 92px);
+  --mood-screen-top-height: clamp(
+    56px,
+    calc(var(--app-height) - 609px),
+    92px
+  );
   --mood-header-height-height: clamp(
     54px,
     calc(var(--app-height) * 0.889 - 537px),
@@ -59,6 +86,11 @@
   --mood-header-height: min(
     var(--mood-header-height-inline),
     var(--mood-header-height-height)
+  );
+  --mood-arc-track-top: clamp(
+    91px,
+    calc(var(--app-height) - 627px),
+    105px
   );
   display: flex;
   height: var(--app-height);
@@ -92,26 +124,11 @@
 }
 
 .questSelectionScreen {
-  --quest-deck-overhang: 80px;
-  --quest-group-padding-top: 3rem;
   --quest-card-height: calc(var(--quest-card-width) / 0.7);
   --quest-deck-height: calc(
     var(--quest-card-height) + var(--quest-deck-overhang)
   );
-  --quest-screen-top: clamp(74px, 7.2cqw, 92px);
   /* Keep the deck and its 28px action above the 36px Change Mood button. */
-  --quest-screen-bottom: calc(40px + 36px + 1rem);
-  --quest-card-width: min(
-    var(--quest-card-inline-size),
-    calc(
-      (
-          var(--app-height) - var(--quest-screen-top) -
-            var(--quest-group-padding-top) - var(--quest-screen-bottom) - 1rem -
-            28px - var(--quest-deck-overhang)
-        ) *
-        0.7
-    )
-  );
   display: grid;
   min-height: var(--app-height);
   grid-template-rows: minmax(0, 1fr);
@@ -220,6 +237,11 @@
   .selectionScreen {
     --mood-screen-top-inline: 78px;
     --mood-header-height-inline: 86px;
+    --mood-arc-track-top: clamp(
+      86px,
+      calc(var(--app-height) * 0.13 + 20px),
+      99px
+    );
   }
 
   .selectionHeader > p {
@@ -228,23 +250,21 @@
 }
 
 .screen[data-play-layout="compact"] {
-  --quest-card-inline-size: min(80cqw, 300px);
-  --quest-card-width: var(--quest-card-inline-size);
-}
-
-.screen[data-play-layout="compact"] .questSelectionScreen {
+  --quest-card-inline-size: min(88cqw, 360px);
   --quest-deck-overhang: 33px;
+  --quest-group-padding-top: clamp(
+    40px,
+    calc(var(--app-height) * 0.1257 - 35.6px),
+    70px
+  );
+  --quest-card-width: min(
+    var(--quest-card-inline-size),
+    calc(var(--quest-card-available-height) * 0.7)
+  );
 }
 
 @media (max-height: 640px) {
   .screen {
-    --quest-card-width: min(
-      var(--quest-card-inline-size),
-      calc(var(--app-height) * 0.7 - 133px)
-    );
-  }
-
-  .questSelectionScreen {
     --quest-screen-top: clamp(56px, calc(var(--app-height) - 553px), 92px);
   }
 }

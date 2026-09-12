@@ -132,7 +132,7 @@
   min-width: 0;
   align-items: flex-start;
   justify-content: space-between;
-  gap: clamp(12px, 4cqw, 22px);
+  gap: var(--quest-card-meta-gap, clamp(12px, 4cqw, 22px));
 }
 
 .questCardIdentity {
@@ -201,7 +201,7 @@
   z-index: 2;
   display: block;
   height: 1px;
-  margin-top: clamp(10px, 3.5cqw, 17px);
+  margin-top: var(--quest-card-divider-top, clamp(10px, 3.5cqw, 17px));
   background: rgb(246 246 250 / 0.25);
 }
 
@@ -210,7 +210,7 @@
   inset: 0;
   z-index: 2;
   display: block;
-  padding: clamp(22px, 7.5cqw, 38px);
+  padding: var(--quest-card-content-inset, clamp(22px, 7.5cqw, 38px));
   color: #f8f8fb;
   opacity: var(--quest-card-content-opacity, 1);
   text-align: left;
@@ -219,9 +219,9 @@
 
 .questCardFrontCopy {
   display: flex;
-  margin-top: clamp(18px, 6cqw, 32px);
+  margin-top: var(--quest-card-copy-top, clamp(18px, 6cqw, 32px));
   flex-direction: column;
-  gap: clamp(7px, 2.5cqw, 12px);
+  gap: var(--quest-card-copy-gap, clamp(7px, 2.5cqw, 12px));
 }
 
 .questCardFrontName {
@@ -252,13 +252,13 @@
   display: flex;
   margin-top: clamp(1px, 1cqw, 5px);
   flex-wrap: wrap;
-  gap: clamp(5px, 1.8cqw, 8px);
+  gap: var(--quest-card-genre-gap, clamp(5px, 1.8cqw, 8px));
 }
 
 .questCardGenre {
   display: inline-flex;
-  min-height: clamp(20px, 6cqw, 27px);
-  padding: 0 clamp(7px, 2.4cqw, 11px);
+  min-height: var(--quest-card-genre-height, clamp(20px, 6cqw, 27px));
+  padding: 0 var(--quest-card-genre-padding, clamp(7px, 2.4cqw, 11px));
   align-items: center;
   border-radius: 999px;
   background: rgb(246 246 250 / 0.1);
