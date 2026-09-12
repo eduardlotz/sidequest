@@ -210,6 +210,12 @@
   display: contents;
 }
 
+.countdownActions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
 .timerHint {
   position: absolute;
   right: 24px;

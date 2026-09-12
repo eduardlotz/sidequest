@@ -2,6 +2,14 @@ import type { MoodId } from "./questTypes";
 
 // Type describes the session; mood describes how that session should feel.
 export const QUEST_TYPES = {
+  countdown: {
+    title: { en: "Countdown", de: "Countdown" },
+    moods: ["challenge", "restless", "focused", "create", "curious"],
+  },
+  speedrun: {
+    title: { en: "Speedrun", de: "Speedrun" },
+    moods: ["challenge", "restless", "focused", "progress"],
+  },
   inspiration: {
     title: { en: "Inspiration", de: "Inspiration" },
     moods: ["low-energy", "relax", "explore", "progress", "challenge", "restless", "connect", "focused", "nostalgic", "create", "overwhelmed", "curious"],

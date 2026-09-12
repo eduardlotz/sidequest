@@ -1,5 +1,5 @@
 import { animate, motion } from "motion/react";
-import { useEffect, useMemo, useState, type RefObject } from "react";
+import { useEffect, useState, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { Logo } from "../assets/logo";
@@ -29,6 +29,7 @@ type Props = {
   setup: boolean;
   themeChoice: ThemeChoice;
   onThemeChange: (choice: ThemeChoice) => void;
+  onOpenGallery: () => void;
 };
 
 export function AppHeader({
@@ -40,13 +41,13 @@ export function AppHeader({
   setup,
   themeChoice,
   onThemeChange,
+  onOpenGallery,
 }: Props) {
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
-  const { completedSessions, profile, purchaseRedRopes, setDebugMode, stats } =
+  const { profile, purchaseRedRopes, setDebugMode, stats } =
     useQuestStore(
       useShallow((state) => ({
-        completedSessions: state.completedSessions,
         profile: state.profile,
         purchaseRedRopes: state.purchaseRedRopes,
         setDebugMode: state.setDebugMode,
@@ -56,14 +57,7 @@ export function AppHeader({
   const [mobileDrawerContainer, setMobileDrawerContainer] =
     useState<HTMLDivElement | null>(null);
   const [brandRotation, setBrandRotation] = useState(0);
-  const totalCoinsCollected = useMemo(
-    () =>
-      completedSessions.reduce(
-        (total, completion) => total + completion.pointsAwarded,
-        0,
-      ),
-    [completedSessions],
-  );
+  const totalCoinsCollected = stats.totalCoinsCollected;
   const formattedPoints = formatScore(displayedCoins, language);
   const nextLanguage = language === "en" ? "de" : "en";
   const nextLanguageName = t(
@@ -231,7 +225,7 @@ export function AppHeader({
               }
             >
               <ProfileDrawer
-                completedSessions={completedSessions}
+                onOpenGallery={onOpenGallery}
                 onDebugModeChange={setDebugMode}
                 onPurchaseRedRopes={purchaseRedRopes}
                 onThemeChange={onThemeChange}

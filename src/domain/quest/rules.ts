@@ -2,6 +2,7 @@ import { MOODS, type MoodId } from "../../data/moods";
 import { QUEST_CORES_BY_ID, questCoresForMood } from "../../data/quests";
 import type { GameReference } from "../../data/gameTypes";
 import type { LibraryGame } from "../library/model";
+import { defaultPoolPreferences, questAvailableInPool } from "./pool";
 import {
   DEFAULT_PROFILE,
   DEFAULT_QUEST_STATS,
@@ -17,10 +18,13 @@ import {
   type QuestSession,
   type QuestState,
   type QuestStats,
+  type QuestPoolPreferences,
 } from "./model";
 
 export function createDefaultQuestState(): QuestState {
   return {
+    ownedPackIds: [],
+    poolPreferences: defaultPoolPreferences(),
     profile: { ...DEFAULT_PROFILE },
     selectedMoodId: null,
     moodSelectedAt: null,
@@ -29,6 +33,7 @@ export function createDefaultQuestState(): QuestState {
     offerLibraryRevision: 0,
     currentSession: null,
     completedSessions: [],
+    questProgressById: {},
     stats: cloneQuestStats(DEFAULT_QUEST_STATS),
   };
 }
@@ -40,8 +45,10 @@ export function generateQuestOffers(
   excludedOfferIds: ReadonlySet<string> = new Set(),
   roles: readonly QuestOfferRole[] = QUEST_OFFER_ROLES,
   excludedQuestIds: ReadonlySet<string> = new Set(),
+  ownedPackIds: readonly string[] = [],
+  preferences: QuestPoolPreferences = defaultPoolPreferences(),
 ): QuestOffer[] {
-  const pools = questOfferPools(moodId, libraryGames);
+  const pools = questOfferPools(moodId, libraryGames, ownedPackIds, preferences);
   const selected: QuestOffer[] = [];
   const selectedQuestIds = new Set(excludedQuestIds);
 
@@ -70,14 +77,14 @@ export function generateQuestOffers(
       pick(pools.curated, role) || pick(pools.bound, role) ||
         pick(pools.directed, role) || pick(pools.inspiration, role);
     } else {
-      pick(pools[role], role);
+      pick(pools[role], role) || pick([...pools.directed, ...pools.inspiration, ...pools.bound], role);
     }
   }
   return selected;
 }
 
-function questOfferPools(moodId: MoodId, libraryGames: readonly LibraryGame[]) {
-  const eligible = questCoresForMood(moodId);
+function questOfferPools(moodId: MoodId, libraryGames: readonly LibraryGame[], ownedPackIds: readonly string[], preferences: QuestPoolPreferences) {
+  const eligible = questCoresForMood(moodId).filter(quest => questAvailableInPool(quest, moodId, ownedPackIds, preferences));
   const eligibleById = new Map(eligible.map((quest) => [quest.id, quest]));
   const bound = libraryGames.flatMap((game) => game.questIds.flatMap((id) => {
     const quest = eligibleById.get(id);
@@ -100,19 +107,14 @@ export function isQuestOfferSetValid(
   moodId: MoodId,
   offers: readonly QuestOffer[],
   libraryGames: readonly LibraryGame[],
+  ownedPackIds: readonly string[] = [],
+  preferences: QuestPoolPreferences = defaultPoolPreferences(),
 ) {
-  if (offers.length !== QUEST_OFFER_COUNT ||
-      new Set(offers.map((offer) => offer.questId)).size !== QUEST_OFFER_COUNT) return false;
-  const pools = questOfferPools(moodId, libraryGames);
-  return QUEST_OFFER_ROLES.every((role, index) => {
-    const offer = offers[index];
-    if (offer.role !== role) return false;
-    const pool = role === "library"
-      ? pools.curated.length ? pools.curated : pools.bound.length ? pools.bound
-        : [...pools.directed, ...pools.inspiration]
-      : pools[role];
-    return pool.some((candidate) => candidate.id === offer.id);
-  });
+  if (offers.length > QUEST_OFFER_COUNT || new Set(offers.map(offer => offer.questId)).size !== offers.length) return false;
+  const pools = questOfferPools(moodId, libraryGames, ownedPackIds, preferences);
+  const eligible = [...pools.curated, ...pools.bound, ...pools.directed, ...pools.inspiration];
+  return offers.length === Math.min(QUEST_OFFER_COUNT, new Set(eligible.map(offer => offer.questId)).size) &&
+    offers.every(offer => eligible.some(candidate => candidate.id === offer.id));
 }
 
 export function createQuestOffer(
@@ -155,9 +157,14 @@ export function activeSessionDurationMs(
 ) {
   if (session.startedAt === null) return 0;
   const endedAt = session.pausedAt ?? now;
-  return safeNonNegativeInteger(
+  return Math.min(questTimeLimitMs(session.questId), safeNonNegativeInteger(
     endedAt - session.startedAt - session.pausedTotalMs,
-  );
+  ));
+}
+
+export function questTimeLimitMs(questId: string) {
+  const quest = QUEST_CORES_BY_ID[questId];
+  return quest?.type === "countdown" ? (quest.maximumDurationMinutes ?? quest.suggestedDurationMinutes) * 60_000 : Infinity;
 }
 
 export function minimumQuestDurationMs(questId: string) {
@@ -175,6 +182,7 @@ export function canCompleteQuest(
   if (!session || session.startedAt === null || session.pausedAt === null) {
     return false;
   }
+  if (activeSessionDurationMs(session, now) >= questTimeLimitMs(session.questId)) return false;
   if (debugMode) return true;
   const minimumDurationMs = minimumQuestDurationMs(session.questId);
   return (
@@ -226,6 +234,7 @@ export function statsAfterCompletion(
       previousQuestCount === 0 ? 1 : 0,
     ),
     totalPlayedMs: safeAdd(stats.totalPlayedMs, completion.durationMs),
+    totalCoinsCollected: safeAdd(stats.totalCoinsCollected, completion.pointsAwarded),
     cancelledQuestCount: stats.cancelledQuestCount,
     repeatedCompletionCount: safeAdd(
       stats.repeatedCompletionCount,
@@ -249,7 +258,7 @@ export function rotateSessionOffer(
 ): Pick<QuestState, "offeredQuests" | "offerSetsByMoodId"> {
   const storedOffers = state.offerSetsByMoodId[session.moodId];
   const moodOffers =
-    storedOffers?.length === QUEST_OFFER_COUNT
+    storedOffers !== undefined
       ? [...storedOffers]
       : state.selectedMoodId === session.moodId
         ? [...state.offeredQuests]
@@ -277,6 +286,8 @@ export function rotateSessionOffer(
         .filter((_, index) => index !== slotIndex)
         .map((offer) => offer.questId),
     ),
+    state.ownedPackIds,
+    state.poolPreferences,
   )[0];
   if (!replacement) {
     return {

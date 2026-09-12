@@ -28,6 +28,7 @@ export function ProfilePanel({
     <section
       className={`${styles.profileDrawer} ${overview ? styles.profileOverview : ""}`}
       data-profile-drawer
+      data-show-back={showBack || undefined}
       aria-labelledby={titleId}
     >
       <header className={styles.profileDrawerHeader} data-profile-drawer-header>

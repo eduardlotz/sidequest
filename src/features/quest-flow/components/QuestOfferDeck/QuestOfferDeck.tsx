@@ -14,6 +14,8 @@ import { plainObjectiveText } from "../../../../shared/quest-card/QuestObjective
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
 import { usePlayLayout } from "../../usePlayLayout";
 import { useQuestCardDrag } from "./useQuestCardDrag";
+import { useQuestStore } from "../../../../stores/useQuestStore";
+import { InfoText } from "../../../../shared/ui/InfoText/InfoText";
 
 export type QuestOfferItem = Quest & { offerId: string };
 export type NewCardsPhase = "idle" | "outgoing" | "incoming";
@@ -107,6 +109,13 @@ export function QuestOfferDeck({
   const selectionFrameRef = useRef<number | null>(null);
   const { isCompact } = usePlayLayout();
   const dealingNewCards = newCardsPhase !== "idle";
+  const markQuestsSeen = useQuestStore((state) => state.markQuestsSeen);
+
+  useEffect(() => {
+    if (returningToMoods || dealingNewCards) return;
+    const visibleItems = isCompact ? items.slice(activeCardIndex, activeCardIndex + 1) : items;
+    markQuestsSeen(visibleItems.map((item) => item.id));
+  }, [activeCardIndex, dealingNewCards, isCompact, items, markQuestsSeen, returningToMoods]);
 
   useEffect(() => {
     setSelectedId(null);
@@ -169,7 +178,9 @@ export function QuestOfferDeck({
       aria-label={t("ui.offers.deckLabel")}
       ref={deckRef}
     >
+      {!items.length && <InfoText>{t("ui.pool.empty")}</InfoText>}
       {items.map((item, index) => {
+        const displayIndex = items.length === 1 ? 1 : items.length === 2 ? index * 2 : index;
         const stackOffset =
           (index - activeCardIndex + items.length) % items.length;
         const stackPosition =
@@ -178,7 +189,7 @@ export function QuestOfferDeck({
           <motion.div
             className={styles.previewCardSlot}
             data-position={
-              index === 0 ? "left" : index === 2 ? "right" : "center"
+              displayIndex === 0 ? "left" : displayIndex === 2 ? "right" : "center"
             }
             data-stack-position={stackPosition}
             data-swipe-exiting={swipingIds.has(item.offerId) || undefined}
@@ -190,7 +201,7 @@ export function QuestOfferDeck({
             <QuestOfferCard
               entryMotion={entryMotion}
               item={item}
-              index={index}
+              index={displayIndex}
               isTopCard={stackOffset === 0}
               key={`${layoutSessionId}-${index}`}
               layoutSessionId={layoutSessionId}
@@ -266,6 +277,7 @@ function QuestOfferCard({
   onSwipeStart,
 }: CardProps) {
   const { t } = useTranslation();
+  const personalBest = useQuestStore(state => state.questProgressById[item.id]?.bestTimeMs);
   const { isCompact } = usePlayLayout();
   const dealingNewCards = newCardsPhase !== "idle";
   const drag = useQuestCardDrag({
@@ -582,6 +594,7 @@ function QuestOfferCard({
             }}
           >
             <QuestCard
+              bestTimeMs={personalBest}
               className={`${styles.questSelectionCard} ${styles.newCardsCardFront}`}
               genres={item.genres}
           type={item.type}

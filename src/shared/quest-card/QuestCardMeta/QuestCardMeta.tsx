@@ -5,6 +5,7 @@ import { GameVisual } from "../../ui/GameVisual/GameVisual";
 
 type Props = {
   durationFormat?: "long" | "short";
+  durationLabel?: string;
   game?: GameReference | null;
   minimumDurationMinutes: number;
   moodTitle: string;
@@ -14,6 +15,7 @@ type Props = {
 
 export function QuestCardMeta({
   durationFormat = "short",
+  durationLabel,
   game = null,
   minimumDurationMinutes,
   moodTitle,
@@ -56,7 +58,7 @@ export function QuestCardMeta({
             <span className={styles.questCardName}>{name}</span>
           ) : null}
         </span>
-        <span className={styles.questCardDuration}>{duration}</span>
+        <span className={styles.questCardDuration}>{durationLabel ?? duration}</span>
       </span>
       <span className={styles.questCardDivider} aria-hidden="true" />
     </>

@@ -2,6 +2,7 @@ import type { GameCapabilityId } from "./gameTypes";
 
 // Suggestions describe common systems, never automatically selected activities.
 export const GAME_GENRES = {
+  card: { title: { en: "Card game", de: "Kartenspiel" }, activities: ["card-decks", "rounds-or-matches"] },
   adventure: { title: { en: "Adventure", de: "Abenteuer" }, activities: ["open-world", "missions-or-levels", "advanced-traversal", "choices-or-lore", "collectibles"] },
   platformer: { title: { en: "Platformer", de: "Plattformer" }, activities: ["platforming", "missions-or-levels", "collectibles", "boss-fights", "time-trials"] },
   shooter: { title: { en: "Shooter", de: "Shooter" }, activities: ["combat-loadouts", "whole-matches", "rounds-or-matches", "online-teamplay", "character-abilities", "tactical-gadgets", "scouting-tools"] },

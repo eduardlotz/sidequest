@@ -1,5 +1,9 @@
-import { useLibraryStore } from "../../../../stores/useLibraryStore";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
+import { BookBookmarkIcon, CircleHalfIcon, CoffeeIcon, EarIcon, GameControllerIcon, StorefrontIcon, WrenchIcon } from "@phosphor-icons/react";
+import { QuestPoolSettings } from "../QuestPoolSettings/QuestPoolSettings";
+import { QuestShop } from "../QuestShop/QuestShop";
+import { Drawer } from "vaul";
+import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./ProfileDrawer.module.css";
@@ -9,26 +13,23 @@ import { localizeMood } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
 import type { ThemeChoice } from "../../../../lib/theme";
 import type {
-  CompletedSession,
   QuestStats,
   UserProfile,
 } from "../../../../domain/quest/model";
 import {
   ChevronLeftIcon,
   CoinIcon,
-  InfoIcon,
 } from "../../../../shared/ui/Icons/Icons";
 import { ResponsiveNestedDrawer } from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
 import { RopePurchaseRow } from "../../../active-quest/components/RopePurchaseRow/RopePurchaseRow";
 import { GameLibraryDrawer } from "../GameLibraryDrawer/GameLibraryDrawer";
-import { QuestHistoryDrawer } from "../QuestHistoryDrawer/QuestHistoryDrawer";
 import { ProfilePanel } from "./ProfilePanel";
 
 type Props = {
   onDebugModeChange: (enabled: boolean) => void;
   onPurchaseRedRopes: () => boolean;
   onThemeChange: (theme: ThemeChoice) => void;
-  completedSessions: readonly CompletedSession[];
+  onOpenGallery: () => void;
   profile: UserProfile;
   stats: QuestStats;
   totalCoinsCollected: number;
@@ -36,10 +37,10 @@ type Props = {
 };
 
 export function ProfileDrawer({
-  completedSessions,
   onDebugModeChange,
   onPurchaseRedRopes,
   onThemeChange,
+  onOpenGallery,
   profile,
   stats,
   totalCoinsCollected,
@@ -50,10 +51,6 @@ export function ProfileDrawer({
   const favoriteMood = stats.favoriteMoodId
     ? localizeMood(stats.favoriteMoodId, language)
     : null;
-  const curatedCount = useLibraryStore(
-    (state) => state.selectedCuratedGameIds.length,
-  );
-  const customCount = useLibraryStore((state) => state.customGames.length);
   const [soundEnabled, setSoundEnabled] = useState(readSoundEnabled);
 
   function changeSound(enabled: boolean) {
@@ -76,7 +73,10 @@ export function ProfileDrawer({
     >
       <section className={styles.profileSection}>
         <div className={styles.profileSettingRow}>
-          <span>{t("ui.profile.theme")}</span>
+          <span className={styles.settingLabelWithInfo}>
+            <CircleHalfIcon aria-hidden weight="duotone" />
+            {t("ui.profile.theme")}
+          </span>
           <div
             className={styles.themeSegmentedControl}
             role="group"
@@ -95,34 +95,23 @@ export function ProfileDrawer({
           </div>
         </div>
         <div className={styles.profileSettingRow}>
-          <span>{t("ui.profile.sound")}</span>
+          <span className={styles.settingLabelWithInfo}>
+            <EarIcon aria-hidden weight="duotone" />
+            {t("ui.profile.sound")}
+          </span>
           <SettingToggle
             checked={soundEnabled}
             label={t("ui.profile.soundLabel")}
             onChange={changeSound}
           />
         </div>
-        <div
-          className={`${styles.profileSettingRow} ${styles.profileSettingRowWithTooltip}`}
-        >
+        <div className={styles.profileSettingRow}>
           <span className={styles.settingLabelWithInfo}>
-            {t("ui.profile.debugMode")}
-            <span className={styles.infoPopover}>
-              <button
-                type="button"
-                aria-label={t("ui.profile.debugModeInfoLabel")}
-                aria-describedby="debug-mode-info"
-              >
-                <InfoIcon />
-              </button>
-            </span>
-          </span>
-          <span
-            className={styles.settingInfoTooltip}
-            id="debug-mode-info"
-            role="tooltip"
-          >
-            {t("ui.profile.debugModeDescription")}
+            <CoffeeIcon aria-hidden weight="duotone" />
+            <InfoLabel
+              label={t("ui.profile.debugMode")}
+              hint={t("ui.profile.debugModeDescription")}
+            />
           </span>
           <SettingToggle
             checked={profile.debugMode}
@@ -133,39 +122,36 @@ export function ProfileDrawer({
       </section>
       <section className={styles.profileSection}>
         <div className={styles.profileNavigation}>
+          <Drawer.Close asChild>
+            <SolidButton size="medium" variant="secondary" iconLeft={<BookBookmarkIcon weight="duotone" />} onClick={onOpenGallery}>
+              {t("ui.gallery.navigation")}
+            </SolidButton>
+          </Drawer.Close>
           <ResponsiveNestedDrawer
             trigger={
-              <button type="button">
-                <span>
-                  <strong>{t("ui.library.drawerTitle")}</strong>
-                  <small>
-                    {t("ui.library.profileSummaryCounts", {
-                      curated: curatedCount,
-                      custom: customCount,
-                    })}
-                  </small>
-                </span>
-                <ChevronLeftIcon aria-hidden="true" />
-              </button>
+              <SolidButton
+                size="medium"
+                variant="secondary"
+                iconLeft={<GameControllerIcon weight="duotone" />}
+                iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}
+              >
+                {t("ui.library.drawerTitle")}
+              </SolidButton>
             }
           >
             <GameLibraryDrawer />
           </ResponsiveNestedDrawer>
+          <ResponsiveNestedDrawer trigger={<SolidButton size="medium" variant="secondary" iconLeft={<WrenchIcon weight="duotone" />} iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}>
+            {t("ui.pool.title")}
+          </SolidButton>}>
+            <QuestPoolSettings />
+          </ResponsiveNestedDrawer>
+          <ResponsiveNestedDrawer trigger={<SolidButton size="medium" variant="secondary" iconLeft={<StorefrontIcon weight="duotone" />} iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}>
+            {t("ui.shop.title")}
+          </SolidButton>}>
+            <QuestShop />
+          </ResponsiveNestedDrawer>
         </div>
-      </section>
-
-      <section className={styles.profileSection}>
-        <dl className={styles.profileMetrics}>
-          <ProfileMetric
-            label={t("ui.profile.redRopes")}
-            value={formatScore(profile.redRopes, language)}
-          />
-        </dl>
-        <RopePurchaseRow
-          label={t("ui.profile.buyOneRope")}
-          coins={profile.points}
-          onPurchase={onPurchaseRedRopes}
-        />
       </section>
 
       <section className={styles.profileSection}>
@@ -197,11 +183,19 @@ export function ProfileDrawer({
         </dl>
       </section>
 
-      {/* <div className={styles.historyAction}>
-        <ResponsiveNestedDrawer trigger={<SolidButton size="medium" variant="soft" iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}>{t("ui.profile.viewHistory")}</SolidButton>}>
-          <QuestHistoryDrawer completedSessions={completedSessions} />
-        </ResponsiveNestedDrawer>
-      </div> */}
+      <section className={styles.profileSection}>
+        <dl className={`${styles.profileMetrics} ${styles.ropeMetric}`}>
+          <ProfileMetric
+            label={t("ui.profile.redRopes")}
+            value={formatScore(profile.redRopes, language)}
+          />
+        </dl>
+        <RopePurchaseRow
+          label={t("ui.profile.buyOneRope")}
+          coins={profile.points}
+          onPurchase={onPurchaseRedRopes}
+        />
+      </section>
     </ProfilePanel>
   );
 }

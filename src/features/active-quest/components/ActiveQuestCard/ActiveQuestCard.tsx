@@ -19,7 +19,9 @@ import {
   type Quest,
   type QuestSession,
 } from "../../../../domain/quest/model";
-import { calculateCompletionPoints } from "../../../../domain/quest/rules";
+import { calculateCompletionPoints, questTimeLimitMs } from "../../../../domain/quest/rules";
+import { useQuestStore } from "../../../../stores/useQuestStore";
+import { InfoText } from "../../../../shared/ui/InfoText/InfoText";
 import { getMoodAccentStyle } from "../../../../data/questColors";
 import {
   CARD_LAYOUT_TRANSITION,
@@ -161,6 +163,10 @@ export function ActiveQuestCard({
   onPurchaseRedRopes,
 }: Props) {
   const { t } = useTranslation();
+  const countdown = quest.type === "countdown";
+  const timeLimitMs = questTimeLimitMs(quest.id);
+  const restartCurrentQuest = useQuestStore(state => state.restartCurrentQuest);
+  const personalBest = useQuestStore(state => state.questProgressById[quest.id]?.bestTimeMs);
   const initiallyReady = session.startedAt === null;
   const initiallyPaused =
     session.startedAt !== null && session.pausedAt !== null;
@@ -287,22 +293,32 @@ export function ActiveQuestCard({
     const now = Date.now();
     const openPause =
       pausedAtRef.current === null ? 0 : now - pausedAtRef.current;
-    return Math.max(
+    return Math.min(timeLimitMs, Math.max(
       0,
       now - startedAtRef.current - pausedTotalRef.current - openPause,
-    );
-  }, []);
+    ));
+  }, [timeLimitMs]);
 
   useEffect(() => {
     if (phase === "ready") {
       setElapsedMs(0);
       return;
     }
-    const update = () => setElapsedMs(readElapsed());
+    const update = () => {
+      const elapsed = readElapsed();
+      setElapsedMs(elapsed);
+      if (phase === "running" && elapsed >= timeLimitMs && startedAtRef.current !== null && pausedAtRef.current === null) {
+        const endedAt = startedAtRef.current + pausedTotalRef.current + timeLimitMs;
+        pausedAtRef.current = endedAt;
+        onPause(endedAt);
+        setRopeMode("paused");
+        setPhase("paused");
+      }
+    };
     update();
     const interval = window.setInterval(update, 250);
     return () => window.clearInterval(interval);
-  }, [phase, readElapsed]);
+  }, [phase, readElapsed, timeLimitMs, onPause]);
 
   useEffect(() => {
     if (redRopes < 1 && !debugMode) return;
@@ -380,6 +396,7 @@ export function ActiveQuestCard({
 
   function resume() {
     if (pausedAtRef.current === null || phase !== "paused") return false;
+    if (readElapsed() >= timeLimitMs) return false;
     playSound("toggleOn");
     const resumedAt = Date.now();
     pausedTotalRef.current += resumedAt - pausedAtRef.current;
@@ -443,7 +460,7 @@ export function ActiveQuestCard({
       return;
     if (next === "cutting" && !ropeCut) return;
     if (next === "cutting" && startedAtRef.current === null) return;
-    if (next === "cutting" && redRopes < 1 && !debugMode) {
+    if (next === "cutting" && !countdown && redRopes < 1 && !debugMode) {
       showCancellationBlocked();
       return;
     }
@@ -472,6 +489,7 @@ export function ActiveQuestCard({
     if (
       exitStartedRef.current ||
       phase !== "paused" ||
+      readElapsed() >= timeLimitMs ||
       (!debugMode && elapsedMs < quest.minimumDurationMinutes * 60_000)
     ) {
       return;
@@ -495,7 +513,6 @@ export function ActiveQuestCard({
     const triggerRect = document
       .querySelector<HTMLElement>("[data-profile-trigger]")
       ?.getBoundingClientRect();
-    const start = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     const end = triggerRect
       ? {
           x: triggerRect.left + triggerRect.width / 2,
@@ -527,6 +544,13 @@ export function ActiveQuestCard({
       onReveal: () => {
         setFinishedFaceVisible(true);
         playSound("completion");
+        const finishedCardRect = cardHitAreaRef.current?.getBoundingClientRect();
+        const start = finishedCardRect
+          ? {
+              x: finishedCardRect.left + finishedCardRect.width / 2,
+              y: finishedCardRect.top + finishedCardRect.height / 2,
+            }
+          : { x: window.innerWidth / 2, y: window.innerHeight / 2 + 40 };
         setCoinFlight({ award, start, end });
       },
     });
@@ -538,6 +562,7 @@ export function ActiveQuestCard({
       (coinFlight.award * (index + 1)) / COIN_FLIGHT_COUNT,
     );
     onCoinHit(pointsReceived, impact);
+    cardInteractionRef.current?.pulse(index % 2 === 0 ? 1 : -1);
     if (index !== COIN_FLIGHT_COUNT - 1) return;
     coinFlightFinishedRef.current = true;
     completionFinalizeTimeoutRef.current = window.setTimeout(() => {
@@ -585,6 +610,7 @@ export function ActiveQuestCard({
 
   function startTimerDrag() {
     if (
+      readElapsed() >= timeLimitMs ||
       timerEntranceSettling ||
       phase === "cutting" ||
       phase === "completed" ||
@@ -621,6 +647,7 @@ export function ActiveQuestCard({
       inActivationSector &&
       pullDistance >= PAUSE_PULL_DISTANCE;
     const shouldResume =
+      readElapsed() < timeLimitMs &&
       phase === "paused" &&
       inActivationSector &&
       pullDistance >= PAUSE_PULL_DISTANCE;
@@ -797,7 +824,8 @@ export function ActiveQuestCard({
   const exiting = phase === "cutting" || phase === "completed";
   const completed = phase === "completed";
   const minimumDurationMs = quest.minimumDurationMinutes * 60_000;
-  const canComplete = debugMode || elapsedMs >= minimumDurationMs;
+  const countdownExpired = countdown && elapsedMs >= timeLimitMs;
+  const canComplete = !countdownExpired && (debugMode || elapsedMs >= minimumDurationMs);
   const completionRemainingMs = Math.max(0, minimumDurationMs - elapsedMs);
   const completionRemaining = completionRemainingTime(completionRemainingMs);
   const completionRemainingLabel =
@@ -811,7 +839,7 @@ export function ActiveQuestCard({
   const completionAward = calculateCompletionPoints(elapsedMs);
   const cardFocusAvailable = isMobileViewport && revealFinished && !exiting;
   const cardFocus = useCardFocus(cardFocusAvailable);
-  const hasNoRopes = redRopes <= 0;
+  const hasNoRopes = !countdown && redRopes <= 0;
   const timerInteractionUiVisible =
     !timerDragging && ropeMode !== "resumePullback";
   const readyUiVisible =
@@ -819,7 +847,7 @@ export function ActiveQuestCard({
     revealFinished &&
     timerInteractionUiVisible;
   const canCutRope =
-    (phase === "running" || phase === "paused") && (debugMode || redRopes > 0);
+    (phase === "running" || phase === "paused") && (countdown || debugMode || redRopes > 0);
   return (
     <div
       className={styles.activeQuest}
@@ -1016,6 +1044,7 @@ export function ActiveQuestCard({
               }
             >
               <QuestCard
+                bestTimeMs={personalBest}
                 className={styles.activeQuestCard}
                 completed={showFinishedFace}
                 genres={quest.genres}
@@ -1130,7 +1159,7 @@ export function ActiveQuestCard({
               <i />
             </span>
             <AnimatedElapsedTime
-              elapsedMs={elapsedMs}
+              elapsedMs={countdown ? Math.ceil(Math.max(0, timeLimitMs - elapsedMs) / 1000) * 1000 : elapsedMs}
               reduceMotion={reduceMotion}
             />
           </motion.div>
@@ -1209,15 +1238,14 @@ export function ActiveQuestCard({
                       </SolidButton>
                     </motion.div>
                   </>
+                ) : countdownExpired ? (
+                  <InfoText>{t("ui.timer.countdownExpired")}</InfoText>
                 ) : (
                   <motion.div
                     className={styles.pauseMinimumCard}
                     role="status"
                     variants={pausePanelItemVariants}
                   >
-                    <span className={styles.pauseInfoIcon} aria-hidden="true">
-                      <InfoIcon />
-                    </span>
                     <p>
                       <Trans
                         i18nKey="ui.timer.completeAvailableIn"
@@ -1250,6 +1278,10 @@ export function ActiveQuestCard({
                     )}
                   </motion.div>
                 )}
+                {countdown && <motion.div className={styles.countdownActions} variants={pausePanelItemVariants}>
+                  <SolidButton size="medium" variant="secondary" onClick={() => restartCurrentQuest()}>{t("ui.timer.repeatCountdown")}</SolidButton>
+                  <SolidButton size="medium" variant="soft" onClick={() => onDiscard()}>{t("ui.timer.cancelCountdown")}</SolidButton>
+                </motion.div>}
               </motion.form>
             )}
           </AnimatePresence>
@@ -1294,7 +1326,7 @@ export function ActiveQuestCard({
                 >
                 {phase === "ready" ? (
                   <span className={styles.readyTimerInstructions}>
-                    <Trans
+                    {countdown ? t("ui.timer.countdownReady", { minutes: quest.maximumDurationMinutes }) : quest.type === "speedrun" ? t("ui.timer.speedrunReady") : <Trans
                       i18nKey="ui.timer.readyInstructions"
                       values={{
                         time: t("ui.quest.durationSingleLong", {
@@ -1302,7 +1334,7 @@ export function ActiveQuestCard({
                         }),
                       }}
                       components={{ br: <br />, strong: <strong /> }}
-                    />
+                    />}
                   </span>
                 ) : (
                   <span>
@@ -1311,7 +1343,7 @@ export function ActiveQuestCard({
                       : t("ui.timer.pullPause")}
                   </span>
                 )}
-                {phase === "ready" && (
+                {phase === "ready" && !countdown && (
                   <span className={styles.ropeAvailability}>
                     <Trans
                       i18nKey={
@@ -1325,7 +1357,7 @@ export function ActiveQuestCard({
                     />
                   </span>
                 )}
-                {(phase === "running" || phase === "paused") && (
+                {!countdown && (phase === "running" || phase === "paused") && (
                   <span
                     className={
                       hasNoRopes ? styles.ropeAvailability : undefined

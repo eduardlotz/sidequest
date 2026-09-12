@@ -6,14 +6,12 @@ import {
   type MoodDefinition,
   type MoodId,
 } from "../../../../data/moods";
-import { formatScore } from "../../../../lib/format";
 import { localizeMood } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
 import type { Quest, QuestSession } from "../../../../domain/quest/model";
 import { ActiveQuestCard } from "../../../active-quest/components/ActiveQuestCard/ActiveQuestCard";
 import type { CoinImpact } from "../../../active-quest/components/FlyingCoin/FlyingCoin";
 import { ArcDeck, type ArcDeckItem } from "../ArcDeck/ArcDeck";
-import { CoinPriceButton } from "../../../../shared/ui/CoinPriceButton/CoinPriceButton";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import {
   QuestOfferDeck,
@@ -45,7 +43,6 @@ type Props = {
   points: number;
   redRopes: number;
   debugMode: boolean;
-  newCardsCost: number;
   animateEntrance: boolean;
   reduceMotion: boolean;
   onSelectMood: (moodId: MoodId) => boolean;
@@ -71,7 +68,6 @@ export function QuestScreenContent({
   points,
   redRopes,
   debugMode,
-  newCardsCost,
   animateEntrance,
   reduceMotion,
   onSelectMood,
@@ -429,25 +425,16 @@ export function QuestScreenContent({
                             duration: reduceMotion ? 0 : 0.18,
                           }}
                         >
-                          <CoinPriceButton
+                          <SolidButton
                             data-sound-click-skip
                             type="button"
-                            disabled={
-                              // isDealingNewCards ||
-                              points < newCardsCost && debugMode === false
-                            }
-                            label={t("ui.task.newCards")}
-                            price={formatScore(
-                              // debugMode ? 0 : newCardsCost,
-                              0,
-                              language,
-                            )}
-                            aria-label={t("ui.task.newCardsLabel", {
-                              cost: formatScore(newCardsCost, language),
-                              available: formatScore(points, language),
-                            })}
+                            size="medium"
+                            variant="primary"
+                            aria-label={t("ui.task.newCardsLabel")}
                             onClick={dealNewCards}
-                          />
+                          >
+                            {t("ui.task.newCards")}
+                          </SolidButton>
                         </motion.div>
 
                         <span className={styles.moodEditControl}>

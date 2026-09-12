@@ -9,6 +9,8 @@ type Props = {
   children?: ReactNode;
   className?: string;
   completed?: boolean;
+  unknown?: boolean;
+  bestTimeMs?: number | null;
   game?: GameReference | null;
   genres: readonly string[];
   type: QuestTypeId;
@@ -25,6 +27,8 @@ export function QuestCard({
   children,
   className,
   completed = false,
+  unknown = false,
+  bestTimeMs,
   game = null,
   genres,
   type,
@@ -40,10 +44,13 @@ export function QuestCard({
     <motion.span
       className={[styles.questCardSurface, className].filter(Boolean).join(" ")}
       data-completed={completed || undefined}
+      data-unknown={unknown || undefined}
       style={style}
     >
       <span className={styles.cardShimmer} aria-hidden="true" />
       <QuestCardFront
+        unknown={unknown}
+        bestTimeMs={bestTimeMs}
         game={game}
         genres={genres}
         type={type}

@@ -1,11 +1,13 @@
 import type { MoodDefinition, MoodId } from "../../data/moods";
 import type { QuestDefinition } from "../../data/quests";
 import type { GameReference } from "../../data/gameTypes";
+import type { GameGenreId } from "../../data/gameGenres";
+import type { QuestTypeId } from "../../data/questTraits";
+import type { QuestPlayStyleId } from "../../data/questPoolTraits";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 14;
+export const STORE_VERSION = 16;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
-export const NEW_CARDS_COST = 25;
 export const QUEST_OFFER_COUNT = 3;
 export const STORED_COMPLETION_LIMIT = 500;
 export const INITIAL_RED_ROPES = 3;
@@ -59,6 +61,17 @@ export type CompletedSession = {
   completedAt: number;
 };
 
+export type QuestProgress = {
+  seenOffer: QuestOffer | null;
+  seenAt: number;
+  favorite: boolean;
+  totalPlayedMs: number;
+  coinsEarned: number;
+  longestSessionMs: number;
+  bestTimeMs: number | null;
+  lastCompletion: CompletedSession | null;
+};
+
 export const QUEST_OFFER_ROLES = ["library", "inspiration", "directed"] as const;
 export type QuestOfferRole = (typeof QUEST_OFFER_ROLES)[number];
 
@@ -74,6 +87,7 @@ export type QuestStats = {
   completedQuestCount: number;
   uniqueCompletedQuestCount: number;
   totalPlayedMs: number;
+  totalCoinsCollected: number;
   cancelledQuestCount: number;
   repeatedCompletionCount: number;
   completionCountsByQuestId: Record<string, number>;
@@ -83,6 +97,8 @@ export type QuestStats = {
 };
 
 export type QuestState = {
+  ownedPackIds: string[];
+  poolPreferences: QuestPoolPreferences;
   profile: UserProfile;
   selectedMoodId: MoodId | null;
   moodSelectedAt: number | null;
@@ -91,10 +107,23 @@ export type QuestState = {
   offerLibraryRevision: number;
   currentSession: QuestSession | null;
   completedSessions: CompletedSession[];
+  questProgressById: Record<string, QuestProgress>;
   stats: QuestStats;
 };
 
+export type QuestPoolPreferences = {
+  genreIds: GameGenreId[];
+  typeIds: QuestTypeId[];
+  styleIds: QuestPlayStyleId[];
+};
+
 export type QuestActions = {
+  markQuestsSeen: (questIds: readonly string[]) => void;
+  toggleQuestFavorite: (questId: string) => void;
+  repeatQuest: (questId: string) => boolean;
+  restartCurrentQuest: () => boolean;
+  purchaseQuestPack: (packId: string) => boolean;
+  savePoolPreferences: (preferences: QuestPoolPreferences) => void;
   selectMood: (moodId: MoodId) => boolean;
   editMood: () => boolean;
   refreshMoodWindow: () => void;
@@ -123,7 +152,10 @@ export type PersistedQuestState = Pick<
   | "offerLibraryRevision"
   | "currentSession"
   | "completedSessions"
+  | "questProgressById"
   | "stats"
+  | "ownedPackIds"
+  | "poolPreferences"
 >;
 
 export type Quest = QuestDefinition & {
@@ -142,6 +174,7 @@ export const DEFAULT_QUEST_STATS: QuestStats = {
   completedQuestCount: 0,
   uniqueCompletedQuestCount: 0,
   totalPlayedMs: 0,
+  totalCoinsCollected: 0,
   cancelledQuestCount: 0,
   repeatedCompletionCount: 0,
   completionCountsByQuestId: {},
