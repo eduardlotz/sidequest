@@ -22,6 +22,12 @@
   gap: 12px;
 }
 
+.profileDrawer[data-show-back] .profileDrawerTitleRow {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 28px;
+}
+.profileDrawer[data-show-back] h2 { text-align: center; }
+
 .profileBackButton {
   display: grid;
   /* width: 29px;
@@ -97,74 +103,30 @@
 }
 
 .profileNavigation > button {
-  display: grid;
   width: 100%;
-  min-height: 56px;
-  padding: 0;
-
-  align-items: center;
-  grid-template-columns: minmax(0, 1fr) auto;
-  background: transparent;
-
-  color: var(--color-text);
+  justify-content: flex-start;
   text-align: left;
-  cursor: pointer;
-
-  position: relative;
-
-  > * {
-    z-index: 1;
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    left: -12px;
-    top: 0;
-    bottom: 0;
-    z-index: 0;
-    /* padding: 8px 11px; */
-    width: calc(100% + 24px);
-    /* height: calc(100% + 4px); */
-    height: 100%;
-    border-radius: 14px;
-    border: 1px solid var(--color-surface-soft);
-  }
 }
 
-.profileNavigation > button:last-child {
-  border-bottom: 0;
+.profileNavigation > button[data-icon-right] > span:last-child {
+  margin-left: auto;
 }
 
-.profileNavigation > button > span {
-  display: grid;
-  min-width: 0;
-  gap: 2px;
+.profileNavigation svg,
+.settingLabelWithInfo > svg {
+  color: var(--color-faint);
 }
 
-.profileNavigation strong,
-.profileNavigation small {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.profileNavigation strong {
-  font-size: 0.75rem;
-  /* letter-spacing: -0.02em; */
-}
-
-.profileNavigation small {
-  color: var(--color-muted);
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.profileNavigation > button > svg {
+.settingLabelWithInfo > svg {
   width: 16px;
   height: 16px;
-  color: var(--color-muted);
-  transform: rotate(180deg);
+  flex-shrink: 0;
+}
+
+.ropeMetric dd {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--color-surface-soft);
 }
 
 .profileMetrics {
@@ -277,7 +239,7 @@
 .settingLabelWithInfo {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 }
 
 .infoPopover {
@@ -431,19 +393,6 @@
 .profileOverview .settingToggle > span {
   background: white;
   box-shadow: none;
-}
-.profileOverview .profileNavigation > button {
-  min-height: 60px;
-  padding: 12px 16px;
-  border-radius: 18px;
-  background: var(--profile-muted-surface);
-}
-.profileOverview .profileNavigation > button::before {
-  content: none;
-}
-.profileOverview .profileNavigation strong,
-.profileOverview .profileNavigation small {
-  font-size: 14px;
 }
 .profileOverview .profileMetrics > div {
   min-height: 32px;

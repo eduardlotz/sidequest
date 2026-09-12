@@ -1,0 +1,8 @@
+.shop { display: grid; gap: 20px; padding-top: 16px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-bottom: 8px; }
+.pack { display: flex; min-width: 0; flex-direction: column; align-items: center; gap: 10px; padding: 16px 10px 12px; border-radius: 20px; background: var(--color-surface-soft); text-align: center; }
+.icon { width: 40px; height: 40px; color: var(--color-muted); }
+.pack h3 { margin: 0; font-size: 14px; line-height: 1.25; font-weight: 650; }
+.pack p { margin: auto 0 0; color: var(--color-muted); font-size: 12px; }
+.pack button { width: 100%; min-width: 0; }
+.pack button > svg { width: 18px; height: 18px; }

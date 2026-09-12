@@ -1,0 +1,35 @@
+.gallery { position: relative; height: var(--app-height); padding-top: 112px; }
+.header { position: relative; z-index: 55; display: grid; justify-items: center; gap: 14px; }
+.header h1 { margin: 0; color: var(--color-muted); font-size: 14px; font-weight: 600; }
+.back { position: absolute; left: 32px; top: 0; }
+.filters { display: flex; align-items: center; gap: 8px; }
+.filters select, .filters input { min-height: 38px; min-width: 90px; padding: 8px 12px; border: 0; border-radius: 999px; background: var(--color-surface-soft); color: var(--color-text); font: inherit; font-size: 14px; }
+.filters input { width: 180px; }
+.viewport { position: absolute; top: 205px; bottom: 0; width: 100%; overflow: clip; touch-action: none; cursor: grab; }
+.viewport:active { cursor: grabbing; }
+.card { position: absolute; top: 18px; left: 0; aspect-ratio: 300 / 430; container: quest-card / inline-size; --quest-card-content-inset: 20px; --quest-card-type-unit: 0.9rem; --quest-card-brand-opacity: 0.15; }
+.card[data-focused] { z-index: 50; }
+.card[data-uncompleted] { --quest-card-content-opacity: 0.6; }
+.card [role="button"] { cursor: pointer; border-radius: 30px; }
+.card [role="button"]:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 8px; }
+.infoPanel { position: absolute; top: 245px; left: calc(50% + 130px); width: min(320px, calc(50% - 154px)); z-index: 60; }
+.info { display: grid; justify-items: center; gap: 12px; }
+.actions { display: flex; width: 100%; gap: 8px; }
+.actions > button:last-child { flex: 1; }
+.heart { color: #ff5967; }
+.metrics { display: grid; width: 100%; margin: 0; padding: 8px 16px; border-radius: 20px; background: var(--color-surface); }
+.metrics > div { display: flex; justify-content: space-between; align-items: center; min-height: 40px; gap: 12px; font-size: 14px; }
+.metrics dt { color: var(--color-muted); }
+.metrics dd { display: flex; align-items: center; gap: 5px; margin: 0; text-align: right; font-weight: 600; }
+.metrics svg { width: 16px; height: 16px; }
+.empty { display: flex; justify-content: center; padding-top: 80px; }
+.mobileInfo { position: fixed; z-index: 80; right: 12px; bottom: 12px; left: 12px; height: calc(var(--app-height) - 78px); padding: 16px 16px 24px; border: 0; border-radius: 24px; background: var(--color-surface); box-shadow: var(--raised-shadow); outline: none; }
+.mobileInfoBody { height: calc(100% - 26px); overflow-y: auto; overscroll-behavior: contain; padding-top: 16px; }
+.mobileInfo .metrics { background: var(--color-surface-soft); }
+@media (--mobile) {
+  .gallery { padding-top: 105px; }
+  .back { left: 16px; top: -4px; }
+  .viewport { top: 200px; }
+  .card { top: 10px; }
+  .filters input { width: min(150px, 35vw); }
+}

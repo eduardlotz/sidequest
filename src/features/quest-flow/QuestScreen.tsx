@@ -2,7 +2,6 @@ import { motion } from "motion/react";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
-import { NEW_CARDS_COST } from "../../domain/quest/model";
 import { QuestScreenContent } from "./components/QuestScreenContent/QuestScreenContent";
 import {
   hydrateQuest,
@@ -132,7 +131,6 @@ export function QuestScreen({
         points={profile.points}
         redRopes={profile.redRopes}
         debugMode={profile.debugMode}
-        newCardsCost={NEW_CARDS_COST}
         animateEntrance={!introReady}
         reduceMotion={reduceMotion}
         onSelectMood={selectMood}

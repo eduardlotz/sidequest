@@ -40,6 +40,25 @@
   content: "";
 }
 
+.questCardSurface[data-unknown] {
+  --accent: #89898e;
+  --accent-rgb: 137 137 142;
+  --quest-card-content-opacity: 0.55;
+}
+
+.questCardRecord {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+  color: #aaaab2;
+  font-size: 13px;
+}
+.questCardRecord strong {
+  color: #f6f6fa;
+  font-variant-numeric: tabular-nums;
+}
+
 .cardShimmer {
   position: absolute;
   top: 50%;

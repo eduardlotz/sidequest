@@ -21,6 +21,7 @@ import { relaxQuests } from "./relax";
 import { restlessQuests } from "./restless";
 import { reusableQuests } from "./reusable";
 import { exclusiveQuests } from "./exclusive";
+import { timedQuests } from "./timed";
 
 export type {
   AuthoredQuestDefinition,
@@ -49,6 +50,7 @@ export const QUEST_CATALOG: readonly AuthoredQuestDefinition[] = [
   ...MOOD_IDS.flatMap((moodId) => MOOD_QUESTS[moodId]),
   ...reusableQuests,
   ...exclusiveQuests,
+  ...timedQuests,
 ];
 
 // Catch authoring mistakes at the catalogue boundary, before any screen or store
@@ -91,6 +93,7 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     type,
     tags,
     minimumDurationMinutes,
+    maximumDurationMinutes,
     suggestedDurationMinutes,
     genres,
     universal,
@@ -103,6 +106,7 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     type,
     tags,
     minimumDurationMinutes,
+    maximumDurationMinutes,
     suggestedDurationMinutes,
     genres,
     universal,

@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { QuestGallery } from "./features/quest-gallery/QuestGallery";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { AppHeader } from "./app/AppHeader";
@@ -18,6 +19,7 @@ export function App() {
   const { t } = useTranslation();
   const reduceMotion = Boolean(useReducedMotion());
   const profileTriggerRef = useRef<HTMLButtonElement>(null);
+  const [galleryOpen, setGalleryOpen] = useState(false);
   const { currentSession, points, selectedMoodId } = useQuestStore(
     useShallow((state) => ({
       currentSession: state.currentSession,
@@ -36,6 +38,7 @@ export function App() {
       data-screen={
         showSetup
           ? "setup"
+          : galleryOpen ? "gallery"
           : currentSession
             ? "active"
             : selectedMoodId
@@ -58,9 +61,11 @@ export function App() {
         setup={showSetup}
         themeChoice={themeChoice}
         onThemeChange={changeTheme}
+        onOpenGallery={() => setGalleryOpen(true)}
       />
 
       <main className={styles.main} id="main-content">
+        <div hidden={galleryOpen}>
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={showSetup ? "setup" : "play"}
@@ -84,6 +89,8 @@ export function App() {
             )}
           </motion.div>
         </AnimatePresence>
+        </div>
+        {galleryOpen && <QuestGallery reduceMotion={reduceMotion} onClose={() => setGalleryOpen(false)} onRepeat={() => setGalleryOpen(false)} />}
       </main>
     </div>
   );

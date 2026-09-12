@@ -21,6 +21,7 @@ import {
   type QuestOffer,
   type QuestSession,
   type QuestStats,
+  type QuestProgress,
   type UserProfile,
 } from "./model";
 import {
@@ -34,6 +35,10 @@ import {
   safeAdd,
   safeNonNegativeInteger,
 } from "./rules";
+import { createQuestProgress, progressAfterCompletion } from "./progress";
+import { QUEST_PACKS_BY_ID } from "../../data/questPacks";
+import { sanitizePoolPreferences } from "./pool";
+import type { QuestPoolPreferences } from "./model";
 
 export function migratePersistedQuestState(
   persistedState: unknown,
@@ -42,7 +47,7 @@ export function migratePersistedQuestState(
   random: () => number = Math.random,
   libraryGames: readonly LibraryGame[] = [],
 ): PersistedQuestState {
-  return version === STORE_VERSION
+  return version >= 14 && version <= STORE_VERSION
     ? sanitizePersistedQuestState(persistedState, now, random, libraryGames)
     : createDefaultQuestState();
 }
@@ -56,9 +61,15 @@ export function sanitizePersistedQuestState(
   if (!isRecord(value)) return createDefaultQuestState();
 
   const profile = profileFromUnknown(value.profile);
+  const ownedPackIds = Array.isArray(value.ownedPackIds)
+    ? [...new Set(value.ownedPackIds.filter((id): id is string => typeof id === "string" && Object.hasOwn(QUEST_PACKS_BY_ID, id)))] : [];
+  const poolPreferences = sanitizePoolPreferences(value.poolPreferences);
   const completedSessions = completionsFromUnknown(value.completedSessions);
   const stats = statsFromUnknown(value.stats, completedSessions);
   const currentSession = sessionFromUnknown(value.currentSession);
+  const questProgressById = questProgressFromUnknown(
+    value.questProgressById, completedSessions, stats, currentSession, now,
+  );
   const storedMoodId = isMoodId(value.selectedMoodId)
     ? value.selectedMoodId
     : null;
@@ -72,6 +83,8 @@ export function sanitizePersistedQuestState(
 
   if (expired) {
     return {
+      ownedPackIds,
+      poolPreferences,
       profile,
       selectedMoodId: null,
       moodSelectedAt: null,
@@ -80,6 +93,7 @@ export function sanitizePersistedQuestState(
       offerLibraryRevision: safeNonNegativeInteger(value.offerLibraryRevision),
       currentSession,
       completedSessions,
+      questProgressById,
       stats,
     };
   }
@@ -88,6 +102,8 @@ export function sanitizePersistedQuestState(
     value.offerSetsByMoodId,
     random,
     libraryGames,
+    ownedPackIds,
+    poolPreferences,
   );
   if (selectedMoodId && !offerSetsByMoodId[selectedMoodId]) {
     offerSetsByMoodId[selectedMoodId] = sanitizedOfferSet(
@@ -95,6 +111,8 @@ export function sanitizePersistedQuestState(
       value.offeredQuests,
       random,
       libraryGames,
+      ownedPackIds,
+      poolPreferences,
     );
   }
   const offeredQuests = selectedMoodId
@@ -102,6 +120,8 @@ export function sanitizePersistedQuestState(
     : [];
 
   return {
+    ownedPackIds,
+    poolPreferences,
     profile,
     selectedMoodId,
     moodSelectedAt,
@@ -110,6 +130,7 @@ export function sanitizePersistedQuestState(
     offerLibraryRevision: safeNonNegativeInteger(value.offerLibraryRevision),
     currentSession,
     completedSessions,
+    questProgressById,
     stats,
   };
 }
@@ -118,13 +139,15 @@ function offerSetsFromUnknown(
   value: unknown,
   random: () => number,
   libraryGames: readonly LibraryGame[],
+  ownedPackIds: readonly string[],
+  preferences: QuestPoolPreferences,
 ): Partial<Record<MoodId, QuestOffer[]>> {
   if (!isRecord(value)) return {};
   const offerSets: Partial<Record<MoodId, QuestOffer[]>> = {};
 
   for (const [moodId, offers] of Object.entries(value)) {
     if (!isMoodId(moodId) || !Array.isArray(offers)) continue;
-    offerSets[moodId] = sanitizedOfferSet(moodId, offers, random, libraryGames);
+    offerSets[moodId] = sanitizedOfferSet(moodId, offers, random, libraryGames, ownedPackIds, preferences);
   }
 
   return offerSets;
@@ -135,6 +158,8 @@ function sanitizedOfferSet(
   value: unknown,
   random: () => number,
   libraryGames: readonly LibraryGame[],
+  ownedPackIds: readonly string[],
+  preferences: QuestPoolPreferences,
 ) {
   const offeredQuests = Array.isArray(value)
     ? value.flatMap((entry) => {
@@ -157,8 +182,8 @@ function sanitizedOfferSet(
         (candidate) => candidate.questId === offer.questId,
       ) === index,
   );
-  if (!isQuestOfferSetValid(moodId, uniqueOffers, libraryGames)) {
-    return generateQuestOffers(moodId, libraryGames, random);
+  if (!isQuestOfferSetValid(moodId, uniqueOffers, libraryGames, ownedPackIds, preferences)) {
+    return generateQuestOffers(moodId, libraryGames, random, undefined, undefined, undefined, ownedPackIds, preferences);
   }
   return uniqueOffers.slice(0, QUEST_OFFER_COUNT);
 }
@@ -366,6 +391,10 @@ function statsFromUnknown(
       safeNonNegativeInteger(storedStats.totalPlayedMs),
       historyDurationMs,
     ),
+    totalCoinsCollected: Math.max(
+      safeNonNegativeInteger(storedStats.totalCoinsCollected),
+      completedSessions.reduce((total, completion) => safeAdd(total, completion.pointsAwarded), 0),
+    ),
     cancelledQuestCount: safeNonNegativeInteger(
       storedStats.cancelledQuestCount,
     ),
@@ -378,6 +407,49 @@ function statsFromUnknown(
       latestCompletionAtByMoodId,
     ),
   };
+}
+
+function questProgressFromUnknown(
+  value: unknown,
+  history: readonly CompletedSession[],
+  stats: QuestStats,
+  session: QuestSession | null,
+  now: number,
+): Record<string, QuestProgress> {
+  const result: Record<string, QuestProgress> = {};
+  for (const completion of history) {
+    result[completion.questId] = progressAfterCompletion(result[completion.questId], completion);
+  }
+  if (isRecord(value)) {
+    for (const [id, stored] of Object.entries(value)) {
+      if (!Object.hasOwn(QUEST_CORES_BY_ID, id) || !isRecord(stored)) continue;
+      const seenAt = finiteNumber(stored.seenAt);
+      if (seenAt === null) continue;
+      const previous = result[id] ?? createQuestProgress(Math.max(0, Math.min(now, seenAt)));
+      const lastCompletion = completionsFromUnknown([stored.lastCompletion])[0];
+      result[id] = {
+        seenOffer: isRecord(stored.seenOffer) && isMoodId(stored.seenOffer.moodId)
+          ? questOfferFromUnknown(stored.seenOffer, stored.seenOffer.moodId) : null,
+        seenAt: Math.min(previous.seenAt, Math.max(0, seenAt)),
+        favorite: stored.favorite === true,
+        totalPlayedMs: Math.max(previous.totalPlayedMs, safeNonNegativeInteger(stored.totalPlayedMs)),
+        coinsEarned: Math.max(previous.coinsEarned, safeNonNegativeInteger(stored.coinsEarned)),
+        longestSessionMs: Math.max(previous.longestSessionMs, safeNonNegativeInteger(stored.longestSessionMs)),
+        bestTimeMs: QUEST_CORES_BY_ID[id].type === "speedrun"
+          ? finiteNumber(stored.bestTimeMs) === null ? previous.bestTimeMs
+            : Math.min(previous.bestTimeMs ?? Infinity, safeNonNegativeInteger(stored.bestTimeMs))
+          : null,
+        lastCompletion: lastCompletion?.questId === id &&
+          lastCompletion.completedAt >= (previous.lastCompletion?.completedAt ?? 0)
+          ? lastCompletion : previous.lastCompletion,
+      };
+    }
+  }
+  for (const id of Object.keys(stats.completionCountsByQuestId)) {
+    result[id] ??= createQuestProgress(now);
+  }
+  if (session) result[session.questId] ??= createQuestProgress(session.revealedAt);
+  return result;
 }
 
 function gameReferenceFromUnknown(value: unknown): GameReference | null {

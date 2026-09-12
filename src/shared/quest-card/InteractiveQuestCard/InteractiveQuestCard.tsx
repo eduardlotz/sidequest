@@ -1,4 +1,4 @@
-import { animate, motion } from "motion/react";
+import { animate, motion, useMotionValue } from "motion/react";
 import {
   useCallback,
   useEffect,
@@ -22,6 +22,7 @@ const CARD_TRIPLE_CLICK_WINDOW_MS = 520;
 type CompletionCallbacks = { onHidden: () => void; onReveal: () => void };
 export type InteractiveQuestCardHandle = {
   complete: (callbacks: CompletionCallbacks) => void;
+  pulse: (direction: number) => void;
 };
 
 type Props = {
@@ -41,6 +42,7 @@ type Props = {
   floatPaused?: boolean;
   showBack?: boolean;
   onPointerLeave?: (event: PointerEvent<HTMLElement>) => void;
+  onActivate?: () => void;
 };
 
 export function InteractiveQuestCard({
@@ -60,11 +62,14 @@ export function InteractiveQuestCard({
   floatPaused = false,
   showBack = true,
   onPointerLeave,
+  onActivate,
 }: Props) {
   const [cardFlipActive, setCardFlipActive] = useState(false);
   const cardClickTimesRef = useRef<number[]>([]);
   const cardFlipAnimationRef = useRef<{ stop: () => void } | null>(null);
   const cardFlipDirectionRef = useRef<CardFlipDirection>(1);
+  const pulseRotation = useMotionValue(0);
+  const pulseAnimationRef = useRef<{ stop: () => void } | null>(null);
   const {
     handlePointerEnter,
     handlePointerDown,
@@ -165,6 +170,7 @@ export function InteractiveQuestCard({
   );
 
   const handleCardClick = useCallback(() => {
+    if (!disabled) onActivate?.();
     if (
       reduceMotion ||
       disabled ||
@@ -192,15 +198,34 @@ export function InteractiveQuestCard({
     flipOnClick,
     reduceMotion,
     startFlip,
+    onActivate,
   ]);
 
   useImperativeHandle(
     ref,
-    () => ({ complete: (callbacks) => startFlip(1, callbacks) }),
-    [startFlip],
+    () => ({
+      complete: (callbacks) => startFlip(1, callbacks),
+      pulse: (direction) => {
+        pulseAnimationRef.current?.stop();
+        if (reduceMotion) {
+          pulseRotation.set(0);
+          return;
+        }
+        pulseAnimationRef.current = animate(pulseRotation, 0, {
+          type: "spring",
+          stiffness: 500,
+          damping: 12,
+          velocity: direction * 75,
+        });
+      },
+    }),
+    [startFlip, reduceMotion, pulseRotation],
   );
 
-  useEffect(() => () => cardFlipAnimationRef.current?.stop(), []);
+  useEffect(() => () => {
+    cardFlipAnimationRef.current?.stop();
+    pulseAnimationRef.current?.stop();
+  }, []);
 
   return (
     <article
@@ -213,7 +238,13 @@ export function InteractiveQuestCard({
       data-flipping={cardFlipActive || undefined}
       data-floating={(floating && !reduceMotion) || undefined}
       data-float-paused={floatPaused || cardFlipActive || undefined}
-      tabIndex={-1}
+      tabIndex={onActivate ? 0 : -1}
+      role={onActivate ? "button" : undefined}
+      onKeyDown={(event) => {
+        if (!onActivate || disabled || (event.key !== "Enter" && event.key !== " ")) return;
+        event.preventDefault();
+        handleCardClick();
+      }}
       onPointerEnter={(event) => {
         if (hoverEnabled && !disabled && !cardFlipActive)
           handlePointerEnter(event);
@@ -233,7 +264,7 @@ export function InteractiveQuestCard({
       }}
       onClick={handleCardClick}
     >
-      <div className={styles.float}>
+      <motion.div className={styles.float} style={{ rotate: pulseRotation }}>
         <motion.div className={styles.surface} style={{ rotateX, rotateY, scale }}>
           <div className={styles.front}>
             {children}
@@ -241,7 +272,7 @@ export function InteractiveQuestCard({
           </div>
           {showBack && <QuestCardBack className={styles.back} />}
         </motion.div>
-      </div>
+      </motion.div>
       {controls}
     </article>
   );

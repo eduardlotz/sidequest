@@ -1,7 +1,12 @@
 import { englishLibrary, germanLibrary } from "./library";
+import { englishGallery, germanGallery } from "./gallery";
+import { englishPool, germanPool, englishShop, germanShop, englishTimed, germanTimed } from "./pool";
 import type { MoodDefinition } from "../data/questTypes";
 
 export const englishUi = {
+  gallery: englishGallery,
+  pool: englishPool,
+  shop: englishShop,
   nav: {
     skipToContent: "Skip to content",
     mainNavigation: "Main navigation",
@@ -59,13 +64,13 @@ export const englishUi = {
     chooseSuffix: "sidequest",
     changeMood: "Change Mood",
     newCardsLabel:
-      "Get new quest cards for {{cost}} coins. {{available}} coins available.",
+      "Shuffle quest cards for free.",
     newCards: "New cards",
     costsPoints: "costs {{points}}",
     moodCards: "Mood cards",
   },
   offers: {
-    deckLabel: "Choose one of three quest cards",
+    deckLabel: "Choose a quest card",
     cardStatus: "Card {{current}} of {{total}}: {{name}}. {{title}}",
     opening: "Opening {{title}}",
     hiddenQuest: "quest",
@@ -94,6 +99,7 @@ export const englishUi = {
     closeFocusedCard: "Close focused quest card",
   },
   timer: {
+    ...englishTimed,
     elapsed: "Elapsed time {{time}}",
     start: "Start quest timer",
     resume: "Resume quest timer",
@@ -179,6 +185,9 @@ type TranslationShape<T> = {
 };
 
 export const germanUi = {
+  gallery: germanGallery,
+  pool: germanPool,
+  shop: germanShop,
   nav: {
     skipToContent: "Zum Inhalt springen",
     mainNavigation: "Hauptnavigation",
@@ -214,7 +223,7 @@ export const germanUi = {
     coinEarning:
       "Je länger du an einer Quest sitzt, desto mehr Münzen gibt es dafür.",
     coinSpending:
-      "Neue Karten und zusätzliche rote Seile kosten Münzen. Die Idee: etwas weniger aussuchen und etwas mehr spielen.",
+      "Quest-Pakete und zusätzliche rote Seile kosten Münzen. Neu mischen ist immer kostenlos.",
     madeBy: "Von",
   },
   library: germanLibrary,
@@ -239,13 +248,13 @@ export const germanUi = {
     chooseSuffix: "-Sidequest",
     changeMood: "Stimmung ändern",
     newCardsLabel:
-      "Neue Quest-Karten für {{cost}} Münzen. {{available}} Münzen verfügbar.",
+      "Quest-Karten kostenlos neu mischen.",
     newCards: "Neue Karten",
     costsPoints: "kostet {{points}}",
     moodCards: "Stimmungskarten",
   },
   offers: {
-    deckLabel: "Wähle eine von drei Quest-Karten",
+    deckLabel: "Wähle eine Quest-Karte",
     cardStatus: "Karte {{current}} von {{total}}: {{name}}. {{title}}",
     opening: "{{title}} wird geöffnet",
     hiddenQuest: "Quest",
@@ -274,6 +283,7 @@ export const germanUi = {
     closeFocusedCard: "Fokussierte Quest-Karte schließen",
   },
   timer: {
+    ...germanTimed,
     elapsed: "Vergangene Zeit {{time}}",
     start: "Quest-Timer starten",
     resume: "Quest-Timer fortsetzen",

@@ -41,6 +41,7 @@ export type AuthoredQuestDefinition = {
   type: QuestTypeId;
   tags: readonly QuestTagId[];
   minimumDurationMinutes: number;
+  maximumDurationMinutes?: number;
   suggestedDurationMinutes: number;
   genres: readonly string[];
   universal?: boolean;
@@ -58,6 +59,7 @@ export type MoodQuestDefinition = {
   objective: string;
   gameObjective?: string;
   minimumDurationMinutes: number;
+  maximumDurationMinutes?: number;
   suggestedDurationMinutes: number;
   genres: readonly string[];
   universal: boolean;
@@ -73,6 +75,7 @@ export type QuestCoreDefinition = Pick<
   | "type"
   | "tags"
   | "minimumDurationMinutes"
+  | "maximumDurationMinutes"
   | "suggestedDurationMinutes"
   | "genres"
   | "universal"
