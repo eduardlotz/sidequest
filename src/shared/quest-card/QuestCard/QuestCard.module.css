@@ -1,4 +1,6 @@
 .questCardSurface {
+  -webkit-user-select: none;
+  user-select: none;
   --tilt-x: 0deg;
   --tilt-y: 0deg;
   --quest-card-type-unit: var(--quest-card-small-type-unit, 1rem);

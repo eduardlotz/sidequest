@@ -438,7 +438,8 @@ export function QuestScreenContent({
                             }
                             label={t("ui.task.newCards")}
                             price={formatScore(
-                              debugMode ? 0 : newCardsCost,
+                              // debugMode ? 0 : newCardsCost,
+                              0,
                               language,
                             )}
                             aria-label={t("ui.task.newCardsLabel", {
