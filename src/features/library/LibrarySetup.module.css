@@ -11,8 +11,9 @@
   overscroll-behavior-y: contain;
 }
 .welcome {
+  position: relative;
   display: flex;
-  width: min(100%, var(--flow-frame-content-width));
+  width: 100%;
   flex-direction: column;
   align-items: center;
   text-align: center;
@@ -33,7 +34,7 @@
   /* width: min(260px, 50svh); */
   /* filter: drop-shadow(0 5px 5px #17172b20); */
   rotate: 3deg;
-  margin-top: -4%;
+  margin-top: clamp(-14px, calc(-4px - 1vw), -8px);
 
   span {
     width: clamp(260px, 35vw, 340px);
@@ -55,6 +56,7 @@
   margin: 30px 0 16px;
 }
 .links {
+  width: min(100%, 360px);
   display: flex;
   justify-content: center;
   gap: 8px;
@@ -71,90 +73,8 @@
 .start > button {
   width: 100%;
 }
-.welcome > :not(.previews) {
+.welcome > * {
   flex-shrink: 0;
-}
-.previews {
-  --shine-opacity: 0;
-
-  display: grid;
-  grid-template-columns: repeat(2, 240px);
-  width: 100vw;
-  justify-content: center;
-  flex: 1 0 420px;
-  min-height: 420px;
-  margin-top: 40px;
-  padding: 18px 0 0;
-  pointer-events: none;
-}
-.previewCard {
-  position: relative;
-  display: block;
-  width: 280px;
-  aspect-ratio: 0.7;
-  z-index: 1;
-  transform: translateX(-20px) rotate(-5deg);
-  container-type: inline-size;
-  pointer-events: auto;
-}
-.previewCard + .previewCard {
-  transform: translate(-20px, 20px) rotate(5deg);
-}
-
-.previewProjection,
-.previewTilt,
-.previewTiltInner,
-.previewButton {
-  position: absolute;
-  display: block;
-  width: 100%;
-  height: 100%;
-  inset: 0;
-}
-
-.previewProjection {
-  z-index: 201;
-}
-
-.previewProjection,
-.previewTiltInner {
-  transform-style: preserve-3d;
-}
-
-.previewButton {
-  z-index: 202;
-  padding: 0;
-  border-radius: clamp(30px, 10cqw, 49px);
-  background: transparent;
-  color: inherit;
-  cursor: zoom-in;
-  text-align: left;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.previewButton:focus-visible {
-  outline: 3px solid var(--color-focus);
-  outline-offset: 8px;
-}
-
-.previewFocusPortal {
-  position: fixed;
-  z-index: 200;
-  inset: 0;
-}
-
-.previewCard[data-focused] {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 201;
-  width: min(76vw, 360px);
-  transform: translate(-50%, -50%);
-}
-
-.previewCard[data-focused] .previewProjection {
-  cursor: grab;
-  touch-action: none;
 }
 
 .informationPage {
@@ -220,36 +140,6 @@
   height: 20px;
 }
 
-@media (min-width: 1000px) and (max-height: 900px) {
-  .previews {
-    position: absolute;
-    display: block;
-    padding: 0;
-    margin: 0;
-    inset: 0;
-  }
-
-  .previewCard {
-    position: absolute;
-    top: max(490px, calc(var(--app-height) - 250px));
-    left: clamp(24px, calc((100vw - 960px) / 2), 112px);
-    transform: rotate(-5deg);
-  }
-
-  .previewCard + .previewCard {
-    right: clamp(24px, calc((100vw - 960px) / 2), 112px);
-    left: auto;
-    transform: translateY(4px) rotate(5deg);
-  }
-
-  .previewCard[data-focused] {
-    position: fixed;
-    top: 50%;
-    right: auto;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-}
 @media (max-width: 600px) {
   .setup {
     --flow-frame-edge-inset: 20px;
@@ -263,10 +153,6 @@
   /* .welcome h1 {
     font-size: 30px;
   } */
-
-  .previewCard[data-focused] {
-    width: min(82vw, 320px);
-  }
 
   .scroll {
     padding: 72px 20px 24px;

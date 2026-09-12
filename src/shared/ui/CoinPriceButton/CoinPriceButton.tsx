@@ -20,7 +20,7 @@ export function CoinPriceButton({
     <SolidButton
       {...props}
       className={className}
-      size="small"
+      size="medium"
       // variant={tone === "inverse" ? "highContrast" : "soft"}
       variant="primary"
       data-tone={tone}

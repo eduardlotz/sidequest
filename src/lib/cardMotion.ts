@@ -14,6 +14,38 @@ export const CARD_LAYOUT_TRANSITION = {
   }),
 };
 
+export type CardFlipDirection = -1 | 1;
+
+export type CardFlipPose = {
+  rotateX: number;
+  rotateY: number;
+  scale: number;
+};
+
+export function createCardFlip(
+  direction: CardFlipDirection,
+  start: CardFlipPose,
+) {
+  // Keep one continuous turn, including when completion interrupts a click flip.
+  const turns =
+    direction > 0
+      ? Math.max(1, Math.floor(start.rotateY / 360) + 1)
+      : Math.min(-1, Math.ceil(start.rotateY / 360) - 1);
+  const endRotation = turns * 360;
+  const rotationDistance = endRotation - start.rotateY;
+
+  return (progress: number): CardFlipPose => {
+    const amount = Math.min(1, Math.max(0, progress));
+    const settle = amount * amount * (3 - 2 * amount);
+
+    return {
+      rotateX: start.rotateX * (1 - settle),
+      rotateY: start.rotateY + rotationDistance * amount,
+      scale: start.scale + (1 - start.scale) * settle,
+    };
+  };
+}
+
 export function moodCardLayoutId(
   sessionId: number | string,
   moodId: string,

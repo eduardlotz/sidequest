@@ -99,12 +99,18 @@ export function ArcCard({
       : 0;
   const {
     handlePointerEnter,
+    handlePointerDown,
+    handlePointerUp,
     handlePointerLeave,
     handlePointerMove,
     resetTilt,
     rotateX,
     rotateY,
-  } = useTiltEffect({ maxTilt: 14, reduceMotion: reduceMotion || !center });
+  } = useTiltEffect({
+    maxTilt: 14,
+    press: { maxTilt: 30, scale: 1 },
+    reduceMotion: reduceMotion || !center,
+  });
   const illustrationX = useTransform(rotateY, (value) => value * -1.7);
   const illustrationY = useTransform(rotateX, (value) => value * 1.35);
 
@@ -211,6 +217,7 @@ export function ArcCard({
           style={getMoodArtStyle(item.id)}
           whileHover={reduceMotion || !center ? undefined : "hover"}
           whileFocus={reduceMotion || !center ? undefined : "focus"}
+          whileTap={reduceMotion || !center ? undefined : "pressed"}
           onClick={(event) => {
             const keyboardClick = event.detail === 0;
             if (center) onSelect(item.id, keyboardClick);
@@ -224,6 +231,9 @@ export function ArcCard({
             }
           }}
           onPointerEnter={handlePointerEnter}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerLeave}
           onPointerMove={handlePointerMove}
           onPointerLeave={handlePointerLeave}
         >
@@ -234,6 +244,7 @@ export function ArcCard({
               rest: { scale: 1, y: 0 },
               hover: { scale: 1.035, y: -8 },
               focus: { scale: 1.025, y: -5 },
+              pressed: { scale: 0.985, y: 2 },
             }}
             transition={{
               type: "spring",

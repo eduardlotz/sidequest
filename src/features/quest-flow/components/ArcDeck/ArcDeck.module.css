@@ -1,6 +1,5 @@
 .arcDeck {
-  --arc-track-top: clamp(84px, calc(var(--app-height) * 0.37 - 223px), 110px);
-  --mood-card-width: var(--mood-card-inline-size);
+  --arc-track-top: var(--mood-arc-track-top);
   position: relative;
   width: 100%;
   height: calc(
@@ -162,9 +161,9 @@
 
 .arcCardContent {
   position: absolute;
-  top: clamp(24px, 6cqw, 32px);
-  right: clamp(26px, 7cqw, 36px);
-  left: clamp(26px, 7cqw, 36px);
+  top: clamp(16px, 6cqw, 32px);
+  right: clamp(18px, 7cqw, 36px);
+  left: clamp(18px, 7cqw, 36px);
   z-index: 3;
   display: flex;
   height: auto;
@@ -176,7 +175,7 @@
   max-width: 94%;
   margin: 0;
   color: var(--mood-card-copy, #cce7d5);
-  font-size: clamp(1.9rem, 8cqw, 2.5rem);
+  font-size: clamp(1.45rem, 8cqw, 2.5rem);
   font-weight: 750;
   letter-spacing: -0.058em;
   line-height: 0.98;
@@ -188,7 +187,7 @@
   max-width: 94%;
   margin-top: clamp(10px, 2.3cqw, 14px);
   color: var(--mood-card-copy, #cce7d5);
-  font-size: clamp(0.94rem, 4.2cqw, 1.15rem);
+  font-size: clamp(0.78rem, 4.2cqw, 1.15rem);
   font-weight: 620;
   letter-spacing: -0.025em;
   line-height: 1.16;
@@ -270,15 +269,6 @@
 
   .moodDeckControls span {
     font-size: 0.68rem;
-  }
-}
-
-@media (max-height: 605px) {
-  .arcDeck {
-    --mood-card-width: min(
-      var(--mood-card-inline-size),
-      calc(var(--app-height) * 1.33333 - 332px)
-    );
   }
 }
 

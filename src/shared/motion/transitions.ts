@@ -21,4 +21,6 @@ export const LIBRARY_LAYOUT_SPRING = {
   mass: 0.82,
 } as const;
 
-export const CARD_FLIP_EASE = [0.55, 0.06, 0.15, 0.86] as const;
+export const CARD_FLIP_EASE = [0.2, 0.62, 0.3, 1] as const;
+
+export const CARD_CLICK_FLIP_EASE = [0.32, 0, 0.22, 1] as const;

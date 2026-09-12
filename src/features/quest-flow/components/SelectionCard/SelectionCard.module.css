@@ -1,4 +1,6 @@
 .selectionCardBody {
+  -webkit-user-select: none;
+  user-select: none;
   position: absolute;
   display: block;
   overflow: var(--selection-card-overflow, hidden);
