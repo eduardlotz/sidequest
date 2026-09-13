@@ -10,8 +10,10 @@ export function defaultPoolPreferences(): QuestPoolPreferences {
 }
 export function matchesPoolPreferences(quest: QuestCoreDefinition, preferences: QuestPoolPreferences) {
   const traits = QUEST_POOL_TRAITS[quest.id];
+  // An explicit genre requirement is shared with custom-game matching.
+  const genres = quest.customGameCompatibility?.genreIds ?? traits?.genreIds;
   return preferences.typeIds.includes(quest.type) && preferences.genreIds.length > 0 &&
-    Boolean(traits && (!traits.genreIds.length || traits.genreIds.some(id => preferences.genreIds.includes(id))) &&
+    Boolean(traits && genres && (!genres.length || genres.some(id => preferences.genreIds.includes(id))) &&
       traits.styleIds.some(id => preferences.styleIds.includes(id)));
 }
 export function questAvailableInPool(quest: QuestCoreDefinition, moodId: MoodId, ownedPackIds: readonly string[], preferences: QuestPoolPreferences) {

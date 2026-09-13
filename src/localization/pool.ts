@@ -13,13 +13,25 @@ export const germanPool: Record<keyof typeof englishPool, string> = {
   save: "Speichern", cancel: "Abbrechen", empty: "Keine Quests passen zu diesen Einstellungen. Passe deinen Pool an oder schalte ein weiteres Paket frei.",
 };
 export const englishShop = {
-  title: "Quest shop", description: "Expand your moods with new quests. Every pack costs 50 coins and unlocks 9 quests permanently.",
+  title: "Shop", description: "Unlock new quests here.",
+  buy: "Buy", packHint: "Unlock {{count}} quests permanently for {{price}} coins. They appear in matching moods and follow your pool settings.",
+  summaries: {
+    coffee: "More quests for relaxing", compass: "New places and discoveries", target: "More quests for making progress",
+    lightning: "Fresh challenges to take on", heart: "Familiar games and good company", paint: "More room for creative ideas",
+    sparkle: "New side trips in your games", timer: "Finish before time runs out", flag: "Quests focused on your best time",
+  },
   questCount: "{{count}} quests", owned: "Owned", ownedPack: "{{pack}} is already unlocked", buyPack: "Buy {{pack}} for {{price}} coins",
 };
-export const germanShop: Record<keyof typeof englishShop, string> = {
-  title: "Quest-Shop", description: "Erweitere deine Stimmungen mit neuen Quests. Jedes Paket kostet 50 Münzen und schaltet dauerhaft 9 Quests frei.",
+export const germanShop = {
+  title: "Shop", description: "Hier kannst du neue Quests freischalten.",
+  buy: "Kaufen", packHint: "Schalte {{count}} Quests für {{price}} Münzen dauerhaft frei. Sie erscheinen in passenden Stimmungen und beachten deine Pool-Einstellungen.",
+  summaries: {
+    coffee: "Mehr Quests für Entspannung", compass: "Neue Orte und Entdeckungen", target: "Mehr Quests zum Vorankommen",
+    lightning: "Neue Herausforderungen für dich", heart: "Vertraute Spiele und gute Gesellschaft", paint: "Mehr Raum für kreative Ideen",
+    sparkle: "Neue Abstecher in deinen Spielen", timer: "Ans Ziel, bevor die Zeit abläuft", flag: "Quests mit Fokus auf deine Bestzeit",
+  },
   questCount: "{{count}} Quests", owned: "Gekauft", ownedPack: "{{pack}} ist bereits freigeschaltet", buyPack: "{{pack}} für {{price}} Münzen kaufen",
-};
+} satisfies { [K in keyof typeof englishShop]: K extends "summaries" ? Record<keyof typeof englishShop.summaries, string> : string };
 export const englishTimed = {
   countdownExpired: "Time's up. Repeat or cancel for free.", repeatCountdown: "Repeat", cancelCountdown: "Cancel",
   countdownReady: "Pull to start. Pause and complete before the {{minutes}} minutes run out.",
