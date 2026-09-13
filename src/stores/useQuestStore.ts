@@ -11,7 +11,10 @@ import { sanitizePoolPreferences } from "../domain/quest/pool";
 import { QUEST_CORES_BY_ID } from "../data/quests";
 import { libraryGamesFromState } from "../domain/library/rules";
 import { libraryStore } from "./useLibraryStore";
-import { createQuestProgress, progressAfterCompletion } from "../domain/quest/progress";
+import {
+  createQuestProgress,
+  progressAfterCompletion,
+} from "../domain/quest/progress";
 import {
   QUEST_OFFER_COUNT,
   RED_ROPE_BUNDLE_COST,
@@ -70,47 +73,108 @@ function createDefaultState(): QuestState {
 function createQuestState(
   options: Required<StoreOptions>,
 ): StateCreator<QuestStore> {
-  function offersForMood(moodId: MoodId, state: QuestState, excludedOfferIds?: ReadonlySet<string>) {
-    return generateQuestOffers(moodId, options.getLibraryGames(), options.random,
-      excludedOfferIds, undefined, undefined, state.ownedPackIds, state.poolPreferences);
+  function offersForMood(
+    moodId: MoodId,
+    state: QuestState,
+    excludedOfferIds?: ReadonlySet<string>,
+  ) {
+    return generateQuestOffers(
+      moodId,
+      options.getLibraryGames(),
+      options.random,
+      excludedOfferIds,
+      undefined,
+      undefined,
+      state.ownedPackIds,
+      state.poolPreferences,
+    );
   }
   return (set, get) => ({
     ...createDefaultState(),
     purchaseQuestPack: (packId) => {
       const state = get();
-      if (!Object.hasOwn(QUEST_PACKS_BY_ID, packId) || state.ownedPackIds.includes(packId) || state.profile.points < QUEST_PACK_PRICE) return false;
+      const isDev = state.profile.debugMode;
+
+      if (
+        !Object.hasOwn(QUEST_PACKS_BY_ID, packId) ||
+        state.ownedPackIds.includes(packId) ||
+        (state.profile.points < QUEST_PACK_PRICE && !isDev)
+      )
+        return false;
       const next = { ...state, ownedPackIds: [...state.ownedPackIds, packId] };
-      const offeredQuests = state.selectedMoodId ? offersForMood(state.selectedMoodId, next) : [];
-      set({ ownedPackIds: next.ownedPackIds, profile: { ...state.profile, points: state.profile.points - QUEST_PACK_PRICE },
-        offeredQuests, offerSetsByMoodId: state.selectedMoodId ? { [state.selectedMoodId]: offeredQuests } : {} });
+      const offeredQuests = state.selectedMoodId
+        ? offersForMood(state.selectedMoodId, next)
+        : [];
+      set({
+        ownedPackIds: next.ownedPackIds,
+        profile: {
+          ...state.profile,
+          points: isDev
+            ? state.profile.points
+            : state.profile.points - QUEST_PACK_PRICE,
+        },
+        offeredQuests,
+        offerSetsByMoodId: state.selectedMoodId
+          ? { [state.selectedMoodId]: offeredQuests }
+          : {},
+      });
       return true;
     },
     savePoolPreferences: (preferences) => {
       const state = get();
       const poolPreferences = sanitizePoolPreferences(preferences);
-      const offeredQuests = state.selectedMoodId ? offersForMood(state.selectedMoodId, { ...state, poolPreferences }) : [];
-      set({ poolPreferences, offeredQuests, offerSetsByMoodId: state.selectedMoodId ? { [state.selectedMoodId]: offeredQuests } : {} });
+      const offeredQuests = state.selectedMoodId
+        ? offersForMood(state.selectedMoodId, { ...state, poolPreferences })
+        : [];
+      set({
+        poolPreferences,
+        offeredQuests,
+        offerSetsByMoodId: state.selectedMoodId
+          ? { [state.selectedMoodId]: offeredQuests }
+          : {},
+      });
     },
     restartCurrentQuest: () => {
       const state = get();
       const session = state.currentSession;
-      if (!session || QUEST_CORES_BY_ID[session.questId]?.type !== "countdown" || session.pausedAt === null) return false;
-      set({ currentSession: { ...session, sessionId: options.createSessionId(), revealedAt: options.now(), startedAt: null, pausedAt: null, pausedTotalMs: 0 } });
+      if (
+        !session ||
+        QUEST_CORES_BY_ID[session.questId]?.type !== "countdown" ||
+        session.pausedAt === null
+      )
+        return false;
+      set({
+        currentSession: {
+          ...session,
+          sessionId: options.createSessionId(),
+          revealedAt: options.now(),
+          startedAt: null,
+          pausedAt: null,
+          pausedTotalMs: 0,
+        },
+      });
       return true;
     },
     toggleQuestFavorite: (questId) => {
       const state = get();
       const progress = state.questProgressById[questId];
       if (!progress || !Object.hasOwn(QUEST_CORES_BY_ID, questId)) return;
-      set({ questProgressById: {
-        ...state.questProgressById,
-        [questId]: { ...progress, favorite: !progress.favorite },
-      } });
+      set({
+        questProgressById: {
+          ...state.questProgressById,
+          [questId]: { ...progress, favorite: !progress.favorite },
+        },
+      });
     },
     repeatQuest: (questId) => {
       const state = get();
       const quest = QUEST_CORES_BY_ID[questId];
-      if (state.currentSession || !quest || !state.stats.completionCountsByQuestId[questId]) return false;
+      if (
+        state.currentSession ||
+        !quest ||
+        !state.stats.completionCountsByQuestId[questId]
+      )
+        return false;
       const last = state.questProgressById[questId]?.lastCompletion;
       if (!last && !quest.universal) return false;
       const now = options.now();
@@ -119,27 +183,45 @@ function createQuestState(
         selectedMoodId: moodId,
         moodSelectedAt: now,
         currentSession: {
-          sessionId: options.createSessionId(), moodId, questId,
-          game: last?.game ?? null, revealedAt: now,
-          startedAt: null, pausedAt: null, pausedTotalMs: 0,
+          sessionId: options.createSessionId(),
+          moodId,
+          questId,
+          game: last?.game ?? null,
+          revealedAt: now,
+          startedAt: null,
+          pausedAt: null,
+          pausedTotalMs: 0,
         },
       });
       return true;
     },
     markQuestsSeen: (questIds) => {
       const state = get();
-      const unseenIds = questIds.filter((id) =>
-        Object.hasOwn(QUEST_CORES_BY_ID, id) && (!state.questProgressById[id] ||
-          state.questProgressById[id].seenOffer?.id !== state.offeredQuests.find(offer => offer.questId === id)?.id));
+      const unseenIds = questIds.filter(
+        (id) =>
+          Object.hasOwn(QUEST_CORES_BY_ID, id) &&
+          (!state.questProgressById[id] ||
+            state.questProgressById[id].seenOffer?.id !==
+              state.offeredQuests.find((offer) => offer.questId === id)?.id),
+      );
       if (!unseenIds.length) return;
       const seenAt = options.now();
-      set({ questProgressById: {
-        ...state.questProgressById,
-        ...Object.fromEntries(unseenIds.map((id) => [id, {
-          ...(state.questProgressById[id] ?? createQuestProgress(seenAt)),
-          seenOffer: state.offeredQuests.find(offer => offer.questId === id) ?? null,
-        }])),
-      } });
+      set({
+        questProgressById: {
+          ...state.questProgressById,
+          ...Object.fromEntries(
+            unseenIds.map((id) => [
+              id,
+              {
+                ...(state.questProgressById[id] ?? createQuestProgress(seenAt)),
+                seenOffer:
+                  state.offeredQuests.find((offer) => offer.questId === id) ??
+                  null,
+              },
+            ]),
+          ),
+        },
+      });
     },
     selectMood: (moodId) => {
       const state = get();
@@ -221,12 +303,11 @@ function createQuestState(
       }
 
       const offeredQuests = offersForMood(
-        state.selectedMoodId, state,
+        state.selectedMoodId,
+        state,
         new Set(state.offeredQuests.map((offer) => offer.id)),
       );
-      if (
-        sameQuestOffers(offeredQuests, state.offeredQuests)
-      ) {
+      if (sameQuestOffers(offeredQuests, state.offeredQuests)) {
         return false;
       }
 
@@ -273,7 +354,11 @@ function createQuestState(
       set({
         questProgressById: {
           ...state.questProgressById,
-          [offer.questId]: { ...(state.questProgressById[offer.questId] ?? createQuestProgress(now)), seenOffer: offer },
+          [offer.questId]: {
+            ...(state.questProgressById[offer.questId] ??
+              createQuestProgress(now)),
+            seenOffer: offer,
+          },
         },
         currentSession: {
           sessionId: options.createSessionId(),
@@ -313,7 +398,12 @@ function createQuestState(
         return {
           currentSession: {
             ...session,
-            pausedAt: Math.min(Math.max(session.startedAt, pausedAt), session.startedAt + session.pausedTotalMs + questTimeLimitMs(session.questId)),
+            pausedAt: Math.min(
+              Math.max(session.startedAt, pausedAt),
+              session.startedAt +
+                session.pausedTotalMs +
+                questTimeLimitMs(session.questId),
+            ),
           },
         };
       });
@@ -328,7 +418,11 @@ function createQuestState(
         ) {
           return state;
         }
-        if (activeSessionDurationMs(session, resumedAt) >= questTimeLimitMs(session.questId)) return state;
+        if (
+          activeSessionDurationMs(session, resumedAt) >=
+          questTimeLimitMs(session.questId)
+        )
+          return state;
         return {
           currentSession: {
             ...session,
@@ -359,7 +453,9 @@ function createQuestState(
       if (
         !session ||
         session.startedAt === null ||
-        (QUEST_CORES_BY_ID[session.questId]?.type !== "countdown" && !state.profile.debugMode && state.profile.redRopes < 1)
+        (QUEST_CORES_BY_ID[session.questId]?.type !== "countdown" &&
+          !state.profile.debugMode &&
+          state.profile.redRopes < 1)
       ) {
         return false;
       }
@@ -377,9 +473,11 @@ function createQuestState(
             ...rotatedOffers,
             profile: {
               ...state.profile,
-              redRopes: state.profile.debugMode || QUEST_CORES_BY_ID[session.questId]?.type === "countdown"
-                ? state.profile.redRopes
-                : state.profile.redRopes - 1,
+              redRopes:
+                state.profile.debugMode ||
+                QUEST_CORES_BY_ID[session.questId]?.type === "countdown"
+                  ? state.profile.redRopes
+                  : state.profile.redRopes - 1,
             },
             currentSession: null,
             stats: {
@@ -472,7 +570,8 @@ function createQuestState(
           questProgressById: {
             ...state.questProgressById,
             [session.questId]: progressAfterCompletion(
-              state.questProgressById[session.questId], completedSession,
+              state.questProgressById[session.questId],
+              completedSession,
             ),
           },
           stats: statsAfterCompletion(state.stats, completedSession),

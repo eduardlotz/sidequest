@@ -20,6 +20,7 @@ type Props = {
   name: string;
   objective: string;
   suggestedDurationMinutes: number;
+  showWordmarkLogo?: boolean;
 };
 
 export function QuestCardFront({
@@ -34,45 +35,77 @@ export function QuestCardFront({
   name,
   objective,
   suggestedDurationMinutes,
+  showWordmarkLogo = true,
 }: Props) {
   const { i18n, t } = useTranslation();
   const language = i18n.resolvedLanguage?.startsWith("de") ? "de" : "en";
-  const labels = [QUEST_TYPES[type].title[language], ...Array.from(new Set([
-    ...tags.map((tag) => QUEST_TAGS[tag][language]),
-    ...genres,
-  ])).slice(0, 2)];
+  const labels = [
+    QUEST_TYPES[type].title[language],
+    ...Array.from(
+      new Set([...tags.map((tag) => QUEST_TAGS[tag][language]), ...genres]),
+    ).slice(0, 2),
+  ];
   return (
     <>
       <span className={styles.questCardFrontContent}>
-        {unknown ? <>
-          <span className={styles.questCardMood}>{t("ui.gallery.unknown")}</span>
-          <span className={styles.questCardDivider} />
-        </> : <QuestCardMeta
-          durationFormat="long"
-          durationLabel={type === "countdown" ? t("ui.timer.countdownLimit", { minutes: suggestedDurationMinutes }) : type === "speedrun" ? t("ui.timer.stopwatch") : undefined}
-          game={game}
-          minimumDurationMinutes={minimumDurationMinutes}
-          moodTitle={moodTitle}
-          suggestedDurationMinutes={suggestedDurationMinutes}
-        />}
+        {unknown ? (
+          <>
+            <span className={styles.questCardMood}>
+              {t("ui.gallery.unknown")}
+            </span>
+            <span className={styles.questCardDivider} />
+          </>
+        ) : (
+          <QuestCardMeta
+            durationFormat="long"
+            durationLabel={
+              type === "countdown"
+                ? t("ui.timer.countdownLimit", {
+                    minutes: suggestedDurationMinutes,
+                  })
+                : type === "speedrun"
+                  ? t("ui.timer.stopwatch")
+                  : undefined
+            }
+            game={game}
+            minimumDurationMinutes={minimumDurationMinutes}
+            moodTitle={moodTitle}
+            suggestedDurationMinutes={suggestedDurationMinutes}
+          />
+        )}
         <span className={styles.questCardFrontCopy}>
-          <strong className={styles.questCardFrontName}>{unknown ? t("ui.gallery.unknown") : name}</strong>
+          <strong className={styles.questCardFrontName}>
+            {unknown ? t("ui.gallery.unknown") : name}
+          </strong>
           <span className={styles.questCardFrontObjective}>
-            {unknown ? t("ui.gallery.unknownCard") : <QuestObjectiveText objective={objective} />}
+            {unknown ? (
+              t("ui.gallery.unknownCard")
+            ) : (
+              <QuestObjectiveText objective={objective} />
+            )}
           </span>
-          {!unknown && <span className={styles.questCardGenres}>
-            {labels.map((label) => (
-              <span className={styles.questCardGenre} key={label}>{label}</span>
-            ))}
-          </span>}
-          {!unknown && bestTimeMs != null && <span className={styles.questCardRecord}>
-            {t("ui.gallery.personalBest")} <strong>{formatRunningDuration(bestTimeMs)}</strong>
-          </span>}
+          {!unknown && (
+            <span className={styles.questCardGenres}>
+              {labels.map((label) => (
+                <span className={styles.questCardGenre} key={label}>
+                  {label}
+                </span>
+              ))}
+            </span>
+          )}
+          {!unknown && bestTimeMs != null && (
+            <span className={styles.questCardRecord}>
+              {t("ui.gallery.personalBest")}{" "}
+              <strong>{formatRunningDuration(bestTimeMs)}</strong>
+            </span>
+          )}
         </span>
       </span>
-      <span className={styles.cardBrand} aria-hidden="true">
-        <WordmarkLogo />
-      </span>
+      {showWordmarkLogo && (
+        <span className={styles.cardBrand} aria-hidden="true">
+          <WordmarkLogo />
+        </span>
+      )}
     </>
   );
 }

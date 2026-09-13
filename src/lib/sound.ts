@@ -38,26 +38,28 @@ export type SoundName =
   | "toggleOff"
   | "toggleOn";
 
+// adjusted version from minimal patch
 const bloom: SoundDefinition = {
   layers: [
     {
-      source: { type: "sine", frequency: 528 },
-      envelope: { attack: 0.06, decay: 0.32, sustain: 0, release: 0.04 },
-      gain: 0.03,
+      source: { type: "sine", frequency: { start: 550, end: 750 } },
+      envelope: { attack: 0.04, decay: 0.2, sustain: 0, release: 0.04 },
+      gain: 0.01,
+      delay: 0.1,
     },
     {
-      source: { type: "sine", frequency: 528, detune: 12 },
-      envelope: { attack: 0.06, decay: 0.34, sustain: 0, release: 0.04 },
-      gain: 0.025,
+      source: { type: "sine", frequency: { start: 720, end: 860 } },
+      envelope: { attack: 0.003, decay: 0.05, sustain: 0, release: 0.018 },
+      gain: 0.05,
     },
   ],
   effects: [
     {
       type: "delay",
-      time: 0.15,
-      feedback: 0.2,
+      time: 0.17,
+      feedback: 0.05,
       feedbackFilter: { type: "lowpass", frequency: 2500 },
-      mix: 0.12,
+      mix: 0.05,
     },
   ],
 };
@@ -69,14 +71,16 @@ const cut: SoundDefinition = {
   gain: 0.06,
 };
 
-// Matches the WebKits Minimal patch click without installing the patch.
+// from webkits minimal patch
 const minimalClick: SoundDefinition = {
   source: { type: "sine", frequency: 800 },
   envelope: { attack: 0, decay: 0.015, sustain: 0, release: 0.005 },
   gain: 0.1,
 };
 
-const coinHitFrequencies = [880, 914, 948, 986, 1028, 1072] as const;
+const coinHitFrequencies = [
+  880, 900, 950, 1000, 1025, 1050, 1100, 1150, 1200,
+] as const;
 const playCoinHits = coinHitFrequencies.map((frequency, index) =>
   defineSound({
     layers: [

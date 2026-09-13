@@ -18,7 +18,7 @@
   position: relative;
   width: var(--quest-card-width);
   flex: 0 0 auto;
-  aspect-ratio: 0.7;
+  aspect-ratio: 300 / 430; /* 0.697 */
   container-name: quest-card;
   container-type: inline-size;
   isolation: isolate;
@@ -50,7 +50,9 @@
 .previewCardProjection {
   position: absolute;
   width: 100%;
-  aspect-ratio: 0.7;
+  /* aspect-ratio: 0.7; */
+  /* aspect-ratio: 300 / 430; */
+  aspect-ratio: 0.67;
   inset: 0;
   backface-visibility: hidden;
   transform-style: preserve-3d;
@@ -86,11 +88,7 @@
 }
 
 .questSelectionCard {
-  --quest-card-small-type-unit: clamp(
-    0.8rem,
-    calc(100cqw / 340 * 16),
-    1rem
-  );
+  --quest-card-small-type-unit: clamp(0.8rem, calc(100cqw / 340 * 16), 1rem);
   --quest-card-content-inset: clamp(16px, 7.5cqw, 38px);
   --quest-card-copy-top: clamp(12px, 6cqw, 32px);
   --quest-card-copy-gap: clamp(6px, 2.5cqw, 12px);

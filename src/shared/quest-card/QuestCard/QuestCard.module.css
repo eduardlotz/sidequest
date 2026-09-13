@@ -165,11 +165,7 @@
 
 .questCardMood {
   color: var(--accent);
-  font-size: clamp(
-    calc(0.78 * var(--quest-card-type-unit)),
-    3.8cqw,
-    1.15rem
-  );
+  font-size: clamp(calc(0.78 * var(--quest-card-type-unit)), 3.8cqw, 1.15rem);
   font-weight: 720;
   letter-spacing: -0.035em;
   line-height: 1.05;
@@ -247,7 +243,10 @@
 
 .questCardFrontName {
   color: #f6f6fa;
+  /* TODO: replace container query with regular clamps or fix different aspectratios between preview and active card */
+
   font-size: clamp(calc(1.85 * var(--quest-card-type-unit)), 8.5cqw, 3.1rem);
+
   font-weight: 700;
   letter-spacing: -0.055em;
   line-height: 0.98;
@@ -257,7 +256,9 @@
 
 .questCardFrontObjective {
   color: rgb(246 246 250 / 0.82);
+
   font-size: clamp(calc(0.78 * var(--quest-card-type-unit)), 3.15cqw, 1rem);
+
   font-weight: 620;
   letter-spacing: normal;
   line-height: 1.32;
