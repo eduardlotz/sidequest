@@ -46,6 +46,7 @@ export function LibraryCollectionEditor({
   const {
     addCustomGame,
     customGames,
+    curatedGamePreferences,
     removeCustomGame,
     selectedCuratedGameIds,
     updateCustomGame,
@@ -53,6 +54,7 @@ export function LibraryCollectionEditor({
     useShallow((state) => ({
       addCustomGame: state.addCustomGame,
       customGames: state.customGames,
+      curatedGamePreferences: state.curatedGamePreferences,
       removeCustomGame: state.removeCustomGame,
       selectedCuratedGameIds: state.selectedCuratedGameIds,
       updateCustomGame: state.updateCustomGame,
@@ -143,9 +145,11 @@ export function LibraryCollectionEditor({
                 />
                 <div className={styles.gameCopy}>
                   <strong>{game.name}</strong>
-                  <span>
-                    {t(game.isSeries ? "ui.library.series" : "ui.library.game")}
-                  </span>
+                  {game.isSeries && <div className={styles.installments}>
+                    {game.installments.filter(entry => curatedGamePreferences[game.id]?.installmentIds.includes(entry.id)).map(entry => (
+                      <span key={entry.id}>{entry.name}</span>
+                    ))}
+                  </div>}
                 </div>
               </div>
             ))}

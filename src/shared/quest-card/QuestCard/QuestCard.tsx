@@ -21,6 +21,7 @@ type Props = {
   objective: string;
   style?: HTMLMotionProps<"span">["style"];
   suggestedDurationMinutes: number;
+  showWordmarkLogo?: boolean;
 };
 
 export function QuestCard({
@@ -39,6 +40,7 @@ export function QuestCard({
   objective,
   style,
   suggestedDurationMinutes,
+  showWordmarkLogo = true,
 }: Props) {
   return (
     <motion.span
@@ -60,6 +62,7 @@ export function QuestCard({
         name={name}
         objective={objective}
         suggestedDurationMinutes={suggestedDurationMinutes}
+        showWordmarkLogo={showWordmarkLogo}
       />
       {children}
     </motion.span>
