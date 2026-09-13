@@ -37,9 +37,10 @@
 }
 
 .brandMark {
-  position: absolute;
-  top: -15px;
+  position: fixed;
+  top: 17px;
   left: 50%;
+  z-index: 120;
   display: grid;
   width: 58px;
   height: 58px;
@@ -53,6 +54,10 @@
   cursor: pointer;
   transition: opacity 150ms ease;
   -webkit-tap-highlight-color: transparent;
+}
+
+:global([data-screen="active"]) .brandMark {
+  z-index: 0;
 }
 
 .brandMark svg {
@@ -105,8 +110,20 @@
     left: 18px;
   }
 
+  .navIconButton[data-size="medium"] {
+    --button-inline-padding: 0px;
+    --button-icon-inset: 0px;
+    width: var(--button-height);
+    min-width: var(--button-height);
+    padding-inline: 0;
+  }
+
+  .navButtonLabel {
+    display: none;
+  }
+
   .brandMark {
-    top: -8px;
+    top: 10px;
     width: 46px;
     height: 46px;
   }

@@ -1,5 +1,10 @@
-import { motion, useTransform, type MotionValue } from "motion/react";
-import { useEffect } from "react";
+import {
+  motion,
+  useTransform,
+  type MotionStyle,
+  type MotionValue,
+} from "motion/react";
+import { useEffect, useId } from "react";
 import { useTranslation } from "react-i18next";
 import type { MoodId } from "../../../../data/moods";
 import { getMoodArtStyle } from "../../../../data/questColors";
@@ -12,6 +17,7 @@ import { MoodIllustration } from "../MoodIllustration/MoodIllustration";
 import { SelectionCardBody } from "../SelectionCard/SelectionCard";
 import type { ArcDeckItem } from "./ArcDeck";
 import { loopDistance, modulo } from "./arcDeckMath";
+import { MoodCardFilters } from "./MoodCardFilters";
 
 type Props = {
   activeIndex: number;
@@ -58,6 +64,9 @@ export function ArcCard({
 }: Props) {
   const { t } = useTranslation();
   const { isCompact } = usePlayLayout();
+  const shadingId = useId().replace(/:/g, "");
+  const textFilterId = `${shadingId}-mood-text`;
+  const illustrationFilterId = `${shadingId}-mood-art`;
   const distance = useTransform(position, (latest) =>
     loopDistance(index - latest, itemCount),
   );
@@ -113,6 +122,16 @@ export function ArcCard({
   });
   const illustrationX = useTransform(rotateY, (value) => value * -1.7);
   const illustrationY = useTransform(rotateX, (value) => value * 1.35);
+  const lightingAngle = useTransform(
+    () => rotateY.get() * 5 - rotateX.get() * 3,
+  );
+  const outlineAngle = useTransform(lightingAngle, (angle) => `${160 + angle}deg`);
+  const lightDirection = useTransform(
+    lightingAngle,
+    (angle) => (angle * Math.PI) / 180,
+  );
+  const lightX = useTransform(lightDirection, (angle) => Math.sin(angle));
+  const lightY = useTransform(lightDirection, (angle) => Math.cos(angle));
 
   useEffect(() => {
     if (!center || selectedId) resetTilt();
@@ -237,9 +256,22 @@ export function ArcCard({
           onPointerMove={handlePointerMove}
           onPointerLeave={handlePointerLeave}
         >
+          <MoodCardFilters
+            illustrationFilterId={illustrationFilterId}
+            textFilterId={textFilterId}
+          />
           <motion.span
             className={styles.moodCardTiltSurface}
-            style={{ rotateX, rotateY, transformPerspective: 1_000 }}
+            style={
+              {
+                "--mood-outline-angle": outlineAngle,
+                "--mood-light-x": lightX,
+                "--mood-light-y": lightY,
+                rotateX,
+                rotateY,
+                transformPerspective: 1_000,
+              } as MotionStyle
+            }
             variants={{
               rest: { scale: 1, y: 0 },
               hover: { scale: 1.035, y: -8 },
@@ -266,8 +298,16 @@ export function ArcCard({
                 style={{ opacity: contentOpacity }}
               >
                 <span className={styles.arcCardContent}>
-                  <strong className={styles.arcCardTitle}>{item.title}</strong>
-                  <span className={styles.arcCardDescription}>
+                  <strong
+                    className={styles.arcCardTitle}
+                    style={{ filter: `url("#${textFilterId}")` }}
+                  >
+                    {item.title}
+                  </strong>
+                  <span
+                    className={styles.arcCardDescription}
+                    style={{ filter: `url("#${textFilterId}")` }}
+                  >
                     {item.subtitle}
                   </span>
                 </span>
@@ -277,6 +317,7 @@ export function ArcCard({
                 >
                   <MoodIllustration
                     className={styles.moodIllustration}
+                    innerShadowFilterId={illustrationFilterId}
                     moodId={item.id}
                   />
                 </motion.span>

@@ -10,9 +10,14 @@ import type { MoodId } from "../../../../data/moods";
 type MoodIllustrationProps = {
   moodId: MoodId;
   className?: string;
+  innerShadowFilterId?: string;
 };
 
-export function MoodIllustration({ moodId, className }: MoodIllustrationProps) {
+export function MoodIllustration({
+  moodId,
+  className,
+  innerShadowFilterId,
+}: MoodIllustrationProps) {
   return (
     <svg
       aria-hidden="true"
@@ -24,22 +29,32 @@ export function MoodIllustration({ moodId, className }: MoodIllustrationProps) {
       viewBox="0 0 445 302"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {quantizeIllustration(illustrationForMood(moodId))}
+      {quantizeIllustration(illustrationForMood(moodId), innerShadowFilterId)}
     </svg>
   );
 }
 
-function quantizeIllustration(node: ReactNode): ReactNode {
+function quantizeIllustration(
+  node: ReactNode,
+  innerShadowFilterId?: string,
+): ReactNode {
   if (!isValidElement(node)) return node;
   const element = node as ReactElement<{
     children?: ReactNode;
     fill?: string;
+    filter?: string;
   }>;
   const fill = element.props.fill;
-  const children = Children.map(element.props.children, quantizeIllustration);
+  const children = Children.map(element.props.children, (child) =>
+    quantizeIllustration(child, innerShadowFilterId),
+  );
+  const isShape = element.type === "path" || element.type === "circle";
 
   return cloneElement(element, {
     ...(fill ? { fill: fourShadeFill(fill) } : {}),
+    ...(isShape && innerShadowFilterId
+      ? { filter: `url("#${innerShadowFilterId}")` }
+      : {}),
     ...(children ? { children } : {}),
   });
 }

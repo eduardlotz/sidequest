@@ -82,9 +82,9 @@
   border-radius: 15px;
 }
 .visual[data-size="card"] {
-  width: clamp(20px, 6.5cqw, 28px);
-  height: clamp(20px, 6.5cqw, 28px);
-  border-radius: 6px;
+  width: var(--game-card-visual-size, clamp(20px, 6.5cqw, 28px));
+  height: var(--game-card-visual-size, clamp(20px, 6.5cqw, 28px));
+  border-radius: var(--game-card-visual-radius, 6px);
 }
 
 @media (--reduced-motion) {

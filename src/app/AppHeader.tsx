@@ -18,7 +18,7 @@ import styles from "./AppHeader.module.css";
 import { AboutPanel } from "./AboutPanel";
 import type { CoinImpact } from "../features/active-quest/components/FlyingCoin/FlyingCoin";
 import type { ThemeChoice } from "../lib/theme";
-import { GlobeIcon, InfoIcon } from "@phosphor-icons/react";
+import { InfoIcon } from "@phosphor-icons/react";
 
 type Props = {
   coinImpact: CoinImpact | null;
@@ -59,10 +59,6 @@ export function AppHeader({
   const [brandRotation, setBrandRotation] = useState(0);
   const totalCoinsCollected = stats.totalCoinsCollected;
   const formattedPoints = formatScore(displayedCoins, language);
-  const nextLanguage = language === "en" ? "de" : "en";
-  const nextLanguageName = t(
-    nextLanguage === "de" ? "ui.nav.german" : "ui.nav.english",
-  );
 
   useEffect(() => {
     const trigger = profileTriggerRef.current;
@@ -106,61 +102,23 @@ export function AppHeader({
               variant="about"
               trigger={
                 <SolidButton
-                  // data-sound-click-skip
+                  className={styles.navIconButton}
                   iconLeft={<InfoIcon weight="bold" />}
                   aria-label={t("ui.nav.about")}
                   size="medium"
                   type="button"
                   variant="secondary"
                 >
-                  {t("ui.nav.about")}
-                  {/* <InfoIcon weight="bold" /> */}
+                  <span className={styles.navButtonLabel}>
+                    {t("ui.nav.about")}
+                  </span>
                 </SolidButton>
               }
             >
               <AboutPanel reduceMotion={reduceMotion} />
             </ResponsiveDrawer>
-            <SolidButton
-              size="medium"
-              type="button"
-              variant="secondary"
-              // iconLeft={<GlobeIcon weight="bold" />}
-              aria-label={t("ui.nav.switchLanguage", {
-                language: nextLanguageName,
-              })}
-              lang={nextLanguage}
-              onClick={() => void i18n.changeLanguage(nextLanguage)}
-            >
-              {/* {t("ui.library.changeLanguage")} */}
-              <GlobeIcon weight="bold" />
-            </SolidButton>
           </div>
         </motion.div>
-
-        <button
-          className={styles.brandMark}
-          data-sound-click-skip
-          type="button"
-          aria-label={t("ui.nav.spinLogo")}
-          title={t("ui.nav.spinLogo")}
-          onClick={() => setBrandRotation((rotation) => rotation + 360)}
-        >
-          <motion.div
-            animate={{ rotate: brandRotation }}
-            transition={
-              reduceMotion
-                ? { duration: 0 }
-                : {
-                    type: "spring",
-                    stiffness: 190,
-                    damping: 18,
-                    mass: 0.72,
-                  }
-            }
-          >
-            <Logo />
-          </motion.div>
-        </button>
 
         <motion.div
           className={styles.navActionSlot}
@@ -238,6 +196,30 @@ export function AppHeader({
           </div>
         </motion.div>
       </header>
+      <button
+        className={styles.brandMark}
+        data-sound-click-skip
+        type="button"
+        aria-label={t("ui.nav.spinLogo")}
+        title={t("ui.nav.spinLogo")}
+        onClick={() => setBrandRotation((rotation) => rotation + 360)}
+      >
+        <motion.div
+          animate={{ rotate: brandRotation }}
+          transition={
+            reduceMotion
+              ? { duration: 0 }
+              : {
+                  type: "spring",
+                  stiffness: 190,
+                  damping: 18,
+                  mass: 0.72,
+                }
+          }
+        >
+          <Logo />
+        </motion.div>
+      </button>
       <ResponsiveDrawerContainer setContainer={setMobileDrawerContainer} />
     </>
   );

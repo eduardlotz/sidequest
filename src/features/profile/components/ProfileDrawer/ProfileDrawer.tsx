@@ -1,5 +1,5 @@
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
-import { BookBookmarkIcon, CircleHalfIcon, CoffeeIcon, EarIcon, GameControllerIcon, StorefrontIcon, WrenchIcon } from "@phosphor-icons/react";
+import { BookBookmarkIcon, CircleHalfIcon, CoffeeIcon, EarIcon, GameControllerIcon, GlobeIcon, StorefrontIcon, WrenchIcon } from "@phosphor-icons/react";
 import { QuestPoolSettings } from "../QuestPoolSettings/QuestPoolSettings";
 import { QuestShop } from "../QuestShop/QuestShop";
 import { Drawer } from "vaul";
@@ -10,7 +10,7 @@ import styles from "./ProfileDrawer.module.css";
 import { formatScore } from "../../../../lib/format";
 import { applySoundEnabled, readSoundEnabled } from "../../../../lib/sound";
 import { localizeMood } from "../../../../localization/catalog";
-import { normalizeLanguage } from "../../../../localization/i18n";
+import { normalizeLanguage, SUPPORTED_LANGUAGES } from "../../../../localization/i18n";
 import type { ThemeChoice } from "../../../../lib/theme";
 import type {
   QuestStats,
@@ -74,25 +74,33 @@ export function ProfileDrawer({
       <section className={styles.profileSection}>
         <div className={styles.profileSettingRow}>
           <span className={styles.settingLabelWithInfo}>
+            <GlobeIcon aria-hidden weight="duotone" />
+            {t("ui.profile.language")}
+          </span>
+          <SettingSegmentedControl
+            label={t("ui.profile.language")}
+            value={language}
+            options={SUPPORTED_LANGUAGES.map((choice) => ({
+              value: choice,
+              label: t(choice === "en" ? "ui.nav.english" : "ui.nav.german"),
+            }))}
+            onChange={(choice) => void i18n.changeLanguage(choice)}
+          />
+        </div>
+        <div className={styles.profileSettingRow}>
+          <span className={styles.settingLabelWithInfo}>
             <CircleHalfIcon aria-hidden weight="duotone" />
             {t("ui.profile.theme")}
           </span>
-          <div
-            className={styles.themeSegmentedControl}
-            role="group"
-            aria-label={t("ui.profile.theme")}
-          >
-            {(["light", "dark", "auto"] as const).map((choice) => (
-              <button
-                type="button"
-                aria-pressed={themeChoice === choice}
-                key={choice}
-                onClick={() => onThemeChange(choice)}
-              >
-                {t(`ui.profile.theme${capitalize(choice)}`)}
-              </button>
-            ))}
-          </div>
+          <SettingSegmentedControl
+            label={t("ui.profile.theme")}
+            value={themeChoice}
+            options={(["light", "dark", "auto"] as const).map((choice) => ({
+              value: choice,
+              label: t(`ui.profile.theme${capitalize(choice)}`),
+            }))}
+            onChange={onThemeChange}
+          />
         </div>
         <div className={styles.profileSettingRow}>
           <span className={styles.settingLabelWithInfo}>
@@ -205,6 +213,37 @@ function ProfileMetric({ label, value }: { label: string; value: string }) {
     <div>
       <dt>{label}</dt>
       <dd>{value}</dd>
+    </div>
+  );
+}
+
+function SettingSegmentedControl<Value extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: Value;
+  options: readonly { value: Value; label: string }[];
+  onChange: (value: Value) => void;
+}) {
+  return (
+    <div
+      className={styles.settingSegmentedControl}
+      role="group"
+      aria-label={label}
+    >
+      {options.map((option) => (
+        <button
+          type="button"
+          aria-pressed={value === option.value}
+          key={option.value}
+          onClick={() => onChange(option.value)}
+        >
+          {option.label}
+        </button>
+      ))}
     </div>
   );
 }

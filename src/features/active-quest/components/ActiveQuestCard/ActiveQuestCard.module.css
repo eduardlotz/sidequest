@@ -19,9 +19,6 @@
   width: var(--quest-card-width);
   align-self: center;
   justify-self: center;
-  aspect-ratio: 0.7;
-  container-name: quest-card;
-  container-type: inline-size;
   isolation: isolate;
   translate: clamp(20px, calc(1.765cqw + 0.588px), 26px)
     clamp(1px, calc(3.235cqw - 34.59px), 12px);
@@ -406,7 +403,7 @@
 }
 
 .completedFrontResult {
-  border-radius: clamp(31px, 10cqw, 49px);
+  border-radius: 10cqw;
   background: rgb(9 9 11 / 0.76);
   color: #fff;
   pointer-events: none;
@@ -414,14 +411,14 @@
 
 .completedCardResult > span {
   color: rgb(247 247 250 / 0.48);
-  font-size: clamp(0.72rem, 3.3cqw, 0.88rem);
+  font-size: calc(0.72 * var(--quest-card-type-unit));
   font-weight: 700;
 }
 
 .completedCardResult > strong {
-  margin-top: 2px;
+  margin-top: calc(0.125 * var(--quest-card-type-unit));
   color: #fff;
-  font-size: clamp(2.9rem, 14cqw, 4.25rem);
+  font-size: 14cqw;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
   letter-spacing: -0.07em;
@@ -455,15 +452,19 @@
 }
 
 :global([data-play-layout="compact"]) .activeQuest {
-  --active-card-height: calc(var(--quest-card-width) / 0.7);
+  --timer-hint-margin-top: 5vh;
   display: block;
   min-height: var(--app-height);
   overflow: hidden;
 }
 
+:global([data-play-layout="compact"]) .activeQuest[data-phase="running"] {
+  --timer-hint-margin-top: 15vh;
+}
+
 :global([data-play-layout="compact"]) .activeCardStage {
   position: absolute;
-  top: calc(100dvh - (var(--active-card-height) / 2) + 5vh);
+  top: calc(100dvh - (var(--quest-card-height) / 2) + 5vh);
   left: 50%;
   width: var(--quest-card-width);
   transform: translateX(-50%);
@@ -544,7 +545,8 @@
   /* top: 0; */
   /* bottom: auto; */
   top: calc(
-    var(--app-height) - (var(--active-card-height) / 2) - clamp(180px, 35vh, 300px)
+    var(--app-height) - (var(--quest-card-height) / 2) -
+      clamp(180px, 35vh, 300px)
   );
   left: 50%;
 
@@ -557,7 +559,7 @@
   justify-content: flex-end;
   flex-direction: column;
   gap: 24px;
-  padding-bottom: calc((var(--active-card-height) / 2) - 6px);
+  padding-bottom: calc((var(--quest-card-height) / 2) - 8px);
   pointer-events: none;
   translate: -50% 0;
 }
@@ -587,7 +589,7 @@
 :global([data-play-layout="compact"]) .timerHint {
   order: 1;
   z-index: auto;
-  margin: 5vh 0 0 0;
+  margin: var(--timer-hint-margin-top) 0 0;
   font-size: 0.86rem;
   line-height: 1.35;
 }
@@ -597,7 +599,6 @@
   /* top: auto; */
   right: auto;
   left: auto;
-  /* bottom: calc(100svh - (var(--active-card-height) / 2) + 40px); */
   bottom: 40px;
   z-index: auto;
   width: 100%;

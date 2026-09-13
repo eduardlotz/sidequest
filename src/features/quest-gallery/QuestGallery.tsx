@@ -31,6 +31,7 @@ import {
 } from "../../shared/hooks/useMediaQuery";
 import { InteractiveQuestCard } from "../../shared/quest-card/InteractiveQuestCard/InteractiveQuestCard";
 import { QuestCard } from "../../shared/quest-card/QuestCard/QuestCard";
+import cardStyles from "../../shared/quest-card/QuestCard/QuestCard.module.css";
 import { SolidButton } from "../../shared/ui/SolidButton/SolidButton";
 import { InfoText } from "../../shared/ui/InfoText/InfoText";
 import { CoinIcon } from "../../shared/ui/Icons/Icons";
@@ -685,7 +686,7 @@ function GalleryCard({
     <motion.div
       layoutId={`gallery-card-${quest.id}`}
       layoutCrossfade={false}
-      className={styles.card}
+      className={`${cardStyles.questCardFrame} ${styles.card}`}
       data-focused={focused || undefined}
       data-uncompleted={!completed || undefined}
       style={{

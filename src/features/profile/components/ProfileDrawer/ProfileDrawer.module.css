@@ -179,7 +179,7 @@
   position: relative;
 }
 
-.themeSegmentedControl {
+.settingSegmentedControl {
   display: flex;
   padding: 3px;
   align-items: center;
@@ -187,7 +187,7 @@
   background: var(--color-surface-soft);
 }
 
-.themeSegmentedControl button {
+.settingSegmentedControl button {
   min-width: 52px;
   min-height: 27px;
   padding: 0 10px;
@@ -199,7 +199,7 @@
   cursor: pointer;
 }
 
-.themeSegmentedControl button[aria-pressed="true"] {
+.settingSegmentedControl button[aria-pressed="true"] {
   background: var(--color-surface);
   box-shadow: 0 1px 4px rgb(var(--color-shadow-rgb) / 0.2);
   color: var(--color-text);
@@ -316,7 +316,7 @@
     overflow: auto;
   }
 
-  .themeSegmentedControl button {
+  .settingSegmentedControl button {
     min-width: 48px;
     padding: 0 8px;
   }
@@ -376,10 +376,10 @@
   min-height: 42px;
   font-size: 14px;
 }
-.profileOverview .themeSegmentedControl {
+.profileOverview .settingSegmentedControl {
   background: var(--profile-muted-surface);
 }
-.profileOverview .themeSegmentedControl button {
+.profileOverview .settingSegmentedControl button {
   min-width: 48px;
   padding-inline: 8px;
   font-size: 13px;
