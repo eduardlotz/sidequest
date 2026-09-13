@@ -14,10 +14,7 @@
 .previewCard {
   position: relative;
   width: min(340px, 100%);
-  aspect-ratio: 0.7;
   justify-self: center;
-  container-name: quest-card;
-  container-type: inline-size;
   rotate: -5deg;
   pointer-events: auto;
 }

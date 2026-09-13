@@ -44,6 +44,7 @@ import {
   type InteractiveQuestCardHandle,
 } from "../../../../shared/quest-card/InteractiveQuestCard/InteractiveQuestCard";
 import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
+import cardStyles from "../../../../shared/quest-card/QuestCard/QuestCard.module.css";
 import { RopePurchaseRow } from "../RopePurchaseRow/RopePurchaseRow";
 import { FlyingCoin, type CoinImpact } from "../FlyingCoin/FlyingCoin";
 import {
@@ -888,7 +889,7 @@ export function ActiveQuestCard({
       )}
 
       <div
-        className={styles.activeCardStage}
+        className={`${cardStyles.questCardFrame} ${styles.activeCardStage}`}
         style={getMoodAccentStyle(quest.mood.id)}
       >
         <motion.div

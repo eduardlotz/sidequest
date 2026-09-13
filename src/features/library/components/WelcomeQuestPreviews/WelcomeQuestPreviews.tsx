@@ -9,6 +9,7 @@ import { hydrateQuest } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
 import { InteractiveQuestCard } from "../../../../shared/quest-card/InteractiveQuestCard/InteractiveQuestCard";
 import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
+import cardStyles from "../../../../shared/quest-card/QuestCard/QuestCard.module.css";
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
 import styles from "./WelcomeQuestPreviews.module.css";
 
@@ -56,7 +57,7 @@ export function WelcomeQuestPreviews({
         if (!quest) return null;
         return (
           <div
-            className={styles.previewCard}
+            className={`${cardStyles.questCardFrame} ${styles.previewCard}`}
             key={offer.id}
             style={getMoodAccentStyle(offer.moodId)}
           >

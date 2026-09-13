@@ -8,9 +8,9 @@
   --completion-check-main: var(--accent);
   --completion-check-highlight: color-mix(in srgb, var(--accent) 64%, white);
   display: block;
-  width: min(28cqw, 96px);
+  width: 28cqw;
   aspect-ratio: 1;
-  margin-bottom: 10px;
+  margin-bottom: calc(0.625 * var(--quest-card-type-unit));
   filter: drop-shadow(0 0 26px rgb(var(--accent-rgb) / 0.3));
   image-rendering: pixelated;
   isolation: isolate;

@@ -26,7 +26,10 @@
   );
   --quest-card-width: min(
     var(--quest-card-inline-size),
-    calc(var(--quest-card-available-height) * 0.665)
+    calc(var(--quest-card-available-height) * var(--quest-card-aspect-ratio))
+  );
+  --quest-card-height: calc(
+    var(--quest-card-width) / var(--quest-card-aspect-ratio)
   );
   position: relative;
   container-type: inline-size;
@@ -124,7 +127,6 @@
 }
 
 .questSelectionScreen {
-  --quest-card-height: calc(var(--quest-card-width) / 0.7);
   --quest-deck-height: calc(
     var(--quest-card-height) + var(--quest-deck-overhang)
   );
@@ -256,10 +258,6 @@
     40px,
     calc(var(--app-height) * 0.1257 - 35.6px),
     70px
-  );
-  --quest-card-width: min(
-    var(--quest-card-inline-size),
-    calc(var(--quest-card-available-height) * 0.7)
   );
 }
 

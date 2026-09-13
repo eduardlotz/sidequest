@@ -73,6 +73,7 @@ type RopeState = {
 };
 
 const ROPE_LINKS = 8;
+const ROPE_RESTING_WIDTH = 8;
 const CURVE_POINTS = 36;
 const FIXED_TIME_STEP = 1 / 120;
 const MAX_FRAME_DELTA = 1 / 30;
@@ -698,11 +699,7 @@ function hideRopePath(path: SVGPathElement | null) {
 }
 
 function ropeStrokeWidth(state: RopeState, dragging: boolean) {
-  const restingWidth = Math.max(
-    6.75,
-    Math.min(state.width, state.height) * 0.0155,
-  );
-  if (!dragging) return restingWidth;
+  if (!dragging) return ROPE_RESTING_WIDTH;
   const baseLength = ropeLengthForMode(
     state.mode,
     state.height,
@@ -713,5 +710,5 @@ function ropeStrokeWidth(state: RopeState, dragging: boolean) {
     0,
     1,
   );
-  return restingWidth * (1 - stretchProgress * 0.32);
+  return ROPE_RESTING_WIDTH * (1 - stretchProgress * 0.32);
 }

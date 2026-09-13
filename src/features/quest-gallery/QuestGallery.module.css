@@ -58,11 +58,6 @@
   top: 18px;
   left: 0;
 
-  aspect-ratio: 300 / 430; /* 0.697 */
-
-  container: quest-card / inline-size;
-  --quest-card-content-inset: 20px;
-  --quest-card-type-unit: 0.9rem;
   --quest-card-brand-opacity: 0.15;
 }
 .card[data-focused] {

@@ -9,6 +9,7 @@ import { playSound } from "../../../../lib/sound";
 import { VisuallyHidden } from "../../../../shared/ui/VisuallyHidden/VisuallyHidden";
 import styles from "./QuestOfferDeck.module.css";
 import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
+import cardStyles from "../../../../shared/quest-card/QuestCard/QuestCard.module.css";
 import { QuestCardBack } from "../../../../shared/quest-card/QuestCardBack/QuestCardBack";
 import { plainObjectiveText } from "../../../../shared/quest-card/QuestObjectiveText/QuestObjectiveText";
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
@@ -187,7 +188,7 @@ export function QuestOfferDeck({
           stackOffset === 0 ? "front" : stackOffset === 1 ? "middle" : "back";
         return (
           <motion.div
-            className={styles.previewCardSlot}
+            className={`${cardStyles.questCardFrame} ${styles.previewCardSlot}`}
             data-position={
               displayIndex === 0 ? "left" : displayIndex === 2 ? "right" : "center"
             }
