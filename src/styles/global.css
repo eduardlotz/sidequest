@@ -95,7 +95,7 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   --color-canvas: #0f0f12;
-  --color-canvas-gradient: linear-gradient(180deg, #24242a 100%, #111119 100%);
+  --color-canvas-gradient: linear-gradient(180deg, #272733 100%, #111119 100%);
   --color-canvas-rgb: 17 17 24;
   --color-text: #f2f2f7;
   --color-text-rgb: 242 242 247;
