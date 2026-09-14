@@ -66,7 +66,6 @@ export function ArcCard({
   const { isCompact } = usePlayLayout();
   const shadingId = useId().replace(/:/g, "");
   const textFilterId = `${shadingId}-mood-text`;
-  const illustrationFilterId = `${shadingId}-mood-art`;
   const distance = useTransform(position, (latest) =>
     loopDistance(index - latest, itemCount),
   );
@@ -122,16 +121,21 @@ export function ArcCard({
   });
   const illustrationX = useTransform(rotateY, (value) => value * -1.7);
   const illustrationY = useTransform(rotateX, (value) => value * 1.35);
-  const lightingAngle = useTransform(
-    () => rotateY.get() * 5 - rotateX.get() * 3,
-  );
-  const outlineAngle = useTransform(lightingAngle, (angle) => `${160 + angle}deg`);
-  const lightDirection = useTransform(
-    lightingAngle,
-    (angle) => (angle * Math.PI) / 180,
-  );
-  const lightX = useTransform(lightDirection, (angle) => Math.sin(angle));
-  const lightY = useTransform(lightDirection, (angle) => Math.cos(angle));
+
+  // const lightingAngle = useTransform(
+  //   () => rotateY.get() * 5 - rotateX.get() * 3,
+  // );
+  // const outlineAngle = useTransform(
+  //   lightingAngle,
+  //   (angle) => `${160 + angle}deg`,
+  // );
+
+  // const lightDirection = useTransform(
+  //   lightingAngle,
+  //   (angle) => (angle * Math.PI) / 180,
+  // );
+  // const lightX = useTransform(lightDirection, (angle) => Math.sin(angle));
+  // const lightY = useTransform(lightDirection, (angle) => Math.cos(angle));
 
   useEffect(() => {
     if (!center || selectedId) resetTilt();
@@ -256,17 +260,14 @@ export function ArcCard({
           onPointerMove={handlePointerMove}
           onPointerLeave={handlePointerLeave}
         >
-          <MoodCardFilters
-            illustrationFilterId={illustrationFilterId}
-            textFilterId={textFilterId}
-          />
+          <MoodCardFilters textFilterId={textFilterId} />
           <motion.span
             className={styles.moodCardTiltSurface}
             style={
               {
-                "--mood-outline-angle": outlineAngle,
-                "--mood-light-x": lightX,
-                "--mood-light-y": lightY,
+                // "--mood-outline-angle": outlineAngle,
+                // "--mood-light-x": lightX,
+                // "--mood-light-y": lightY,
                 rotateX,
                 rotateY,
                 transformPerspective: 1_000,
@@ -317,7 +318,6 @@ export function ArcCard({
                 >
                   <MoodIllustration
                     className={styles.moodIllustration}
-                    innerShadowFilterId={illustrationFilterId}
                     moodId={item.id}
                   />
                 </motion.span>

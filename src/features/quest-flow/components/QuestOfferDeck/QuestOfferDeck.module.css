@@ -105,6 +105,18 @@
   -webkit-backface-visibility: hidden;
 }
 
+.previewCardDisplay {
+  position: absolute;
+  display: block;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.previewCardHitArea[data-returning] {
+  --quest-card-content-opacity: 1;
+  --quest-card-brand-opacity: 0.42;
+}
+
 .newCardsCard,
 .newCardsCardFront {
   position: absolute;
@@ -176,7 +188,7 @@
     --quest-card-brand-opacity: 0.42;
   }
 
-  .previewCardHitArea:not([data-selected]):hover .questSelectionCard {
+  .previewCardHitArea:not([data-selected]):not([data-returning]):hover .questSelectionCard {
     scale: 1.012;
     will-change: transform;
   }

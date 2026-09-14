@@ -1,12 +1,10 @@
 import styles from "./ArcDeck.module.css";
 
 type MoodCardFiltersProps = {
-  illustrationFilterId: string;
   textFilterId: string;
 };
 
 export function MoodCardFilters({
-  illustrationFilterId,
   textFilterId,
 }: MoodCardFiltersProps) {
   return (
@@ -18,13 +16,6 @@ export function MoodCardFilters({
       height="0"
     >
       <defs>
-        <InnerBevelFilter
-          id={illustrationFilterId}
-          blur={2.4}
-          offset={2}
-          highlightOpacity={0.3}
-          shadowOpacity={0.32}
-        />
         <InnerBevelFilter
           id={textFilterId}
           blur={0.65}

@@ -142,7 +142,8 @@
   z-index: 4;
   padding: var(--mood-outline-width);
   border-radius: calc(
-    var(--mood-card-radius) + var(--mood-outline-gap) + var(--mood-outline-width)
+    var(--mood-card-radius) + var(--mood-outline-gap) +
+      var(--mood-outline-width)
   );
   background: linear-gradient(
     var(--mood-outline-angle, 160deg),

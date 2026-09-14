@@ -170,7 +170,7 @@ export function ArcDeck({
   }
 
   function handleWheel(event: WheelEvent<HTMLDivElement>) {
-    event.preventDefault();
+    // event.preventDefault();
     if (selectedId || items.length < 2) return;
     const raw =
       Math.abs(event.deltaX) > Math.abs(event.deltaY)
@@ -351,8 +351,6 @@ function moveFocusToNextStep(delay: number) {
   window.setTimeout(() => {
     const destinations =
       document.querySelectorAll<HTMLElement>("[data-flow-focus]");
-    destinations
-      .item(destinations.length - 1)
-      ?.focus({ preventScroll: true });
+    destinations.item(destinations.length - 1)?.focus({ preventScroll: true });
   }, delay);
 }
