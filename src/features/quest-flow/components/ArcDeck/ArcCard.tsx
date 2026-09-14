@@ -121,16 +121,21 @@ export function ArcCard({
   });
   const illustrationX = useTransform(rotateY, (value) => value * -1.7);
   const illustrationY = useTransform(rotateX, (value) => value * 1.35);
-  const lightingAngle = useTransform(
-    () => rotateY.get() * 5 - rotateX.get() * 3,
-  );
-  const outlineAngle = useTransform(lightingAngle, (angle) => `${160 + angle}deg`);
-  const lightDirection = useTransform(
-    lightingAngle,
-    (angle) => (angle * Math.PI) / 180,
-  );
-  const lightX = useTransform(lightDirection, (angle) => Math.sin(angle));
-  const lightY = useTransform(lightDirection, (angle) => Math.cos(angle));
+
+  // const lightingAngle = useTransform(
+  //   () => rotateY.get() * 5 - rotateX.get() * 3,
+  // );
+  // const outlineAngle = useTransform(
+  //   lightingAngle,
+  //   (angle) => `${160 + angle}deg`,
+  // );
+
+  // const lightDirection = useTransform(
+  //   lightingAngle,
+  //   (angle) => (angle * Math.PI) / 180,
+  // );
+  // const lightX = useTransform(lightDirection, (angle) => Math.sin(angle));
+  // const lightY = useTransform(lightDirection, (angle) => Math.cos(angle));
 
   useEffect(() => {
     if (!center || selectedId) resetTilt();
@@ -260,9 +265,9 @@ export function ArcCard({
             className={styles.moodCardTiltSurface}
             style={
               {
-                "--mood-outline-angle": outlineAngle,
-                "--mood-light-x": lightX,
-                "--mood-light-y": lightY,
+                // "--mood-outline-angle": outlineAngle,
+                // "--mood-light-x": lightX,
+                // "--mood-light-y": lightY,
                 rotateX,
                 rotateY,
                 transformPerspective: 1_000,

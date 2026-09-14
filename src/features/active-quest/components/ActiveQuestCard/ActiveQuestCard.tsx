@@ -151,6 +151,7 @@ const pausePanelItemVariants: Variants = {
   },
 };
 
+// TODO: fix, refactor and simplify this mess
 export function ActiveQuestCard({
   quest,
   session,
@@ -188,6 +189,15 @@ export function ActiveQuestCard({
     initiallyReady ? "ready" : initiallyPaused ? "paused" : "running",
   );
   const { isCompact: isMobileViewport } = usePlayLayout();
+
+  const dragRotationTarget = useMotionValue(0);
+
+  const dragRotation = useSpring(dragRotationTarget, {
+    stiffness: 300,
+    damping: 25,
+    mass: 0.6,
+  });
+
   const activeCardScale = isMobileViewport ? 1.15 : 1.25;
   const [cardHoverArmed, setCardHoverArmed] = useState(false);
   const [ropeMode, setRopeMode] = useState<RopeMode>(
@@ -961,12 +971,27 @@ export function ActiveQuestCard({
             }
             setRevealFinished(true);
           }}
-          drag={cardFocus.focused}
+          // drag={cardFocus.focused}
+          style={{
+            rotate: dragRotation,
+          }}
+          drag
           dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
           dragElastic={0.5}
-          dragMomentum={false}
+          dragMomentum={true}
           dragTransition={{ bounceStiffness: 320, bounceDamping: 28 }}
-          onDragEnd={cardFocus.dismissFromDrag}
+          onDrag={(_, info) => {
+            if (reduceMotion) return;
+
+            dragRotationTarget.set(
+              Math.max(-7, Math.min(7, info.offset.x * 0.04)),
+            );
+          }}
+          // onDragEnd={cardFocus.dismissFromDrag}
+          onDragEnd={(event, info) => {
+            dragRotationTarget.set(0);
+            cardFocus.dismissFromDrag(event, info);
+          }}
           whileDrag={{ scale: reduceMotion ? 1 : 1.018 }}
           transition={
             reduceMotion
