@@ -79,7 +79,8 @@ const FIXED_TIME_STEP = 1 / 120;
 const MAX_FRAME_DELTA = 1 / 30;
 const MAX_STEPS_PER_FRAME = 5;
 const CONSTRAINT_ITERATIONS = 7;
-const ANCHOR_OFFSET_Y = -8;
+// const ANCHOR_OFFSET_Y = -8;
+const ANCHOR_OFFSET_Y = -20;
 // const GRAVITY = 3_600;
 
 const GRAVITY = 4000;

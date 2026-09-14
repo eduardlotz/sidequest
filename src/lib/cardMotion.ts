@@ -1,4 +1,8 @@
 import { arc } from "motion/react";
+import { SELECTION_HANDOFF_EASE } from "../shared/motion/transitions";
+
+const CARD_ARC_STRENGTH = 0.32;
+const CARD_ARC_PEAK = 0.52;
 
 export const CARD_LAYOUT_TRANSITION = {
   type: "spring" as const,
@@ -8,10 +12,31 @@ export const CARD_LAYOUT_TRANSITION = {
   restDelta: 0.001,
   restSpeed: 0.001,
   path: arc({
-    strength: 0.32,
-    peak: 0.52,
+    strength: CARD_ARC_STRENGTH,
+    peak: CARD_ARC_PEAK,
     direction: "cw",
   }),
+};
+
+// A timed spring keeps the return responsive when its visible motion ends.
+export const CARD_RETURN_TRANSITION = {
+  type: "spring" as const,
+  duration: 1,
+  bounce: 0.12,
+};
+
+export const CARD_RETURN_LAYOUT_TRANSITION = {
+  ...CARD_RETURN_TRANSITION,
+  path: arc({
+    strength: CARD_ARC_STRENGTH,
+    peak: 1 - CARD_ARC_PEAK,
+    direction: "ccw",
+  }),
+};
+
+export const CARD_DISPLAY_TRANSITION = {
+  scale: { duration: 0.62, ease: SELECTION_HANDOFF_EASE },
+  rotate: { type: "spring" as const, stiffness: 220, damping: 23, mass: 0.96 },
 };
 
 export type CardFlipDirection = -1 | 1;
@@ -20,6 +45,14 @@ export type CardFlipPose = {
   rotateX: number;
   rotateY: number;
   scale: number;
+};
+
+export type CardSurfacePose = CardFlipPose & { y: number };
+
+export type CardReturnPose = {
+  scale: number;
+  rotate: number;
+  surface: CardSurfacePose;
 };
 
 export function createCardFlip(

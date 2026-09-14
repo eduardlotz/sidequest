@@ -66,7 +66,6 @@ export function ArcCard({
   const { isCompact } = usePlayLayout();
   const shadingId = useId().replace(/:/g, "");
   const textFilterId = `${shadingId}-mood-text`;
-  const illustrationFilterId = `${shadingId}-mood-art`;
   const distance = useTransform(position, (latest) =>
     loopDistance(index - latest, itemCount),
   );
@@ -256,10 +255,7 @@ export function ArcCard({
           onPointerMove={handlePointerMove}
           onPointerLeave={handlePointerLeave}
         >
-          <MoodCardFilters
-            illustrationFilterId={illustrationFilterId}
-            textFilterId={textFilterId}
-          />
+          <MoodCardFilters textFilterId={textFilterId} />
           <motion.span
             className={styles.moodCardTiltSurface}
             style={
@@ -317,7 +313,6 @@ export function ArcCard({
                 >
                   <MoodIllustration
                     className={styles.moodIllustration}
-                    innerShadowFilterId={illustrationFilterId}
                     moodId={item.id}
                   />
                 </motion.span>

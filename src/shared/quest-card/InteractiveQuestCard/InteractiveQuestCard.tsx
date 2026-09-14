@@ -10,7 +10,11 @@ import {
   type Ref,
 } from "react";
 import { useTiltEffect } from "../../../hooks/useTiltEffect";
-import { createCardFlip, type CardFlipDirection } from "../../../lib/cardMotion";
+import {
+  createCardFlip,
+  type CardFlipDirection,
+  type CardSurfacePose,
+} from "../../../lib/cardMotion";
 import { CARD_CLICK_FLIP_EASE, CARD_FLIP_EASE } from "../../motion/transitions";
 import { QuestCardBack } from "../QuestCardBack/QuestCardBack";
 import styles from "./InteractiveQuestCard.module.css";
@@ -21,6 +25,7 @@ const CARD_TRIPLE_CLICK_WINDOW_MS = 520;
 
 type CompletionCallbacks = { onHidden: () => void; onReveal: () => void };
 export type InteractiveQuestCardHandle = {
+  capturePose: () => CardSurfacePose;
   complete: (callbacks: CompletionCallbacks) => void;
   pulse: (direction: number) => void;
 };
@@ -70,6 +75,7 @@ export function InteractiveQuestCard({
   const cardFlipDirectionRef = useRef<CardFlipDirection>(1);
   const pulseRotation = useMotionValue(0);
   const pulseAnimationRef = useRef<{ stop: () => void } | null>(null);
+  const floatRef = useRef<HTMLDivElement>(null);
   const {
     handlePointerEnter,
     handlePointerDown,
@@ -204,6 +210,18 @@ export function InteractiveQuestCard({
   useImperativeHandle(
     ref,
     () => ({
+      capturePose: () => {
+        const translate = floatRef.current
+          ? getComputedStyle(floatRef.current).translate.split(" ")
+          : [];
+        return {
+          y: Number.parseFloat(translate[1] ?? "0") || 0,
+          rotateX: rotateX.get(),
+          // Equivalent angle, so returning during a flip takes the short way home.
+          rotateY: ((rotateY.get() % 360) + 540) % 360 - 180,
+          scale: scale.get(),
+        };
+      },
       complete: (callbacks) => startFlip(1, callbacks),
       pulse: (direction) => {
         pulseAnimationRef.current?.stop();
@@ -219,7 +237,7 @@ export function InteractiveQuestCard({
         });
       },
     }),
-    [startFlip, reduceMotion, pulseRotation],
+    [startFlip, reduceMotion, pulseRotation, rotateX, rotateY, scale],
   );
 
   useEffect(() => () => {
@@ -264,7 +282,11 @@ export function InteractiveQuestCard({
       }}
       onClick={handleCardClick}
     >
-      <motion.div className={styles.float} style={{ rotate: pulseRotation }}>
+      <motion.div
+        ref={floatRef}
+        className={styles.float}
+        style={{ rotate: pulseRotation }}
+      >
         <motion.div className={styles.surface} style={{ rotateX, rotateY, scale }}>
           <div className={styles.front}>
             {children}

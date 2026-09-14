@@ -23,6 +23,7 @@ import { PlayLayout } from "../../PlayLayout";
 import styles from "../../QuestFlowLayout.module.css";
 import { NAV_ENTRY_SPRING } from "../../../../shared/motion/transitions";
 import { questOfferId } from "../../../../domain/quest/rules";
+import type { CardReturnPose } from "../../../../lib/cardMotion";
 import {
   SelectionLayer,
   SELECTION_LAYER_EXIT_DURATION,
@@ -34,6 +35,14 @@ const SELECTION_RESET_FADE_OUT_DURATION = 0.22;
 const SELECTION_RESET_FADE_IN_DURATION = 0.28;
 const NEW_CARDS_SWAP_DELAY_MS = 560;
 const NEW_CARDS_COMPLETE_DELAY_MS = 1_500;
+
+type ReturnTransition = {
+  action: "back" | "cancel";
+  sessionId: string;
+  offerId: string;
+  pose: CardReturnPose;
+  finished: boolean;
+};
 
 type Props = {
   currentQuest: Quest | null;
@@ -87,6 +96,10 @@ export function QuestScreenContent({
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const isActive = Boolean(currentQuest && currentSession);
+  const [returnTransition, setReturnTransition] =
+    useState<ReturnTransition | null>(null);
+  const isReturning = returnTransition !== null && !returnTransition.finished;
+  const showActive = isActive && !isReturning;
   const wasActiveRef = useRef(isActive);
   const returnedFromActive = wasActiveRef.current && !isActive;
   const lastActiveSessionIdRef = useRef(currentSession?.sessionId ?? "initial");
@@ -108,7 +121,7 @@ export function QuestScreenContent({
   if (currentOfferId) {
     lastActiveQuestIdRef.current = currentOfferId;
   }
-  if (returnedFromActive) {
+  if (returnedFromActive && !returnTransition) {
     layoutSessionIdRef.current = `deck-after-${lastActiveSessionIdRef.current}`;
   }
   const lastSelectedMoodIdRef = useRef<MoodId | undefined>(selectedMood?.id);
@@ -118,8 +131,9 @@ export function QuestScreenContent({
   const previousSelectionModeRef = useRef<"moods" | "quests">(
     selectedMood ? "quests" : "moods",
   );
-  const questEntryMotion =
-    returnedFromActive || previousSelectionModeRef.current === "quests"
+  const questEntryMotion = returnTransition
+    ? "return"
+    : returnedFromActive || previousSelectionModeRef.current === "quests"
       ? "bottom"
       : "shared";
   const [newCardsSequence, setNewCardsSequence] = useState(0);
@@ -192,7 +206,8 @@ export function QuestScreenContent({
   );
 
   function dealNewCards() {
-    if (isDealingNewCards) return;
+    if (isDealingNewCards || isReturning) return;
+    setReturnTransition(null);
     if (reduceMotion) {
       onNewCards();
       return;
@@ -215,6 +230,7 @@ export function QuestScreenContent({
   function selectMood(moodId: MoodId) {
     const selected = onSelectMood(moodId);
     if (selected) {
+      setReturnTransition(null);
       setNewCardsSequence(0);
       setNewCardsPhase("idle");
       setEditingMood(false);
@@ -224,10 +240,16 @@ export function QuestScreenContent({
   }
 
   function editMood() {
-    if (editingMood || isDealingNewCards || editMoodFrameRef.current !== null) {
+    if (
+      editingMood ||
+      isDealingNewCards ||
+      isReturning ||
+      editMoodFrameRef.current !== null
+    ) {
       return;
     }
     setEditingMood(true);
+    setReturnTransition(null);
     setSelectionPresenceGeneration((generation) => generation + 1);
     if (reduceMotion) {
       onEditMood();
@@ -239,13 +261,51 @@ export function QuestScreenContent({
     });
   }
 
+  function beginReturn(pose: CardReturnPose, action: "back" | "cancel") {
+    if (isReturning || !currentSession || !currentOfferId) return false;
+    if (
+      !selectedMood ||
+      !offeredQuests.some((item) => item.offerId === currentOfferId)
+    ) {
+      return action === "back" ? onReturnToSelection() : onDiscard();
+    }
+    if (
+      reduceMotion &&
+      !(action === "back" ? onReturnToSelection() : onDiscard())
+    ) {
+      return false;
+    }
+
+    setQuestSelectionClosing(false);
+    setReturnTransition({
+      action,
+      sessionId: currentSession.sessionId,
+      offerId: currentOfferId,
+      pose,
+      finished: reduceMotion,
+    });
+    return true;
+  }
+
+  function finishReturn() {
+    if (!returnTransition || returnTransition.finished) return;
+    if (currentSession?.sessionId !== returnTransition.sessionId) return;
+
+    // Keep the original offer in its slot until the shared card and timer exit finish.
+    const returned =
+      returnTransition.action === "back" ? onReturnToSelection() : onDiscard();
+    setReturnTransition(
+      returned ? { ...returnTransition, finished: true } : null,
+    );
+  }
+
   const selectionControlsExiting = editingMood || questSelectionClosing;
 
   return (
     <PlayLayout
       className={styles.screen}
       data-active-handoff={
-        isActive && !reduceMotion
+        showActive && !reduceMotion
           ? activeHandoffStarted
             ? "started"
             : "pending"
@@ -254,7 +314,7 @@ export function QuestScreenContent({
       aria-labelledby="task-screen-title"
     >
       <VisuallyHidden as="h1" id="task-screen-title">
-        {isActive
+        {showActive
           ? t("ui.task.currentQuest")
           : selectedMood
             ? t("ui.task.chooseMoodQuest", { mood: selectedMood.title })
@@ -264,17 +324,22 @@ export function QuestScreenContent({
       <LayoutGroup id="quest-flow">
         <AnimatePresence
           initial={animateEntrance}
-          mode={returnedFromActive ? "wait" : "sync"}
+          custom={isReturning ? "return" : undefined}
+          mode={returnedFromActive && !returnTransition ? "wait" : "sync"}
+          onExitComplete={finishReturn}
         >
-          {currentQuest && currentSession ? (
+          {currentQuest && currentSession && showActive ? (
             <motion.div
               className={styles.activeWrap}
               key={`active-${currentSession.sessionId}`}
               initial={reduceMotion ? false : { opacity: 1 }}
               animate={{ opacity: 1 }}
-              exit={{
-                opacity: reduceMotion ? 0.999 : 0,
-                pointerEvents: "none",
+              exit="exit"
+              variants={{
+                exit: (reason: string | undefined) => ({
+                  opacity: reason === "return" ? 1 : reduceMotion ? 0.999 : 0,
+                  pointerEvents: "none",
+                }),
               }}
               transition={{
                 duration: reduceMotion ? 0 : 0.26,
@@ -291,7 +356,7 @@ export function QuestScreenContent({
                 debugMode={debugMode}
                 reduceMotion={reduceMotion}
                 onDiscard={onDiscard}
-                onReturnToSelection={onReturnToSelection}
+                onReturnToSelection={beginReturn}
                 onStart={onStart}
                 onPause={onPause}
                 onResume={onResume}
@@ -305,26 +370,23 @@ export function QuestScreenContent({
           ) : (
             <motion.div
               className={styles.deckWrap}
-              key={`deck-session-${layoutSessionIdRef.current}`}
-              initial={reduceMotion ? false : { opacity: 0, scale: 0.985 }}
+              key={`deck-session-${layoutSessionIdRef.current}-${lastActiveSessionIdRef.current}`}
+              inert={isReturning}
+              aria-busy={isReturning || undefined}
+              initial={
+                reduceMotion || returnTransition
+                  ? false
+                  : { opacity: 0, scale: 0.985 }
+              }
               animate={{ opacity: 1, scale: 1 }}
               exit={{
                 opacity: reduceMotion ? 1 : 0,
                 scale: 1,
                 pointerEvents: "none",
-                // transition: {
-                //   duration: reduceMotion ? 0 : 0.22,
-                //   ease: [0.22, 0.8, 0.24, 1],
-                // },
               }}
-              // transition={
-              //   reduceMotion
-              //     ? { duration: 0 }
-              //     : { type: "spring", stiffness: 350, damping: 34, mass: 0.78 }
-              // }
             >
               <AnimatePresence
-                initial={false}
+                initial={Boolean(returnTransition)}
                 key={`selection-presence-${selectionPresenceGeneration}`}
                 mode="sync"
                 presenceAffectsLayout={false}
@@ -344,46 +406,6 @@ export function QuestScreenContent({
                     zIndex={1}
                   >
                     <>
-                      {/* <header className={styles.questSelectionHeader}>
-                        <motion.p
-                          className={styles.questSelectionPrompt}
-                          initial={
-                            reduceMotion ? false : { opacity: 0, y: -14 }
-                          }
-                          animate={
-                            selectionControlsExiting
-                              ? { opacity: 0, y: -14 }
-                              : { opacity: 1, y: 0 }
-                          }
-                          exit={{ opacity: 0, y: -14 }}
-                          transition={
-                            reduceMotion ? { duration: 0 } : NAV_ITEM_TRANSITION
-                          }
-                        >
-                          <span>{t("ui.task.choosePrefix")}</span>
-                          <span className={styles.moodEditControl}>
-                            <SolidButton
-                              className={styles.moodEditButton}
-                              size="medium"
-                              type="button"
-                              variant="secondary"
-                              aria-describedby="change-mood-tooltip"
-                              onClick={editMood}
-                            >
-                              {selectedMood.title}
-                            </SolidButton>
-                            <span
-                              className={styles.moodEditTooltip}
-                              id="change-mood-tooltip"
-                              role="tooltip"
-                            >
-                              {t("ui.task.changeMood")}
-                            </span>
-                          </span>
-                          <span>{t("ui.task.chooseSuffix")}</span>
-                        </motion.p>
-                      </header> */}
-
                       <div className={styles.questDeckGroup}>
                         <QuestOfferDeck
                           items={offeredQuests}
@@ -391,14 +413,18 @@ export function QuestScreenContent({
                           layoutSessionId={questLayoutSessionId}
                           reduceMotion={reduceMotion}
                           returningQuestId={
-                            returnedFromActive
+                            returnTransition?.offerId ??
+                            (returnedFromActive
                               ? lastActiveQuestIdRef.current
-                              : undefined
+                              : undefined)
                           }
+                          returnPose={returnTransition?.pose}
+                          returning={isReturning}
                           returningToMoods={editingMood}
                           newCardsSequence={newCardsSequence}
                           newCardsPhase={newCardsPhase}
                           onSelectionStart={(previewRotation) => {
+                            setReturnTransition(null);
                             setNewCardsSequence(0);
                             setNewCardsPhase("idle");
                             setQuestSelectionClosing(true);
@@ -448,13 +474,6 @@ export function QuestScreenContent({
                           >
                             {t("ui.task.changeMood")}
                           </SolidButton>
-                          {/* <span
-                            className={styles.moodEditTooltip}
-                            id="change-mood-tooltip"
-                            role="tooltip"
-                          >
-                            {t("ui.task.changeMood")}
-                          </span> */}
                         </span>
                       </div>
                     </>
