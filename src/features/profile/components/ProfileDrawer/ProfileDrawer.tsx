@@ -1,5 +1,14 @@
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
-import { BookBookmarkIcon, CircleHalfIcon, CoffeeIcon, EarIcon, GameControllerIcon, GlobeIcon, StorefrontIcon, WrenchIcon } from "@phosphor-icons/react";
+import {
+  BookBookmarkIcon,
+  CircleHalfIcon,
+  CoffeeIcon,
+  EarIcon,
+  GameControllerIcon,
+  GlobeIcon,
+  StorefrontIcon,
+  WrenchIcon,
+} from "@phosphor-icons/react";
 import { QuestPoolSettings } from "../QuestPoolSettings/QuestPoolSettings";
 import { QuestShop } from "../QuestShop/QuestShop";
 import { Drawer } from "vaul";
@@ -10,16 +19,13 @@ import styles from "./ProfileDrawer.module.css";
 import { formatScore } from "../../../../lib/format";
 import { applySoundEnabled, readSoundEnabled } from "../../../../lib/sound";
 import { localizeMood } from "../../../../localization/catalog";
-import { normalizeLanguage, SUPPORTED_LANGUAGES } from "../../../../localization/i18n";
-import type { ThemeChoice } from "../../../../lib/theme";
-import type {
-  QuestStats,
-  UserProfile,
-} from "../../../../domain/quest/model";
 import {
-  ChevronLeftIcon,
-  CoinIcon,
-} from "../../../../shared/ui/Icons/Icons";
+  normalizeLanguage,
+  SUPPORTED_LANGUAGES,
+} from "../../../../localization/i18n";
+import type { ThemeChoice } from "../../../../lib/theme";
+import type { QuestStats, UserProfile } from "../../../../domain/quest/model";
+import { ChevronLeftIcon, CoinIcon } from "../../../../shared/ui/Icons/Icons";
 import { ResponsiveNestedDrawer } from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
 import { RopePurchaseRow } from "../../../active-quest/components/RopePurchaseRow/RopePurchaseRow";
 import { GameLibraryDrawer } from "../GameLibraryDrawer/GameLibraryDrawer";
@@ -74,7 +80,7 @@ export function ProfileDrawer({
       <section className={styles.profileSection}>
         <div className={styles.profileSettingRow}>
           <span className={styles.settingLabelWithInfo}>
-            <GlobeIcon aria-hidden weight="duotone" />
+            <GlobeIcon aria-hidden weight="bold" />
             {t("ui.profile.language")}
           </span>
           <SettingSegmentedControl
@@ -89,7 +95,7 @@ export function ProfileDrawer({
         </div>
         <div className={styles.profileSettingRow}>
           <span className={styles.settingLabelWithInfo}>
-            <CircleHalfIcon aria-hidden weight="duotone" />
+            <CircleHalfIcon aria-hidden weight="bold" />
             {t("ui.profile.theme")}
           </span>
           <SettingSegmentedControl
@@ -104,7 +110,7 @@ export function ProfileDrawer({
         </div>
         <div className={styles.profileSettingRow}>
           <span className={styles.settingLabelWithInfo}>
-            <EarIcon aria-hidden weight="duotone" />
+            <EarIcon aria-hidden weight="bold" />
             {t("ui.profile.sound")}
           </span>
           <SettingToggle
@@ -115,7 +121,7 @@ export function ProfileDrawer({
         </div>
         <div className={styles.profileSettingRow}>
           <span className={styles.settingLabelWithInfo}>
-            <CoffeeIcon aria-hidden weight="duotone" />
+            <CoffeeIcon aria-hidden weight="bold" />
             <InfoLabel
               label={t("ui.profile.debugMode")}
               hint={t("ui.profile.debugModeDescription")}
@@ -131,7 +137,12 @@ export function ProfileDrawer({
       <section className={styles.profileSection}>
         <div className={styles.profileNavigation}>
           <Drawer.Close asChild>
-            <SolidButton size="medium" variant="secondary" iconLeft={<BookBookmarkIcon weight="duotone" />} onClick={onOpenGallery}>
+            <SolidButton
+              size="medium"
+              variant="secondary"
+              iconLeft={<BookBookmarkIcon weight="bold" />}
+              onClick={onOpenGallery}
+            >
               {t("ui.gallery.navigation")}
             </SolidButton>
           </Drawer.Close>
@@ -140,7 +151,7 @@ export function ProfileDrawer({
               <SolidButton
                 size="medium"
                 variant="secondary"
-                iconLeft={<GameControllerIcon weight="duotone" />}
+                iconLeft={<GameControllerIcon weight="bold" />}
                 iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}
               >
                 {t("ui.library.drawerTitle")}
@@ -149,14 +160,32 @@ export function ProfileDrawer({
           >
             <GameLibraryDrawer />
           </ResponsiveNestedDrawer>
-          <ResponsiveNestedDrawer trigger={<SolidButton size="medium" variant="secondary" iconLeft={<WrenchIcon weight="duotone" />} iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}>
-            {t("ui.pool.title")}
-          </SolidButton>}>
+          <ResponsiveNestedDrawer
+            trigger={
+              <SolidButton
+                size="medium"
+                variant="secondary"
+                iconLeft={<WrenchIcon weight="bold" />}
+                iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}
+              >
+                {t("ui.pool.title")}
+              </SolidButton>
+            }
+          >
             <QuestPoolSettings />
           </ResponsiveNestedDrawer>
-          <ResponsiveNestedDrawer trigger={<SolidButton size="medium" variant="secondary" iconLeft={<StorefrontIcon weight="duotone" />} iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}>
-            {t("ui.shop.title")}
-          </SolidButton>}>
+          <ResponsiveNestedDrawer
+            trigger={
+              <SolidButton
+                size="medium"
+                variant="secondary"
+                iconLeft={<StorefrontIcon weight="bold" />}
+                iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}
+              >
+                {t("ui.shop.title")}
+              </SolidButton>
+            }
+          >
             <QuestShop />
           </ResponsiveNestedDrawer>
         </div>

@@ -40,7 +40,7 @@ export function InfoLabel({ label, hint }: { label: string; hint: string }) {
         aria-expanded={open}
         onClick={position}
       >
-        <InfoIcon weight="duotone" />
+        <InfoIcon weight="bold" />
       </button>
       <span
         ref={bubble}
