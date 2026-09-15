@@ -1,9 +1,4 @@
-import {
-  motion,
-  useTransform,
-  type MotionStyle,
-  type MotionValue,
-} from "motion/react";
+import { motion, useTransform, type MotionValue } from "motion/react";
 import { useEffect, useId } from "react";
 import { useTranslation } from "react-i18next";
 import type { MoodId } from "../../../../data/moods";
@@ -28,6 +23,7 @@ type Props = {
   layoutSessionId: number | string;
   position: MotionValue<number>;
   reduceMotion: boolean;
+  richEffects: boolean;
   revealCards: boolean;
   returningFromQuests: boolean;
   selectedId: MoodId | null;
@@ -56,6 +52,7 @@ export function ArcCard({
   layoutSessionId,
   position,
   reduceMotion,
+  richEffects,
   revealCards,
   returningFromQuests,
   selectedId,
@@ -88,6 +85,8 @@ export function ArcCard({
   const visible = Math.abs(discreteDistance) <= 2;
   const interactive = Math.abs(discreteDistance) <= 1;
   const center = index === activeIndex;
+  const canTilt =
+    richEffects && !reduceMotion && center && !selectedId && layerPresent;
   const selected = selectedId === item.id;
   const foregroundExiting = Boolean(selectedId) || !layerPresent;
   const primaryExit = selected || (!selectedId && center);
@@ -117,25 +116,10 @@ export function ArcCard({
   } = useTiltEffect({
     maxTilt: 14,
     press: { maxTilt: 30, scale: 1 },
-    reduceMotion: reduceMotion || !center,
+    reduceMotion: !richEffects || reduceMotion || !center,
   });
   const illustrationX = useTransform(rotateY, (value) => value * -1.7);
   const illustrationY = useTransform(rotateX, (value) => value * 1.35);
-
-  // const lightingAngle = useTransform(
-  //   () => rotateY.get() * 5 - rotateX.get() * 3,
-  // );
-  // const outlineAngle = useTransform(
-  //   lightingAngle,
-  //   (angle) => `${160 + angle}deg`,
-  // );
-
-  // const lightDirection = useTransform(
-  //   lightingAngle,
-  //   (angle) => (angle * Math.PI) / 180,
-  // );
-  // const lightX = useTransform(lightDirection, (angle) => Math.sin(angle));
-  // const lightY = useTransform(lightDirection, (angle) => Math.cos(angle));
 
   useEffect(() => {
     if (!center || selectedId) resetTilt();
@@ -181,11 +165,12 @@ export function ArcCard({
                 y: moodExitY,
               }
             : {
-                filter: returningFromQuests
-                  ? "none"
-                  : visible && !revealCards && !center
-                    ? "blur(5px)"
-                    : "blur(0px)",
+                filter:
+                  !richEffects || reduceMotion || returningFromQuests
+                    ? "none"
+                    : visible && !revealCards && !center
+                      ? "blur(5px)"
+                      : "blur(0px)",
                 opacity: visible && (revealCards || center) ? 1 : 0,
                 scale: revealCards || center ? 1 : 0.92,
                 x:
@@ -238,8 +223,8 @@ export function ArcCard({
           })}
           animate="rest"
           style={getMoodArtStyle(item.id)}
-          whileHover={reduceMotion || !center ? undefined : "hover"}
-          whileFocus={reduceMotion || !center ? undefined : "focus"}
+          whileHover={canTilt ? "hover" : undefined}
+          whileFocus={canTilt ? "focus" : undefined}
           whileTap={reduceMotion || !center ? undefined : "pressed"}
           onClick={(event) => {
             const keyboardClick = event.detail === 0;
@@ -253,25 +238,20 @@ export function ArcCard({
               onCenter(modulo(activeIndex + direction, itemCount), true);
             }
           }}
-          onPointerEnter={handlePointerEnter}
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerLeave}
-          onPointerMove={handlePointerMove}
-          onPointerLeave={handlePointerLeave}
+          onPointerEnter={canTilt ? handlePointerEnter : undefined}
+          onPointerDown={canTilt ? handlePointerDown : undefined}
+          onPointerUp={canTilt ? handlePointerUp : undefined}
+          onPointerCancel={canTilt ? handlePointerLeave : undefined}
+          onPointerMove={canTilt ? handlePointerMove : undefined}
+          onPointerLeave={canTilt ? handlePointerLeave : undefined}
         >
-          <MoodCardFilters textFilterId={textFilterId} />
+          {richEffects && <MoodCardFilters textFilterId={textFilterId} />}
           <motion.span
             className={styles.moodCardTiltSurface}
             style={
-              {
-                // "--mood-outline-angle": outlineAngle,
-                // "--mood-light-x": lightX,
-                // "--mood-light-y": lightY,
-                rotateX,
-                rotateY,
-                transformPerspective: 1_000,
-              } as MotionStyle
+              richEffects
+                ? { rotateX, rotateY, transformPerspective: 1_000 }
+                : undefined
             }
             variants={{
               rest: { scale: 1, y: 0 },
@@ -301,20 +281,32 @@ export function ArcCard({
                 <span className={styles.arcCardContent}>
                   <strong
                     className={styles.arcCardTitle}
-                    style={{ filter: `url("#${textFilterId}")` }}
+                    style={
+                      richEffects
+                        ? { filter: `url("#${textFilterId}")` }
+                        : undefined
+                    }
                   >
                     {item.title}
                   </strong>
                   <span
                     className={styles.arcCardDescription}
-                    style={{ filter: `url("#${textFilterId}")` }}
+                    style={
+                      richEffects
+                        ? { filter: `url("#${textFilterId}")` }
+                        : undefined
+                    }
                   >
                     {item.subtitle}
                   </span>
                 </span>
                 <motion.span
                   className={styles.moodIllustrationLayer}
-                  style={{ x: illustrationX, y: illustrationY }}
+                  style={
+                    richEffects
+                      ? { x: illustrationX, y: illustrationY }
+                      : undefined
+                  }
                 >
                   <MoodIllustration
                     className={styles.moodIllustration}

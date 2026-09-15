@@ -9,6 +9,7 @@ import {
   CARD_LAYOUT_TRANSITION,
   CARD_RETURN_LAYOUT_TRANSITION,
   CARD_RETURN_TRANSITION,
+  questCardLayoutId,
   type CardReturnPose,
 } from "../../../../lib/cardMotion";
 import { playSound } from "../../../../lib/sound";
@@ -40,7 +41,7 @@ type Props = {
   newCardsSequence: number;
   newCardsPhase: NewCardsPhase;
   onSelectionStart: (previewRotation: number) => void;
-  onSelect: (questId: string) => void;
+  onSelect: (questId: string) => boolean;
 };
 
 type CardProps = {
@@ -169,13 +170,16 @@ export function QuestOfferDeck({
     playSound("cardSelect");
     onSelectionStart(previewRotation);
     setSelectedId(questId);
+    const reveal = () => {
+      if (!onSelect(questId)) setSelectedId(null);
+    };
     if (reduceMotion) {
-      onSelect(questId);
+      reveal();
       return;
     }
     selectionFrameRef.current = window.requestAnimationFrame(() => {
       selectionFrameRef.current = null;
-      onSelect(questId);
+      reveal();
     });
   }
 
@@ -369,7 +373,7 @@ function QuestOfferCard({
       data-position={index === 0 ? "left" : index === 2 ? "right" : "center"}
       data-selected={selected || undefined}
       data-stack-position={stackPosition}
-      layoutId={`quest-card-${layoutSessionId}-${item.offerId}`}
+      layoutId={questCardLayoutId(layoutSessionId, item.offerId)}
       layoutCrossfade={false}
       initial={
         reduceMotion || newCardsSequence > 0

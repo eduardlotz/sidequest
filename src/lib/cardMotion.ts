@@ -55,6 +55,10 @@ export type CardReturnPose = {
   surface: CardSurfacePose;
 };
 
+export function questCardLayoutId(layoutSessionId: string, offerId: string) {
+  return `quest-card-${layoutSessionId}-${offerId}`;
+}
+
 export function createCardFlip(
   direction: CardFlipDirection,
   start: CardFlipPose,

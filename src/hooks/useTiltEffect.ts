@@ -127,6 +127,8 @@ export function useTiltEffect({
   }, [reduceMotion, rotateX, rotateY, scale]);
 
   useEffect(() => {
+    if (reduceMotion) return;
+
     function resetWhenPointerLeavesCard(event: PointerEvent) {
       if (!activeRef.current) return;
       const card = cardRef.current;
@@ -147,7 +149,7 @@ export function useTiltEffect({
       window.removeEventListener("pointermove", resetWhenPointerLeavesCard);
       window.removeEventListener("blur", resetWhenWindowBlurs);
     };
-  }, [resetTilt]);
+  }, [reduceMotion, resetTilt]);
 
   function readPointerTarget(
     event: ReactPointerEvent<HTMLElement>,

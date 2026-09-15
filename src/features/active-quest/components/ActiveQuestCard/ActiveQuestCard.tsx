@@ -31,6 +31,7 @@ import {
   CARD_DISPLAY_TRANSITION,
   CARD_LAYOUT_TRANSITION,
   CARD_RETURN_TRANSITION,
+  questCardLayoutId,
   type CardReturnPose,
 } from "../../../../lib/cardMotion";
 import { formatRunningDuration } from "../../../../lib/format";
@@ -89,6 +90,7 @@ type Props = {
   session: QuestSession;
   layoutSessionId: string;
   entryRotation: number;
+  returnLabel: string;
   coins: number;
   redRopes: number;
   debugMode: boolean;
@@ -157,6 +159,7 @@ export function ActiveQuestCard({
   session,
   layoutSessionId,
   entryRotation,
+  returnLabel,
   coins,
   redRopes,
   debugMode,
@@ -957,11 +960,10 @@ export function ActiveQuestCard({
         <motion.div
           ref={cardProjectionRef}
           className={styles.activeCardProjection}
-          layoutId={`quest-card-${layoutSessionId}-${questOfferId(
-            session.moodId,
-            quest.id,
-            session.game?.id ?? null,
-          )}`}
+          layoutId={questCardLayoutId(
+            layoutSessionId,
+            questOfferId(session.moodId, quest.id, session.game?.id ?? null),
+          )}
           layoutCrossfade={false}
           onLayoutAnimationStart={() => {
             onLayoutHandoffStart();
@@ -1416,7 +1418,7 @@ export function ActiveQuestCard({
                   variant="secondary"
                   onClick={() => returnToSelection()}
                 >
-                  <span>{t("ui.timer.backToSelection")}</span>
+                  <span>{returnLabel}</span>
                 </SolidButton>
               </motion.span>
             )}

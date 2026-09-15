@@ -2,18 +2,30 @@ import {
   animate,
   AnimatePresence,
   motion,
+  useIsPresent,
   useMotionValue,
+  useMotionValueEvent,
   useSpring,
   useTransform,
   useVelocity,
   type MotionValue,
 } from "motion/react";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { Drawer } from "vaul";
 import {
   ArrowLeftIcon,
+  CaretDownIcon,
   HeartIcon,
   MagnifyingGlassIcon,
 } from "@phosphor-icons/react";
@@ -24,6 +36,16 @@ import { hydrateQuest } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
 import { formatRunningDuration } from "../../lib/format";
 import type { Quest, QuestProgress } from "../../domain/quest/model";
+import { questOfferId } from "../../domain/quest/rules";
+import {
+  CARD_LAYOUT_TRANSITION,
+  CARD_RETURN_LAYOUT_TRANSITION,
+  CARD_RETURN_TRANSITION,
+  questCardLayoutId,
+  type CardReturnPose,
+} from "../../lib/cardMotion";
+import { SELECTION_HANDOFF_EASE } from "../../shared/motion/transitions";
+import { playSound } from "../../lib/sound";
 import { useQuestStore } from "../../stores/useQuestStore";
 import {
   DESKTOP_VIEWPORT_QUERY,
@@ -33,60 +55,90 @@ import { InteractiveQuestCard } from "../../shared/quest-card/InteractiveQuestCa
 import { QuestCard } from "../../shared/quest-card/QuestCard/QuestCard";
 import cardStyles from "../../shared/quest-card/QuestCard/QuestCard.module.css";
 import { SolidButton } from "../../shared/ui/SolidButton/SolidButton";
+import buttonStyles from "../../shared/ui/SolidButton/SolidButton.module.css";
 import { InfoText } from "../../shared/ui/InfoText/InfoText";
 import { CoinIcon } from "../../shared/ui/Icons/Icons";
 import { visuallyHiddenClassName } from "../../shared/ui/VisuallyHidden/VisuallyHidden";
 import styles from "./QuestGallery.module.css";
 
-type Filter = "all" | "favorites" | "completed" | "uncompleted";
+const GALLERY_FILTERS = [
+  "all",
+  "found",
+  "favorites",
+  "completed",
+  "uncompleted",
+] as const;
+type Filter = (typeof GALLERY_FILTERS)[number];
+export type QuestGalleryView = {
+  filter: Filter;
+  query: string;
+  focusedId: string | null;
+};
 const INFO_SNAP_POINTS = [0.5];
 const DRAG_SLOP = 8;
 const DISMISS_DISTANCE = 96;
+const DISMISS_VELOCITY = 850;
 const WHEEL_SPEED = 1.35;
+const RENDER_CHUNK_SIZE = 3;
+const RENDER_OVERSCAN = 2;
+
+type FilterReset = { sequence: number };
 
 export function QuestGallery({
+  view,
+  onViewChange,
+  position,
+  layoutSessionId,
+  returnPose,
+  returningQuestId,
+  returning,
   reduceMotion,
   onClose,
+  onSelectionStart,
   onRepeat,
 }: {
+  view: QuestGalleryView;
+  onViewChange: Dispatch<SetStateAction<QuestGalleryView>>;
+  position: MotionValue<number>;
+  layoutSessionId: string;
+  returnPose?: CardReturnPose;
+  returningQuestId?: string;
+  returning: boolean;
   reduceMotion: boolean;
   onClose: () => void;
-  onRepeat: () => void;
+  onSelectionStart: (rotation: number) => void;
+  onRepeat: (questId: string) => boolean;
 }) {
   const { t, i18n } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const desktop = useMediaQuery(DESKTOP_VIEWPORT_QUERY);
-  const {
-    progress,
-    counts,
-    toggleFavorite,
-    repeatQuest,
-    currentSession,
-    ownedPackIds,
-  } = useQuestStore(
-    useShallow((state) => ({
-      ownedPackIds: state.ownedPackIds,
-      progress: state.questProgressById,
-      counts: state.stats.completionCountsByQuestId,
-      toggleFavorite: state.toggleQuestFavorite,
-      repeatQuest: state.repeatQuest,
-      currentSession: state.currentSession,
-    })),
+  const isPresent = useIsPresent();
+  const { progress, counts, toggleFavorite, currentSession, ownedPackIds } =
+    useQuestStore(
+      useShallow((state) => ({
+        ownedPackIds: state.ownedPackIds,
+        progress: state.questProgressById,
+        counts: state.stats.completionCountsByQuestId,
+        toggleFavorite: state.toggleQuestFavorite,
+        currentSession: state.currentSession,
+      })),
+    );
+  const { filter, query, focusedId } = view;
+  const setFocusedId = useCallback(
+    (update: SetStateAction<string | null>) =>
+      onViewChange((view) => ({
+        ...view,
+        focusedId:
+          typeof update === "function" ? update(view.focusedId) : update,
+      })),
+    [onViewChange],
   );
-  const [filter, setFilter] = useState<Filter>("all");
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const [focusedId, setFocusedId] = useState<string | null>(null);
-  const [snapPoint, setSnapPoint] = useState<number | string | null>(
-    INFO_SNAP_POINTS[0],
-  );
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectionFrameRef = useRef<number | null>(null);
+  const [filterReset, setFilterReset] = useState<FilterReset>({ sequence: 0 });
   const [width, setWidth] = useState(() => window.innerWidth);
   const viewport = useRef<HTMLDivElement>(null);
 
-  const wheelDismissDistance = useRef(0);
-  const wheelDismissReset = useRef<number | null>(null);
-
-  const position = useMotionValue(0);
   const drag = useRef<{
     id: number;
     x: number;
@@ -97,39 +149,58 @@ export function QuestGallery({
     dismissing: boolean;
   } | null>(null);
 
+  const suppressClick = useRef(false);
   const dismissX = useMotionValue(0);
   const dismissY = useMotionValue(0);
+  const dismissAnimations = useRef<ReturnType<typeof animate>[]>([]);
+  const filtering = useMotionValue(false);
+  const filterFrameRef = useRef<number | null>(null);
+  const [snapPoint, setSnapPoint] = useState<number | string | null>(
+    INFO_SNAP_POINTS[0],
+  );
 
-  function resetDismissOffset() {
+  const stopDismissAnimation = useCallback(() => {
+    dismissAnimations.current.forEach((controls) => controls.stop());
+    dismissAnimations.current = [];
+  }, []);
+
+  const resetDismissOffset = useCallback(() => {
+    stopDismissAnimation();
+
+    if (reduceMotion) {
+      dismissX.jump(0);
+      dismissY.jump(0);
+      return;
+    }
+
     const transition = {
       type: "spring" as const,
-      stiffness: 650,
-      damping: 42,
-      mass: 0.45,
+      stiffness: 520,
+      damping: 38,
+      mass: 0.55,
     };
 
-    animate(dismissX, 0, transition);
-    animate(dismissY, 0, transition);
-  }
+    dismissAnimations.current = [
+      animate(dismissX, 0, transition),
+      animate(dismissY, 0, transition),
+    ];
+  }, [dismissX, dismissY, reduceMotion, stopDismissAnimation]);
 
-  const suppressClick = useRef(false);
+  const stopFilterScroll = useCallback(() => {
+    if (filterFrameRef.current !== null) {
+      window.cancelAnimationFrame(filterFrameRef.current);
+      filterFrameRef.current = null;
+    }
+
+    filtering.set(false);
+  }, [filtering]);
 
   const normalizedQuery = query.trim().toLocaleLowerCase(language);
 
-  const items = useMemo(
+  const catalog = useMemo(
     () =>
       QUESTS.flatMap((definition) => {
         const known = progress[definition.id];
-        const completed = (counts[definition.id] ?? 0) > 0;
-
-        if (
-          (filter === "favorites" && !known?.favorite) ||
-          (filter === "completed" && !completed) ||
-          (filter === "uncompleted" && completed)
-        ) {
-          return [];
-        }
-
         const identity = known?.lastCompletion ?? known?.seenOffer;
 
         const quest = hydrateQuest(
@@ -139,21 +210,33 @@ export function QuestGallery({
           language,
         );
 
-        if (!quest) return [];
-
-        if (
-          normalizedQuery &&
-          (!known ||
-            !`${quest.name} ${quest.objective}`
-              .toLocaleLowerCase(language)
-              .includes(normalizedQuery))
-        ) {
-          return [];
-        }
-
-        return [quest];
+        return quest ? [quest] : [];
       }),
-    [counts, filter, language, normalizedQuery, progress],
+    [language, progress],
+  );
+  const items = useMemo(
+    () =>
+      catalog.filter((quest) => {
+        const known = progress[quest.id];
+        const completed = (counts[quest.id] ?? 0) > 0;
+        if (
+          (filter === "found" && !known) ||
+          (filter === "favorites" && !known?.favorite) ||
+          (filter === "completed" && !completed) ||
+          (filter === "uncompleted" && completed)
+        )
+          return false;
+        return (
+          !normalizedQuery ||
+          Boolean(
+            known &&
+            `${quest.name} ${quest.objective}`
+              .toLocaleLowerCase(language)
+              .includes(normalizedQuery),
+          )
+        );
+      }),
+    [catalog, counts, filter, language, normalizedQuery, progress],
   );
 
   const cardWidth = Math.min(desktop ? 300 : width * 0.76, 300);
@@ -164,6 +247,81 @@ export function QuestGallery({
   );
   const focusedIndex = items.findIndex((item) => item.id === focusedId);
   const focusedQuest = items[focusedIndex];
+  const [browseChunk, setBrowseChunk] = useState(() =>
+    Math.floor(position.get() / step / RENDER_CHUNK_SIZE),
+  );
+  useMotionValueEvent(position, "change", (latest) => {
+    const chunk = Math.floor(latest / step / RENDER_CHUNK_SIZE);
+    setBrowseChunk((current) => (current === chunk ? current : chunk));
+  });
+  const firstRenderedIndex = Math.max(
+    0,
+    focusedIndex >= 0
+      ? focusedIndex - RENDER_OVERSCAN
+      : browseChunk * RENDER_CHUNK_SIZE - RENDER_OVERSCAN,
+  );
+  const lastRenderedIndex =
+    focusedIndex >= 0
+      ? focusedIndex + RENDER_OVERSCAN
+      : (browseChunk + 1) * RENDER_CHUNK_SIZE +
+        Math.ceil(width / step) +
+        RENDER_OVERSCAN;
+  const renderedItems = items
+    .slice(firstRenderedIndex, lastRenderedIndex + 1)
+    .map((quest, offset) => ({
+      quest,
+      index: firstRenderedIndex + offset,
+    }));
+
+  function changeFilters(
+    update: Partial<Pick<QuestGalleryView, "filter" | "query">>,
+  ) {
+    stopFilterScroll();
+    filtering.set(true);
+    resetDismissOffset();
+
+    setFilterReset((reset) => ({ sequence: reset.sequence + 1 }));
+    setBrowseChunk(0);
+    onViewChange((view) => ({ ...view, ...update, focusedId: null }));
+  }
+
+  function setQuery(nextQuery: string) {
+    changeFilters({ query: nextQuery });
+  }
+
+  function setFilter(nextFilter: Filter) {
+    changeFilters({ filter: nextFilter });
+  }
+
+  useLayoutEffect(() => {
+    if (filterReset.sequence === 0) return;
+
+    position.jump(0);
+    filterFrameRef.current = window.requestAnimationFrame(() => {
+      filterFrameRef.current = null;
+      filtering.set(false);
+    });
+
+    return () => {
+      if (filterFrameRef.current !== null) {
+        window.cancelAnimationFrame(filterFrameRef.current);
+        filterFrameRef.current = null;
+      }
+    };
+  }, [filterReset.sequence, filtering, position]);
+
+  useEffect(
+    () => () => {
+      if (selectionFrameRef.current !== null) {
+        window.cancelAnimationFrame(selectionFrameRef.current);
+      }
+      if (filterFrameRef.current !== null) {
+        window.cancelAnimationFrame(filterFrameRef.current);
+      }
+      dismissAnimations.current.forEach((controls) => controls.stop());
+    },
+    [],
+  );
 
   useLayoutEffect(() => {
     const element = viewport.current;
@@ -175,16 +333,18 @@ export function QuestGallery({
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     position.set(Math.min(position.get(), maxPosition));
-  }, [maxPosition, position]);
+    setBrowseChunk(Math.floor(position.get() / step / RENDER_CHUNK_SIZE));
+  }, [maxPosition, position, step]);
 
   useEffect(() => {
     const element = viewport.current;
     if (!element) return;
 
     const wheel = (event: WheelEvent) => {
-      if (event.ctrlKey) return;
+      if (event.ctrlKey || !isPresent || returning || selectedId || focusedId)
+        return;
 
       event.preventDefault();
 
@@ -197,15 +357,6 @@ export function QuestGallery({
         delta *
         (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? width : 1);
 
-      if (focusedId) {
-        if (Math.abs(pixels) > 2) {
-          setFocusedId(null);
-          resetDismissOffset();
-        }
-
-        return;
-      }
-
       position.set(
         Math.max(
           0,
@@ -217,20 +368,71 @@ export function QuestGallery({
     element.addEventListener("wheel", wheel, { passive: false });
 
     return () => element.removeEventListener("wheel", wheel);
-  }, [focusedId, maxPosition, position, width]);
+  }, [
+    focusedId,
+    isPresent,
+    maxPosition,
+    position,
+    returning,
+    selectedId,
+    width,
+  ]);
 
   useEffect(() => {
     if (focusedId && focusedIndex < 0) setFocusedId(null);
   }, [focusedId, focusedIndex]);
 
-  function focus(id: string) {
-    if (suppressClick.current) return;
+  useEffect(() => {
+    if (focusedId) setSnapPoint(INFO_SNAP_POINTS[0]);
+  }, [focusedId]);
 
-    dismissX.jump(0);
-    dismissY.jump(0);
+  useEffect(() => {
+    if (!focusedId || !isPresent || returning || selectedId) return;
+    const dismissOutside = (event: MouseEvent) => {
+      if (suppressClick.current) return;
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest("[data-gallery-card], [data-gallery-details]"))
+        return;
+      setFocusedId(null);
+    };
+    document.addEventListener("click", dismissOutside);
+    return () => document.removeEventListener("click", dismissOutside);
+  }, [focusedId, isPresent, returning, selectedId, setFocusedId]);
 
-    setFocusedId((current) => (current === id ? null : id));
-    setSnapPoint(INFO_SNAP_POINTS[0]);
+  const focus = useCallback(
+    (id: string) => {
+      if (suppressClick.current || !isPresent || returning || selectedId)
+        return;
+      setFocusedId((current) => (current === id ? current : id));
+    },
+    [isPresent, returning, selectedId, setFocusedId],
+  );
+
+  function repeatFocusedQuest() {
+    if (
+      !focusedQuest ||
+      !isPresent ||
+      returning ||
+      selectedId ||
+      currentSession
+    ) {
+      return;
+    }
+    const questId = focusedQuest.id;
+    playSound("cardSelect");
+    onSelectionStart(-2);
+    setSelectedId(questId);
+    const reveal = () => {
+      if (!onRepeat(questId)) setSelectedId(null);
+    };
+    if (reduceMotion) {
+      reveal();
+      return;
+    }
+    selectionFrameRef.current = window.requestAnimationFrame(() => {
+      selectionFrameRef.current = null;
+      reveal();
+    });
   }
 
   const info = focusedQuest && (
@@ -246,67 +448,68 @@ export function QuestGallery({
       count={counts[focusedQuest.id] ?? 0}
       active={Boolean(currentSession)}
       onFavorite={() => toggleFavorite(focusedQuest.id)}
-      onRepeat={() => {
-        if (repeatQuest(focusedQuest.id)) onRepeat();
-      }}
+      onRepeat={repeatFocusedQuest}
     />
   );
 
   return (
-    <section className={styles.gallery} aria-label={t("ui.gallery.title")}>
+    <section
+      className={styles.gallery}
+      aria-label={t("ui.gallery.title")}
+      inert={!isPresent || returning || selectedId !== null}
+    >
       <header className={styles.header}>
-        <SolidButton
-          className={styles.back}
-          variant="soft"
-          size="small"
-          onClick={onClose}
-          iconLeft={<ArrowLeftIcon />}
-        >
-          {t("ui.gallery.back")}
-        </SolidButton>
-        <h1>{t("ui.gallery.title")}</h1>
+        <h1 className={visuallyHiddenClassName}>{t("ui.gallery.title")}</h1>
         <div className={styles.filters}>
-          <SolidButton
-            variant="soft"
-            size="medium"
-            aria-label={t("ui.gallery.search")}
-            aria-expanded={searchOpen}
-            onClick={() => setSearchOpen((value) => !value)}
+          <label
+            className={`${buttonStyles.button} ${styles.search}`}
+            data-size="medium"
+            data-variant="secondary"
           >
-            <MagnifyingGlassIcon weight="duotone" />
-          </SolidButton>
-          {searchOpen && (
+            <MagnifyingGlassIcon aria-hidden weight="bold" />
             <input
-              autoFocus
               type="search"
               value={query}
               placeholder={t("ui.gallery.search")}
               aria-label={t("ui.gallery.search")}
               onChange={(event) => {
                 setQuery(event.target.value);
-                position.set(0);
                 setFocusedId(null);
               }}
             />
-          )}
-          <select
-            aria-label={t("ui.gallery.filter")}
-            value={filter}
-            onChange={(event) => {
-              setFilter(event.target.value as Filter);
-              setFocusedId(null);
-              position.set(0);
-            }}
+          </label>
+          <label
+            className={`${buttonStyles.button} ${styles.filterControl}`}
+            data-size="medium"
+            data-variant="secondary"
           >
-            {(["all", "favorites", "completed", "uncompleted"] as const).map(
-              (value) => (
+            <span aria-hidden>{t(`ui.gallery.${filter}`)}</span>
+            <CaretDownIcon aria-hidden weight="bold" />
+            <select
+              aria-label={t("ui.gallery.filter")}
+              value={filter}
+              onChange={(event) => {
+                setFilter(event.target.value as Filter);
+                setFocusedId(null);
+              }}
+            >
+              {GALLERY_FILTERS.map((value) => (
                 <option value={value} key={value}>
                   {t(`ui.gallery.${value}`)}
                 </option>
-              ),
-            )}
-          </select>
+              ))}
+            </select>
+          </label>
         </div>
+        <SolidButton
+          className={styles.back}
+          variant="highlighted"
+          size="medium"
+          onClick={onClose}
+          iconLeft={<ArrowLeftIcon />}
+        >
+          {t("ui.gallery.back")}
+        </SolidButton>
       </header>
       <div
         className={styles.viewport}
@@ -325,6 +528,7 @@ export function QuestGallery({
             ["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)
           ) {
             event.preventDefault();
+            stopFilterScroll();
             position.set(
               event.key === "Home"
                 ? 0
@@ -343,6 +547,8 @@ export function QuestGallery({
         }}
         onPointerDown={(event) => {
           if (event.button !== 0) return;
+          stopFilterScroll();
+          stopDismissAnimation();
 
           suppressClick.current = false;
 
@@ -442,7 +648,7 @@ export function QuestGallery({
             dismissY.getVelocity(),
           );
 
-          if (distance >= DISMISS_DISTANCE || velocity >= 850) {
+          if (distance >= DISMISS_DISTANCE || velocity >= DISMISS_VELOCITY) {
             setFocusedId(null);
           }
 
@@ -454,25 +660,44 @@ export function QuestGallery({
           resetDismissOffset();
         }}
       >
-        {items.map((quest, index) => (
-          <GalleryCard
-            key={quest.id}
-            quest={quest}
-            index={index}
-            position={position}
-            dismissY={dismissY}
-            dismissX={dismissX}
-            width={width}
-            cardWidth={cardWidth}
-            step={step}
-            focusedIndex={focusedIndex}
-            desktop={desktop}
-            progress={progress[quest.id]}
-            completed={(counts[quest.id] ?? 0) > 0}
-            reduceMotion={reduceMotion}
-            onActivate={() => focus(quest.id)}
-          />
-        ))}
+        <AnimatePresence
+          initial={Boolean(returnPose)}
+          propagate
+          custom={isPresent ? "filter" : "screen"}
+        >
+          {renderedItems.map(({ quest, index }) => (
+            <GalleryCard
+              key={quest.id}
+              quest={quest}
+              layoutSessionId={layoutSessionId}
+              selected={selectedId === quest.id}
+              returnPose={
+                questOfferId(
+                  quest.mood.id,
+                  quest.id,
+                  quest.game?.id ?? null,
+                ) === returningQuestId
+                  ? returnPose
+                  : undefined
+              }
+              returning={returning}
+              filtering={filtering}
+              index={index}
+              position={position}
+              dismissY={dismissY}
+              dismissX={dismissX}
+              width={width}
+              cardWidth={cardWidth}
+              step={step}
+              focusedIndex={focusedIndex}
+              desktop={desktop}
+              progress={progress[quest.id]}
+              completed={(counts[quest.id] ?? 0) > 0}
+              reduceMotion={reduceMotion}
+              onActivate={() => focus(quest.id)}
+            />
+          ))}
+        </AnimatePresence>
         {!items.length && (
           <div className={styles.empty}>
             <InfoText>{t("ui.gallery.empty")}</InfoText>
@@ -497,8 +722,9 @@ export function QuestGallery({
       )}
       {!desktop && (
         <Drawer.Root
-          open={Boolean(focusedQuest)}
+          open={isPresent && selectedId === null && Boolean(focusedQuest)}
           onOpenChange={(open) => {
+            if (!isPresent || selectedId || returning) return;
             if (!open) {
               setFocusedId(null);
               resetDismissOffset();
@@ -508,13 +734,14 @@ export function QuestGallery({
           modal={true}
           snapPoints={INFO_SNAP_POINTS}
           activeSnapPoint={snapPoint}
-          // setActiveSnapPoint={setSnapPoint}
+          setActiveSnapPoint={setSnapPoint}
           snapToSequentialPoint
           shouldScaleBackground={false}
         >
           <Drawer.Portal>
             <Drawer.Content
               className={styles.mobileInfo}
+              inert={returning || !isPresent || selectedId !== null}
               aria-describedby="gallery-info-description"
             >
               <Drawer.Handle />
@@ -540,6 +767,11 @@ export function QuestGallery({
 
 function GalleryCard({
   quest,
+  layoutSessionId,
+  selected,
+  returnPose,
+  returning,
+  filtering,
   index,
   position,
   dismissY,
@@ -555,6 +787,11 @@ function GalleryCard({
   onActivate,
 }: {
   quest: Quest;
+  layoutSessionId: string;
+  selected: boolean;
+  returnPose?: CardReturnPose;
+  returning: boolean;
+  filtering: MotionValue<boolean>;
   index: number;
   position: MotionValue<number>;
   dismissY: MotionValue<number>;
@@ -570,21 +807,24 @@ function GalleryCard({
   onActivate: () => void;
 }) {
   const { t } = useTranslation();
+  const isPresent = useIsPresent();
   const focused = index === focusedIndex;
-  // const target = useTransform(position, (value) =>
-  //   focusedIndex < 0
-  //     ? 32 + index * step - value
-  //     : focused
-  //       ? desktop
-  //         ? width / 2 - cardWidth * 0.8
-  //         : (width - cardWidth) / 2
-  //       : index < focusedIndex
-  //         ? -cardWidth * 0.7 - (focusedIndex - index - 1) * step
-  //         : width - cardWidth * 0.25 + (index - focusedIndex - 1) * step,
-  // );
+  const slotPosition = useMotionValue(index * step);
+  useLayoutEffect(() => {
+    if (reduceMotion) {
+      slotPosition.jump(index * step);
+      return;
+    }
+    const controls = animate(slotPosition, index * step, {
+      type: "spring",
+      stiffness: 330,
+      damping: 32,
+      mass: 0.7,
+    });
+    return () => controls.stop();
+  }, [index, reduceMotion, slotPosition, step]);
   const browseTarget = useTransform(
-    position,
-    (value) => 32 + index * step - value,
+    () => 32 + slotPosition.get() - position.get(),
   );
 
   const scrollVelocity = useVelocity(position);
@@ -593,7 +833,7 @@ function GalleryCard({
     const currentPosition = position.get();
     const velocity = scrollVelocity.get();
 
-    if (Math.abs(velocity) < 20) return 0;
+    if (filtering.get() || Math.abs(velocity) < 20) return 0;
 
     const currentSlot = currentPosition / step;
     const visibleSlots = width / step + 1;
@@ -614,7 +854,18 @@ function GalleryCard({
 
   const browseX = useTransform(() => browseTarget.get() + trail.get());
 
-  const focusOffsetTarget = useMotionValue(0);
+  const focusedPosition = focused
+    ? desktop
+      ? width / 2 - cardWidth * 0.8
+      : (width - cardWidth) / 2
+    : index < focusedIndex
+      ? -cardWidth * 0.7 - (focusedIndex - index - 1) * step
+      : width - cardWidth * 0.25 + (index - focusedIndex - 1) * step;
+  const focusOffsetTarget = useMotionValue(
+    focusedIndex < 0
+      ? 0
+      : focusedPosition - (32 + index * step - position.get()),
+  );
 
   useLayoutEffect(() => {
     if (focusedIndex < 0) {
@@ -624,26 +875,8 @@ function GalleryCard({
 
     const browsePosition = 32 + index * step - position.get();
 
-    const focusedPosition = focused
-      ? desktop
-        ? width / 2 - cardWidth * 0.8
-        : (width - cardWidth) / 2
-      : index < focusedIndex
-        ? -cardWidth * 0.7 - (focusedIndex - index - 1) * step
-        : width - cardWidth * 0.25 + (index - focusedIndex - 1) * step;
-
     focusOffsetTarget.set(focusedPosition - browsePosition);
-  }, [
-    cardWidth,
-    desktop,
-    focusOffsetTarget,
-    focused,
-    focusedIndex,
-    index,
-    position,
-    step,
-    width,
-  ]);
+  }, [focusOffsetTarget, focusedIndex, focusedPosition, index, position, step]);
 
   const focusOffset = useSpring(focusOffsetTarget, {
     stiffness: 520,
@@ -676,62 +909,143 @@ function GalleryCard({
     return ownsDismissOffset ? dismissY.get() : 0;
   });
 
-  const visible = useTransform(x, (value) =>
+  const visible = useTransform(x, (value): "visible" | "hidden" =>
     value > -cardWidth * 1.5 && value < width + cardWidth
       ? "visible"
       : "hidden",
   );
+  // Removed cards finish fading from their last position while the remaining slots move.
+  const departureRef = useRef<{
+    x: number;
+    y: number;
+    visibility: "visible" | "hidden";
+  } | null>(null);
+  if (isPresent) {
+    departureRef.current = null;
+  } else if (!departureRef.current) {
+    departureRef.current = {
+      x: draggedX.get(),
+      y: draggedY.get(),
+      visibility: visible.get(),
+    };
+  }
 
   return (
     <motion.div
-      layoutId={`gallery-card-${quest.id}`}
-      layoutCrossfade={false}
       className={`${cardStyles.questCardFrame} ${styles.card}`}
+      data-gallery-card
       data-focused={focused || undefined}
       data-uncompleted={!completed || undefined}
+      inert={!isPresent}
       style={{
         ...getMoodAccentStyle(quest.mood.id),
         width: cardWidth,
-        x: draggedX,
-        y: draggedY,
-        visibility: visible,
+        x: departureRef.current?.x ?? draggedX,
+        y: departureRef.current?.y ?? draggedY,
+        visibility: departureRef.current?.visibility ?? visible,
         zIndex: focused ? 3 : 1,
         ...(!progress
           ? { "--accent": "#89898e", "--accent-rgb": "137 137 142" }
           : {}),
       }}
-      animate={{
-        rotate: focused ? -2 : [-4, 4, -3, 3][index % 4],
-        // opacity: focusedIndex >= 0 && !focused ? 0.3 : 1,
-      }}
-      transition={{ duration: reduceMotion ? 0 : 0.24 }}
     >
-      <InteractiveQuestCard
-        label={progress ? quest.name : t("ui.gallery.unknown")}
-        onActivate={onActivate}
-        reduceMotion={reduceMotion}
-        // hoverEnabled={focusedIndex < 0 || focused}
-        // hoverEnabled={focused}
-        hoverEnabled
-        showBack={false}
-        // floating={focused}
+      <motion.div
+        className={styles.cardPresence}
+        initial={
+          reduceMotion || returnPose
+            ? false
+            : { opacity: 0, y: 10, scale: 0.985 }
+        }
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit="filterExit"
+        variants={{
+          filterExit: (reason: "filter" | "screen") => ({
+            opacity: 0,
+            y: reduceMotion || reason === "screen" ? 0 : 12,
+            scale: reduceMotion || reason === "screen" ? 1 : 0.985,
+          }),
+        }}
+        transition={{
+          duration: reduceMotion ? 0 : 0.26,
+          ease: SELECTION_HANDOFF_EASE,
+        }}
       >
-        <QuestCard
-          unknown={!progress}
-          completed={completed}
-          bestTimeMs={progress?.bestTimeMs}
-          game={quest.game}
-          genres={quest.genres}
-          type={quest.type}
-          tags={quest.tags}
-          minimumDurationMinutes={quest.minimumDurationMinutes}
-          suggestedDurationMinutes={quest.suggestedDurationMinutes}
-          moodTitle={quest.mood.title}
-          name={quest.name}
-          objective={quest.objective}
-          showWordmarkLogo={focused}
-        />
-      </InteractiveQuestCard>
+        <motion.div
+          className={styles.cardProjection}
+          layoutId={questCardLayoutId(
+            layoutSessionId,
+            questOfferId(quest.mood.id, quest.id, quest.game?.id ?? null),
+          )}
+          layoutCrossfade={false}
+          initial={false}
+          exit={
+            selected ? { opacity: 0, transition: { duration: 0 } } : undefined
+          }
+          transition={
+            reduceMotion
+              ? { duration: 0 }
+              : {
+                  layout: returnPose
+                    ? CARD_RETURN_LAYOUT_TRANSITION
+                    : CARD_LAYOUT_TRANSITION,
+                }
+          }
+        >
+          <motion.div
+            className={styles.cardDisplay}
+            initial={
+              reduceMotion || !returnPose
+                ? false
+                : { scale: returnPose.scale, rotate: returnPose.rotate }
+            }
+            animate={{
+              scale: 1,
+              rotate: focused ? -2 : [-4, 4, -3, 3][index % 4],
+            }}
+            transition={
+              reduceMotion
+                ? { duration: 0 }
+                : returnPose
+                  ? CARD_RETURN_TRANSITION
+                  : { duration: 0.24 }
+            }
+          >
+            <motion.div
+              className={styles.cardSurface}
+              initial={reduceMotion || !returnPose ? false : returnPose.surface}
+              animate={{ y: 0, rotateX: 0, rotateY: 0, scale: 1 }}
+              transition={
+                reduceMotion ? { duration: 0 } : CARD_RETURN_TRANSITION
+              }
+            >
+              <InteractiveQuestCard
+                label={progress ? quest.name : t("ui.gallery.unknown")}
+                onActivate={onActivate}
+                reduceMotion={reduceMotion}
+                hoverEnabled={!returning && !selected}
+                disabled={returning || selected}
+                showBack={false}
+              >
+                <QuestCard
+                  unknown={!progress}
+                  completed={completed}
+                  bestTimeMs={progress?.bestTimeMs}
+                  game={quest.game}
+                  genres={quest.genres}
+                  type={quest.type}
+                  tags={quest.tags}
+                  minimumDurationMinutes={quest.minimumDurationMinutes}
+                  suggestedDurationMinutes={quest.suggestedDurationMinutes}
+                  moodTitle={quest.mood.title}
+                  name={quest.name}
+                  objective={quest.objective}
+                  showWordmarkLogo={focused}
+                />
+              </InteractiveQuestCard>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -764,7 +1078,7 @@ function QuestInfo({
       : t("ui.profile.timePlayedMinutes", { minutes });
   };
   return (
-    <div className={styles.info}>
+    <div className={styles.info} data-gallery-details>
       <InfoText completed={count > 0}>
         {t(
           count > 0

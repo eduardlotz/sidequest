@@ -10,10 +10,7 @@ const illustrationAssets = import.meta.glob<string>(
   { eager: true, query: "?url", import: "default" },
 );
 
-export function MoodIllustration({
-  moodId,
-  className,
-}: MoodIllustrationProps) {
+export function MoodIllustration({ moodId, className }: MoodIllustrationProps) {
   const assetPath = `../../../../assets/mood-illustrations/${moodId}`;
   const source = illustrationAssets[`${assetPath}.webp`];
   const source2x = illustrationAssets[`${assetPath}@2x.webp`];
