@@ -1,6 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRef, useState } from "react";
-import { QuestGallery } from "./features/quest-gallery/QuestGallery";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { AppHeader } from "./app/AppHeader";
@@ -65,7 +64,6 @@ export function App() {
       />
 
       <main className={styles.main} id="main-content">
-        <div hidden={galleryOpen}>
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={showSetup ? "setup" : "play"}
@@ -76,6 +74,8 @@ export function App() {
           >
             {!showSetup ? (
               <QuestScreen
+                galleryOpen={galleryOpen}
+                onGalleryOpenChange={setGalleryOpen}
                 reduceMotion={reduceMotion}
                 onCoinFlightStart={coinBalanceAnimation.startFlight}
                 onCoinHit={coinBalanceAnimation.receivePoints}
@@ -89,8 +89,6 @@ export function App() {
             )}
           </motion.div>
         </AnimatePresence>
-        </div>
-        {galleryOpen && <QuestGallery reduceMotion={reduceMotion} onClose={() => setGalleryOpen(false)} onRepeat={() => setGalleryOpen(false)} />}
       </main>
     </div>
   );

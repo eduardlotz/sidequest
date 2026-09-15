@@ -14,6 +14,10 @@ import {
 import { useTranslation } from "react-i18next";
 import type { MoodId } from "../../../../data/moods";
 import { playSound } from "../../../../lib/sound";
+import {
+  DESKTOP_VIEWPORT_QUERY,
+  useMediaQuery,
+} from "../../../../shared/hooks/useMediaQuery";
 import { VisuallyHidden } from "../../../../shared/ui/VisuallyHidden/VisuallyHidden";
 import { usePlayLayout } from "../../usePlayLayout";
 import styles from "./ArcDeck.module.css";
@@ -80,6 +84,9 @@ export function ArcDeck({
   const revealTimeoutRef = useRef<number | null>(null);
   const deckRef = useRef<HTMLDivElement>(null);
   const { isCompact } = usePlayLayout();
+  const richEffects = useMediaQuery(
+    `${DESKTOP_VIEWPORT_QUERY} and (hover: hover) and (pointer: fine)`,
+  );
   const [revealCards, setRevealCards] = useState(
     reduceMotion || !initialItemId,
   );
@@ -271,6 +278,7 @@ export function ArcDeck({
   return (
     <div
       className={styles.arcDeck}
+      data-rich-effects={richEffects || undefined}
       ref={deckRef}
       role="region"
       aria-roledescription="carousel"
@@ -293,6 +301,7 @@ export function ArcDeck({
             layoutSessionId={layoutSessionId}
             position={position}
             reduceMotion={reduceMotion}
+            richEffects={richEffects}
             revealCards={revealCards}
             returningFromQuests={returningFromQuests}
             selectedId={selectedId}

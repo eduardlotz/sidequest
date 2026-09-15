@@ -17,12 +17,16 @@ import { questOfferId } from "../../domain/quest/rules";
 import { useLibraryStore } from "../../stores/useLibraryStore";
 
 type Props = {
+  galleryOpen: boolean;
+  onGalleryOpenChange: (open: boolean) => void;
   reduceMotion: boolean;
   onCoinFlightStart: (pointsAwarded: number) => void;
   onCoinHit: (pointsReceived: number, impact?: CoinImpact) => void;
 };
 
 export function QuestScreen({
+  galleryOpen,
+  onGalleryOpenChange,
   reduceMotion,
   onCoinFlightStart,
   onCoinHit,
@@ -42,6 +46,7 @@ export function QuestScreen({
     refreshMoodWindow,
     refreshLibraryOffers,
     revealQuest,
+    repeatQuest,
     returnCurrentSessionToSelection,
     resumeQuest,
     selectMood,
@@ -62,6 +67,7 @@ export function QuestScreen({
       refreshMoodWindow: state.refreshMoodWindow,
       refreshLibraryOffers: state.refreshLibraryOffers,
       revealQuest: state.revealQuest,
+      repeatQuest: state.repeatQuest,
       returnCurrentSessionToSelection: state.returnCurrentSessionToSelection,
       resumeQuest: state.resumeQuest,
       selectMood: state.selectMood,
@@ -124,6 +130,8 @@ export function QuestScreen({
       transition={{ duration: reduceMotion ? 0 : 0.18 }}
     >
       <QuestScreenContent
+        galleryOpen={galleryOpen}
+        onGalleryOpenChange={onGalleryOpenChange}
         currentQuest={currentQuest}
         currentSession={currentSession}
         selectedMood={selectedMood}
@@ -136,6 +144,7 @@ export function QuestScreen({
         onSelectMood={selectMood}
         onEditMood={editMood}
         onRevealQuest={revealQuest}
+        onRepeatQuest={repeatQuest}
         onReturnToSelection={returnCurrentSessionToSelection}
         onNewCards={dealNewCards}
         onDiscard={discardCurrentSession}

@@ -1,4 +1,4 @@
-import { AnimatePresence, LayoutGroup, motion } from "motion/react";
+import { AnimatePresence, LayoutGroup, motion, useMotionValue } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -25,6 +25,10 @@ import { NAV_ENTRY_SPRING } from "../../../../shared/motion/transitions";
 import { questOfferId } from "../../../../domain/quest/rules";
 import type { CardReturnPose } from "../../../../lib/cardMotion";
 import {
+  QuestGallery,
+  type QuestGalleryView,
+} from "../../../quest-gallery/QuestGallery";
+import {
   SelectionLayer,
   SELECTION_LAYER_EXIT_DURATION,
 } from "../SelectionLayer/SelectionLayer";
@@ -38,6 +42,7 @@ const NEW_CARDS_COMPLETE_DELAY_MS = 1_500;
 
 type ReturnTransition = {
   action: "back" | "cancel";
+  destination: "selection" | "gallery";
   sessionId: string;
   offerId: string;
   pose: CardReturnPose;
@@ -45,6 +50,8 @@ type ReturnTransition = {
 };
 
 type Props = {
+  galleryOpen: boolean;
+  onGalleryOpenChange: (open: boolean) => void;
   currentQuest: Quest | null;
   currentSession: QuestSession | null;
   selectedMood: MoodDefinition | null;
@@ -56,7 +63,8 @@ type Props = {
   reduceMotion: boolean;
   onSelectMood: (moodId: MoodId) => boolean;
   onEditMood: () => void;
-  onRevealQuest: (offerId: string) => void;
+  onRevealQuest: (offerId: string) => boolean;
+  onRepeatQuest: (questId: string) => boolean;
   onReturnToSelection: () => boolean;
   onNewCards: () => boolean;
   onDiscard: () => boolean;
@@ -70,6 +78,8 @@ type Props = {
 };
 
 export function QuestScreenContent({
+  galleryOpen,
+  onGalleryOpenChange,
   currentQuest,
   currentSession,
   selectedMood,
@@ -82,6 +92,7 @@ export function QuestScreenContent({
   onSelectMood,
   onEditMood,
   onRevealQuest,
+  onRepeatQuest,
   onReturnToSelection,
   onNewCards,
   onDiscard,
@@ -95,10 +106,26 @@ export function QuestScreenContent({
 }: Props) {
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
+  const [galleryView, setGalleryView] = useState<QuestGalleryView>({
+    filter: "all",
+    query: "",
+    focusedId: null,
+  });
+  const galleryPosition = useMotionValue(0);
+  const [activeSource, setActiveSource] = useState<"selection" | "gallery">(
+    "selection",
+  );
   const isActive = Boolean(currentQuest && currentSession);
   const [returnTransition, setReturnTransition] =
     useState<ReturnTransition | null>(null);
-  const isReturning = returnTransition !== null && !returnTransition.finished;
+  const isReturning =
+    returnTransition !== null &&
+    returnTransition.sessionId === currentSession?.sessionId &&
+    !returnTransition.finished;
+  const selectionReturn =
+    returnTransition?.destination === "selection" ? returnTransition : null;
+  const galleryReturn =
+    returnTransition?.destination === "gallery" ? returnTransition : null;
   const showActive = isActive && !isReturning;
   const wasActiveRef = useRef(isActive);
   const returnedFromActive = wasActiveRef.current && !isActive;
@@ -131,7 +158,7 @@ export function QuestScreenContent({
   const previousSelectionModeRef = useRef<"moods" | "quests">(
     selectedMood ? "quests" : "moods",
   );
-  const questEntryMotion = returnTransition
+  const questEntryMotion = selectionReturn
     ? "return"
     : returnedFromActive || previousSelectionModeRef.current === "quests"
       ? "bottom"
@@ -148,9 +175,11 @@ export function QuestScreenContent({
   const [activeEntryRotation, setActiveEntryRotation] = useState(0);
   const selectionLayoutSessionId = `${layoutSessionIdRef.current}-selection`;
   const questLayoutSessionId = `${layoutSessionIdRef.current}-quests-${questDeckGeneration}`;
+  const galleryLayoutSessionId = `${questLayoutSessionId}-gallery`;
   const editMoodFrameRef = useRef<number | null>(null);
   const newCardsSwapTimeoutRef = useRef<number | null>(null);
   const newCardsCompletionTimeoutRef = useRef<number | null>(null);
+  const handoffFrameRef = useRef<number | null>(null);
   const moodItems = useMemo<ArcDeckItem[]>(
     () =>
       MOODS.flatMap((mood) => {
@@ -200,6 +229,9 @@ export function QuestScreenContent({
       }
       if (newCardsCompletionTimeoutRef.current !== null) {
         window.clearTimeout(newCardsCompletionTimeoutRef.current);
+      }
+      if (handoffFrameRef.current !== null) {
+        window.cancelAnimationFrame(handoffFrameRef.current);
       }
     },
     [],
@@ -264,8 +296,9 @@ export function QuestScreenContent({
   function beginReturn(pose: CardReturnPose, action: "back" | "cancel") {
     if (isReturning || !currentSession || !currentOfferId) return false;
     if (
-      !selectedMood ||
-      !offeredQuests.some((item) => item.offerId === currentOfferId)
+      activeSource !== "gallery" &&
+      (!selectedMood ||
+        !offeredQuests.some((item) => item.offerId === currentOfferId))
     ) {
       return action === "back" ? onReturnToSelection() : onDiscard();
     }
@@ -279,10 +312,57 @@ export function QuestScreenContent({
     setQuestSelectionClosing(false);
     setReturnTransition({
       action,
+      destination: activeSource,
       sessionId: currentSession.sessionId,
       offerId: currentOfferId,
       pose,
       finished: reduceMotion,
+    });
+    if (activeSource === "gallery") onGalleryOpenChange(true);
+    return true;
+  }
+
+  function prepareSelection(
+    previewRotation: number,
+    source: "selection" | "gallery",
+  ) {
+    if (editMoodFrameRef.current !== null) {
+      window.cancelAnimationFrame(editMoodFrameRef.current);
+      editMoodFrameRef.current = null;
+    }
+    if (newCardsSwapTimeoutRef.current !== null) {
+      window.clearTimeout(newCardsSwapTimeoutRef.current);
+      newCardsSwapTimeoutRef.current = null;
+    }
+    if (newCardsCompletionTimeoutRef.current !== null) {
+      window.clearTimeout(newCardsCompletionTimeoutRef.current);
+      newCardsCompletionTimeoutRef.current = null;
+    }
+    if (handoffFrameRef.current !== null) {
+      window.cancelAnimationFrame(handoffFrameRef.current);
+      handoffFrameRef.current = null;
+    }
+    setReturnTransition(null);
+    setNewCardsSequence(0);
+    setNewCardsPhase("idle");
+    setEditingMood(false);
+    setQuestSelectionClosing(true);
+    setActiveHandoffStarted(false);
+    setActiveEntryRotation(previewRotation);
+    setActiveSource(source);
+  }
+
+  function revealSelection(id: string, source: "selection" | "gallery") {
+    const revealed = source === "gallery" ? onRepeatQuest(id) : onRevealQuest(id);
+    if (!revealed) {
+      setQuestSelectionClosing(false);
+      setActiveHandoffStarted(true);
+      return false;
+    }
+    if (source === "gallery") onGalleryOpenChange(false);
+    handoffFrameRef.current = window.requestAnimationFrame(() => {
+      handoffFrameRef.current = null;
+      setActiveHandoffStarted(true);
     });
     return true;
   }
@@ -314,24 +394,30 @@ export function QuestScreenContent({
       aria-labelledby="task-screen-title"
     >
       <VisuallyHidden as="h1" id="task-screen-title">
-        {showActive
-          ? t("ui.task.currentQuest")
-          : selectedMood
-            ? t("ui.task.chooseMoodQuest", { mood: selectedMood.title })
-            : t("ui.task.selectMood")}
+        {galleryOpen
+          ? t("ui.gallery.title")
+          : showActive
+            ? t("ui.task.currentQuest")
+            : selectedMood
+              ? t("ui.task.chooseMoodQuest", { mood: selectedMood.title })
+              : t("ui.task.selectMood")}
       </VisuallyHidden>
 
       <LayoutGroup id="quest-flow">
         <AnimatePresence
           initial={animateEntrance}
           custom={isReturning ? "return" : undefined}
-          mode={returnedFromActive && !returnTransition ? "wait" : "sync"}
+          mode={
+            returnedFromActive && !returnTransition && !galleryOpen ? "wait" : "sync"
+          }
           onExitComplete={finishReturn}
         >
-          {currentQuest && currentSession && showActive ? (
+          {currentQuest && currentSession && showActive && (
             <motion.div
               className={styles.activeWrap}
               key={`active-${currentSession.sessionId}`}
+              inert={galleryOpen}
+              style={{ visibility: galleryOpen ? "hidden" : undefined }}
               initial={reduceMotion ? false : { opacity: 1 }}
               animate={{ opacity: 1 }}
               exit="exit"
@@ -349,8 +435,13 @@ export function QuestScreenContent({
               <ActiveQuestCard
                 quest={currentQuest}
                 session={currentSession}
-                layoutSessionId={questLayoutSessionId}
+                layoutSessionId={
+                  activeSource === "gallery" ? galleryLayoutSessionId : questLayoutSessionId
+                }
                 entryRotation={activeEntryRotation}
+                returnLabel={t(
+                  activeSource === "gallery" ? "ui.gallery.overview" : "ui.timer.backToSelection",
+                )}
                 coins={points}
                 redRopes={redRopes}
                 debugMode={debugMode}
@@ -367,14 +458,50 @@ export function QuestScreenContent({
                 onPurchaseRedRopes={onPurchaseRedRopes}
               />
             </motion.div>
-          ) : (
+          )}
+          {galleryOpen ? (
+            <motion.div
+              className={styles.galleryWrap}
+              key={`gallery-${lastActiveSessionIdRef.current}`}
+              inert={isReturning}
+              aria-busy={isReturning || undefined}
+              initial={false}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, pointerEvents: "none" }}
+              transition={{ duration: reduceMotion ? 0 : 0.26 }}
+            >
+              <QuestGallery
+                view={galleryView}
+                onViewChange={setGalleryView}
+                position={galleryPosition}
+                layoutSessionId={
+                  currentSession && !isReturning
+                    ? `${galleryLayoutSessionId}-browse`
+                    : galleryLayoutSessionId
+                }
+                returnPose={galleryReturn?.pose}
+                returningQuestId={galleryReturn?.offerId}
+                returning={isReturning}
+                reduceMotion={reduceMotion}
+                onClose={() => {
+                  if (isReturning) return;
+                  setReturnTransition(null);
+                  onGalleryOpenChange(false);
+                }}
+                onSelectionStart={(rotation) =>
+                  prepareSelection(rotation, "gallery")
+                }
+                onRepeat={(questId) => revealSelection(questId, "gallery")}
+              />
+            </motion.div>
+          ) : !showActive ? (
             <motion.div
               className={styles.deckWrap}
               key={`deck-session-${layoutSessionIdRef.current}-${lastActiveSessionIdRef.current}`}
               inert={isReturning}
               aria-busy={isReturning || undefined}
               initial={
-                reduceMotion || returnTransition
+                reduceMotion || selectionReturn
                   ? false
                   : { opacity: 0, scale: 0.985 }
               }
@@ -386,7 +513,7 @@ export function QuestScreenContent({
               }}
             >
               <AnimatePresence
-                initial={Boolean(returnTransition)}
+                initial={Boolean(selectionReturn)}
                 key={`selection-presence-${selectionPresenceGeneration}`}
                 mode="sync"
                 presenceAffectsLayout={false}
@@ -413,30 +540,22 @@ export function QuestScreenContent({
                           layoutSessionId={questLayoutSessionId}
                           reduceMotion={reduceMotion}
                           returningQuestId={
-                            returnTransition?.offerId ??
+                            selectionReturn?.offerId ??
                             (returnedFromActive
                               ? lastActiveQuestIdRef.current
                               : undefined)
                           }
-                          returnPose={returnTransition?.pose}
+                          returnPose={selectionReturn?.pose}
                           returning={isReturning}
                           returningToMoods={editingMood}
                           newCardsSequence={newCardsSequence}
                           newCardsPhase={newCardsPhase}
-                          onSelectionStart={(previewRotation) => {
-                            setReturnTransition(null);
-                            setNewCardsSequence(0);
-                            setNewCardsPhase("idle");
-                            setQuestSelectionClosing(true);
-                            setActiveHandoffStarted(false);
-                            setActiveEntryRotation(previewRotation);
-                          }}
-                          onSelect={(questId) => {
-                            onRevealQuest(questId);
-                            window.requestAnimationFrame(() =>
-                              setActiveHandoffStarted(true),
-                            );
-                          }}
+                          onSelectionStart={(rotation) =>
+                            prepareSelection(rotation, "selection")
+                          }
+                          onSelect={(questId) =>
+                            revealSelection(questId, "selection")
+                          }
                         />
 
                         <motion.div
@@ -514,7 +633,7 @@ export function QuestScreenContent({
                 )}
               </AnimatePresence>
             </motion.div>
-          )}
+          ) : null}
         </AnimatePresence>
       </LayoutGroup>
     </PlayLayout>

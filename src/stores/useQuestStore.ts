@@ -179,8 +179,9 @@ function createQuestState(
       if (!last && !quest.universal) return false;
       const now = options.now();
       const moodId = last?.moodId ?? quest.moodIds[0];
+      // Keep the selected mood and its offers in sync, as for a normal selection.
+      if (!get().selectMood(moodId)) return false;
       set({
-        selectedMoodId: moodId,
         moodSelectedAt: now,
         currentSession: {
           sessionId: options.createSessionId(),

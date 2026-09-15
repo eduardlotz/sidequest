@@ -104,6 +104,10 @@
   pointer-events: none;
   transform-style: preserve-3d;
   transition: box-shadow 240ms cubic-bezier(0.22, 0.8, 0.24, 1);
+  will-change: auto;
+}
+
+.arcDeck[data-rich-effects] .arcCardSlot[data-center] .moodCardTiltSurface {
   will-change: transform;
 }
 
@@ -146,7 +150,7 @@
       var(--mood-outline-width)
   );
   background: linear-gradient(
-    var(--mood-outline-angle, 160deg),
+    160deg,
     transparent 2%,
     color-mix(in srgb, var(--mood-card-border) 72%, transparent) 18%,
     color-mix(in srgb, var(--mood-card-border) 32%, transparent) 38%,
@@ -177,31 +181,29 @@
 }
 
 .moodSelectionCardBody::after {
-  --light-x: var(--mood-light-x, 0);
-  --light-y: var(--mood-light-y, 1);
   position: absolute;
   z-index: 3;
   border-radius: inherit;
   box-shadow:
-    inset calc(var(--light-x) * 2px) calc(var(--light-y) * 2px) 3px
+    inset 0 2px 3px
       rgb(255 255 255 / calc(0.24 * var(--mood-light-strength))),
-    inset calc(var(--light-x) * -2px) calc(var(--light-y) * -2px) 3px
+    inset 0 -2px 3px
       rgb(0 0 0 / 0.48),
-    inset calc(var(--light-y) * 3px) calc(var(--light-x) * -3px) 4px
+    inset 3px 0 4px
       rgb(235 244 237 / calc(0.12 * var(--mood-light-strength))),
-    inset calc(var(--light-y) * -3px) calc(var(--light-x) * 3px) 5px
+    inset -3px 0 5px
       rgb(0 0 0 / 0.24),
-    inset calc(var(--light-x) * 13px) calc(var(--light-y) * 13px) 14px -5px
+    inset 0 13px 14px -5px
       rgb(236 244 238 / calc(0.3 * var(--mood-light-strength))),
-    inset calc(var(--light-x) * -13px) calc(var(--light-y) * -13px) 11px -4px
+    inset 0 -13px 11px -4px
       rgb(0 0 0 / 0.6),
-    inset calc(var(--light-y) * 12px) calc(var(--light-x) * -12px) 14px -9px
+    inset 12px 0 14px -9px
       rgb(231 241 233 / calc(0.2 * var(--mood-light-strength))),
-    inset calc(var(--light-y) * -12px) calc(var(--light-x) * 12px) 15px -8px
+    inset -12px 0 15px -8px
       rgb(0 0 0 / 0.36),
-    inset calc(var(--light-x) * 32px) calc(var(--light-y) * 32px) 34px -20px
+    inset 0 32px 34px -20px
       rgb(234 243 237 / calc(0.16 * var(--mood-light-strength))),
-    inset calc(var(--light-x) * -30px) calc(var(--light-y) * -30px) 28px -12px
+    inset 0 -30px 28px -12px
       rgb(0 0 0 / 0.28);
   content: "";
   inset: calc(0px - var(--mood-card-border-width));
@@ -273,7 +275,7 @@
   will-change: auto;
 }
 
-.arcCardSlot[data-center] .moodIllustrationLayer {
+.arcDeck[data-rich-effects] .arcCardSlot[data-center] .moodIllustrationLayer {
   will-change: transform;
 }
 
@@ -316,12 +318,56 @@
 }
 
 @media (--hover) {
-  .arcCardSlot[data-center] .arcCardHitArea:hover .moodCardTiltSurface {
+  .arcDeck[data-rich-effects] .arcCardSlot[data-center] .arcCardHitArea:hover .moodCardTiltSurface {
     box-shadow:
       0 4px 7px rgb(8 14 10 / 0.2),
       0 18px 25px -7px rgb(8 14 10 / 0.26),
       0 32px 52px -10px rgb(8 14 10 / 0.34);
   }
+}
+
+.arcDeck:not([data-rich-effects]) {
+  perspective: none;
+}
+
+.arcDeck:not([data-rich-effects]) .moodCardExit {
+  /* Clear any blur(0px) retained by Motion after a desktop-to-mobile resize. */
+  filter: none !important;
+}
+
+.arcDeck:not([data-rich-effects]) :is(
+  .arcDeckTrack,
+  .arcCardSlot,
+  .moodCardExit,
+  .moodCardTiltSurface,
+  .moodSelectionCardBody,
+  .moodSelectionCardContent,
+  .moodCardVisual,
+  .moodIllustrationLayer
+) {
+  transform-style: flat;
+}
+
+.arcDeck:not([data-rich-effects]) .moodCardTiltSurface {
+  box-shadow: 0 8px 18px -6px rgb(8 14 10 / 0.24);
+  transition: none;
+}
+
+.arcDeck:not([data-rich-effects]) .moodSelectionCardBody {
+  --selection-card-background: var(--mood-card-bg, #15271f);
+}
+
+.arcDeck:not([data-rich-effects]) .moodSelectionCardBody::before {
+  padding: 0;
+  border: var(--mood-outline-width) solid var(--mood-card-border);
+  background: none;
+  -webkit-mask: none;
+  mask: none;
+}
+
+.arcDeck:not([data-rich-effects]) .moodSelectionCardBody::after {
+  box-shadow: inset 0 0 0 1px
+    rgb(255 255 255 / calc(0.14 * var(--mood-light-strength)));
 }
 
 @media (--mobile) {
