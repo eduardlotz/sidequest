@@ -31,14 +31,18 @@ type Props = {
   onSelect: (id: MoodId, focusNext?: boolean) => void;
 };
 
+const MOOD_CARD_Y_CENTER_ANIMATION = 70;
+const MOOD_CARD_Y_OUTER_ANIMATION = 20;
 const CARD_CENTER_STAGGER_SECONDS = 0.035;
 const MOBILE_CARD_GAP = 330;
 const DESKTOP_CARD_GAP = 520;
 const MOOD_POSITION_TRANSITION = {
   type: "spring" as const,
-  stiffness: 260,
+  // stiffness: 260,
+  stiffness: 200,
   damping: 30,
-  mass: 0.82,
+  // mass: 0.82,
+  mass: 0.5,
   restDelta: 0.01,
   restSpeed: 0.01,
 };
@@ -93,12 +97,18 @@ export function ArcCard({
   const absoluteDistance = Math.min(2, Math.abs(discreteDistance));
   const centerStaggerDelay = absoluteDistance * CARD_CENTER_STAGGER_SECONDS;
   const direction = discreteDistance < 0 ? -1 : 1;
+  // const direction = 1;
   const returningOffsetX = center
     ? 0
     : direction * (32 + absoluteDistance * 10);
-  const returningOffsetY = center ? 36 : 28;
-  const moodExitX = primaryExit ? 0 : direction * (42 + absoluteDistance * 12);
-  const moodExitY = primaryExit ? 32 : 44;
+  const returningOffsetY = center
+    ? MOOD_CARD_Y_CENTER_ANIMATION
+    : MOOD_CARD_Y_OUTER_ANIMATION;
+  // const moodExitX = primaryExit ? 0 : direction * (42 + absoluteDistance * 12);
+  const moodExitX = primaryExit ? 0 : 0;
+  const moodExitY = primaryExit
+    ? MOOD_CARD_Y_CENTER_ANIMATION
+    : MOOD_CARD_Y_OUTER_ANIMATION;
   const positionDelay = foregroundExiting
     ? centerStaggerDelay
     : revealCards
@@ -160,7 +170,8 @@ export function ArcCard({
             ? {
                 filter: "none",
                 opacity: 0,
-                scale: primaryExit ? 0.96 : 0.94,
+                // scale: primaryExit ? 0.96 : 0.94,
+                scale: primaryExit ? 0.9 : 0.5,
                 x: moodExitX,
                 y: moodExitY,
               }

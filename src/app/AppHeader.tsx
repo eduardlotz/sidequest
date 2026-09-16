@@ -18,7 +18,7 @@ import styles from "./AppHeader.module.css";
 import { AboutPanel } from "./AboutPanel";
 import type { CoinImpact } from "../features/active-quest/components/FlyingCoin/FlyingCoin";
 import type { ThemeChoice } from "../lib/theme";
-import { InfoIcon } from "@phosphor-icons/react";
+import { BookBookmarkIcon, InfoIcon } from "@phosphor-icons/react";
 
 type Props = {
   coinImpact: CoinImpact | null;
@@ -117,6 +117,18 @@ export function AppHeader({
             >
               <AboutPanel reduceMotion={reduceMotion} />
             </ResponsiveDrawer>
+            <SolidButton
+              className={styles.navIconButton}
+              iconLeft={<BookBookmarkIcon weight="bold" />}
+              aria-label={t("ui.gallery.navigation")}
+              size="medium"
+              variant="secondary"
+              onClick={onOpenGallery}
+            >
+              <span className={styles.navButtonLabel}>
+                {t("ui.gallery.navigation")}
+              </span>
+            </SolidButton>
           </div>
         </motion.div>
 
@@ -183,7 +195,6 @@ export function AppHeader({
               }
             >
               <ProfileDrawer
-                onOpenGallery={onOpenGallery}
                 onDebugModeChange={setDebugMode}
                 onPurchaseRedRopes={purchaseRedRopes}
                 onThemeChange={onThemeChange}

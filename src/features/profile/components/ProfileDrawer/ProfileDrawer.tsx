@@ -1,19 +1,18 @@
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import {
-  BookBookmarkIcon,
   CircleHalfIcon,
   CoffeeIcon,
+  DevicesIcon,
   EarIcon,
   GameControllerIcon,
   GlobeIcon,
-  StorefrontIcon,
+  MoonIcon,
+  SunIcon,
   WrenchIcon,
 } from "@phosphor-icons/react";
 import { QuestPoolSettings } from "../QuestPoolSettings/QuestPoolSettings";
-import { QuestShop } from "../QuestShop/QuestShop";
-import { Drawer } from "vaul";
 import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./ProfileDrawer.module.css";
 import { formatScore } from "../../../../lib/format";
@@ -31,11 +30,16 @@ import { RopePurchaseRow } from "../../../active-quest/components/RopePurchaseRo
 import { GameLibraryDrawer } from "../GameLibraryDrawer/GameLibraryDrawer";
 import { ProfilePanel } from "./ProfilePanel";
 
+const THEME_ICONS = {
+  light: SunIcon,
+  dark: MoonIcon,
+  auto: DevicesIcon,
+} as const;
+
 type Props = {
   onDebugModeChange: (enabled: boolean) => void;
   onPurchaseRedRopes: () => boolean;
   onThemeChange: (theme: ThemeChoice) => void;
-  onOpenGallery: () => void;
   profile: UserProfile;
   stats: QuestStats;
   totalCoinsCollected: number;
@@ -46,7 +50,6 @@ export function ProfileDrawer({
   onDebugModeChange,
   onPurchaseRedRopes,
   onThemeChange,
-  onOpenGallery,
   profile,
   stats,
   totalCoinsCollected,
@@ -101,10 +104,14 @@ export function ProfileDrawer({
           <SettingSegmentedControl
             label={t("ui.profile.theme")}
             value={themeChoice}
-            options={(["light", "dark", "auto"] as const).map((choice) => ({
-              value: choice,
-              label: t(`ui.profile.theme${capitalize(choice)}`),
-            }))}
+            options={(["light", "dark", "auto"] as const).map((choice) => {
+              const Icon = THEME_ICONS[choice];
+              return {
+                value: choice,
+                label: t(`ui.profile.theme${capitalize(choice)}`),
+                icon: <Icon aria-hidden weight="bold" size={16} />,
+              };
+            })}
             onChange={onThemeChange}
           />
         </div>
@@ -119,7 +126,7 @@ export function ProfileDrawer({
             onChange={changeSound}
           />
         </div>
-        <div className={styles.profileSettingRow}>
+        {/* <div className={styles.profileSettingRow}>
           <span className={styles.settingLabelWithInfo}>
             <CoffeeIcon aria-hidden weight="bold" />
             <InfoLabel
@@ -132,25 +139,15 @@ export function ProfileDrawer({
             label={t("ui.profile.debugModeLabel")}
             onChange={onDebugModeChange}
           />
-        </div>
+        </div> */}
       </section>
       <section className={styles.profileSection}>
         <div className={styles.profileNavigation}>
-          <Drawer.Close asChild>
-            <SolidButton
-              size="medium"
-              variant="secondary"
-              iconLeft={<BookBookmarkIcon weight="bold" />}
-              onClick={onOpenGallery}
-            >
-              {t("ui.gallery.navigation")}
-            </SolidButton>
-          </Drawer.Close>
           <ResponsiveNestedDrawer
             trigger={
               <SolidButton
                 size="medium"
-                variant="secondary"
+                variant="soft"
                 iconLeft={<GameControllerIcon weight="bold" />}
                 iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}
               >
@@ -164,7 +161,7 @@ export function ProfileDrawer({
             trigger={
               <SolidButton
                 size="medium"
-                variant="secondary"
+                variant="soft"
                 iconLeft={<WrenchIcon weight="bold" />}
                 iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}
               >
@@ -173,20 +170,6 @@ export function ProfileDrawer({
             }
           >
             <QuestPoolSettings />
-          </ResponsiveNestedDrawer>
-          <ResponsiveNestedDrawer
-            trigger={
-              <SolidButton
-                size="medium"
-                variant="secondary"
-                iconLeft={<StorefrontIcon weight="bold" />}
-                iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}
-              >
-                {t("ui.shop.title")}
-              </SolidButton>
-            }
-          >
-            <QuestShop />
           </ResponsiveNestedDrawer>
         </div>
       </section>
@@ -254,7 +237,7 @@ function SettingSegmentedControl<Value extends string>({
 }: {
   label: string;
   value: Value;
-  options: readonly { value: Value; label: string }[];
+  options: readonly { value: Value; label: string; icon?: ReactNode }[];
   onChange: (value: Value) => void;
 }) {
   return (
@@ -267,10 +250,12 @@ function SettingSegmentedControl<Value extends string>({
         <button
           type="button"
           aria-pressed={value === option.value}
+          aria-label={option.label}
+          title={option.icon ? option.label : undefined}
           key={option.value}
           onClick={() => onChange(option.value)}
         >
-          {option.label}
+          {option.icon ?? option.label}
         </button>
       ))}
     </div>

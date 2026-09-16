@@ -6,7 +6,6 @@ import {
 } from "zustand/middleware";
 import { createStore, type StateCreator } from "zustand/vanilla";
 import { MOODS_BY_ID, type MoodId } from "../data/moods";
-import { QUEST_PACKS_BY_ID, QUEST_PACK_PRICE } from "../data/questPacks";
 import { sanitizePoolPreferences } from "../domain/quest/pool";
 import { QUEST_CORES_BY_ID } from "../data/quests";
 import { libraryGamesFromState } from "../domain/library/rules";
@@ -85,41 +84,11 @@ function createQuestState(
       excludedOfferIds,
       undefined,
       undefined,
-      state.ownedPackIds,
       state.poolPreferences,
     );
   }
   return (set, get) => ({
     ...createDefaultState(),
-    purchaseQuestPack: (packId) => {
-      const state = get();
-      const isDev = state.profile.debugMode;
-
-      if (
-        !Object.hasOwn(QUEST_PACKS_BY_ID, packId) ||
-        state.ownedPackIds.includes(packId) ||
-        (state.profile.points < QUEST_PACK_PRICE && !isDev)
-      )
-        return false;
-      const next = { ...state, ownedPackIds: [...state.ownedPackIds, packId] };
-      const offeredQuests = state.selectedMoodId
-        ? offersForMood(state.selectedMoodId, next)
-        : [];
-      set({
-        ownedPackIds: next.ownedPackIds,
-        profile: {
-          ...state.profile,
-          points: isDev
-            ? state.profile.points
-            : state.profile.points - QUEST_PACK_PRICE,
-        },
-        offeredQuests,
-        offerSetsByMoodId: state.selectedMoodId
-          ? { [state.selectedMoodId]: offeredQuests }
-          : {},
-      });
-      return true;
-    },
     savePoolPreferences: (preferences) => {
       const state = get();
       const poolPreferences = sanitizePoolPreferences(preferences);
@@ -611,7 +580,6 @@ export function createQuestStore(
       storage,
       version: STORE_VERSION,
       partialize: ({
-        ownedPackIds,
         poolPreferences,
         profile,
         selectedMoodId,
@@ -624,7 +592,6 @@ export function createQuestStore(
         questProgressById,
         stats,
       }) => ({
-        ownedPackIds,
         poolPreferences,
         profile,
         selectedMoodId,

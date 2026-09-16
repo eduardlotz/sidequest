@@ -1,8 +1,7 @@
 import { GAME_GENRE_IDS } from "../../data/gameGenres";
 import { QUEST_TYPES, type QuestTypeId } from "../../data/questTraits";
 import { QUEST_PLAY_STYLE_IDS, QUEST_POOL_TRAITS } from "../../data/questPoolTraits";
-import { isQuestUnlocked } from "../../data/questPacks";
-import type { MoodId, QuestCoreDefinition } from "../../data/questTypes";
+import type { QuestCoreDefinition } from "../../data/questTypes";
 import type { QuestPoolPreferences } from "./model";
 
 export function defaultPoolPreferences(): QuestPoolPreferences {
@@ -15,9 +14,6 @@ export function matchesPoolPreferences(quest: QuestCoreDefinition, preferences: 
   return preferences.typeIds.includes(quest.type) && preferences.genreIds.length > 0 &&
     Boolean(traits && genres && (!genres.length || genres.some(id => preferences.genreIds.includes(id))) &&
       traits.styleIds.some(id => preferences.styleIds.includes(id)));
-}
-export function questAvailableInPool(quest: QuestCoreDefinition, moodId: MoodId, ownedPackIds: readonly string[], preferences: QuestPoolPreferences) {
-  return isQuestUnlocked(quest.id, moodId, ownedPackIds) && matchesPoolPreferences(quest, preferences);
 }
 export function sanitizePoolPreferences(value: unknown): QuestPoolPreferences {
   if (!value || typeof value !== "object") return defaultPoolPreferences();

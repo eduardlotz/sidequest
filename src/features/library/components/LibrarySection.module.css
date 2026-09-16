@@ -46,3 +46,7 @@
     color: var(--color-muted);
   }
 }
+
+:global(:root[data-theme="dark"]) .emptyState {
+  background: var(--color-canvas);
+}

@@ -283,7 +283,6 @@
 .sectionHeading {
   composes: heading from "../LibrarySection.module.css";
   padding-block: 8px;
-  margin-bottom: 8px;
 }
 
 .summaryRow {
@@ -291,11 +290,32 @@
   align-items: center;
   gap: 12px;
   padding: var(--library-row-inset);
-  margin-top: 8px;
   border-radius: var(--library-control-radius);
+  margin-top: 8px;
   background: var(--color-surface);
   font-size: 14px;
   font-weight: 600;
+}
+
+.summaryMetaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: var(--library-row-inset);
+  color: var(--color-muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.summaryMetaRow span {
+  display: flex;
+  color: var(--color-muted);
+  background: var(--color-surface);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  line-height: 1.2;
 }
 
 .summaryRow svg,
@@ -318,6 +338,7 @@
   font-size: 14px;
   line-height: 1.25;
   font-weight: 500;
+  margin-top: 4px;
 }
 
 .emptyActivities {
@@ -376,11 +397,11 @@
   align-items: center;
   gap: 10px;
   height: 38px;
-  padding: 0 var(--library-row-inset);
-  margin-bottom: 16px;
+  padding: 0 calc(var(--library-row-inset) + 4px);
   border-radius: 12px;
   background: var(--library-muted-surface);
   color: var(--color-muted);
+  margin-bottom: 1rem;
 
   svg {
     width: 20px;
@@ -447,15 +468,16 @@
   display: flex;
   width: 100%;
   min-height: 64px;
-  padding: 16px var(--library-row-inset);
+  padding: 16px calc(var(--library-row-inset) + 4px);
   align-items: center;
-  gap: 12px;
+  gap: 40px;
   border-radius: 21px;
   background: var(--color-surface);
   color: var(--color-text);
   font-size: 14px;
   font-weight: 600;
   text-align: left;
+  text-wrap: balance;
   cursor: pointer;
   transition:
     background-color 180ms ease,
@@ -471,6 +493,12 @@
     &:active {
       transform: none;
     }
+  }
+
+  .rowLabel {
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
 }
 

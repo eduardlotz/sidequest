@@ -6,7 +6,7 @@ import type { QuestTypeId } from "../../data/questTraits";
 import type { QuestPlayStyleId } from "../../data/questPoolTraits";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 16;
+export const STORE_VERSION = 17;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const QUEST_OFFER_COUNT = 3;
 export const STORED_COMPLETION_LIMIT = 500;
@@ -97,7 +97,6 @@ export type QuestStats = {
 };
 
 export type QuestState = {
-  ownedPackIds: string[];
   poolPreferences: QuestPoolPreferences;
   profile: UserProfile;
   selectedMoodId: MoodId | null;
@@ -122,7 +121,6 @@ export type QuestActions = {
   toggleQuestFavorite: (questId: string) => void;
   repeatQuest: (questId: string) => boolean;
   restartCurrentQuest: () => boolean;
-  purchaseQuestPack: (packId: string) => boolean;
   savePoolPreferences: (preferences: QuestPoolPreferences) => void;
   selectMood: (moodId: MoodId) => boolean;
   editMood: () => boolean;
@@ -154,7 +152,6 @@ export type PersistedQuestState = Pick<
   | "completedSessions"
   | "questProgressById"
   | "stats"
-  | "ownedPackIds"
   | "poolPreferences"
 >;
 
