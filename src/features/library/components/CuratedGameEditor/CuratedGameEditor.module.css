@@ -170,7 +170,8 @@
 .curatedOptions {
   padding: 0 var(--library-row-inset) 14px;
   padding-left: calc(
-    var(--library-row-inset) + var(--curated-visual-size) + var(--curated-game-gap)
+    var(--library-row-inset) + var(--curated-visual-size) +
+      var(--curated-game-gap)
   );
   color: var(--color-muted);
   font-size: 13px;
@@ -196,35 +197,4 @@
   flex-wrap: wrap;
   gap: 5px;
   padding: 2px 2px 4px;
-
-  button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    min-height: 30px;
-    padding: 0 9px;
-    border: 2px solid transparent;
-    border-radius: 18px;
-    background: var(--library-muted-surface);
-    color: var(--color-text);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    transition:
-      border-color 180ms ease,
-      background-color 180ms ease,
-      color 180ms ease,
-      box-shadow 220ms ease;
-
-    &[aria-pressed="true"] {
-      border-color: var(--library-series-accent);
-      color: var(--library-series-accent);
-    }
-
-    @media (--reduced-motion) {
-      transition: none;
-    }
-  }
 }

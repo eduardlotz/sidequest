@@ -30,7 +30,6 @@ import {
   MagnifyingGlassIcon,
 } from "@phosphor-icons/react";
 import { QUESTS } from "../../data/quests";
-import { QUEST_PACK_BY_QUEST_ID } from "../../data/questPacks";
 import { getMoodAccentStyle } from "../../data/questColors";
 import { hydrateQuest } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
@@ -57,7 +56,7 @@ import cardStyles from "../../shared/quest-card/QuestCard/QuestCard.module.css";
 import { SolidButton } from "../../shared/ui/SolidButton/SolidButton";
 import buttonStyles from "../../shared/ui/SolidButton/SolidButton.module.css";
 import { InfoText } from "../../shared/ui/InfoText/InfoText";
-import { CoinIcon } from "../../shared/ui/Icons/Icons";
+import { ChevronLeftIcon, CoinIcon } from "../../shared/ui/Icons/Icons";
 import { visuallyHiddenClassName } from "../../shared/ui/VisuallyHidden/VisuallyHidden";
 import styles from "./QuestGallery.module.css";
 
@@ -113,16 +112,14 @@ export function QuestGallery({
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const desktop = useMediaQuery(DESKTOP_VIEWPORT_QUERY);
   const isPresent = useIsPresent();
-  const { progress, counts, toggleFavorite, currentSession, ownedPackIds } =
-    useQuestStore(
-      useShallow((state) => ({
-        ownedPackIds: state.ownedPackIds,
-        progress: state.questProgressById,
-        counts: state.stats.completionCountsByQuestId,
-        toggleFavorite: state.toggleQuestFavorite,
-        currentSession: state.currentSession,
-      })),
-    );
+  const { progress, counts, toggleFavorite, currentSession } = useQuestStore(
+    useShallow((state) => ({
+      progress: state.questProgressById,
+      counts: state.stats.completionCountsByQuestId,
+      toggleFavorite: state.toggleQuestFavorite,
+      currentSession: state.currentSession,
+    })),
+  );
   const { filter, query, focusedId } = view;
   const setFocusedId = useCallback(
     (update: SetStateAction<string | null>) =>
@@ -437,12 +434,6 @@ export function QuestGallery({
 
   const info = focusedQuest && (
     <QuestInfo
-      packTitle={
-        QUEST_PACK_BY_QUEST_ID[focusedQuest.id] &&
-        !ownedPackIds.includes(QUEST_PACK_BY_QUEST_ID[focusedQuest.id].id)
-          ? QUEST_PACK_BY_QUEST_ID[focusedQuest.id].title[language]
-          : undefined
-      }
       quest={focusedQuest}
       progress={progress[focusedQuest.id]}
       count={counts[focusedQuest.id] ?? 0}
@@ -455,11 +446,20 @@ export function QuestGallery({
   return (
     <section
       className={styles.gallery}
-      aria-label={t("ui.gallery.title")}
       inert={!isPresent || returning || selectedId !== null}
     >
       <header className={styles.header}>
         <h1 className={visuallyHiddenClassName}>{t("ui.gallery.title")}</h1>
+        <SolidButton
+          className={styles.back}
+          variant="highlighted"
+          size="medium"
+          onClick={onClose}
+          iconLeft={<ChevronLeftIcon />}
+        >
+          {t("ui.gallery.back")}
+        </SolidButton>
+
         <div className={styles.filters}>
           <label
             className={`${buttonStyles.button} ${styles.search}`}
@@ -501,15 +501,6 @@ export function QuestGallery({
             </select>
           </label>
         </div>
-        <SolidButton
-          className={styles.back}
-          variant="highlighted"
-          size="medium"
-          onClick={onClose}
-          iconLeft={<ArrowLeftIcon />}
-        >
-          {t("ui.gallery.back")}
-        </SolidButton>
       </header>
       <div
         className={styles.viewport}
@@ -556,7 +547,7 @@ export function QuestGallery({
 
           const focusedCard = target?.closest('[data-focused="true"]');
 
-          if (focusedId && !focusedCard) {
+          if (focusedId && focusedCard) {
             suppressClick.current = true;
             drag.current = null;
 
@@ -1056,7 +1047,6 @@ function QuestInfo({
   active,
   onFavorite,
   onRepeat,
-  packTitle,
 }: {
   quest: Quest;
   progress?: QuestProgress;
@@ -1064,7 +1054,6 @@ function QuestInfo({
   active: boolean;
   onFavorite: () => void;
   onRepeat: () => void;
-  packTitle?: string;
 }) {
   const { t, i18n } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
@@ -1146,9 +1135,6 @@ function QuestInfo({
       )}
       {!count && progress && (
         <InfoText>{t("ui.gallery.unlockRepeat")}</InfoText>
-      )}
-      {packTitle && !count && (
-        <InfoText>{t("ui.gallery.packLocked", { pack: packTitle })}</InfoText>
       )}
     </div>
   );

@@ -84,18 +84,31 @@ const MOOD_HANDOFF_TRANSITION = {
   restDelta: 0.01,
   restSpeed: 0.01,
 };
-const CARD_CENTER_STAGGER_SECONDS = 0.04;
-const MOOD_HANDOFF_OFFSET_Y = -48;
-const NEW_CARDS_STAGGER_SECONDS = 0.11;
-const CARD_REST_POSE = { filter: "blur(0px)", opacity: 1, x: 0, y: 0, scale: 1 };
+// const CARD_CENTER_STAGGER_SECONDS = 0.04;
+const CARD_CENTER_STAGGER_SECONDS = 0.08;
+const MOOD_HANDOFF_OFFSET_Y = 50;
+const NEW_CARDS_STAGGER_SECONDS = 0.12;
+const CARD_REST_POSE = {
+  filter: "blur(0px)",
+  opacity: 1,
+  x: 0,
+  y: 0,
+  scale: 1,
+};
 
 function cardDeparturePose(index: number, reduceMotion: boolean) {
   return {
-    filter: "blur(5px)",
+    // filter: "blur(5px)",
+    // opacity: 0,
+    // x: reduceMotion ? 0 : index === 0 ? -210 : index === 2 ? 210 : 0,
+    // y: reduceMotion ? 0 : index === 1 ? -150 : 120,
+    // scale: reduceMotion ? 1 : 0.72,
+    filter: "blur(8px)",
     opacity: 0,
-    x: reduceMotion ? 0 : index === 0 ? -210 : index === 2 ? 210 : 0,
-    y: reduceMotion ? 0 : index === 1 ? -150 : 120,
-    scale: reduceMotion ? 1 : 0.72,
+    // x: reduceMotion ? 0 : index === 0 ? -70 : index === 2 ? 70 : 0,
+    x: 0,
+    y: reduceMotion ? 0 : MOOD_HANDOFF_OFFSET_Y,
+    scale: reduceMotion ? 1 : 0.95,
   };
 }
 
@@ -138,15 +151,26 @@ export function QuestOfferDeck({
 
   useEffect(() => {
     if (returningToMoods || dealingNewCards) return;
-    const visibleItems = isCompact ? items.slice(activeCardIndex, activeCardIndex + 1) : items;
+    const visibleItems = isCompact
+      ? items.slice(activeCardIndex, activeCardIndex + 1)
+      : items;
     markQuestsSeen(visibleItems.map((item) => item.id));
-  }, [activeCardIndex, dealingNewCards, isCompact, items, markQuestsSeen, returningToMoods]);
+  }, [
+    activeCardIndex,
+    dealingNewCards,
+    isCompact,
+    items,
+    markQuestsSeen,
+    returningToMoods,
+  ]);
 
   useEffect(() => {
     setSelectedId(null);
     setSwipingIds(new Set());
     setReturningSwipeIds(new Set());
-    const returningIndex = items.findIndex((item) => item.offerId === returningQuestId);
+    const returningIndex = items.findIndex(
+      (item) => item.offerId === returningQuestId,
+    );
     setActiveCardIndex((current) =>
       returningIndex >= 0
         ? returningIndex
@@ -208,7 +232,8 @@ export function QuestOfferDeck({
     >
       {!items.length && <InfoText>{t("ui.pool.empty")}</InfoText>}
       {items.map((item, index) => {
-        const displayIndex = items.length === 1 ? 1 : items.length === 2 ? index * 2 : index;
+        const displayIndex =
+          items.length === 1 ? 1 : items.length === 2 ? index * 2 : index;
         const stackOffset =
           (index - activeCardIndex + items.length) % items.length;
         const stackPosition =
@@ -217,7 +242,11 @@ export function QuestOfferDeck({
           <motion.div
             className={`${cardStyles.questCardFrame} ${styles.previewCardSlot}`}
             data-position={
-              displayIndex === 0 ? "left" : displayIndex === 2 ? "right" : "center"
+              displayIndex === 0
+                ? "left"
+                : displayIndex === 2
+                  ? "right"
+                  : "center"
             }
             data-stack-position={stackPosition}
             data-swipe-exiting={swipingIds.has(item.offerId) || undefined}
@@ -235,7 +264,9 @@ export function QuestOfferDeck({
               layoutSessionId={layoutSessionId}
               stackPosition={stackPosition}
               reduceMotion={reduceMotion}
-              returnPose={item.offerId === returningQuestId ? returnPose : undefined}
+              returnPose={
+                item.offerId === returningQuestId ? returnPose : undefined
+              }
               returning={returning}
               returningToMoods={returningToMoods}
               newCardsSequence={newCardsSequence}
@@ -309,7 +340,9 @@ function QuestOfferCard({
   onSwipeStart,
 }: CardProps) {
   const { t } = useTranslation();
-  const personalBest = useQuestStore(state => state.questProgressById[item.id]?.bestTimeMs);
+  const personalBest = useQuestStore(
+    (state) => state.questProgressById[item.id]?.bestTimeMs,
+  );
   const { isCompact } = usePlayLayout();
   const dealingNewCards = newCardsPhase !== "idle";
   const drag = useQuestCardDrag({
@@ -340,9 +373,9 @@ function QuestOfferCard({
   const centerOffsetX = isCompact
     ? 0
     : index === 0
-      ? 150
+      ? -70
       : index === 2
-        ? -150
+        ? 70
         : 0;
   const centerStaggerDelay = isCompact
     ? stackPosition === "front"
@@ -353,7 +386,8 @@ function QuestOfferCard({
     : Math.abs(index - 1) * CARD_CENTER_STAGGER_SECONDS;
   const moodHandoffActive =
     !selectionStarted && (entryMotion === "shared" || returningToMoods);
-  const returningFromActive = entryMotion === "return" && !selectionStarted && !returningToMoods;
+  const returningFromActive =
+    entryMotion === "return" && !selectionStarted && !returningToMoods;
   const positionTransition = returningFromActive
     ? CARD_RETURN_TRANSITION
     : moodHandoffActive
@@ -386,15 +420,17 @@ function QuestOfferCard({
               ? {
                   filter: "blur(0px)",
                   opacity: 0,
+                  // x: 0,
                   x: centerOffsetX,
                   y: MOOD_HANDOFF_OFFSET_Y,
-                  scale: 0.96,
+                  scale: 0.95,
                 }
               : {
-                  filter: "blur(5px)",
+                  filter: "blur(8px)",
                   opacity: 0,
-                  y: 72,
-                  scale: 0.92,
+                  x: centerOffsetX,
+                  y: 50,
+                  scale: 0.9,
                 }
       }
       animate={
@@ -402,20 +438,18 @@ function QuestOfferCard({
           ? cardDeparturePose(index, reduceMotion)
           : returningToMoods
             ? {
-                ...CARD_REST_POSE,
+                filter: "blur(8px)",
                 opacity: 0,
                 x: centerOffsetX,
                 y: MOOD_HANDOFF_OFFSET_Y,
                 scale: 0.96,
               }
-            : returnPose
-              ? { ...CARD_REST_POSE, filter: "none" }
-              : CARD_REST_POSE
+            : CARD_REST_POSE
       }
       exit={
         returningToMoods
           ? {
-              filter: "blur(0px)",
+              filter: "blur(8px)",
               opacity: 0,
               x: centerOffsetX,
               y: MOOD_HANDOFF_OFFSET_Y,
@@ -424,7 +458,7 @@ function QuestOfferCard({
           : selectionStarted
             ? selected
               ? {
-                  filter: "blur(0px)",
+                  filter: "blur(8px)",
                   opacity: 0,
                   scale: 1,
                   transition: { opacity: { duration: 0 } },
@@ -436,7 +470,9 @@ function QuestOfferCard({
         reduceMotion
           ? { duration: 0 }
           : {
-              layout: returnPose ? CARD_RETURN_LAYOUT_TRANSITION : CARD_LAYOUT_TRANSITION,
+              layout: returnPose
+                ? CARD_RETURN_LAYOUT_TRANSITION
+                : CARD_LAYOUT_TRANSITION,
               x: {
                 ...positionTransition,
                 delay: positionDelay,
@@ -450,12 +486,20 @@ function QuestOfferCard({
                 delay: positionDelay,
               },
               opacity: {
-                duration: returningFromActive ? 0.4 : moodHandoffActive ? 0.28 : 0.26,
+                duration: returningFromActive
+                  ? 0.5
+                  : moodHandoffActive
+                    ? 0.5
+                    : 0.3,
                 ease: CARD_FADE_EASE,
                 delay: positionDelay,
               },
               filter: {
-                duration: returningFromActive ? 0.4 : moodHandoffActive ? 0 : 0.24,
+                duration: returningFromActive
+                  ? 0.7
+                  : moodHandoffActive
+                    ? 0.5
+                    : 0.6,
                 ease: CARD_FADE_EASE,
                 delay: positionDelay,
               },
@@ -510,12 +554,20 @@ function QuestOfferCard({
           transition={
             reduceMotion
               ? { duration: 0 }
-              : returnPose ? CARD_RETURN_TRANSITION : CARD_DISPLAY_TRANSITION
+              : returnPose
+                ? CARD_RETURN_TRANSITION
+                : CARD_DISPLAY_TRANSITION
           }
         >
           <motion.span
             className={styles.previewCardTilt}
-            drag={isCompact && isTopCard && !selectionStarted && !dealingNewCards && !returning}
+            drag={
+              isCompact &&
+              isTopCard &&
+              !selectionStarted &&
+              !dealingNewCards &&
+              !returning
+            }
             dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
             dragElastic={1}
             dragMomentum={false}
@@ -546,9 +598,13 @@ function QuestOfferCard({
               transition={
                 reduceMotion
                   ? { duration: 0 }
-                  : returnPose ? CARD_RETURN_TRANSITION : CARD_DISPLAY_TRANSITION.scale
+                  : returnPose
+                    ? CARD_RETURN_TRANSITION
+                    : CARD_DISPLAY_TRANSITION.scale
               }
-              data-new-cards-phase={newCardsPhase === "idle" ? undefined : newCardsPhase}
+              data-new-cards-phase={
+                newCardsPhase === "idle" ? undefined : newCardsPhase
+              }
               style={
                 {
                   "--new-cards-delay": `${index * NEW_CARDS_STAGGER_SECONDS}s`,
@@ -562,7 +618,8 @@ function QuestOfferCard({
                   newCardsSequence < 1 ||
                   reduceMotion ||
                   newCardsPhase !== "incoming"
-                ) return;
+                )
+                  return;
                 playSound("newCards");
               }}
             >

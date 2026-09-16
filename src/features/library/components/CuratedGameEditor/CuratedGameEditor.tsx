@@ -71,7 +71,7 @@ export function CuratedGameEditor({
   }
 
   const saveButton = (
-    <SolidButton size="large" variant="primary" onClick={saveSelection}>
+    <SolidButton size="large" variant="highlighted" onClick={saveSelection}>
       {t("ui.library.saveSelection")}
     </SolidButton>
   );
@@ -207,10 +207,14 @@ export function CuratedGameEditor({
                                 const installmentSelected =
                                   preferences.installmentIds.includes(entry.id);
                                 return (
-                                  <button
+                                  <SolidButton
                                     key={entry.id}
                                     type="button"
                                     aria-pressed={installmentSelected}
+                                    size="small"
+                                    variant={
+                                      installmentSelected ? "primary" : "soft"
+                                    }
                                     onClick={() =>
                                       toggleCuratedInstallment(
                                         game.id,
@@ -218,8 +222,8 @@ export function CuratedGameEditor({
                                       )
                                     }
                                   >
-                                    <span>{entry.name}</span>
-                                  </button>
+                                    {entry.name}
+                                  </SolidButton>
                                 );
                               })}
                             </div>

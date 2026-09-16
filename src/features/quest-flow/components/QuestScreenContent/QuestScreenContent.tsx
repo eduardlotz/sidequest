@@ -1,4 +1,9 @@
-import { AnimatePresence, LayoutGroup, motion, useMotionValue } from "motion/react";
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  useMotionValue,
+} from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -353,7 +358,8 @@ export function QuestScreenContent({
   }
 
   function revealSelection(id: string, source: "selection" | "gallery") {
-    const revealed = source === "gallery" ? onRepeatQuest(id) : onRevealQuest(id);
+    const revealed =
+      source === "gallery" ? onRepeatQuest(id) : onRevealQuest(id);
     if (!revealed) {
       setQuestSelectionClosing(false);
       setActiveHandoffStarted(true);
@@ -408,7 +414,9 @@ export function QuestScreenContent({
           initial={animateEntrance}
           custom={isReturning ? "return" : undefined}
           mode={
-            returnedFromActive && !returnTransition && !galleryOpen ? "wait" : "sync"
+            returnedFromActive && !returnTransition && !galleryOpen
+              ? "wait"
+              : "sync"
           }
           onExitComplete={finishReturn}
         >
@@ -436,11 +444,15 @@ export function QuestScreenContent({
                 quest={currentQuest}
                 session={currentSession}
                 layoutSessionId={
-                  activeSource === "gallery" ? galleryLayoutSessionId : questLayoutSessionId
+                  activeSource === "gallery"
+                    ? galleryLayoutSessionId
+                    : questLayoutSessionId
                 }
                 entryRotation={activeEntryRotation}
                 returnLabel={t(
-                  activeSource === "gallery" ? "ui.gallery.overview" : "ui.timer.backToSelection",
+                  activeSource === "gallery"
+                    ? "ui.gallery.overview"
+                    : "ui.timer.backToSelection",
                 )}
                 coins={points}
                 redRopes={redRopes}
@@ -465,10 +477,19 @@ export function QuestScreenContent({
               key={`gallery-${lastActiveSessionIdRef.current}`}
               inert={isReturning}
               aria-busy={isReturning || undefined}
-              initial={false}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, pointerEvents: "none" }}
-              transition={{ duration: reduceMotion ? 0 : 0.26 }}
+              // initial={false}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              // exit={{ opacity: 0, y: -20, pointerEvents: "none" }}
+              // exit={false}
+              transition={{
+                opacity: { duration: reduceMotion ? 0 : 0.3, type: "spring" },
+                scale: {
+                  duration: reduceMotion ? 0 : 0.5,
+                  type: "spring",
+                  mass: 0.3,
+                },
+              }}
             >
               <QuestGallery
                 view={galleryView}
@@ -515,7 +536,7 @@ export function QuestScreenContent({
               <AnimatePresence
                 initial={Boolean(selectionReturn)}
                 key={`selection-presence-${selectionPresenceGeneration}`}
-                mode="sync"
+                mode="wait"
                 presenceAffectsLayout={false}
               >
                 {selectedMood ? (

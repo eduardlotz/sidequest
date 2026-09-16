@@ -6,16 +6,16 @@ import type { QuestTypeId } from "../../data/questTraits";
 import type { QuestPlayStyleId } from "../../data/questPoolTraits";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 16;
+export const STORE_VERSION = 17;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const QUEST_OFFER_COUNT = 3;
 export const STORED_COMPLETION_LIMIT = 500;
-export const INITIAL_RED_ROPES = 3;
+export const INITIAL_RED_ROPES = 5;
 export const RED_ROPE_BUNDLE_SIZE = 1;
-export const RED_ROPE_BUNDLE_COST = 10;
-export const POINTS_PER_MINUTE = 5;
+export const RED_ROPE_BUNDLE_COST = 50;
+export const POINTS_PER_MINUTE = 10;
 export const POINTS_DURATION_CAP_MS = 60 * 60 * 1_000;
-export const MAX_COMPLETION_POINTS = 300;
+export const MAX_COMPLETION_POINTS = 1000;
 
 export const AVATAR_THEMES = [
   "default",
@@ -72,7 +72,11 @@ export type QuestProgress = {
   lastCompletion: CompletedSession | null;
 };
 
-export const QUEST_OFFER_ROLES = ["library", "inspiration", "directed"] as const;
+export const QUEST_OFFER_ROLES = [
+  "library",
+  "inspiration",
+  "directed",
+] as const;
 export type QuestOfferRole = (typeof QUEST_OFFER_ROLES)[number];
 
 export type QuestOffer = {
@@ -97,7 +101,6 @@ export type QuestStats = {
 };
 
 export type QuestState = {
-  ownedPackIds: string[];
   poolPreferences: QuestPoolPreferences;
   profile: UserProfile;
   selectedMoodId: MoodId | null;
@@ -122,7 +125,6 @@ export type QuestActions = {
   toggleQuestFavorite: (questId: string) => void;
   repeatQuest: (questId: string) => boolean;
   restartCurrentQuest: () => boolean;
-  purchaseQuestPack: (packId: string) => boolean;
   savePoolPreferences: (preferences: QuestPoolPreferences) => void;
   selectMood: (moodId: MoodId) => boolean;
   editMood: () => boolean;
@@ -154,7 +156,6 @@ export type PersistedQuestState = Pick<
   | "completedSessions"
   | "questProgressById"
   | "stats"
-  | "ownedPackIds"
   | "poolPreferences"
 >;
 

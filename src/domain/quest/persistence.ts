@@ -36,7 +36,6 @@ import {
   safeNonNegativeInteger,
 } from "./rules";
 import { createQuestProgress, progressAfterCompletion } from "./progress";
-import { QUEST_PACKS_BY_ID } from "../../data/questPacks";
 import { sanitizePoolPreferences } from "./pool";
 import type { QuestPoolPreferences } from "./model";
 
@@ -61,8 +60,6 @@ export function sanitizePersistedQuestState(
   if (!isRecord(value)) return createDefaultQuestState();
 
   const profile = profileFromUnknown(value.profile);
-  const ownedPackIds = Array.isArray(value.ownedPackIds)
-    ? [...new Set(value.ownedPackIds.filter((id): id is string => typeof id === "string" && Object.hasOwn(QUEST_PACKS_BY_ID, id)))] : [];
   const poolPreferences = sanitizePoolPreferences(value.poolPreferences);
   const completedSessions = completionsFromUnknown(value.completedSessions);
   const stats = statsFromUnknown(value.stats, completedSessions);
@@ -83,7 +80,6 @@ export function sanitizePersistedQuestState(
 
   if (expired) {
     return {
-      ownedPackIds,
       poolPreferences,
       profile,
       selectedMoodId: null,
@@ -102,7 +98,6 @@ export function sanitizePersistedQuestState(
     value.offerSetsByMoodId,
     random,
     libraryGames,
-    ownedPackIds,
     poolPreferences,
   );
   if (selectedMoodId && !offerSetsByMoodId[selectedMoodId]) {
@@ -111,7 +106,6 @@ export function sanitizePersistedQuestState(
       value.offeredQuests,
       random,
       libraryGames,
-      ownedPackIds,
       poolPreferences,
     );
   }
@@ -120,7 +114,6 @@ export function sanitizePersistedQuestState(
     : [];
 
   return {
-    ownedPackIds,
     poolPreferences,
     profile,
     selectedMoodId,
@@ -139,7 +132,6 @@ function offerSetsFromUnknown(
   value: unknown,
   random: () => number,
   libraryGames: readonly LibraryGame[],
-  ownedPackIds: readonly string[],
   preferences: QuestPoolPreferences,
 ): Partial<Record<MoodId, QuestOffer[]>> {
   if (!isRecord(value)) return {};
@@ -147,7 +139,7 @@ function offerSetsFromUnknown(
 
   for (const [moodId, offers] of Object.entries(value)) {
     if (!isMoodId(moodId) || !Array.isArray(offers)) continue;
-    offerSets[moodId] = sanitizedOfferSet(moodId, offers, random, libraryGames, ownedPackIds, preferences);
+    offerSets[moodId] = sanitizedOfferSet(moodId, offers, random, libraryGames, preferences);
   }
 
   return offerSets;
@@ -158,7 +150,6 @@ function sanitizedOfferSet(
   value: unknown,
   random: () => number,
   libraryGames: readonly LibraryGame[],
-  ownedPackIds: readonly string[],
   preferences: QuestPoolPreferences,
 ) {
   const offeredQuests = Array.isArray(value)
@@ -182,8 +173,8 @@ function sanitizedOfferSet(
         (candidate) => candidate.questId === offer.questId,
       ) === index,
   );
-  if (!isQuestOfferSetValid(moodId, uniqueOffers, libraryGames, ownedPackIds, preferences)) {
-    return generateQuestOffers(moodId, libraryGames, random, undefined, undefined, undefined, ownedPackIds, preferences);
+  if (!isQuestOfferSetValid(moodId, uniqueOffers, libraryGames, preferences)) {
+    return generateQuestOffers(moodId, libraryGames, random, undefined, undefined, undefined, preferences);
   }
   return uniqueOffers.slice(0, QUEST_OFFER_COUNT);
 }

@@ -28,6 +28,10 @@
   box-shadow: 0 8px 16px #17172b0b;
 }
 
+:global(:root[data-theme="dark"]) .gameList {
+  background: var(--color-canvas);
+}
+
 .gameRow {
   display: flex;
   align-items: center;
@@ -81,9 +85,10 @@
   composes: emptyState from "../LibrarySection.module.css";
   font-size: 14px;
   line-height: 1.4;
+  letter-spacing: -2%;
 
   strong {
-    font-weight: 700;
+    font-weight: 600;
   }
 }
 

@@ -32,8 +32,7 @@
   transition:
     background-color 180ms ease,
     box-shadow 150ms ease,
-    color 180ms ease,
-    filter 150ms ease,
+    /* color 180ms ease, */ filter 150ms ease,
     transform 150ms ease;
 
   &[data-size="medium"] {

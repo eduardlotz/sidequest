@@ -1,12 +1,11 @@
 import { englishLibrary, germanLibrary } from "./library";
 import { englishGallery, germanGallery } from "./gallery";
-import { englishPool, germanPool, englishShop, germanShop, englishTimed, germanTimed } from "./pool";
+import { englishPool, germanPool, englishTimed, germanTimed } from "./pool";
 import type { MoodDefinition } from "../data/questTypes";
 
 export const englishUi = {
   gallery: englishGallery,
   pool: englishPool,
-  shop: englishShop,
   nav: {
     skipToContent: "Skip to content",
     mainNavigation: "Main navigation",
@@ -15,8 +14,8 @@ export const englishUi = {
     profileLabel: "Your profile, {{points}} coins",
     points: "{{points}} coins",
     switchLanguage: "Switch to {{language}}",
-    english: "English",
-    german: "German",
+    english: "EN",
+    german: "DE",
     task: "Task",
   },
   about: {
@@ -39,7 +38,7 @@ export const englishUi = {
     coinsHeading: "What do I do with the coins?",
     coinEarning: "The longer you spend on a quest, the more coins you earn.",
     coinSpending:
-      "New cards and extra red ropes cost coins. The idea is to spend a little less time picking and a little more time playing.",
+      "Extra red ropes cost coins. All quests are available from the start, and shuffling is always free.",
     madeBy: "Made by",
   },
   library: englishLibrary,
@@ -63,8 +62,7 @@ export const englishUi = {
     choosePrefix: "Choose a",
     chooseSuffix: "sidequest",
     changeMood: "Change Mood",
-    newCardsLabel:
-      "Shuffle quest cards for free.",
+    newCardsLabel: "Shuffle quest cards for free.",
     newCards: "New cards",
     costsPoints: "costs {{points}}",
     moodCards: "Mood cards",
@@ -143,7 +141,7 @@ export const englishUi = {
     redRopes: "Cancellation ropes",
     owned: "Owned",
     buyRopeInline: "Buy rope",
-    buyOneRope: "Buy 1",
+    buyOneRope: "Buy rope",
     viewHistory: "View quest history",
     buy: "Buy",
     redRopesAvailable_one: "{{count}} rope available",
@@ -188,7 +186,6 @@ type TranslationShape<T> = {
 export const germanUi = {
   gallery: germanGallery,
   pool: germanPool,
-  shop: germanShop,
   nav: {
     skipToContent: "Zum Inhalt springen",
     mainNavigation: "Hauptnavigation",
@@ -197,19 +194,18 @@ export const germanUi = {
     profileLabel: "Dein Profil, {{points}} Münzen",
     points: "{{points}} Münzen",
     switchLanguage: "Zu {{language}} wechseln",
-    english: "Englisch",
-    german: "Deutsch",
+    english: "EN",
+    german: "DE",
     task: "Quest",
   },
   about: {
     title: "Willkommen bei sidesidequest.",
     description:
       "Eine kleine Starthilfe für Menschen mit zu vielen Videospielen.",
-    stepsHeading: "In drei Schritten vom Aussuchen zum Spielen",
-    step1: "Wähle, wie du dich beim Spielen fühlen möchtest",
-    step2:
-      "Such dir eine von drei Quests für deine Bibliothek oder ein beliebiges Spiel aus",
-    step3: "Starte den Timer, schließe die Quest ab und sammle Münzen",
+    stepsHeading: "Wie es funktioniert",
+    step1: "Wähle eine passende Stimmung aus",
+    step2: "Such dir eine Quest aus und starte das passende Videospiel dazu",
+    step3: "Starte den Timer und schließe die Quest in deinem Spiel ab.",
     mismatchHeading: "Die Aufgabe passt doch nicht?",
     mismatchBody:
       "Vor dem Start kannst du kostenlos zu den Karten zurück. Läuft der Timer schon, brichst du die Quest mit einem roten Seil ab.",
@@ -217,14 +213,14 @@ export const germanUi = {
       "Lies die ganze Aufgabe vor dem Start. Manche Quests brauchen einen Modus, Gegenstand, eine Mechanik oder einen ausreichend fortgeschrittenen Spielstand.",
     libraryHeading: "Quests für deine Bibliothek",
     libraryBody:
-      "Wähle aus der Starter-Sammlung oder füge selbst ein beliebiges Spiel hinzu. Spiele aus der Sammlung bekommen eigene kuratierte Quests und flexible Quests, die zu ihren Features passen.",
+      "Wähle Spiele aus der Starter-Sammlung oder füg deine eigenen hinzu. Die Starter-Sammlung enthält Spiele mit speziell für sie entwickelten Quests",
     libraryChoice:
-      "Bei einer Reihe wählst du die Teile, die du wirklich spielst, damit Quests für einzelne Teile stimmen. Die Bibliothek kannst du später im Profil ändern. Karten ohne festes Spiel funktionieren weiterhin mit jeder Bibliothek.",
+      "Bei einer Reihe wählst du die Teile, die du wirklich spielst, damit Quests für einzelne Teile stimmen. Die Bibliothek kannst du später im Profil",
     coinsHeading: "Was mache ich mit den Münzen?",
     coinEarning:
       "Je länger du an einer Quest sitzt, desto mehr Münzen gibt es dafür.",
     coinSpending:
-      "Quest-Pakete und zusätzliche rote Seile kosten Münzen. Neu mischen ist immer kostenlos.",
+      "Zusätzliche rote Seile kosten Münzen. Alle Quests sind von Anfang an verfügbar, und neu mischen ist immer kostenlos.",
     madeBy: "Von",
   },
   library: germanLibrary,
@@ -248,8 +244,7 @@ export const germanUi = {
     choosePrefix: "Wähle eine",
     chooseSuffix: "-Sidequest",
     changeMood: "Stimmung ändern",
-    newCardsLabel:
-      "Quest-Karten kostenlos neu mischen.",
+    newCardsLabel: "Quest-Karten kostenlos neu mischen.",
     newCards: "Neue Karten",
     costsPoints: "kostet {{points}}",
     moodCards: "Stimmungskarten",
@@ -329,7 +324,7 @@ export const germanUi = {
     redRopes: "Abbruch-Seile",
     owned: "Im Besitz",
     buyRopeInline: "Seil kaufen",
-    buyOneRope: "1x kaufen",
+    buyOneRope: "Seil kaufen",
     viewHistory: "Quest-Verlauf ansehen",
     buy: "Kaufen",
     redRopesAvailable_one: "{{count}} Seil verfügbar",

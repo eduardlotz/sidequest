@@ -145,11 +145,19 @@ export function LibraryCollectionEditor({
                 />
                 <div className={styles.gameCopy}>
                   <strong>{game.name}</strong>
-                  {game.isSeries && <div className={styles.installments}>
-                    {game.installments.filter(entry => curatedGamePreferences[game.id]?.installmentIds.includes(entry.id)).map(entry => (
-                      <span key={entry.id}>{entry.name}</span>
-                    ))}
-                  </div>}
+                  {game.isSeries && (
+                    <div className={styles.installments}>
+                      {game.installments
+                        .filter((entry) =>
+                          curatedGamePreferences[
+                            game.id
+                          ]?.installmentIds.includes(entry.id),
+                        )
+                        .map((entry) => (
+                          <span key={entry.id}>{entry.name}</span>
+                        ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

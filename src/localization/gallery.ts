@@ -26,7 +26,6 @@ export const englishGallery = {
   unlockRepeat: "Complete this quest to unlock repeats.",
   activeQuest: "Finish or cancel your current quest before repeating another.",
   empty: "No quests match your filters.",
-  packLocked: "Available in {{pack}}.",
 };
 export const germanGallery: Record<keyof typeof englishGallery, string> = {
   title: "Quests-Galerie",
@@ -54,7 +53,6 @@ export const germanGallery: Record<keyof typeof englishGallery, string> = {
   longest: "Längste Session",
   personalBest: "Bestzeit",
   unlockRepeat: "Schließe diese Quest ab, um sie wiederholen zu können.",
-  activeQuest: "Beende deine aktuelle Quest, bevor du eine andere wiederholst.",
+  activeQuest: "Es läuft bereits eine Quest.",
   empty: "Keine Quests passen zu deinen Filtern.",
-  packLocked: "Im Paket {{pack}} enthalten.",
 };

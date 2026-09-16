@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { GAME_GENRES, GAME_GENRE_IDS } from "../../../../data/gameGenres";
@@ -13,9 +13,17 @@ import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import { ProfilePanel } from "../ProfileDrawer/ProfilePanel";
 import styles from "./QuestPoolSettings.module.css";
+import { FlowFrame } from "../../../../shared/ui/FlowFrame/FlowFrame";
+import flowStyles from "../../../../features/library/components/LibraryFlowElements.module.css";
+import { LibraryStep } from "../../../library/components/LibraryStep";
+import { ResponsiveNestedDrawerRoot } from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
+import { LibraryDrawerFrame } from "../../../library/components/LibraryDrawerFrame/LibraryDrawerFrame";
 
 export function QuestPoolSettings() {
   const { t, i18n } = useTranslation();
+  const overviewScroll = useRef(0);
+  const overviewScrollRef = useRef<HTMLDivElement>(null);
+
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const preferences = useQuestStore((state) => state.poolPreferences);
   const save = useQuestStore((state) => state.savePoolPreferences);
@@ -25,63 +33,66 @@ export function QuestPoolSettings() {
     styleIds: [...preferences.styleIds],
   }));
   return (
-    <ProfilePanel
-      showBack
-      title={t("ui.pool.title")}
-      titleId="quest-pool-title"
-      description={t("ui.pool.description")}
-    >
-      <div className={styles.settings}>
-        <div className={styles.fields}>
-          <ChoiceGroup
-            title={t("ui.pool.genres")}
-            hint={t("ui.pool.genreHint")}
-            ids={GAME_GENRE_IDS}
-            selected={draft.genreIds}
-            label={(id) => GAME_GENRES[id].title[language]}
-            onChange={(genreIds) =>
-              setDraft((current) => ({ ...current, genreIds }))
-            }
-          />
-          <ChoiceGroup
-            title={t("ui.pool.styles")}
-            hint={t("ui.pool.styleHint")}
-            ids={QUEST_PLAY_STYLE_IDS}
-            selected={draft.styleIds}
-            label={(id) => QUEST_PLAY_STYLES[id][language]}
-            onChange={(styleIds) =>
-              setDraft((current) => ({ ...current, styleIds }))
-            }
-          />
-          <ChoiceGroup
-            title={t("ui.pool.types")}
-            hint={t("ui.pool.typeHint")}
-            ids={Object.keys(QUEST_TYPES) as QuestTypeId[]}
-            selected={draft.typeIds}
-            label={(id) => QUEST_TYPES[id].title[language]}
-            onChange={(typeIds) =>
-              setDraft((current) => ({ ...current, typeIds }))
-            }
-          />
-        </div>
-        <footer className={styles.footer}>
-          <Drawer.Close asChild>
-            <SolidButton
-              size="large"
-              variant="primary"
-              onClick={() => save(draft)}
-            >
-              {t("ui.pool.save")}
-            </SolidButton>
-          </Drawer.Close>
-          <Drawer.Close asChild>
-            <SolidButton size="large" variant="ghost">
-              {t("ui.pool.cancel")}
-            </SolidButton>
-          </Drawer.Close>
-        </footer>
-      </div>
-    </ProfilePanel>
+    <LibraryDrawerFrame title={t("ui.pool.title")}>
+      <LibraryStep>
+        <FlowFrame
+          titleInContent
+          title={t("ui.pool.genreHint")}
+          footer={
+            <>
+              <Drawer.Close asChild>
+                <SolidButton
+                  size="large"
+                  variant="highlighted"
+                  onClick={() => save(draft)}
+                >
+                  {t("ui.pool.save")}
+                </SolidButton>
+              </Drawer.Close>
+              <Drawer.Close asChild>
+                <SolidButton size="large" variant="ghost">
+                  {t("ui.pool.cancel")}
+                </SolidButton>
+              </Drawer.Close>
+            </>
+          }
+          initialScrollTop={overviewScroll.current}
+          scrollElementRef={overviewScrollRef}
+        >
+          <ResponsiveNestedDrawerRoot>
+            <div className={styles.fields}>
+              <ChoiceGroup
+                title={t("ui.pool.genres")}
+                ids={GAME_GENRE_IDS}
+                selected={draft.genreIds}
+                label={(id) => GAME_GENRES[id].title[language]}
+                onChange={(genreIds) =>
+                  setDraft((current) => ({ ...current, genreIds }))
+                }
+              />
+              <ChoiceGroup
+                title={t("ui.pool.styles")}
+                ids={QUEST_PLAY_STYLE_IDS}
+                selected={draft.styleIds}
+                label={(id) => QUEST_PLAY_STYLES[id][language]}
+                onChange={(styleIds) =>
+                  setDraft((current) => ({ ...current, styleIds }))
+                }
+              />
+              <ChoiceGroup
+                title={t("ui.pool.types")}
+                ids={Object.keys(QUEST_TYPES) as QuestTypeId[]}
+                selected={draft.typeIds}
+                label={(id) => QUEST_TYPES[id].title[language]}
+                onChange={(typeIds) =>
+                  setDraft((current) => ({ ...current, typeIds }))
+                }
+              />
+            </div>
+          </ResponsiveNestedDrawerRoot>
+        </FlowFrame>
+      </LibraryStep>
+    </LibraryDrawerFrame>
   );
 }
 
@@ -94,7 +105,7 @@ function ChoiceGroup<T extends string>({
   onChange,
 }: {
   title: string;
-  hint: string;
+  hint?: string;
   ids: readonly T[];
   selected: readonly T[];
   label: (id: T) => string;

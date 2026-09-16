@@ -3,11 +3,12 @@
   display: flex;
   width: 100%;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   font-weight: 600;
   letter-spacing: -0.02em;
   font-size: 0.875rem;
 }
+
 .trigger {
   display: inline-grid;
   flex: 0 0 auto;
