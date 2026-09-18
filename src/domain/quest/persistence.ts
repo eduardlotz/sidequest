@@ -65,7 +65,11 @@ export function sanitizePersistedQuestState(
   const stats = statsFromUnknown(value.stats, completedSessions);
   const currentSession = sessionFromUnknown(value.currentSession);
   const questProgressById = questProgressFromUnknown(
-    value.questProgressById, completedSessions, stats, currentSession, now,
+    value.questProgressById,
+    completedSessions,
+    stats,
+    currentSession,
+    now,
   );
   const storedMoodId = isMoodId(value.selectedMoodId)
     ? value.selectedMoodId
@@ -139,7 +143,13 @@ function offerSetsFromUnknown(
 
   for (const [moodId, offers] of Object.entries(value)) {
     if (!isMoodId(moodId) || !Array.isArray(offers)) continue;
-    offerSets[moodId] = sanitizedOfferSet(moodId, offers, random, libraryGames, preferences);
+    offerSets[moodId] = sanitizedOfferSet(
+      moodId,
+      offers,
+      random,
+      libraryGames,
+      preferences,
+    );
   }
 
   return offerSets;
@@ -174,7 +184,15 @@ function sanitizedOfferSet(
       ) === index,
   );
   if (!isQuestOfferSetValid(moodId, uniqueOffers, libraryGames, preferences)) {
-    return generateQuestOffers(moodId, libraryGames, random, undefined, undefined, undefined, preferences);
+    return generateQuestOffers(
+      moodId,
+      libraryGames,
+      random,
+      undefined,
+      undefined,
+      undefined,
+      preferences,
+    );
   }
   return uniqueOffers.slice(0, QUEST_OFFER_COUNT);
 }
@@ -188,7 +206,12 @@ function questOfferFromUnknown(
   if (!quest || !quest.moodIds.includes(moodId)) return null;
   const game = gameReferenceFromUnknown(value.game);
   if ((game && !quest.gameBindable) || (!game && !quest.universal)) return null;
-  if (value.role !== "library" && value.role !== "inspiration" && value.role !== "directed") return null;
+  if (
+    value.role !== "library" &&
+    value.role !== "inspiration" &&
+    value.role !== "directed"
+  )
+    return null;
   return createQuestOffer(moodId, value.questId, game, value.role);
 }
 
@@ -202,7 +225,7 @@ function profileFromUnknown(value: unknown): UserProfile {
         ? INITIAL_RED_ROPES
         : safeNonNegativeInteger(storedRedRopes),
     avatarTheme: avatarThemeFromUnknown(value.avatarTheme),
-    debugMode: value.debugMode === true,
+    debugMode: false,
   };
 }
 
@@ -384,7 +407,10 @@ function statsFromUnknown(
     ),
     totalCoinsCollected: Math.max(
       safeNonNegativeInteger(storedStats.totalCoinsCollected),
-      completedSessions.reduce((total, completion) => safeAdd(total, completion.pointsAwarded), 0),
+      completedSessions.reduce(
+        (total, completion) => safeAdd(total, completion.pointsAwarded),
+        0,
+      ),
     ),
     cancelledQuestCount: safeNonNegativeInteger(
       storedStats.cancelledQuestCount,
@@ -409,37 +435,61 @@ function questProgressFromUnknown(
 ): Record<string, QuestProgress> {
   const result: Record<string, QuestProgress> = {};
   for (const completion of history) {
-    result[completion.questId] = progressAfterCompletion(result[completion.questId], completion);
+    result[completion.questId] = progressAfterCompletion(
+      result[completion.questId],
+      completion,
+    );
   }
   if (isRecord(value)) {
     for (const [id, stored] of Object.entries(value)) {
       if (!Object.hasOwn(QUEST_CORES_BY_ID, id) || !isRecord(stored)) continue;
       const seenAt = finiteNumber(stored.seenAt);
       if (seenAt === null) continue;
-      const previous = result[id] ?? createQuestProgress(Math.max(0, Math.min(now, seenAt)));
+      const previous =
+        result[id] ?? createQuestProgress(Math.max(0, Math.min(now, seenAt)));
       const lastCompletion = completionsFromUnknown([stored.lastCompletion])[0];
       result[id] = {
-        seenOffer: isRecord(stored.seenOffer) && isMoodId(stored.seenOffer.moodId)
-          ? questOfferFromUnknown(stored.seenOffer, stored.seenOffer.moodId) : null,
+        seenOffer:
+          isRecord(stored.seenOffer) && isMoodId(stored.seenOffer.moodId)
+            ? questOfferFromUnknown(stored.seenOffer, stored.seenOffer.moodId)
+            : null,
         seenAt: Math.min(previous.seenAt, Math.max(0, seenAt)),
         favorite: stored.favorite === true,
-        totalPlayedMs: Math.max(previous.totalPlayedMs, safeNonNegativeInteger(stored.totalPlayedMs)),
-        coinsEarned: Math.max(previous.coinsEarned, safeNonNegativeInteger(stored.coinsEarned)),
-        longestSessionMs: Math.max(previous.longestSessionMs, safeNonNegativeInteger(stored.longestSessionMs)),
-        bestTimeMs: QUEST_CORES_BY_ID[id].type === "speedrun"
-          ? finiteNumber(stored.bestTimeMs) === null ? previous.bestTimeMs
-            : Math.min(previous.bestTimeMs ?? Infinity, safeNonNegativeInteger(stored.bestTimeMs))
-          : null,
-        lastCompletion: lastCompletion?.questId === id &&
-          lastCompletion.completedAt >= (previous.lastCompletion?.completedAt ?? 0)
-          ? lastCompletion : previous.lastCompletion,
+        totalPlayedMs: Math.max(
+          previous.totalPlayedMs,
+          safeNonNegativeInteger(stored.totalPlayedMs),
+        ),
+        coinsEarned: Math.max(
+          previous.coinsEarned,
+          safeNonNegativeInteger(stored.coinsEarned),
+        ),
+        longestSessionMs: Math.max(
+          previous.longestSessionMs,
+          safeNonNegativeInteger(stored.longestSessionMs),
+        ),
+        bestTimeMs:
+          QUEST_CORES_BY_ID[id].type === "speedrun"
+            ? finiteNumber(stored.bestTimeMs) === null
+              ? previous.bestTimeMs
+              : Math.min(
+                  previous.bestTimeMs ?? Infinity,
+                  safeNonNegativeInteger(stored.bestTimeMs),
+                )
+            : null,
+        lastCompletion:
+          lastCompletion?.questId === id &&
+          lastCompletion.completedAt >=
+            (previous.lastCompletion?.completedAt ?? 0)
+            ? lastCompletion
+            : previous.lastCompletion,
       };
     }
   }
   for (const id of Object.keys(stats.completionCountsByQuestId)) {
     result[id] ??= createQuestProgress(now);
   }
-  if (session) result[session.questId] ??= createQuestProgress(session.revealedAt);
+  if (session)
+    result[session.questId] ??= createQuestProgress(session.revealedAt);
   return result;
 }
 
