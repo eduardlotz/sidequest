@@ -424,7 +424,6 @@ function createQuestState(
         !session ||
         session.startedAt === null ||
         (QUEST_CORES_BY_ID[session.questId]?.type !== "countdown" &&
-          !state.profile.debugMode &&
           state.profile.redRopes < 1)
       ) {
         return false;
@@ -444,7 +443,6 @@ function createQuestState(
             profile: {
               ...state.profile,
               redRopes:
-                state.profile.debugMode ||
                 QUEST_CORES_BY_ID[session.questId]?.type === "countdown"
                   ? state.profile.redRopes
                   : state.profile.redRopes - 1,
@@ -499,10 +497,7 @@ function createQuestState(
       const completedAt = options.now();
       const durationMs = activeSessionDurationMs(session, completedAt);
       if (durationMs >= questTimeLimitMs(session.questId)) return null;
-      if (
-        !state.profile.debugMode &&
-        durationMs < quest.minimumDurationMinutes * 60_000
-      ) {
+      if (durationMs < quest.minimumDurationMinutes * 60_000) {
         return null;
       }
 

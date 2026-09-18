@@ -415,8 +415,8 @@ export function QuestScreenContent({
           custom={isReturning ? "return" : undefined}
           mode={
             returnedFromActive && !returnTransition && !galleryOpen
-              ? "wait"
-              : "sync"
+              ? "popLayout"
+              : "popLayout"
           }
           onExitComplete={finishReturn}
         >

@@ -3,10 +3,7 @@ import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { QuestScreenContent } from "./components/QuestScreenContent/QuestScreenContent";
-import {
-  hydrateQuest,
-  localizeMood,
-} from "../../localization/catalog";
+import { hydrateQuest, localizeMood } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
 import { useQuestStore } from "../../stores/useQuestStore";
 import styles from "./QuestFlowLayout.module.css";
@@ -138,7 +135,7 @@ export function QuestScreen({
         offeredQuests={offeredQuestItems}
         points={profile.points}
         redRopes={profile.redRopes}
-        debugMode={profile.debugMode}
+        debugMode={false}
         animateEntrance={!introReady}
         reduceMotion={reduceMotion}
         onSelectMood={selectMood}

@@ -37,12 +37,13 @@ export function App() {
       data-screen={
         showSetup
           ? "setup"
-          : galleryOpen ? "gallery"
-          : currentSession
-            ? "active"
-            : selectedMoodId
-              ? "quests"
-              : "moods"
+          : galleryOpen
+            ? "gallery"
+            : currentSession
+              ? "active"
+              : selectedMoodId
+                ? "quests"
+                : "moods"
       }
     >
       <InteractiveDotBackground />
@@ -64,7 +65,7 @@ export function App() {
       />
 
       <main className={styles.main} id="main-content">
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="popLayout" initial={false}>
           <motion.div
             key={showSetup ? "setup" : "play"}
             initial={{ opacity: 0 }}
