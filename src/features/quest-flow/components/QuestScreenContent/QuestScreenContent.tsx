@@ -40,8 +40,9 @@ import {
 
 const NAV_ITEM_TRANSITION = NAV_ENTRY_SPRING;
 
-const SELECTION_RESET_FADE_OUT_DURATION = 0.22;
-const SELECTION_RESET_FADE_IN_DURATION = 0.28;
+const MOOD_QUEST_HANDOFF_DURATION = 0.56;
+const SELECTION_RESET_FADE_OUT_DURATION = MOOD_QUEST_HANDOFF_DURATION;
+const SELECTION_RESET_FADE_IN_DURATION = MOOD_QUEST_HANDOFF_DURATION;
 const NEW_CARDS_SWAP_DELAY_MS = 560;
 const NEW_CARDS_COMPLETE_DELAY_MS = 1_500;
 
@@ -115,6 +116,10 @@ export function QuestScreenContent({
     filter: "all",
     query: "",
     focusedId: null,
+    moodIds: [],
+    genreIds: [],
+    gameId: null,
+    tagIds: [],
   });
   const galleryPosition = useMotionValue(0);
   const [activeSource, setActiveSource] = useState<"selection" | "gallery">(
@@ -480,14 +485,19 @@ export function QuestScreenContent({
               // initial={false}
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              // exit={{ opacity: 0, y: -20, pointerEvents: "none" }}
-              // exit={false}
+              exit={{
+                opacity: 0,
+                scale: reduceMotion ? 1 : 0.985,
+                pointerEvents: "none",
+              }}
               transition={{
-                opacity: { duration: reduceMotion ? 0 : 0.3, type: "spring" },
+                opacity: {
+                  duration: reduceMotion ? 0 : 0.24,
+                  ease: [0.4, 0, 0.2, 1],
+                },
                 scale: {
-                  duration: reduceMotion ? 0 : 0.5,
-                  type: "spring",
-                  mass: 0.3,
+                  duration: reduceMotion ? 0 : 0.32,
+                  ease: [0.16, 1, 0.3, 1],
                 },
               }}
             >
@@ -536,7 +546,7 @@ export function QuestScreenContent({
               <AnimatePresence
                 initial={Boolean(selectionReturn)}
                 key={`selection-presence-${selectionPresenceGeneration}`}
-                mode="wait"
+                mode={editingMood ? "sync" : "popLayout"}
                 presenceAffectsLayout={false}
               >
                 {selectedMood ? (
@@ -623,6 +633,7 @@ export function QuestScreenContent({
                     className={styles.selectionScreen}
                     enterDuration={SELECTION_RESET_FADE_IN_DURATION}
                     enterFromOpacity={editingMood ? 0 : undefined}
+                    exitDuration={MOOD_QUEST_HANDOFF_DURATION}
                     key="moods"
                     reduceMotion={reduceMotion}
                     zIndex={2}

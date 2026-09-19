@@ -23,6 +23,6 @@ export function matchesCustomGame(
   compatibility?: CustomGameCompatibility,
 ) {
   if (!matchesGameCapabilities(capabilities, compatibility)) return false;
-  return !compatibility?.genreIds?.length ||
+  return genres.size === 0 || !compatibility?.genreIds?.length ||
     compatibility.genreIds.some((id) => genres.has(id));
 }

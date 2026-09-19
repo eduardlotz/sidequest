@@ -68,6 +68,8 @@ type CardProps = {
 
 const CARD_ROTATIONS = [-9, 0, 9];
 const CARD_FADE_EASE = SELECTION_HANDOFF_EASE;
+const MOOD_QUEST_EASE = [0.16, 1, 0.3, 1] as const;
+const MOOD_QUEST_DURATION = 0.56;
 const CARD_POSITION_TRANSITION = {
   type: "spring" as const,
   stiffness: 230,
@@ -77,17 +79,11 @@ const CARD_POSITION_TRANSITION = {
   restSpeed: 0.001,
 };
 const MOOD_HANDOFF_TRANSITION = {
-  type: "spring" as const,
-  stiffness: 250,
-  damping: 29,
-  mass: 0.82,
-  restDelta: 0.01,
-  restSpeed: 0.01,
+  duration: MOOD_QUEST_DURATION,
+  ease: MOOD_QUEST_EASE,
 };
-// const CARD_CENTER_STAGGER_SECONDS = 0.04;
-const CARD_CENTER_STAGGER_SECONDS = 0.08;
-const MOOD_HANDOFF_OFFSET_Y = 50;
-const NEW_CARDS_STAGGER_SECONDS = 0.12;
+const CARD_CENTER_STAGGER_SECONDS = 0.04;
+const NEW_CARDS_STAGGER_SECONDS = 0.1;
 const CARD_REST_POSE = {
   filter: "blur(0px)",
   opacity: 1,
@@ -96,21 +92,13 @@ const CARD_REST_POSE = {
   scale: 1,
 };
 
-function cardDeparturePose(index: number, reduceMotion: boolean) {
-  return {
-    // filter: "blur(5px)",
-    // opacity: 0,
-    // x: reduceMotion ? 0 : index === 0 ? -210 : index === 2 ? 210 : 0,
-    // y: reduceMotion ? 0 : index === 1 ? -150 : 120,
-    // scale: reduceMotion ? 1 : 0.72,
-    filter: "blur(8px)",
-    opacity: 0,
-    // x: reduceMotion ? 0 : index === 0 ? -70 : index === 2 ? 70 : 0,
-    x: 0,
-    y: reduceMotion ? 0 : MOOD_HANDOFF_OFFSET_Y,
-    scale: reduceMotion ? 1 : 0.95,
-  };
-}
+const QUEST_SIBLING_HIDDEN = {
+  filter: "blur(0px)",
+  opacity: 0,
+  x: 0,
+  y: 0,
+  scale: 1,
+};
 
 export function QuestOfferDeck({
   items,
@@ -377,6 +365,18 @@ function QuestOfferCard({
       : index === 2
         ? 70
         : 0;
+  // const moodHandoffX = isCompact ? 0 : index === 0 ? 70 : index === 2 ? -70 : 0;
+  const moodHandoffX = index === 0 ? -70 : index === 2 ? 70 : 0;
+  const moodHandoffY = index === 1 ? 0 : 30;
+  const moodHandoffPose = {
+    filter: "blur(0px)",
+    opacity: 0,
+    x: 0,
+    // x: moodHandoffX,
+    // y: 0,
+    y: moodHandoffY,
+    scale: reduceMotion ? 1 : 0.95,
+  };
   const centerStaggerDelay = isCompact
     ? stackPosition === "front"
       ? 0
@@ -415,16 +415,9 @@ function QuestOfferCard({
           : entryMotion === "return"
             ? returnPose
               ? false
-              : cardDeparturePose(index, reduceMotion)
+              : QUEST_SIBLING_HIDDEN
             : entryMotion === "shared"
-              ? {
-                  filter: "blur(0px)",
-                  opacity: 0,
-                  // x: 0,
-                  x: centerOffsetX,
-                  y: MOOD_HANDOFF_OFFSET_Y,
-                  scale: 0.95,
-                }
+              ? moodHandoffPose
               : {
                   filter: "blur(8px)",
                   opacity: 0,
@@ -435,26 +428,14 @@ function QuestOfferCard({
       }
       animate={
         selectionStarted && !selected
-          ? cardDeparturePose(index, reduceMotion)
+          ? QUEST_SIBLING_HIDDEN
           : returningToMoods
-            ? {
-                filter: "blur(8px)",
-                opacity: 0,
-                x: centerOffsetX,
-                y: MOOD_HANDOFF_OFFSET_Y,
-                scale: 0.96,
-              }
+            ? moodHandoffPose
             : CARD_REST_POSE
       }
       exit={
         returningToMoods
-          ? {
-              filter: "blur(8px)",
-              opacity: 0,
-              x: centerOffsetX,
-              y: MOOD_HANDOFF_OFFSET_Y,
-              scale: 0.96,
-            }
+          ? moodHandoffPose
           : selectionStarted
             ? selected
               ? {
@@ -463,7 +444,7 @@ function QuestOfferCard({
                   scale: 1,
                   transition: { opacity: { duration: 0 } },
                 }
-              : cardDeparturePose(index, reduceMotion)
+              : QUEST_SIBLING_HIDDEN
             : CARD_REST_POSE
       }
       transition={
@@ -486,20 +467,19 @@ function QuestOfferCard({
                 delay: positionDelay,
               },
               opacity: {
-                duration: returningFromActive
-                  ? 0.5
-                  : moodHandoffActive
-                    ? 0.5
-                    : 0.3,
-                ease: CARD_FADE_EASE,
+                duration:
+                  selectionStarted && !selected
+                    ? 0.42
+                    : returningFromActive
+                      ? 0.52
+                      : moodHandoffActive
+                        ? MOOD_QUEST_DURATION
+                        : 0.3,
+                ease: moodHandoffActive ? MOOD_QUEST_EASE : CARD_FADE_EASE,
                 delay: positionDelay,
               },
               filter: {
-                duration: returningFromActive
-                  ? 0.7
-                  : moodHandoffActive
-                    ? 0.5
-                    : 0.6,
+                duration: 0,
                 ease: CARD_FADE_EASE,
                 delay: positionDelay,
               },

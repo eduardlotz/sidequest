@@ -1,19 +1,21 @@
 import { GAME_GENRE_IDS } from "../../data/gameGenres";
 import { QUEST_TYPES, type QuestTypeId } from "../../data/questTraits";
-import { QUEST_PLAY_STYLE_IDS, QUEST_POOL_TRAITS } from "../../data/questPoolTraits";
+import { QUEST_POOL_TRAITS } from "../../data/questPoolTraits";
 import type { QuestCoreDefinition } from "../../data/questTypes";
 import type { QuestPoolPreferences } from "./model";
 
 export function defaultPoolPreferences(): QuestPoolPreferences {
-  return { genreIds: [...GAME_GENRE_IDS], typeIds: Object.keys(QUEST_TYPES) as QuestTypeId[], styleIds: [...QUEST_PLAY_STYLE_IDS] };
+  return {
+    genreIds: [...GAME_GENRE_IDS],
+    typeIds: Object.keys(QUEST_TYPES) as QuestTypeId[],
+  };
 }
 export function matchesPoolPreferences(quest: QuestCoreDefinition, preferences: QuestPoolPreferences) {
   const traits = QUEST_POOL_TRAITS[quest.id];
   // An explicit genre requirement is shared with custom-game matching.
   const genres = quest.customGameCompatibility?.genreIds ?? traits?.genreIds;
   return preferences.typeIds.includes(quest.type) && preferences.genreIds.length > 0 &&
-    Boolean(traits && genres && (!genres.length || genres.some(id => preferences.genreIds.includes(id))) &&
-      traits.styleIds.some(id => preferences.styleIds.includes(id)));
+    Boolean(traits && genres && (!genres.length || genres.some(id => preferences.genreIds.includes(id))));
 }
 export function sanitizePoolPreferences(value: unknown): QuestPoolPreferences {
   if (!value || typeof value !== "object") return defaultPoolPreferences();
@@ -22,5 +24,8 @@ export function sanitizePoolPreferences(value: unknown): QuestPoolPreferences {
   function selection<T extends string>(stored: unknown, allowed: readonly T[]): T[] {
     return Array.isArray(stored) ? [...new Set(stored.filter((id): id is T => typeof id === "string" && allowed.includes(id as T)))] : [...allowed];
   }
-  return { genreIds: selection(data.genreIds, defaults.genreIds), typeIds: selection(data.typeIds, defaults.typeIds), styleIds: selection(data.styleIds, defaults.styleIds) };
+  return {
+    genreIds: selection(data.genreIds, defaults.genreIds),
+    typeIds: selection(data.typeIds, defaults.typeIds),
+  };
 }

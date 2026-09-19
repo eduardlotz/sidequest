@@ -1,0 +1,33 @@
+.count {
+  display: grid;
+  min-width: 20px;
+  height: 20px;
+  padding-inline: 5px;
+  border-radius: 999px;
+  place-items: center;
+  background: var(--color-text);
+  color: var(--color-canvas);
+  font-size: 0.68rem;
+  line-height: 1;
+}
+
+.groups {
+  display: grid;
+  gap: 30px;
+  padding-inline: 8px;
+}
+
+.group {
+  display: grid;
+  gap: 12px;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.choices button {
+  min-width: 0;
+}

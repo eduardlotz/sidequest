@@ -8,7 +8,7 @@ import { core, organic } from "../../.web-kits";
 
 const SOUND_ENABLED_STORAGE_KEY = "sidequest.sound.enabled.v1";
 const HOVER_GAP_MS = 110;
-const MASTER_VOLUME = 1.5;
+const MASTER_VOLUME = 1.3;
 const SOUND_COOLDOWN_MS: Partial<Record<SoundName, number>> = {
   moodStep: 110,
 };
@@ -107,8 +107,8 @@ const playResume = defineSound(core.toggleOn);
 const playTimerGrab = defineSound(core.select);
 const playButtonClick = defineSound(minimalClick);
 const playCompletion = defineSound(organic.notification);
-const playMoodStep = defineSound(core.tap);
-const playNewCards = defineSound(core.tap);
+const playMoodStep = defineSound(core.hover);
+const playNewCards = defineSound(organic.notification);
 let nextCoinHit = 0;
 
 const sounds: Record<SoundName, () => unknown> = {

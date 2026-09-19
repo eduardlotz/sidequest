@@ -3,32 +3,50 @@
   height: var(--app-height);
   padding-top: 108px;
 }
+
 .header {
-  position: relative;
+  position: absolute;
+  top: 92px;
+  right: 32px;
+  left: 32px;
   z-index: 55;
-  display: grid;
-  justify-items: center;
-  gap: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+
+  @media (--mobile) {
+    left: 18px;
+    top: 72px;
+    right: 18px;
+  }
 }
 .back {
+  position: fixed;
+  top: 92px;
+  left: 0;
+  right: 0;
   margin-inline: auto;
   justify-self: center;
 
   @media (--mobile) {
-    position: fixed;
     bottom: 40px;
-    left: 0;
-    right: 0;
+    top: unset;
   }
 }
 .filters {
   display: flex;
   align-items: center;
-  max-width: calc(100% - 36px);
+  max-width: min(520px, calc(100% - 180px));
   gap: 12px;
+
+  @media (--mobile) {
+    max-width: 100%;
+    width: 100%;
+    flex: 1;
+  }
 }
-.search[data-size="medium"],
-.filterControl[data-size="medium"] {
+.search[data-size="medium"] {
   --button-radius: 16px;
   --button-inline-padding: 12px;
   --button-gap: 8px;
@@ -38,8 +56,7 @@
   min-width: 0;
   cursor: text;
 }
-.search svg,
-.filterControl svg {
+.search svg {
   flex: 0 0 auto;
   opacity: 0.6;
 }
@@ -60,31 +77,24 @@
   color: var(--color-muted);
   opacity: 0.75;
 }
-.filterControl {
-  position: relative;
-  flex: 0 0 auto;
-}
-.filterControl select {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-}
-.search:focus-within,
-.filterControl:focus-within {
+.search:focus-within {
   outline: 3px solid rgb(var(--color-text-rgb) / 0.24);
   outline-offset: 3px;
 }
 .viewport {
   position: absolute;
-  top: 240px;
+  top: 200px;
   bottom: 0;
   width: 100%;
   overflow-x: clip;
   touch-action: none;
   cursor: grab;
+
+  @media (--mobile) {
+    .viewport {
+      top: 172px;
+    }
+  }
 }
 .viewport:active {
   cursor: grabbing;
@@ -200,23 +210,12 @@
 .mobileInfo .metrics {
   background: var(--color-surface-soft);
 }
+
 @media (--mobile) {
-  .gallery {
-    padding-top: 80px;
-  }
-  .header {
-    gap: 20px;
-  }
-  .viewport {
-    top: 200px;
-  }
   .card {
     top: 10px;
   }
-  .filters {
-    width: min(380px, calc(100% - 36px));
-    gap: 8px;
-  }
+
   .search {
     flex: 1 1 0;
   }
