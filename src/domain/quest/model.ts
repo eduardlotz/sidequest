@@ -3,10 +3,10 @@ import type { QuestDefinition } from "../../data/quests";
 import type { GameReference } from "../../data/gameTypes";
 import type { GameGenreId } from "../../data/gameGenres";
 import type { QuestTypeId } from "../../data/questTraits";
+import type { QuestPlayStyleId } from "../../data/questPoolTraits";
 
 export const STORE_KEY = "sidequest.quests";
 export const STORE_VERSION = 18;
-export const RECENT_QUEST_HISTORY_LIMIT = 9;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const QUEST_OFFER_COUNT = 3;
 export const STORED_COMPLETION_LIMIT = 500;
@@ -107,7 +107,6 @@ export type QuestState = {
   moodSelectedAt: number | null;
   offeredQuests: QuestOffer[];
   offerSetsByMoodId: Partial<Record<MoodId, QuestOffer[]>>;
-  recentQuestIdsByMoodId: Partial<Record<MoodId, string[]>>;
   offerLibraryRevision: number;
   currentSession: QuestSession | null;
   completedSessions: CompletedSession[];
@@ -118,6 +117,7 @@ export type QuestState = {
 export type QuestPoolPreferences = {
   genreIds: GameGenreId[];
   typeIds: QuestTypeId[];
+  styleIds: QuestPlayStyleId[];
 };
 
 export type QuestActions = {
@@ -151,7 +151,6 @@ export type PersistedQuestState = Pick<
   | "moodSelectedAt"
   | "offeredQuests"
   | "offerSetsByMoodId"
-  | "recentQuestIdsByMoodId"
   | "offerLibraryRevision"
   | "currentSession"
   | "completedSessions"

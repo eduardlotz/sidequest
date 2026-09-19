@@ -4623,4 +4623,646 @@ export const reusableQuests = [
       ]
     }
   },
+  {
+    "id": "open-world-follow-the-edge",
+    "moodIds": [
+      "explore",
+      "curious"
+    ],
+    "type": "objective",
+    "tags": [
+      "exploration",
+      "on-foot"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Follow the Edge",
+        "objective": "Open a **game with a freely explorable district or region**. Choose a visible boundary such as a wall, coast, or cliff and follow it on foot. **Reach a landmark you have not approached from this direction**, then return to the map.",
+        "gameObjective": "In **{{game}}**: Choose a visible boundary such as a wall, coast, or cliff and follow it on foot. **Reach a landmark you have not approached from this direction**, then return to the map."
+      },
+      "de": {
+        "name": "Dem Rand folgen",
+        "objective": "Starte ein **Spiel mit einem frei erkundbaren Gebiet**. Wähle eine sichtbare Grenze wie eine Mauer, Küste oder Klippe und folge ihr zu Fuß. **Erreiche einen Orientierungspunkt aus einer neuen Richtung** und kehre dann zur Karte zurück.",
+        "gameObjective": "In **{{game}}**: Wähle eine sichtbare Grenze wie eine Mauer, Küste oder Klippe und folge ihr zu Fuß. **Erreiche einen Orientierungspunkt aus einer neuen Richtung** und kehre dann zur Karte zurück."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "open-world"
+      ]
+    }
+  },
+  {
+    "id": "mission-change-the-approach",
+    "moodIds": [
+      "curious",
+      "focused"
+    ],
+    "type": "experiment",
+    "tags": [
+      "new-approach",
+      "loadout"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Change the Approach",
+        "objective": "Open a **game with replayable missions and selectable equipment**. Replay a short mission with an owned weapon or tool you did not use the first time. **Finish the mission and notice which encounter changed most**.",
+        "gameObjective": "In **{{game}}**: Replay a short mission with an owned weapon or tool you did not use the first time. **Finish the mission and notice which encounter changed most**."
+      },
+      "de": {
+        "name": "Anders herangehen",
+        "objective": "Starte ein **Spiel mit wiederholbaren Missionen und wählbarer Ausrüstung**. Spiele eine kurze Mission mit einer vorhandenen Waffe oder einem Werkzeug, das du beim ersten Mal nicht benutzt hast. **Beende die Mission und achte darauf, welche Begegnung sich am stärksten verändert**.",
+        "gameObjective": "In **{{game}}**: Spiele eine kurze Mission mit einer vorhandenen Waffe oder einem Werkzeug, das du beim ersten Mal nicht benutzt hast. **Beende die Mission und achte darauf, welche Begegnung sich am stärksten verändert**."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "missions-or-levels",
+        "combat-loadouts"
+      ]
+    }
+  },
+  {
+    "id": "squad-shadow-one-teammate",
+    "moodIds": [
+      "connect",
+      "focused"
+    ],
+    "type": "objective",
+    "tags": [
+      "co-op",
+      "support"
+    ],
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 30,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Stay as a Pair",
+        "objective": "Open an **online team game with mission objectives**. Choose one squadmate and stay close enough to support each other through the next objective. **Reach its result together**, even if the wider squad takes another route.",
+        "gameObjective": "In **{{game}}**: Choose one squadmate and stay close enough to support each other through the next objective. **Reach its result together**, even if the wider squad takes another route."
+      },
+      "de": {
+        "name": "Als Duo zusammenbleiben",
+        "objective": "Starte ein **Online-Teamspiel mit Missionszielen**. Wähle ein Squadmitglied und bleibt beim nächsten Ziel nah genug zusammen, um euch zu unterstützen. **Erreicht gemeinsam das Ergebnis des Ziels**, auch wenn der restliche Squad einen anderen Weg nimmt.",
+        "gameObjective": "In **{{game}}**: Wähle ein Squadmitglied und bleibt beim nächsten Ziel nah genug zusammen, um euch zu unterstützen. **Erreicht gemeinsam das Ergebnis des Ziels**, auch wenn der restliche Squad einen anderen Weg nimmt."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "online-teamplay",
+        "missions-or-levels"
+      ]
+    }
+  },
+  {
+    "id": "round-role-swap",
+    "moodIds": [
+      "curious",
+      "connect"
+    ],
+    "type": "objective",
+    "tags": [
+      "new-approach",
+      "support"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Swap Your Role",
+        "objective": "Open an **online team game with short rounds**. For one full round, take an available role different from your usual one, such as support, defense, or initiation. **Finish the round while playing toward that role's job**, not your usual score pattern.",
+        "gameObjective": "In **{{game}}**: For one full round, take an available role different from your usual one, such as support, defense, or initiation. **Finish the round while playing toward that role's job**, not your usual score pattern."
+      },
+      "de": {
+        "name": "Rolle tauschen",
+        "objective": "Starte ein **Online-Teamspiel mit kurzen Runden**. Übernimm für eine volle Runde eine verfügbare Rolle, die du sonst nicht spielst, etwa Support, Verteidigung oder Eröffnung. **Beende die Runde mit Fokus auf diese Aufgabe** statt auf dein gewohntes Punktemuster.",
+        "gameObjective": "In **{{game}}**: Übernimm für eine volle Runde eine verfügbare Rolle, die du sonst nicht spielst, etwa Support, Verteidigung oder Eröffnung. **Beende die Runde mit Fokus auf diese Aufgabe** statt auf dein gewohntes Punktemuster."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "online-teamplay",
+        "rounds-or-matches"
+      ]
+    }
+  },
+  {
+    "id": "squad-call-one-plan",
+    "moodIds": [
+      "focused",
+      "connect"
+    ],
+    "type": "objective",
+    "tags": [
+      "co-op",
+      "full-match"
+    ],
+    "minimumDurationMinutes": 10,
+    "suggestedDurationMinutes": 45,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "One Shared Plan",
+        "objective": "Open an **online squad game with full matches**. Before the match, agree on one simple team plan such as a route, opening, or defensive position. **Keep returning to that plan as the match changes** and finish the match together.",
+        "gameObjective": "In **{{game}}**: Before the match, agree on one simple team plan such as a route, opening, or defensive position. **Keep returning to that plan as the match changes** and finish the match together."
+      },
+      "de": {
+        "name": "Ein gemeinsamer Plan",
+        "objective": "Starte ein **Online-Squadspiel mit vollständigen Matches**. Einigt euch vor dem Match auf einen einfachen Teamplan wie eine Route, Eröffnung oder Verteidigungsposition. **Kehrt im Verlauf immer wieder zu diesem Plan zurück** und beendet das Match gemeinsam.",
+        "gameObjective": "In **{{game}}**: Einigt euch vor dem Match auf einen einfachen Teamplan wie eine Route, Eröffnung oder Verteidigungsposition. **Kehrt im Verlauf immer wieder zu diesem Plan zurück** und beendet das Match gemeinsam."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "online-teamplay",
+        "whole-matches"
+      ]
+    }
+  },
+  {
+    "id": "loadout-opposite-range",
+    "moodIds": [
+      "curious",
+      "focused"
+    ],
+    "type": "experiment",
+    "tags": [
+      "loadout",
+      "new-approach"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Opposite Range",
+        "objective": "Open a **game with selectable combat equipment**. Choose an owned weapon meant for a different range than your usual choice. In solo or bot play, **finish one encounter while adapting your position to that range**.",
+        "gameObjective": "In **{{game}}**: Choose an owned weapon meant for a different range than your usual choice. In solo or bot play, **finish one encounter while adapting your position to that range**."
+      },
+      "de": {
+        "name": "Andere Distanz",
+        "objective": "Starte ein **Spiel mit wählbarer Kampfausrüstung**. Nimm eine vorhandene Waffe für eine andere Distanz als deine übliche Wahl. **Beende in Solo- oder Bot-Spiel eine Begegnung und passe deine Position an diese Reichweite an**.",
+        "gameObjective": "In **{{game}}**: Nimm eine vorhandene Waffe für eine andere Distanz als deine übliche Wahl. **Beende in Solo- oder Bot-Spiel eine Begegnung und passe deine Position an diese Reichweite an**."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "combat-loadouts"
+      ]
+    }
+  },
+  {
+    "id": "spells-two-openers",
+    "moodIds": [
+      "curious",
+      "focused"
+    ],
+    "type": "experiment",
+    "tags": [
+      "spells",
+      "new-approach"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Two Openers",
+        "objective": "Open a **game with several unlocked combat spells**. Start two similar solo encounters with a different spell each time, then finish both however you like. **Compare which opener changed your next decision**.",
+        "gameObjective": "In **{{game}}**: Start two similar solo encounters with a different unlocked spell each time, then finish both however you like. **Compare which opener changed your next decision**."
+      },
+      "de": {
+        "name": "Zwei Eröffnungen",
+        "objective": "Starte ein **Spiel mit mehreren freigeschalteten Kampfzaubern**. Eröffne zwei ähnliche Solo-Begegnungen jeweils mit einem anderen Zauber und beende beide frei. **Vergleiche, welche Eröffnung deine nächste Entscheidung verändert hat**.",
+        "gameObjective": "In **{{game}}**: Eröffne zwei ähnliche Solo-Begegnungen jeweils mit einem anderen freigeschalteten Zauber und beende beide frei. **Vergleiche, welche Eröffnung deine nächste Entscheidung verändert hat**."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "combat-spells"
+      ]
+    }
+  },
+  {
+    "id": "space-neighboring-stop",
+    "moodIds": [
+      "explore",
+      "low-energy"
+    ],
+    "type": "objective",
+    "tags": [
+      "space",
+      "exploration"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "The Next Stop",
+        "objective": "Open a **space game with discovered destinations**. Travel to one nearby destination you have not visited recently. **Land, dock, or enter orbit and inspect the view**, then save before choosing another trip.",
+        "gameObjective": "In **{{game}}**: Travel to one nearby discovered destination you have not visited recently. **Land, dock, or enter orbit and inspect the view**, then save before choosing another trip."
+      },
+      "de": {
+        "name": "Der nächste Halt",
+        "objective": "Starte ein **Weltraumspiel mit entdeckten Zielen**. Reise zu einem nahen Ziel, das du länger nicht besucht hast. **Lande, docke an oder gehe in den Orbit und sieh dir die Aussicht an**. Speichere, bevor du eine weitere Reise auswählst.",
+        "gameObjective": "In **{{game}}**: Reise zu einem nahen entdeckten Ziel, das du länger nicht besucht hast. **Lande, docke an oder gehe in den Orbit und sieh dir die Aussicht an**. Speichere, bevor du eine weitere Reise auswählst."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "space-exploration"
+      ]
+    }
+  },
+  {
+    "id": "swim-surface-checkpoints",
+    "moodIds": [
+      "focused",
+      "explore"
+    ],
+    "type": "objective",
+    "tags": [
+      "diving",
+      "exploration"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Three Breaths",
+        "objective": "Open a **game with free underwater swimming**. Choose three visible underwater landmarks within safe reach. **Swim to each in one route, surfacing between landmarks**, then return to shore or your vessel.",
+        "gameObjective": "In **{{game}}**: Choose three visible underwater landmarks within safe reach. **Swim to each in one route, surfacing between landmarks**, then return to shore or your vessel."
+      },
+      "de": {
+        "name": "Drei Atemzüge",
+        "objective": "Starte ein **Spiel mit freiem Tauchen**. Wähle drei sichtbare Unterwasser-Orte in sicherer Reichweite. **Schwimme sie auf einer Route ab und tauche zwischen den Orten auf**. Kehre danach ans Ufer oder zu deinem Fahrzeug zurück.",
+        "gameObjective": "In **{{game}}**: Wähle drei sichtbare Unterwasser-Orte in sicherer Reichweite. **Schwimme sie auf einer Route ab und tauche zwischen den Orten auf**. Kehre danach ans Ufer oder zu deinem Fahrzeug zurück."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "swimming"
+      ]
+    }
+  },
+  {
+    "id": "boss-read-before-striking",
+    "moodIds": [
+      "curious",
+      "focused"
+    ],
+    "type": "experiment",
+    "tags": [
+      "boss",
+      "three-attempts"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Read Before Striking",
+        "objective": "Open a **game with a repeatable boss fight**. On your first attempt, avoid attacking until you have seen three different boss attacks. Then fight normally and **defeat the boss or finish three attempts**.",
+        "gameObjective": "In **{{game}}**: On your first attempt, avoid attacking until you have seen three different boss attacks. Then fight normally and **defeat the boss or finish three attempts**."
+      },
+      "de": {
+        "name": "Erst lesen, dann schlagen",
+        "objective": "Starte ein **Spiel mit wiederholbarem Bosskampf**. Greife im ersten Versuch nicht an, bevor du drei verschiedene Bossattacken gesehen hast. Kämpfe danach normal und **besiege den Boss oder beende drei Versuche**.",
+        "gameObjective": "In **{{game}}**: Greife im ersten Versuch nicht an, bevor du drei verschiedene Bossattacken gesehen hast. Kämpfe danach normal und **besiege den Boss oder beende drei Versuche**."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "boss-fights"
+      ]
+    }
+  },
+  {
+    "id": "puzzle-explain-the-rule",
+    "moodIds": [
+      "focused",
+      "curious"
+    ],
+    "type": "objective",
+    "tags": [
+      "puzzles"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Name the Rule",
+        "objective": "Open a **puzzle game with short, replayable puzzles**. Solve one puzzle, then replay or review it and **describe the rule that made the solution work** in one sentence.",
+        "gameObjective": "In **{{game}}**: Solve one short puzzle, then replay or review it and **describe the rule that made the solution work** in one sentence."
+      },
+      "de": {
+        "name": "Die Regel benennen",
+        "objective": "Starte ein **Rätselspiel mit kurzen, wiederholbaren Rätseln**. Löse ein Rätsel, spiele es erneut oder sieh es dir noch einmal an und **beschreibe in einem Satz die Regel, die zur Lösung geführt hat**.",
+        "gameObjective": "In **{{game}}**: Löse ein kurzes Rätsel, spiele es erneut oder sieh es dir noch einmal an und **beschreibe in einem Satz die Regel, die zur Lösung geführt hat**."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "puzzles"
+      ]
+    }
+  },
+  {
+    "id": "building-go-up",
+    "moodIds": [
+      "create",
+      "progress"
+    ],
+    "type": "creation",
+    "tags": [
+      "building",
+      "new-approach"
+    ],
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 25,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Build Upward",
+        "objective": "Open a **building game with an existing ground-level structure**. Add a reachable upper platform or small second floor using materials you already have. **Connect it with stairs, a ladder, or another usable route**, then save.",
+        "gameObjective": "In **{{game}}**: Add a reachable upper platform or small second floor to an existing ground-level structure using materials you already have. **Connect it with a usable route**, then save."
+      },
+      "de": {
+        "name": "In die Höhe bauen",
+        "objective": "Starte ein **Bauspiel mit einem vorhandenen ebenerdigen Gebäude**. Ergänze mit vorhandenen Materialien eine erreichbare Plattform oder ein kleines Obergeschoss. **Verbinde es mit einer Treppe, Leiter oder einem anderen nutzbaren Weg** und speichere.",
+        "gameObjective": "In **{{game}}**: Ergänze ein vorhandenes ebenerdiges Gebäude mit einer erreichbaren Plattform oder einem kleinen Obergeschoss aus vorhandenen Materialien. **Verbinde es mit einem nutzbaren Weg** und speichere."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "building"
+      ]
+    }
+  },
+  {
+    "id": "cook-from-the-pantry",
+    "moodIds": [
+      "overwhelmed",
+      "progress"
+    ],
+    "type": "objective",
+    "tags": [
+      "cooking"
+    ],
+    "minimumDurationMinutes": 2,
+    "suggestedDurationMinutes": 10,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Use What You Have",
+        "objective": "Open a **game with cooking and stored ingredients**. Choose one available recipe you can make from your current storage. **Cook it and place, eat, or store the finished dish** without gathering extra ingredients.",
+        "gameObjective": "In **{{game}}**: Choose one available recipe you can make from your current storage. **Cook it and place, eat, or store the finished dish** without gathering extra ingredients."
+      },
+      "de": {
+        "name": "Nimm, was da ist",
+        "objective": "Starte ein **Spiel mit Kochen und gelagerten Zutaten**. Wähle ein verfügbares Rezept, das du aus deinem Vorrat zubereiten kannst. **Koche es und stelle das fertige Gericht ab, iss es oder lagere es ein**, ohne weitere Zutaten zu sammeln.",
+        "gameObjective": "In **{{game}}**: Wähle ein verfügbares Rezept, das du aus deinem Vorrat zubereiten kannst. **Koche es und stelle das fertige Gericht ab, iss es oder lagere es ein**, ohne weitere Zutaten zu sammeln."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "cooking"
+      ]
+    }
+  },
+  {
+    "id": "sports-defend-first",
+    "moodIds": [
+      "focused",
+      "curious"
+    ],
+    "type": "objective",
+    "tags": [
+      "new-approach"
+    ],
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 25,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Defense First",
+        "objective": "Open a **sports game with CPU opponents**. Play one full game or match with a familiar team, but prioritize marking, positioning, saves, or possession recovery before attacking. **Finish the game and accept the result**.",
+        "gameObjective": "In **{{game}}**: Play one full game or match with a familiar team, but prioritize marking, positioning, saves, or possession recovery before attacking. **Finish the game and accept the result**."
+      },
+      "de": {
+        "name": "Erst die Defensive",
+        "objective": "Starte ein **Sportspiel mit CPU-Gegnern**. Spiele eine volle Partie mit einem vertrauten Team, aber achte vor dem Angriff zuerst auf Deckung, Positionierung, Paraden oder Ballgewinn. **Beende die Partie und nimm das Ergebnis an**.",
+        "gameObjective": "In **{{game}}**: Spiele eine volle Partie mit einem vertrauten Team, aber achte vor dem Angriff zuerst auf Deckung, Positionierung, Paraden oder Ballgewinn. **Beende die Partie und nimm das Ergebnis an**."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "sports-goals"
+      ]
+    }
+  },
+  {
+    "id": "extract-share-one-goal",
+    "moodIds": [
+      "connect",
+      "focused"
+    ],
+    "type": "objective",
+    "tags": [
+      "extraction",
+      "co-op"
+    ],
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 30,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "One Squad Contract",
+        "objective": "Open an **online extraction game with squad play**. Before deploying, choose one available contract, item, or location the squad will prioritize. **Work toward that shared goal and leave through extraction or finish the run if the squad is eliminated**.",
+        "gameObjective": "In **{{game}}**: Before deploying, choose one available contract, item, or location the squad will prioritize. **Work toward that shared goal and leave through extraction or finish the run if the squad is eliminated**."
+      },
+      "de": {
+        "name": "Ein Squad-Auftrag",
+        "objective": "Starte ein **Online-Extraction-Spiel mit Squads**. Wählt vor dem Einsatz einen verfügbaren Auftrag, Gegenstand oder Ort, den der Squad priorisiert. **Arbeitet auf dieses gemeinsame Ziel hin und extrahiert oder beendet den Run, falls der Squad ausgeschaltet wird**.",
+        "gameObjective": "In **{{game}}**: Wählt vor dem Einsatz einen verfügbaren Auftrag, Gegenstand oder Ort, den der Squad priorisiert. **Arbeitet auf dieses gemeinsame Ziel hin und extrahiert oder beendet den Run, falls der Squad ausgeschaltet wird**."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "extraction-runs",
+        "online-teamplay"
+      ]
+    }
+  },
+  {
+    "id": "photo-route-story",
+    "moodIds": [
+      "create",
+      "relax"
+    ],
+    "type": "creation",
+    "tags": [
+      "photography",
+      "exploration"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Route in Three Frames",
+        "objective": "Open a **freely explorable game with a photo mode**. Choose a short route and take one picture at its beginning, middle, and destination. **Keep the three images as a sequence that shows the journey**.",
+        "gameObjective": "In **{{game}}**: Choose a short route and take one picture at its beginning, middle, and destination. **Keep the three images as a sequence that shows the journey**."
+      },
+      "de": {
+        "name": "Drei Bilder vom Weg",
+        "objective": "Starte ein **frei erkundbares Spiel mit Fotomodus**. Wähle eine kurze Route und mache je ein Bild am Anfang, in der Mitte und am Ziel. **Behalte die drei Bilder als Folge, die den Weg zeigt**.",
+        "gameObjective": "In **{{game}}**: Wähle eine kurze Route und mache je ein Bild am Anfang, in der Mitte und am Ziel. **Behalte die drei Bilder als Folge, die den Weg zeigt**."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "open-world",
+        "photo-mode"
+      ]
+    }
+  },
+  {
+    "id": "lore-follow-a-reference",
+    "moodIds": [
+      "curious",
+      "explore"
+    ],
+    "type": "objective",
+    "tags": [
+      "story",
+      "exploration"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Follow the Reference",
+        "objective": "Open a **game with readable lore and explorable locations**. Read one unlocked entry that names a person, place, or event, then **visit a related location or character in the game world**.",
+        "gameObjective": "In **{{game}}**: Read one unlocked lore entry that names a person, place, or event, then **visit a related location or character in the game world**."
+      },
+      "de": {
+        "name": "Der Erwähnung folgen",
+        "objective": "Starte ein **Spiel mit lesbarer Lore und erkundbaren Orten**. Lies einen freigeschalteten Eintrag, der eine Person, einen Ort oder ein Ereignis erwähnt, und **besuche danach einen passenden Ort oder eine passende Figur in der Spielwelt**.",
+        "gameObjective": "In **{{game}}**: Lies einen freigeschalteten Lore-Eintrag, der eine Person, einen Ort oder ein Ereignis erwähnt, und **besuche danach einen passenden Ort oder eine passende Figur in der Spielwelt**."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "choices-or-lore",
+        "open-world"
+      ]
+    }
+  },
+  {
+    "id": "automation-remove-the-detour",
+    "moodIds": [
+      "focused",
+      "curious"
+    ],
+    "type": "experiment",
+    "tags": [
+      "automation"
+    ],
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 25,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Remove the Detour",
+        "objective": "Open a **game with an existing automated production line**. Find one material that travels through an unnecessary loop or crossing. Reroute it more directly and **watch three finished items reach the output through the new route**.",
+        "gameObjective": "In **{{game}}**: Find one material that travels through an unnecessary loop or crossing. Reroute it more directly and **watch three finished items reach the output through the new route**."
+      },
+      "de": {
+        "name": "Den Umweg entfernen",
+        "objective": "Starte ein **Spiel mit einer bestehenden automatisierten Produktionslinie**. Finde ein Material, das durch eine unnötige Schleife oder Kreuzung läuft. Leite es direkter um und **beobachte drei fertige Items, die über die neue Route den Ausgang erreichen**.",
+        "gameObjective": "In **{{game}}**: Finde ein Material, das durch eine unnötige Schleife oder Kreuzung läuft. Leite es direkter um und **beobachte drei fertige Items, die über die neue Route den Ausgang erreichen**."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "automation"
+      ]
+    }
+  },
+  {
+    "id": "platform-take-the-safe-route",
+    "moodIds": [
+      "relax",
+      "overwhelmed"
+    ],
+    "type": "objective",
+    "tags": [
+      "traversal",
+      "no-timer"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "The Safe Route",
+        "objective": "Open a **platforming game with a familiar level**. Use the safest route you know, pause before difficult jumps, and **move through the level without chasing collectibles or a fast time**. Stop at the next checkpoint or exit.",
+        "gameObjective": "In **{{game}}**: Use the safest route through a familiar level, pause before difficult jumps, and **move without chasing collectibles or a fast time**. Stop at the next checkpoint or exit."
+      },
+      "de": {
+        "name": "Der sichere Weg",
+        "objective": "Starte ein **Plattformspiel mit einem vertrauten Level**. Nimm den sichersten bekannten Weg, halte vor schwierigen Sprüngen kurz inne und **spiele ohne Jagd auf Sammelobjekte oder Bestzeit**. Hör am nächsten Kontrollpunkt oder Ausgang auf.",
+        "gameObjective": "In **{{game}}**: Nimm den sichersten Weg durch ein vertrautes Level, halte vor schwierigen Sprüngen kurz inne und **spiele ohne Jagd auf Sammelobjekte oder Bestzeit**. Hör am nächsten Kontrollpunkt oder Ausgang auf."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "platforming"
+      ]
+    }
+  },
+  {
+    "id": "deck-play-the-opening-hand",
+    "moodIds": [
+      "low-energy",
+      "overwhelmed"
+    ],
+    "type": "objective",
+    "tags": [
+      "cards"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Keep the Opening Hand",
+        "objective": "Open a **card game with a familiar legal deck and solo or bot battles**. Start one battle and keep the first playable opening hand you receive. **Finish the battle without restarting for a better draw**.",
+        "gameObjective": "In **{{game}}**: Use a familiar legal deck in a solo or bot battle and keep the first playable opening hand you receive. **Finish the battle without restarting for a better draw**."
+      },
+      "de": {
+        "name": "Die Starthand behalten",
+        "objective": "Starte ein **Kartenspiel mit einem vertrauten gültigen Deck und Solo- oder Bot-Kämpfen**. Beginne einen Kampf und behalte die erste spielbare Starthand. **Beende den Kampf, ohne für bessere Karten neu zu starten**.",
+        "gameObjective": "In **{{game}}**: Nutze ein vertrautes gültiges Deck in einem Solo- oder Bot-Kampf und behalte die erste spielbare Starthand. **Beende den Kampf, ohne für bessere Karten neu zu starten**."
+      }
+    },
+    "customGameCompatibility": {
+      "capabilityIds": [
+        "card-decks"
+      ]
+    }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];

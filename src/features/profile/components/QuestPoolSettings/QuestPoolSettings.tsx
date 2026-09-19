@@ -3,14 +3,16 @@ import { useTranslation } from "react-i18next";
 import { Drawer } from "vaul";
 import { GAME_GENRES, GAME_GENRE_IDS } from "../../../../data/gameGenres";
 import { QUEST_TYPES, type QuestTypeId } from "../../../../data/questTraits";
+import {
+  QUEST_PLAY_STYLES,
+  QUEST_PLAY_STYLE_IDS,
+} from "../../../../data/questPoolTraits";
 import { useQuestStore } from "../../../../stores/useQuestStore";
 import { normalizeLanguage } from "../../../../localization/i18n";
 import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
-import { ProfilePanel } from "../ProfileDrawer/ProfilePanel";
 import styles from "./QuestPoolSettings.module.css";
 import { FlowFrame } from "../../../../shared/ui/FlowFrame/FlowFrame";
-import flowStyles from "../../../../features/library/components/LibraryFlowElements.module.css";
 import { LibraryStep } from "../../../library/components/LibraryStep";
 import { ResponsiveNestedDrawerRoot } from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
 import { LibraryDrawerFrame } from "../../../library/components/LibraryDrawerFrame/LibraryDrawerFrame";
@@ -26,6 +28,7 @@ export function QuestPoolSettings() {
   const [draft, setDraft] = useState(() => ({
     genreIds: [...preferences.genreIds],
     typeIds: [...preferences.typeIds],
+    styleIds: [...preferences.styleIds],
   }));
   return (
     <LibraryDrawerFrame title={t("ui.pool.title")}>
@@ -63,6 +66,16 @@ export function QuestPoolSettings() {
                 label={(id) => GAME_GENRES[id].title[language]}
                 onChange={(genreIds) =>
                   setDraft((current) => ({ ...current, genreIds }))
+                }
+              />
+              <ChoiceGroup
+                title={t("ui.pool.styles")}
+                hint={t("ui.pool.styleHint")}
+                ids={QUEST_PLAY_STYLE_IDS}
+                selected={draft.styleIds}
+                label={(id) => QUEST_PLAY_STYLES[id][language]}
+                onChange={(styleIds) =>
+                  setDraft((current) => ({ ...current, styleIds }))
                 }
               />
               <ChoiceGroup

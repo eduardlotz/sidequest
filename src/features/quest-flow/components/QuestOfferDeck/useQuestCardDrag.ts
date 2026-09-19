@@ -27,13 +27,13 @@ export function useQuestCardDrag({
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useTransform(y, (value) =>
-    reduceMotion ? 0 : clamp(-value * 0.045, 8),
+    reduceMotion ? 0 : clamp(-value * 0.25, 75),
   );
   const rotateY = useTransform(x, (value) =>
-    reduceMotion ? 0 : clamp(value * 0.055, 10),
+    reduceMotion ? 0 : clamp(value * 0.3, 95),
   );
   const rotate = useTransform(x, (value) =>
-    reduceMotion ? 0 : clamp(value * 0.025, 7),
+    reduceMotion ? 0 : clamp(value * 0.12, 12),
   );
   const suppressClick = useRef(false);
   const animation = useRef<ReturnType<typeof animate> | null>(null);

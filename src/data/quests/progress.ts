@@ -119,4 +119,52 @@ export const progressQuests = [
       }
     }
   },
+  {
+    "id": "second-session",
+    "moodIds": [
+      "progress"
+    ],
+    "type": "objective",
+    "tags": [
+      "current-save",
+      "first-play"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "The Second Session",
+        "objective": "Open **a game you stopped after its first session**. Load that save, review the controls if needed, and **reach the next save point or finish one objective**."
+      },
+      "de": {
+        "name": "Die zweite Session",
+        "objective": "Starte **ein Spiel, das du nach der ersten Session liegen gelassen hast**. Lade den Spielstand, sieh dir bei Bedarf die Steuerung an und **erreiche den nächsten Speicherpunkt oder schließe ein Ziel ab**."
+      }
+    }
+  },
+  {
+    "id": "chapter-left-open",
+    "moodIds": [
+      "progress"
+    ],
+    "type": "objective",
+    "tags": [
+      "current-save",
+      "story"
+    ],
+    "minimumDurationMinutes": 5,
+    "suggestedDurationMinutes": 30,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Close the Chapter",
+        "objective": "Return to **a story game with a chapter already in progress**. Follow its main path and **finish that chapter or episode**. Leave the next one for another session."
+      },
+      "de": {
+        "name": "Kapitel abschließen",
+        "objective": "Kehre zu **einem Storyspiel mit einem begonnenen Kapitel** zurück. Folge dem Hauptweg und **beende dieses Kapitel oder diese Episode**. Das nächste kommt in einer anderen Session."
+      }
+    }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];

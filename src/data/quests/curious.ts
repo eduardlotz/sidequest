@@ -118,4 +118,51 @@ export const curiousQuests = [
       }
     }
   },
+  {
+    "id": "break-the-seal",
+    "moodIds": [
+      "curious"
+    ],
+    "type": "inspiration",
+    "tags": [
+      "first-play"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 20,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Break the Seal",
+        "objective": "Choose **an installed game you have never started**. Begin with its default difficulty, adjust accessibility options as needed, and spend this session discovering its introduction. Continue only while you are curious."
+      },
+      "de": {
+        "name": "Endlich anfangen",
+        "objective": "Wähle **ein installiertes Spiel, das du noch nie gestartet hast**. Beginne auf dem Standardschwierigkeitsgrad, passe Barrierefreiheitsoptionen nach Bedarf an und entdecke in dieser Session seine Einführung. Spiele nur weiter, solange du neugierig bist."
+      }
+    }
+  },
+  {
+    "id": "forgotten-install",
+    "moodIds": [
+      "curious"
+    ],
+    "type": "inspiration",
+    "tags": [
+      "first-play",
+      "exploration"
+    ],
+    "minimumDurationMinutes": 3,
+    "suggestedDurationMinutes": 15,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Forgotten Install",
+        "objective": "Open **an installed game whose title you barely remember**. Skip reviews and guides, enter its first playable section, and learn what kind of game it is by playing."
+      },
+      "de": {
+        "name": "Vergessene Installation",
+        "objective": "Starte **ein installiertes Spiel, an dessen Titel du dich kaum erinnerst**. Lass Tests und Guides aus, beginne den ersten spielbaren Abschnitt und finde beim Spielen heraus, was für ein Spiel es ist."
+      }
+    }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];

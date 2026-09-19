@@ -27,7 +27,7 @@ type CompletionCallbacks = { onHidden: () => void; onReveal: () => void };
 export type InteractiveQuestCardHandle = {
   capturePose: () => CardSurfacePose;
   complete: (callbacks: CompletionCallbacks) => void;
-  pulse: (direction: number) => void;
+  wobble: () => void;
 };
 
 type Props = {
@@ -73,8 +73,10 @@ export function InteractiveQuestCard({
   const cardClickTimesRef = useRef<number[]>([]);
   const cardFlipAnimationRef = useRef<{ stop: () => void } | null>(null);
   const cardFlipDirectionRef = useRef<CardFlipDirection>(1);
-  const pulseRotation = useMotionValue(0);
-  const pulseAnimationRef = useRef<{ stop: () => void } | null>(null);
+  const wobbleRotation = useMotionValue(0);
+  const wobbleScaleX = useMotionValue(1);
+  const wobbleScaleY = useMotionValue(1);
+  const wobbleAnimationsRef = useRef<Array<{ stop: () => void }>>([]);
   const floatRef = useRef<HTMLDivElement>(null);
   const {
     handlePointerEnter,
@@ -223,26 +225,45 @@ export function InteractiveQuestCard({
         };
       },
       complete: (callbacks) => startFlip(1, callbacks),
-      pulse: (direction) => {
-        pulseAnimationRef.current?.stop();
+      wobble: () => {
+        for (const animation of wobbleAnimationsRef.current) animation.stop();
         if (reduceMotion) {
-          pulseRotation.set(0);
+          wobbleRotation.set(0);
+          wobbleScaleX.set(1);
+          wobbleScaleY.set(1);
           return;
         }
-        pulseAnimationRef.current = animate(pulseRotation, 0, {
-          type: "spring",
-          stiffness: 500,
-          damping: 12,
-          velocity: direction * 75,
-        });
+        const transition = {
+          duration: 0.72,
+          ease: [0.22, 0.72, 0.2, 1] as const,
+          times: [0, 0.16, 0.34, 0.54, 0.76, 1],
+        };
+        wobbleAnimationsRef.current = [
+          animate(
+            wobbleRotation,
+            [0, -1.5, 1.25, -0.7, 0.3, 0],
+            transition,
+          ),
+          animate(wobbleScaleX, [1, 1.04, 0.98, 1.018, 0.995, 1], transition),
+          animate(wobbleScaleY, [1, 0.965, 1.025, 0.985, 1.006, 1], transition),
+        ];
       },
     }),
-    [startFlip, reduceMotion, pulseRotation, rotateX, rotateY, scale],
+    [
+      startFlip,
+      reduceMotion,
+      wobbleRotation,
+      wobbleScaleX,
+      wobbleScaleY,
+      rotateX,
+      rotateY,
+      scale,
+    ],
   );
 
   useEffect(() => () => {
     cardFlipAnimationRef.current?.stop();
-    pulseAnimationRef.current?.stop();
+    for (const animation of wobbleAnimationsRef.current) animation.stop();
   }, []);
 
   return (
@@ -285,7 +306,11 @@ export function InteractiveQuestCard({
       <motion.div
         ref={floatRef}
         className={styles.float}
-        style={{ rotate: pulseRotation }}
+        style={{
+          rotate: wobbleRotation,
+          scaleX: wobbleScaleX,
+          scaleY: wobbleScaleY,
+        }}
       >
         <motion.div className={styles.surface} style={{ rotateX, rotateY, scale }}>
           <div className={styles.front}>

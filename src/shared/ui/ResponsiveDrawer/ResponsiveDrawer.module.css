@@ -1,6 +1,6 @@
 .drawerOverlay {
   position: fixed;
-  z-index: calc(90 + var(--drawer-depth, 0) * 20);
+  z-index: calc(130 + var(--drawer-depth, 0) * 20);
   background: var(--color-overlay);
   backdrop-filter: none;
   inset: 0;
@@ -23,7 +23,7 @@
 .drawerContent {
   --drawer-handle: #c7c7d0;
   position: fixed;
-  z-index: calc(100 + var(--drawer-depth, 0) * 20);
+  z-index: calc(140 + var(--drawer-depth, 0) * 20);
   overflow: visible;
   border: 0;
   border-radius: 0;
@@ -37,27 +37,22 @@
 }
 
 .drawerContent[data-direction="right"] {
-  top: 74px;
-  right: 0;
-  bottom: clamp(18px, 10vh, 86px);
-  width: calc(min(342px, calc(100vw - 64px)) + 32px);
-  padding-right: 32px;
+  top: 20px;
+  right: 20px;
+  bottom: 20px;
+  width: min(342px, calc(100vw - 40px));
 }
 
 .drawerContent[data-direction="left"] {
-  top: 74px;
-  bottom: clamp(18px, 10vh, 86px);
-  left: 0;
-  width: calc(min(342px, calc(100vw - 64px)) + 32px);
-  padding-left: 32px;
+  top: 20px;
+  bottom: 20px;
+  left: 20px;
+  width: min(342px, calc(100vw - 40px));
 }
 
 .drawerContent[data-drawer-variant="profile"][data-direction="right"] {
-  top: 79px;
-  bottom: auto;
   height: auto;
-  max-height: calc(var(--app-height) - 98px);
-  padding: 0 32px 0 0;
+  max-height: none;
 }
 
 .mobileDrawerContainer {

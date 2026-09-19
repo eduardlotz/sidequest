@@ -41,7 +41,7 @@ import {
   isDownwardActivationPull,
 } from "../../../../lib/timerRopeRules";
 import { AnimatedElapsedTime } from "../AnimatedElapsedTime/AnimatedElapsedTime";
-import { CompletionCheckIcon } from "../CompletionCheckIcon/CompletionCheckIcon";
+import { CompletionCoinIcon } from "../CompletionCoinIcon/CompletionCoinIcon";
 import { CoinIcon, InfoIcon } from "../../../../shared/ui/Icons/Icons";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import { CardFocusBackdrop } from "../../../../shared/ui/CardFocusBackdrop/CardFocusBackdrop";
@@ -593,6 +593,7 @@ export function ActiveQuestCard({
               y: finishedCardRect.top + finishedCardRect.height / 2,
             }
           : { x: window.innerWidth / 2, y: window.innerHeight / 2 + 40 };
+        cardInteractionRef.current?.wobble();
         setCoinFlight({ award, start, end });
       },
     });
@@ -604,7 +605,6 @@ export function ActiveQuestCard({
       (coinFlight.award * (index + 1)) / COIN_FLIGHT_COUNT,
     );
     onCoinHit(pointsReceived, impact);
-    cardInteractionRef.current?.pulse(index % 2 === 0 ? 1 : -1);
     if (index !== COIN_FLIGHT_COUNT - 1) return;
     coinFlightFinishedRef.current = true;
     completionFinalizeTimeoutRef.current = window.setTimeout(() => {
@@ -929,7 +929,10 @@ export function ActiveQuestCard({
           aria-hidden="true"
           initial={reduceMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: reduceMotion ? 0 : 0.5, ease: "easeOut" }}
+          transition={{
+            duration: reduceMotion ? 0 : 0.65,
+            ease: [0.22, 0.72, 0.2, 1],
+          }}
         />
       )}
       {completed && coinFlight
@@ -1097,7 +1100,7 @@ export function ActiveQuestCard({
                       animate={{ opacity: finishedFaceVisible ? 1 : 0 }}
                       transition={{ duration: reduceMotion ? 0 : 0.2 }}
                     >
-                      <CompletionCheckIcon />
+                      <CompletionCoinIcon />
                       <span>{t("ui.timer.yourTime")}</span>
                       <strong>{formatRunningDuration(elapsedMs)}</strong>
                     </motion.div>
