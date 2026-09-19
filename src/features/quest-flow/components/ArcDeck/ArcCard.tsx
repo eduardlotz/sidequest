@@ -33,8 +33,18 @@ type Props = {
 
 const CARD_CENTER_STAGGER_SECONDS = 0.025;
 
-const MOBILE_CARD_GAP = 330;
-const DESKTOP_CARD_GAP = 520;
+const ARC = {
+  compact: {
+    radiusX: 650,
+    radiusY: 1000,
+    angle: 26,
+  },
+  desktop: {
+    radiusX: 1050,
+    radiusY: 1000,
+    angle: 28,
+  },
+};
 
 const MOOD_QUEST_EASE = [0.16, 1, 0.3, 1] as const;
 const MOOD_QUEST_DURATION = 0.56;
@@ -65,7 +75,7 @@ const TILT_TRANSITION = {
   mass: 0.74,
 };
 
-function getOutsidePose(distance: number, gap: number) {
+function getOutsidePose(distance: number, radiusX: number) {
   const absoluteDistance = Math.min(2, Math.abs(distance));
 
   if (distance === 0) {
@@ -83,7 +93,8 @@ function getOutsidePose(distance: number, gap: number) {
   return {
     opacity: 0,
     scale: 0.9,
-    x: direction * (gap * 0.2 + absoluteDistance * 12),
+
+    x: direction * (radiusX * 0.1 + absoluteDistance * 12),
     y: 0,
     filter: "none",
   };
@@ -123,20 +134,39 @@ export function ArcCard({
     loopDistance(index - latest, itemCount),
   );
 
-  const gap = isCompact ? MOBILE_CARD_GAP : DESKTOP_CARD_GAP;
+  const arc = isCompact ? ARC.compact : ARC.desktop;
 
-  const x = useTransform(distance, (value) => value * gap);
+  const angle = useTransform(distance, (value) => value * arc.angle);
 
-  const y = useTransform(distance, (value) => -42 + Math.abs(value) * 92);
+  const x = useTransform(angle, (degrees) => {
+    const radians = (degrees * Math.PI) / 180;
+    return Math.sin(radians) * arc.radiusX;
+  });
 
-  const rotate = useTransform(distance, (value) => value * 11);
+  const y = useTransform(angle, (degrees) => {
+    const radians = (degrees * Math.PI) / 180;
+    return (1 - Math.cos(radians)) * arc.radiusY - 42;
+  });
+
+  const rotate = useTransform(angle, (degrees) => degrees);
+
+  // Actual 3D carousel rotation.
+  // Left cards turn right, right cards turn left.
+  const rotateYOuter = useTransform(distance, (value) => -value * 35);
+  // const rotateXOuter = useTransform(distance, (value) => -value * -20);
+  // const rotateXOuter = -10;
+  // const rotateXOuter = -15;
+  const rotateZOuter = useTransform(distance, (value) => -value * -10);
+
+  // Push cards farther away from the viewer as they leave the center.
+  const z = useTransform(distance, (value) => -Math.abs(value) * 15);
 
   const scale = useTransform(distance, (value) =>
-    Math.max(0.78, 1 - Math.abs(value) * 0.1),
+    Math.max(0.4, 1 - Math.abs(value) * 0.15),
   );
 
   const contentOpacity = useTransform(distance, (value) =>
-    Math.max(0.12, 1 - Math.abs(value) * 0.72),
+    Math.max(0.1, 1 - Math.abs(value) * 0.7),
   );
 
   const zIndex = useTransform(distance, (value) =>
@@ -171,7 +201,7 @@ export function ArcCard({
    */
   const primaryExit = selected || (!selectedId && center);
 
-  const outsidePose = getOutsidePose(discreteDistance, gap);
+  const outsidePose = getOutsidePose(discreteDistance, arc.radiusX);
 
   const positionDelay =
     foregroundExiting || returningFromQuests || revealCards
@@ -222,9 +252,15 @@ export function ArcCard({
 
         x,
         y,
+        z,
         rotate,
+        rotateY: rotateYOuter,
+        // rotateX: rotateXOuter,
+        // rotateZ: rotateZOuter,
         scale,
         zIndex,
+
+        transformStyle: "preserve-3d",
       }}
     >
       <motion.div
@@ -248,7 +284,18 @@ export function ArcCard({
           //             ? "blur(5px)"
           //             : "blur(0px)",
           //     }
-          { opacity: 1, scale: 1, y: 0, x: 0, filter: "none" }
+          {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            x: 0,
+            z: 0,
+            rotate: 0,
+            rotateY: 0,
+            rotateX: 0,
+            rotateZ: 0,
+            filter: "none",
+          }
         }
         transition={
           reduceMotion

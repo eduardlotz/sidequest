@@ -366,15 +366,15 @@ function QuestOfferCard({
         ? 70
         : 0;
   // const moodHandoffX = isCompact ? 0 : index === 0 ? 70 : index === 2 ? -70 : 0;
-  const moodHandoffX = index === 0 ? -70 : index === 2 ? 70 : 0;
+  const moodHandoffX = index === 0 ? 50 : index === 2 ? -50 : 0;
   const moodHandoffY = index === 1 ? 0 : 30;
   const moodHandoffPose = {
     filter: "blur(0px)",
     opacity: 0,
-    x: 0,
-    // x: moodHandoffX,
-    // y: 0,
-    y: moodHandoffY,
+    x: moodHandoffX,
+    // x: 0,
+    y: 0,
+    // y: moodHandoffY,
     scale: reduceMotion ? 1 : 0.95,
   };
   const centerStaggerDelay = isCompact

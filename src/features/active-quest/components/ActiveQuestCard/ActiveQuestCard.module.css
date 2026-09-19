@@ -110,8 +110,9 @@
 }
 
 .timerPosition {
-  --timer-size: clamp(250px, 18cqw, 300px);
-  --timer-body-width: calc(100% - 10px);
+  --timer-size: clamp(240px, 25cqw, 250px);
+  /* --timer-body-width: calc(100% - 8px); */
+  --timer-body-width: 100%;
   position: absolute;
   top: clamp(
     calc(var(--app-height) * 0.307),
@@ -536,7 +537,7 @@
 }
 
 :global([data-play-layout="compact"]) .timerPosition {
-  --timer-size: 220px;
+  --timer-size: 240px;
   top: 32.5%;
 }
 
