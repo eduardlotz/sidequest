@@ -118,6 +118,7 @@ export function QuestScreenContent({
     focusedId: null,
     moodIds: [],
     genreIds: [],
+    playStyleIds: [],
     gameId: null,
     tagIds: [],
   });
@@ -418,11 +419,7 @@ export function QuestScreenContent({
         <AnimatePresence
           initial={animateEntrance}
           custom={isReturning ? "return" : undefined}
-          mode={
-            returnedFromActive && !returnTransition && !galleryOpen
-              ? "popLayout"
-              : "popLayout"
-          }
+          mode="popLayout"
           onExitComplete={finishReturn}
         >
           {currentQuest && currentSession && showActive && (

@@ -87,7 +87,7 @@
   transform-origin: center;
 }
 
-.coinTriggerBalance svg {
+.coinTriggerBalance [data-coin-icon] {
   width: 20px;
   height: 20px;
   flex: 0 0 auto;

@@ -1,8 +1,8 @@
 .profileDrawer {
   display: flex;
-  height: auto;
+  height: 100%;
   min-height: 0;
-  max-height: calc(var(--app-height) - 98px);
+  max-height: 100%;
   overflow: hidden;
   border-radius: 20px;
   background: var(--color-surface);
@@ -365,7 +365,8 @@
 /* Profile overview only; nested history panels retain their own layout. */
 .profileOverview {
   --profile-muted-surface: rgb(var(--color-text-rgb) / 0.05);
-  height: min(710px, calc(var(--app-height) - 98px));
+  height: 100%;
+  max-height: 100%;
   border-radius: 24px;
 }
 .profileOverview .profileDrawerHeader {
@@ -381,7 +382,7 @@
   font-size: 16px;
   font-weight: 700;
 }
-.profileCoins svg {
+.profileCoins [data-coin-icon] {
   width: 20px;
   height: 20px;
   overflow: visible;

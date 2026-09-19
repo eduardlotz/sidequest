@@ -1,5 +1,7 @@
 import type { QuestTypeId, QuestTagId } from "./questTraits";
 import type { CustomGameCompatibility } from "./gameCompatibility";
+import type { QuestPlayStyleId } from "./questPoolTraits";
+import type { GameGenreId } from "./gameGenres";
 
 export const MOOD_IDS = [
   "low-energy",
@@ -62,6 +64,8 @@ export type MoodQuestDefinition = {
   maximumDurationMinutes?: number;
   suggestedDurationMinutes: number;
   genres: readonly string[];
+  gameGenreIds: readonly GameGenreId[];
+  playStyleIds: readonly QuestPlayStyleId[];
   universal: boolean;
   gameBindable: boolean;
   curated?: CuratedQuestDetails;
@@ -78,6 +82,8 @@ export type QuestCoreDefinition = Pick<
   | "maximumDurationMinutes"
   | "suggestedDurationMinutes"
   | "genres"
+  | "gameGenreIds"
+  | "playStyleIds"
   | "universal"
   | "gameBindable"
   | "customGameCompatibility"

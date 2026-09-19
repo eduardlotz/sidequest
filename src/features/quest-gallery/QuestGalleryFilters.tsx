@@ -5,9 +5,14 @@ import { FunnelIcon } from "@phosphor-icons/react";
 import { MOODS, type MoodId } from "../../data/moods";
 import { GAME_GENRES, GAME_GENRE_IDS, type GameGenreId } from "../../data/gameGenres";
 import { QUEST_TAGS, type QuestTagId } from "../../data/questTraits";
+import {
+  QUEST_PLAY_STYLES,
+  QUEST_PLAY_STYLE_IDS,
+} from "../../data/questPoolTraits";
 import { localizeMood } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
 import { LibraryDrawerFrame } from "../library/components/LibraryDrawerFrame/LibraryDrawerFrame";
+import { LibraryStep } from "../library/components/LibraryStep";
 import { FlowFrame } from "../../shared/ui/FlowFrame/FlowFrame";
 import { InfoLabel } from "../../shared/ui/InfoLabel/InfoLabel";
 import {
@@ -50,6 +55,7 @@ export function QuestGalleryFilters({
     Number(view.filter !== "all") +
     view.moodIds.length +
     view.genreIds.length +
+    view.playStyleIds.length +
     view.tagIds.length +
     Number(Boolean(view.gameId));
 
@@ -58,6 +64,7 @@ export function QuestGalleryFilters({
       filter: "all",
       moodIds: [],
       genreIds: [],
+      playStyleIds: [],
       gameId: null,
       tagIds: [],
     });
@@ -86,27 +93,28 @@ export function QuestGalleryFilters({
         }
       >
         <LibraryDrawerFrame title={t("ui.gallery.filtersTitle")}>
-          <FlowFrame
-            titleInContent
-            title={t("ui.gallery.filtersDescription")}
-            footer={
-              <>
-                <Drawer.Close asChild>
-                  <SolidButton
-                    size="large"
-                    variant="highlighted"
-                    onClick={() => onApply(draft)}
-                  >
-                    {t("ui.gallery.applyFilters")}
+          <LibraryStep>
+            <FlowFrame
+              titleInContent
+              title={t("ui.gallery.filtersDescription")}
+              footer={
+                <>
+                  <Drawer.Close asChild>
+                    <SolidButton
+                      size="large"
+                      variant="highlighted"
+                      onClick={() => onApply(draft)}
+                    >
+                      {t("ui.gallery.applyFilters")}
+                    </SolidButton>
+                  </Drawer.Close>
+                  <SolidButton size="large" variant="ghost" onClick={clear}>
+                    {t("ui.gallery.clearFilters")}
                   </SolidButton>
-                </Drawer.Close>
-                <SolidButton size="large" variant="ghost" onClick={clear}>
-                  {t("ui.gallery.clearFilters")}
-                </SolidButton>
-              </>
-            }
-          >
-            <div className={styles.groups}>
+                </>
+              }
+            >
+              <div className={styles.groups}>
               <FilterGroup title={t("ui.gallery.statusFilter")}>
                 {STATUS_FILTERS.map((filter) => (
                   <FilterChoice
@@ -153,6 +161,25 @@ export function QuestGalleryFilters({
                 ))}
               </FilterGroup>
 
+              <FilterGroup title={t("ui.gallery.playStyleFilter")}>
+                {QUEST_PLAY_STYLE_IDS.map((styleId) => (
+                  <FilterChoice
+                    key={styleId}
+                    active={draft.playStyleIds.includes(styleId)}
+                    label={QUEST_PLAY_STYLES[styleId][language]}
+                    onClick={() =>
+                      setDraft((current) => ({
+                        ...current,
+                        playStyleIds: toggle(
+                          current.playStyleIds,
+                          styleId,
+                        ),
+                      }))
+                    }
+                  />
+                ))}
+              </FilterGroup>
+
               {games.length > 0 ? (
                 <FilterGroup title={t("ui.gallery.gameFilter")}>
                   <FilterChoice
@@ -193,8 +220,9 @@ export function QuestGalleryFilters({
                   />
                 ))}
               </FilterGroup>
-            </div>
-          </FlowFrame>
+              </div>
+            </FlowFrame>
+          </LibraryStep>
         </LibraryDrawerFrame>
       </ResponsiveDrawer>
       <ResponsiveDrawerContainer setContainer={setMobileContainer} />
@@ -207,6 +235,7 @@ function filterDraft(view: QuestGalleryView) {
     filter: view.filter,
     moodIds: [...view.moodIds],
     genreIds: [...view.genreIds],
+    playStyleIds: [...view.playStyleIds],
     gameId: view.gameId,
     tagIds: [...view.tagIds],
   };

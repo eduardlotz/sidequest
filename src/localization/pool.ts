@@ -2,9 +2,12 @@ export const englishPool = {
   title: "Settings",
   description: "Choose which quests can appear in your pool.",
   genres: "Genre",
+  styles: "Play style",
   types: "Quest type",
   genreHint:
     "Only quests for your selected genres can appear. General quests work with any selected genre.",
+  styleHint:
+    "Choose the ways you want to play. Quests must match at least one selected play style.",
   typeHint: "Choose the quest types you want to draw.",
   save: "Save",
   cancel: "Cancel",
@@ -14,9 +17,12 @@ export const germanPool: Record<keyof typeof englishPool, string> = {
   title: "Einstellungen",
   description: "Wähle, welche Quests in deinem Pool erscheinen dürfen.",
   genres: "Genre",
+  styles: "Modus",
   types: "Quest-Typ",
   genreHint:
     "Du bekommst nur Quests angezeigt, die zu deinen Einstellungen passen.",
+  styleHint:
+    "Wähle, wie du spielen möchtest. Quests müssen zu mindestens einem gewählten Modus passen.",
   typeHint: "Wähle die Quest-Typen, die du ziehen möchtest.",
   save: "Speichern",
   cancel: "Abbrechen",

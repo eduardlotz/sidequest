@@ -7,6 +7,7 @@ import {
   type QuestTranslation,
 } from "../questTypes";
 import { isQuestTypeAllowed } from "../questTraits";
+import { QUEST_POOL_TRAITS } from "../questPoolTraits";
 import { challengeQuests } from "./challenge";
 import { connectQuests } from "./connect";
 import { createQuests } from "./create";
@@ -59,6 +60,9 @@ for (const quest of QUEST_CATALOG) {
   if (quest.moodIds.some((moodId) => !isQuestTypeAllowed(quest.type, moodId))) {
     throw new Error(`Quest ${quest.id} has a mood incompatible with ${quest.type}`);
   }
+  if (!QUEST_POOL_TRAITS[quest.id]) {
+    throw new Error(`Quest ${quest.id} is missing pool metadata`);
+  }
 }
 
 export const QUEST_TRANSLATIONS_BY_ID = Object.fromEntries(
@@ -68,6 +72,8 @@ export const QUEST_TRANSLATIONS_BY_ID = Object.fromEntries(
 export const QUESTS: readonly MoodQuestDefinition[] = QUEST_CATALOG.map(
   ({ translations, ...quest }) => ({
     ...quest,
+    gameGenreIds: QUEST_POOL_TRAITS[quest.id].genreIds,
+    playStyleIds: QUEST_POOL_TRAITS[quest.id].styleIds,
     universal: quest.universal !== false,
     gameBindable: Boolean(
       translations.en.gameObjective && translations.de.gameObjective,
@@ -96,6 +102,8 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     maximumDurationMinutes,
     suggestedDurationMinutes,
     genres,
+    gameGenreIds,
+    playStyleIds,
     universal,
     gameBindable,
     customGameCompatibility,
@@ -109,6 +117,8 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     maximumDurationMinutes,
     suggestedDurationMinutes,
     genres,
+    gameGenreIds,
+    playStyleIds,
     universal,
     gameBindable,
     customGameCompatibility,

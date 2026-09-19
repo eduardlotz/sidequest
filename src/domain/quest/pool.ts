@@ -1,6 +1,6 @@
 import { GAME_GENRE_IDS } from "../../data/gameGenres";
 import { QUEST_TYPES, type QuestTypeId } from "../../data/questTraits";
-import { QUEST_POOL_TRAITS } from "../../data/questPoolTraits";
+import { QUEST_PLAY_STYLE_IDS } from "../../data/questPoolTraits";
 import type { QuestCoreDefinition } from "../../data/questTypes";
 import type { QuestPoolPreferences } from "./model";
 
@@ -8,14 +8,15 @@ export function defaultPoolPreferences(): QuestPoolPreferences {
   return {
     genreIds: [...GAME_GENRE_IDS],
     typeIds: Object.keys(QUEST_TYPES) as QuestTypeId[],
+    styleIds: [...QUEST_PLAY_STYLE_IDS],
   };
 }
 export function matchesPoolPreferences(quest: QuestCoreDefinition, preferences: QuestPoolPreferences) {
-  const traits = QUEST_POOL_TRAITS[quest.id];
   // An explicit genre requirement is shared with custom-game matching.
-  const genres = quest.customGameCompatibility?.genreIds ?? traits?.genreIds;
+  const genres = quest.customGameCompatibility?.genreIds ?? quest.gameGenreIds;
   return preferences.typeIds.includes(quest.type) && preferences.genreIds.length > 0 &&
-    Boolean(traits && genres && (!genres.length || genres.some(id => preferences.genreIds.includes(id))));
+    (!genres.length || genres.some(id => preferences.genreIds.includes(id))) &&
+    quest.playStyleIds.some(id => preferences.styleIds.includes(id));
 }
 export function sanitizePoolPreferences(value: unknown): QuestPoolPreferences {
   if (!value || typeof value !== "object") return defaultPoolPreferences();
@@ -27,5 +28,6 @@ export function sanitizePoolPreferences(value: unknown): QuestPoolPreferences {
   return {
     genreIds: selection(data.genreIds, defaults.genreIds),
     typeIds: selection(data.typeIds, defaults.typeIds),
+    styleIds: selection(data.styleIds, defaults.styleIds),
   };
 }

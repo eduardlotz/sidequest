@@ -359,8 +359,8 @@
   font-weight: 750;
 }
 
-.completionReward svg,
-.completionAwardBanner svg {
+.completionReward [data-coin-icon],
+.completionAwardBanner [data-coin-icon] {
   width: 21px;
   height: 21px;
   flex: 0 0 auto;
@@ -444,12 +444,15 @@
   height: 142vmax;
   background-image: repeating-conic-gradient(
     from 0deg at 50% 50%,
-    var(--completion-ray) 0deg 7deg,
-    transparent 7deg 14deg
+    transparent 0deg 0.8deg,
+    var(--completion-ray) 1.8deg 5.8deg,
+    transparent 6.8deg 14deg
   );
   content: "";
-  translate: -50% -50%;
-  animation: completionRaysRotate 20s linear infinite;
+  transform: translate(-50%, -50%) rotate(0turn);
+  transform-origin: center;
+  animation: completionRaysRotate 24s linear infinite;
+  will-change: transform;
 }
 
 :global([data-play-layout="compact"]) .activeQuest {
@@ -617,7 +620,7 @@
 
 @keyframes completionRaysRotate {
   to {
-    rotate: 360deg;
+    transform: translate(-50%, -50%) rotate(1turn);
   }
 }
 

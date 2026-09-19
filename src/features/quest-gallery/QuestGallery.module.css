@@ -178,7 +178,7 @@
   text-align: right;
   font-weight: 600;
 }
-.metrics svg {
+.metrics [data-coin-icon] {
   width: 16px;
   height: 16px;
 }

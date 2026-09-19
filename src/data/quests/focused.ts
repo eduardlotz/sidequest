@@ -115,4 +115,28 @@ export const focusedQuests = [
       }
     }
   },
+  {
+    "id": "ending-in-sight",
+    "moodIds": [
+      "focused"
+    ],
+    "type": "inspiration",
+    "tags": [
+      "current-save",
+      "story"
+    ],
+    "minimumDurationMinutes": 10,
+    "suggestedDurationMinutes": 30,
+    "genres": [],
+    "translations": {
+      "en": {
+        "name": "Ending in Sight",
+        "objective": "Return to **an unfinished story game that feels close to its ending**. Follow only the main path and give its final stretch your full attention. Stop at a save point if the ending is farther away than expected."
+      },
+      "de": {
+        "name": "Das Ende in Sicht",
+        "objective": "Kehre zu **einem unfertigen Storyspiel zurück, dessen Ende nahe wirkt**. Folge nur dem Hauptweg und widme dem letzten Abschnitt deine volle Aufmerksamkeit. Hör an einem Speicherpunkt auf, falls das Ende weiter entfernt ist als gedacht."
+      }
+    }
+  },
 ] satisfies readonly AuthoredQuestDefinition[];

@@ -28,7 +28,8 @@ import { QUESTS } from "../../data/quests";
 import type { MoodId } from "../../data/moods";
 import type { GameGenreId } from "../../data/gameGenres";
 import type { QuestTagId } from "../../data/questTraits";
-import { QUEST_POOL_TRAITS } from "../../data/questPoolTraits";
+import type { QuestPlayStyleId } from "../../data/questPoolTraits";
+import { CURATED_GAMES_BY_ID } from "../../data/games";
 import { getMoodAccentStyle } from "../../data/questColors";
 import { hydrateQuest } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
@@ -77,11 +78,11 @@ export type QuestGalleryView = {
   focusedId: string | null;
   moodIds: MoodId[];
   genreIds: GameGenreId[];
+  playStyleIds: QuestPlayStyleId[];
   gameId: string | null;
   tagIds: QuestTagId[];
 };
-// const INFO_SNAP_POINTS = [0.24, 0.55, 1];
-const INFO_SNAP_POINTS = [0.52, 1];
+const INFO_SNAP_POINTS = [0.24, 0.55, 1];
 const INFO_DEFAULT_SNAP_POINT = INFO_SNAP_POINTS[0];
 const DRAG_SLOP = 8;
 const FOCUS_SWIPE_DISTANCE = 64;
@@ -241,9 +242,7 @@ export function QuestGallery({
         const known = progress[quest.id];
         const completed = (counts[quest.id] ?? 0) > 0;
         const genres =
-          quest.customGameCompatibility?.genreIds ??
-          QUEST_POOL_TRAITS[quest.id]?.genreIds ??
-          [];
+          quest.customGameCompatibility?.genreIds ?? quest.gameGenreIds;
         if (
           (filter === "found" && !known) ||
           (filter === "favorites" && !known?.favorite) ||
@@ -254,7 +253,12 @@ export function QuestGallery({
           (view.genreIds.length > 0 &&
             genres.length > 0 &&
             !genres.some((id) => view.genreIds.includes(id))) ||
-          (view.gameId !== null && quest.game?.id !== view.gameId) ||
+          (view.playStyleIds.length > 0 &&
+            !quest.playStyleIds.some((id) =>
+              view.playStyleIds.includes(id),
+            )) ||
+          (view.gameId !== null &&
+            (quest.game?.id ?? quest.curated?.gameId) !== view.gameId) ||
           (view.tagIds.length > 0 &&
             !quest.tags.some((id) => view.tagIds.includes(id)))
         )
@@ -275,7 +279,12 @@ export function QuestGallery({
   const gameOptions = useMemo<GalleryGameOption[]>(() => {
     const games = new Map<string, GalleryGameOption>();
     for (const quest of catalog) {
-      if (quest.game) games.set(quest.game.id, quest.game);
+      if (quest.game) {
+        games.set(quest.game.id, quest.game);
+      } else if (quest.curated) {
+        const game = CURATED_GAMES_BY_ID[quest.curated.gameId];
+        if (game) games.set(game.id, { id: game.id, name: game.name });
+      }
     }
     return [...games.values()].sort((a, b) =>
       a.name.localeCompare(b.name, language),

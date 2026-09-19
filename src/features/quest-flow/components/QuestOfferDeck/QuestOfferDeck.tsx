@@ -85,7 +85,7 @@ const MOOD_HANDOFF_TRANSITION = {
 const CARD_CENTER_STAGGER_SECONDS = 0.04;
 const NEW_CARDS_STAGGER_SECONDS = 0.1;
 const CARD_REST_POSE = {
-  filter: "blur(0px)",
+  filter: "none",
   opacity: 1,
   x: 0,
   y: 0,
@@ -93,7 +93,7 @@ const CARD_REST_POSE = {
 };
 
 const QUEST_SIBLING_HIDDEN = {
-  filter: "blur(0px)",
+  filter: "none",
   opacity: 0,
   x: 0,
   y: 0,
@@ -369,7 +369,7 @@ function QuestOfferCard({
   const moodHandoffX = index === 0 ? 50 : index === 2 ? -50 : 0;
   const moodHandoffY = index === 1 ? 0 : 30;
   const moodHandoffPose = {
-    filter: "blur(0px)",
+    filter: "none",
     opacity: 0,
     x: moodHandoffX,
     // x: 0,
@@ -407,6 +407,7 @@ function QuestOfferCard({
       data-position={index === 0 ? "left" : index === 2 ? "right" : "center"}
       data-selected={selected || undefined}
       data-stack-position={stackPosition}
+      layout
       layoutId={questCardLayoutId(layoutSessionId, item.offerId)}
       layoutCrossfade={false}
       initial={
@@ -567,7 +568,7 @@ function QuestOfferCard({
               rotate: isCompact ? drag.rotate : 0,
               rotateX: isCompact ? drag.rotateX : rotateX,
               rotateY: isCompact ? drag.rotateY : rotateY,
-              transformPerspective: 1000,
+              // transformPerspective: 1000,
             }}
           >
             <motion.span

@@ -1,0 +1,9 @@
+.completionCoinIcon {
+  display: block;
+  width: 28cqw;
+  height: auto;
+  aspect-ratio: 1;
+  margin-bottom: calc(0.625 * var(--quest-card-type-unit));
+  filter: drop-shadow(0 0 26px rgb(var(--accent-rgb) / 0.3));
+  object-fit: contain;
+}
