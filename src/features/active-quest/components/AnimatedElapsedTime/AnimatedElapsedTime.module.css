@@ -84,7 +84,7 @@
 }
 
 .elapsedTime {
-  font-size: clamp(3rem, 25cqw, 4.5rem);
+  font-size: clamp(4.2rem, 25cqw, 5.2rem);
   filter: none;
 }
 
