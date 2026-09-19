@@ -37,6 +37,7 @@ import {
   generateQuestOffers,
   moodSelectionExpired,
   moodWindowState,
+  recordRecentQuestIds,
   rotateSessionOffer,
   safeAdd,
   sameQuestOffers,
@@ -76,7 +77,12 @@ function createQuestState(
     moodId: MoodId,
     state: QuestState,
     excludedOfferIds?: ReadonlySet<string>,
+    additionalAvoidedQuestIds?: ReadonlySet<string>,
   ) {
+    const avoidedQuestIds = new Set([
+      ...(state.recentQuestIdsByMoodId[moodId] ?? []),
+      ...(additionalAvoidedQuestIds ?? []),
+    ]);
     return generateQuestOffers(
       moodId,
       options.getLibraryGames(),
@@ -85,6 +91,7 @@ function createQuestState(
       undefined,
       undefined,
       state.poolPreferences,
+      avoidedQuestIds,
     );
   }
   return (set, get) => ({
@@ -98,6 +105,13 @@ function createQuestState(
       set({
         poolPreferences,
         offeredQuests,
+        recentQuestIdsByMoodId: state.selectedMoodId
+          ? recordRecentQuestIds(
+              state.recentQuestIdsByMoodId,
+              state.selectedMoodId,
+              offeredQuests.map((offer) => offer.questId),
+            )
+          : state.recentQuestIdsByMoodId,
         offerSetsByMoodId: state.selectedMoodId
           ? { [state.selectedMoodId]: offeredQuests }
           : {},
@@ -138,16 +152,12 @@ function createQuestState(
     repeatQuest: (questId) => {
       const state = get();
       const quest = QUEST_CORES_BY_ID[questId];
-      if (
-        state.currentSession ||
-        !quest ||
-        !state.stats.completionCountsByQuestId[questId]
-      )
-        return false;
-      const last = state.questProgressById[questId]?.lastCompletion;
-      if (!last && !quest.universal) return false;
+      const identity =
+        state.questProgressById[questId]?.lastCompletion ??
+        state.questProgressById[questId]?.seenOffer;
+      if (state.currentSession || !quest || !identity) return false;
       const now = options.now();
-      const moodId = last?.moodId ?? quest.moodIds[0];
+      const moodId = identity.moodId;
       // Keep the selected mood and its offers in sync, as for a normal selection.
       if (!get().selectMood(moodId)) return false;
       set({
@@ -156,7 +166,7 @@ function createQuestState(
           sessionId: options.createSessionId(),
           moodId,
           questId,
-          game: last?.game ?? null,
+          game: identity.game,
           revealedAt: now,
           startedAt: null,
           pausedAt: null,
@@ -213,6 +223,14 @@ function createQuestState(
         selectedMoodId: moodId,
         moodSelectedAt: expired ? now : state.moodSelectedAt,
         offeredQuests,
+        recentQuestIdsByMoodId:
+          cachedOffers !== undefined
+            ? state.recentQuestIdsByMoodId
+            : recordRecentQuestIds(
+                state.recentQuestIdsByMoodId,
+                moodId,
+                offeredQuests.map((offer) => offer.questId),
+              ),
         offerLibraryRevision: libraryRevision,
         offerSetsByMoodId: {
           ...offerSetsByMoodId,
@@ -248,6 +266,11 @@ function createQuestState(
       const offeredQuests = offersForMood(state.selectedMoodId, state);
       set({
         offeredQuests,
+        recentQuestIdsByMoodId: recordRecentQuestIds(
+          state.recentQuestIdsByMoodId,
+          state.selectedMoodId,
+          offeredQuests.map((offer) => offer.questId),
+        ),
         offerSetsByMoodId: {
           [state.selectedMoodId]: offeredQuests,
         },
@@ -276,6 +299,7 @@ function createQuestState(
         state.selectedMoodId,
         state,
         new Set(state.offeredQuests.map((offer) => offer.id)),
+        new Set(state.offeredQuests.map((offer) => offer.questId)),
       );
       if (sameQuestOffers(offeredQuests, state.offeredQuests)) {
         return false;
@@ -283,6 +307,11 @@ function createQuestState(
 
       set({
         offeredQuests,
+        recentQuestIdsByMoodId: recordRecentQuestIds(
+          state.recentQuestIdsByMoodId,
+          state.selectedMoodId,
+          offeredQuests.map((offer) => offer.questId),
+        ),
         offerSetsByMoodId: {
           ...state.offerSetsByMoodId,
           [state.selectedMoodId]: offeredQuests,
@@ -582,6 +611,7 @@ export function createQuestStore(
         moodSelectedAt,
         offeredQuests,
         offerSetsByMoodId,
+        recentQuestIdsByMoodId,
         offerLibraryRevision,
         currentSession,
         completedSessions,
@@ -594,6 +624,7 @@ export function createQuestStore(
         moodSelectedAt,
         offeredQuests,
         offerSetsByMoodId,
+        recentQuestIdsByMoodId,
         offerLibraryRevision,
         currentSession,
         completedSessions,

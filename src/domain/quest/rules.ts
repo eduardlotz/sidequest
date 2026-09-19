@@ -10,6 +10,7 @@ import {
   MOOD_RESET_MS,
   POINTS_DURATION_CAP_MS,
   POINTS_PER_MINUTE,
+  RECENT_QUEST_HISTORY_LIMIT,
   QUEST_OFFER_COUNT,
   QUEST_OFFER_ROLES,
   type QuestOfferRole,
@@ -29,6 +30,7 @@ export function createDefaultQuestState(): QuestState {
     moodSelectedAt: null,
     offeredQuests: [],
     offerSetsByMoodId: {},
+    recentQuestIdsByMoodId: {},
     offerLibraryRevision: 0,
     currentSession: null,
     completedSessions: [],
@@ -45,6 +47,7 @@ export function generateQuestOffers(
   roles: readonly QuestOfferRole[] = QUEST_OFFER_ROLES,
   excludedQuestIds: ReadonlySet<string> = new Set(),
   preferences: QuestPoolPreferences = defaultPoolPreferences(),
+  avoidedQuestIds: ReadonlySet<string> = new Set(),
 ): QuestOffer[] {
   const pools = questOfferPools(moodId, libraryGames, preferences);
   const selected: QuestOffer[] = [];
@@ -52,8 +55,13 @@ export function generateQuestOffers(
 
   function pick(pool: readonly QuestOffer[], role: QuestOfferRole) {
     const available = pool.filter((offer) => !selectedQuestIds.has(offer.questId));
+    const novel = available.filter(
+      (offer) =>
+        !excludedOfferIds.has(offer.id) &&
+        !avoidedQuestIds.has(offer.questId),
+    );
     const fresh = available.filter((offer) => !excludedOfferIds.has(offer.id));
-    const candidates = fresh.length ? fresh : available;
+    const candidates = novel.length ? novel : fresh.length ? fresh : available;
     // Choose a game first so large curated catalogues do not dominate the deal.
     const gameIds = Array.from(new Set(candidates.map((offer) => offer.game?.id ?? null)));
     const gameId = sampleWithoutReplacement(gameIds, 1, random)[0];
@@ -68,11 +76,44 @@ export function generateQuestOffers(
     return true;
   }
 
+  function pickLibrary() {
+    const available = pools.bound.filter(
+      (offer) => !selectedQuestIds.has(offer.questId),
+    );
+    const novel = available.filter(
+      (offer) =>
+        !excludedOfferIds.has(offer.id) &&
+        !avoidedQuestIds.has(offer.questId),
+    );
+    const fresh = available.filter((offer) => !excludedOfferIds.has(offer.id));
+    const candidates = novel.length ? novel : fresh.length ? fresh : available;
+    const gameIds = Array.from(
+      new Set(candidates.flatMap((offer) => (offer.game ? [offer.game.id] : []))),
+    );
+    const gameId = sampleWithoutReplacement(gameIds, 1, random)[0];
+    if (!gameId) return false;
+    const gameCandidates = candidates.filter(
+      (candidate) => candidate.game?.id === gameId,
+    );
+    const curatedCandidates = gameCandidates.filter(
+      (candidate) => QUEST_CORES_BY_ID[candidate.questId].curated,
+    );
+    const offer = sampleWithoutReplacement(
+      curatedCandidates.length ? curatedCandidates : gameCandidates,
+      1,
+      random,
+    )[0];
+    if (!offer) return false;
+    selected.push({ ...offer, role: "library" });
+    selectedQuestIds.add(offer.questId);
+    return true;
+  }
+
   for (const role of roles) {
     if (role === "library") {
-      // Authored for the selected game first; exact compatible templates second.
-      // An empty or incompatible library still receives three distinct choices.
-      pick(pools.curated, role) || pick(pools.bound, role) ||
+      // Choose a game first, then prefer its authored quests. This keeps larger
+      // curated catalogues from starving custom games and smaller libraries.
+      pickLibrary() ||
         pick(pools.directed, role) || pick(pools.inspiration, role);
     } else {
       pick(pools[role], role) || pick([...pools.directed, ...pools.inspiration, ...pools.bound], role);
@@ -252,7 +293,10 @@ export function rotateSessionOffer(
   session: QuestSession,
   libraryGames: readonly LibraryGame[],
   random: () => number,
-): Pick<QuestState, "offeredQuests" | "offerSetsByMoodId"> {
+): Pick<
+  QuestState,
+  "offeredQuests" | "offerSetsByMoodId" | "recentQuestIdsByMoodId"
+> {
   const storedOffers = state.offerSetsByMoodId[session.moodId];
   const moodOffers =
     storedOffers !== undefined
@@ -269,6 +313,11 @@ export function rotateSessionOffer(
     return {
       offeredQuests: state.offeredQuests,
       offerSetsByMoodId: state.offerSetsByMoodId,
+      recentQuestIdsByMoodId: recordRecentQuestIds(
+        state.recentQuestIdsByMoodId,
+        session.moodId,
+        [session.questId],
+      ),
     };
   }
 
@@ -284,11 +333,20 @@ export function rotateSessionOffer(
         .map((offer) => offer.questId),
     ),
     state.poolPreferences,
+    new Set([
+      ...(state.recentQuestIdsByMoodId[session.moodId] ?? []),
+      session.questId,
+    ]),
   )[0];
   if (!replacement) {
     return {
       offeredQuests: state.offeredQuests,
       offerSetsByMoodId: state.offerSetsByMoodId,
+      recentQuestIdsByMoodId: recordRecentQuestIds(
+        state.recentQuestIdsByMoodId,
+        session.moodId,
+        [session.questId],
+      ),
     };
   }
 
@@ -302,7 +360,27 @@ export function rotateSessionOffer(
       ...state.offerSetsByMoodId,
       [session.moodId]: moodOffers,
     },
+    recentQuestIdsByMoodId: recordRecentQuestIds(
+      state.recentQuestIdsByMoodId,
+      session.moodId,
+      [session.questId, replacement.questId],
+    ),
   };
+}
+
+export function recordRecentQuestIds(
+  recentByMood: QuestState["recentQuestIdsByMoodId"],
+  moodId: MoodId,
+  questIds: readonly string[],
+): QuestState["recentQuestIdsByMoodId"] {
+  const validIds = questIds.filter((id) => Object.hasOwn(QUEST_CORES_BY_ID, id));
+  if (!validIds.length) return recentByMood;
+  const incoming = new Set(validIds);
+  const next = [
+    ...(recentByMood[moodId] ?? []).filter((id) => !incoming.has(id)),
+    ...validIds,
+  ].slice(-RECENT_QUEST_HISTORY_LIMIT);
+  return { ...recentByMood, [moodId]: next };
 }
 
 export function cloneQuestStats(stats: QuestStats): QuestStats {

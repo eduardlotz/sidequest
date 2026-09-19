@@ -84,9 +84,13 @@ export function ArcDeck({
   const revealTimeoutRef = useRef<number | null>(null);
   const deckRef = useRef<HTMLDivElement>(null);
   const { isCompact } = usePlayLayout();
-  const richEffects = useMediaQuery(
+  const richEffectsAvailable = useMediaQuery(
     `${DESKTOP_VIEWPORT_QUERY} and (hover: hover) and (pointer: fine)`,
   );
+  const safariPerformanceMode =
+    typeof CSS !== "undefined" &&
+    CSS.supports("-webkit-touch-callout", "none");
+  const richEffects = richEffectsAvailable && !safariPerformanceMode;
   const [revealCards, setRevealCards] = useState(
     reduceMotion || !initialItemId,
   );

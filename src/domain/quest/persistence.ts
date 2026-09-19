@@ -13,6 +13,7 @@ import {
   DEFAULT_PROFILE,
   INITIAL_RED_ROPES,
   QUEST_OFFER_COUNT,
+  RECENT_QUEST_HISTORY_LIMIT,
   STORED_COMPLETION_LIMIT,
   STORE_VERSION,
   type AvatarTheme,
@@ -61,6 +62,9 @@ export function sanitizePersistedQuestState(
 
   const profile = profileFromUnknown(value.profile);
   const poolPreferences = sanitizePoolPreferences(value.poolPreferences);
+  const recentQuestIdsByMoodId = recentQuestIdsFromUnknown(
+    value.recentQuestIdsByMoodId,
+  );
   const completedSessions = completionsFromUnknown(value.completedSessions);
   const stats = statsFromUnknown(value.stats, completedSessions);
   const currentSession = sessionFromUnknown(value.currentSession);
@@ -90,6 +94,7 @@ export function sanitizePersistedQuestState(
       moodSelectedAt: null,
       offeredQuests: [],
       offerSetsByMoodId: {},
+      recentQuestIdsByMoodId,
       offerLibraryRevision: safeNonNegativeInteger(value.offerLibraryRevision),
       currentSession,
       completedSessions,
@@ -103,6 +108,7 @@ export function sanitizePersistedQuestState(
     random,
     libraryGames,
     poolPreferences,
+    recentQuestIdsByMoodId,
   );
   if (selectedMoodId && !offerSetsByMoodId[selectedMoodId]) {
     offerSetsByMoodId[selectedMoodId] = sanitizedOfferSet(
@@ -111,6 +117,7 @@ export function sanitizePersistedQuestState(
       random,
       libraryGames,
       poolPreferences,
+      new Set(recentQuestIdsByMoodId[selectedMoodId] ?? []),
     );
   }
   const offeredQuests = selectedMoodId
@@ -124,6 +131,7 @@ export function sanitizePersistedQuestState(
     moodSelectedAt,
     offeredQuests,
     offerSetsByMoodId,
+    recentQuestIdsByMoodId,
     offerLibraryRevision: safeNonNegativeInteger(value.offerLibraryRevision),
     currentSession,
     completedSessions,
@@ -137,6 +145,7 @@ function offerSetsFromUnknown(
   random: () => number,
   libraryGames: readonly LibraryGame[],
   preferences: QuestPoolPreferences,
+  recentQuestIdsByMoodId: Partial<Record<MoodId, string[]>>,
 ): Partial<Record<MoodId, QuestOffer[]>> {
   if (!isRecord(value)) return {};
   const offerSets: Partial<Record<MoodId, QuestOffer[]>> = {};
@@ -149,6 +158,7 @@ function offerSetsFromUnknown(
       random,
       libraryGames,
       preferences,
+      new Set(recentQuestIdsByMoodId[moodId] ?? []),
     );
   }
 
@@ -161,6 +171,7 @@ function sanitizedOfferSet(
   random: () => number,
   libraryGames: readonly LibraryGame[],
   preferences: QuestPoolPreferences,
+  avoidedQuestIds: ReadonlySet<string> = new Set(),
 ) {
   const offeredQuests = Array.isArray(value)
     ? value.flatMap((entry) => {
@@ -192,9 +203,30 @@ function sanitizedOfferSet(
       undefined,
       undefined,
       preferences,
+      avoidedQuestIds,
     );
   }
   return uniqueOffers.slice(0, QUEST_OFFER_COUNT);
+}
+
+function recentQuestIdsFromUnknown(
+  value: unknown,
+): Partial<Record<MoodId, string[]>> {
+  if (!isRecord(value)) return {};
+  const result: Partial<Record<MoodId, string[]>> = {};
+  for (const [moodId, storedIds] of Object.entries(value)) {
+    if (!isMoodId(moodId) || !Array.isArray(storedIds)) continue;
+    const ids = Array.from(
+      new Set(
+        storedIds.filter(
+          (id): id is string =>
+            typeof id === "string" && Object.hasOwn(QUEST_CORES_BY_ID, id),
+        ),
+      ),
+    ).slice(-RECENT_QUEST_HISTORY_LIMIT);
+    if (ids.length) result[moodId] = ids;
+  }
+  return result;
 }
 
 function questOfferFromUnknown(

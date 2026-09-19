@@ -23,13 +23,12 @@ import {
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { Drawer } from "vaul";
-import {
-  ArrowLeftIcon,
-  CaretDownIcon,
-  HeartIcon,
-  MagnifyingGlassIcon,
-} from "@phosphor-icons/react";
+import { HeartIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { QUESTS } from "../../data/quests";
+import type { MoodId } from "../../data/moods";
+import type { GameGenreId } from "../../data/gameGenres";
+import type { QuestTagId } from "../../data/questTraits";
+import { QUEST_POOL_TRAITS } from "../../data/questPoolTraits";
 import { getMoodAccentStyle } from "../../data/questColors";
 import { hydrateQuest } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
@@ -58,6 +57,10 @@ import buttonStyles from "../../shared/ui/SolidButton/SolidButton.module.css";
 import { InfoText } from "../../shared/ui/InfoText/InfoText";
 import { ChevronLeftIcon, CoinIcon } from "../../shared/ui/Icons/Icons";
 import { visuallyHiddenClassName } from "../../shared/ui/VisuallyHidden/VisuallyHidden";
+import {
+  QuestGalleryFilters,
+  type GalleryGameOption,
+} from "./QuestGalleryFilters";
 import styles from "./QuestGallery.module.css";
 
 const GALLERY_FILTERS = [
@@ -67,17 +70,24 @@ const GALLERY_FILTERS = [
   "completed",
   "uncompleted",
 ] as const;
-type Filter = (typeof GALLERY_FILTERS)[number];
+export type GalleryFilter = (typeof GALLERY_FILTERS)[number];
 export type QuestGalleryView = {
-  filter: Filter;
+  filter: GalleryFilter;
   query: string;
   focusedId: string | null;
+  moodIds: MoodId[];
+  genreIds: GameGenreId[];
+  gameId: string | null;
+  tagIds: QuestTagId[];
 };
-const INFO_SNAP_POINTS = [0.5];
+// const INFO_SNAP_POINTS = [0.24, 0.55, 1];
+const INFO_SNAP_POINTS = [0.52, 1];
+const INFO_DEFAULT_SNAP_POINT = INFO_SNAP_POINTS[0];
 const DRAG_SLOP = 8;
-const DISMISS_DISTANCE = 96;
-const DISMISS_VELOCITY = 850;
+const FOCUS_SWIPE_DISTANCE = 64;
+const FOCUS_SWIPE_VELOCITY = 0.45;
 const WHEEL_SPEED = 1.35;
+const MOMENTUM_PROJECTION_MS = 240;
 const RENDER_CHUNK_SIZE = 3;
 const RENDER_OVERSCAN = 2;
 
@@ -141,6 +151,9 @@ export function QuestGallery({
     x: number;
     y: number;
     position: number;
+    lastX: number;
+    lastAt: number;
+    velocityX: number;
     moved: boolean;
     axis: "x" | "y" | null;
     dismissing: boolean;
@@ -150,15 +163,26 @@ export function QuestGallery({
   const dismissX = useMotionValue(0);
   const dismissY = useMotionValue(0);
   const dismissAnimations = useRef<ReturnType<typeof animate>[]>([]);
+  const positionAnimation = useRef<ReturnType<typeof animate> | null>(null);
   const filtering = useMotionValue(false);
   const filterFrameRef = useRef<number | null>(null);
+  const wheelMomentumRef = useRef<{
+    lastAt: number;
+    velocity: number;
+    timeout: number | null;
+  }>({ lastAt: 0, velocity: 0, timeout: null });
   const [snapPoint, setSnapPoint] = useState<number | string | null>(
-    INFO_SNAP_POINTS[0],
+    INFO_DEFAULT_SNAP_POINT,
   );
 
   const stopDismissAnimation = useCallback(() => {
     dismissAnimations.current.forEach((controls) => controls.stop());
     dismissAnimations.current = [];
+  }, []);
+
+  const stopPositionAnimation = useCallback(() => {
+    positionAnimation.current?.stop();
+    positionAnimation.current = null;
   }, []);
 
   const resetDismissOffset = useCallback(() => {
@@ -216,11 +240,23 @@ export function QuestGallery({
       catalog.filter((quest) => {
         const known = progress[quest.id];
         const completed = (counts[quest.id] ?? 0) > 0;
+        const genres =
+          quest.customGameCompatibility?.genreIds ??
+          QUEST_POOL_TRAITS[quest.id]?.genreIds ??
+          [];
         if (
           (filter === "found" && !known) ||
           (filter === "favorites" && !known?.favorite) ||
           (filter === "completed" && !completed) ||
-          (filter === "uncompleted" && completed)
+          (filter === "uncompleted" && completed) ||
+          (view.moodIds.length > 0 &&
+            !quest.moodIds.some((id) => view.moodIds.includes(id))) ||
+          (view.genreIds.length > 0 &&
+            genres.length > 0 &&
+            !genres.some((id) => view.genreIds.includes(id))) ||
+          (view.gameId !== null && quest.game?.id !== view.gameId) ||
+          (view.tagIds.length > 0 &&
+            !quest.tags.some((id) => view.tagIds.includes(id)))
         )
           return false;
         return (
@@ -233,8 +269,18 @@ export function QuestGallery({
           )
         );
       }),
-    [catalog, counts, filter, language, normalizedQuery, progress],
+    [catalog, counts, filter, language, normalizedQuery, progress, view],
   );
+
+  const gameOptions = useMemo<GalleryGameOption[]>(() => {
+    const games = new Map<string, GalleryGameOption>();
+    for (const quest of catalog) {
+      if (quest.game) games.set(quest.game.id, quest.game);
+    }
+    return [...games.values()].sort((a, b) =>
+      a.name.localeCompare(b.name, language),
+    );
+  }, [catalog, language]);
 
   const cardWidth = Math.min(desktop ? 300 : width * 0.76, 300);
   const step = cardWidth * 0.76;
@@ -270,10 +316,9 @@ export function QuestGallery({
       index: firstRenderedIndex + offset,
     }));
 
-  function changeFilters(
-    update: Partial<Pick<QuestGalleryView, "filter" | "query">>,
-  ) {
+  function changeFilters(update: Partial<Omit<QuestGalleryView, "focusedId">>) {
     stopFilterScroll();
+    stopPositionAnimation();
     filtering.set(true);
     resetDismissOffset();
 
@@ -286,9 +331,41 @@ export function QuestGallery({
     changeFilters({ query: nextQuery });
   }
 
-  function setFilter(nextFilter: Filter) {
-    changeFilters({ filter: nextFilter });
+  function applyFilters(
+    filters: Omit<QuestGalleryView, "query" | "focusedId">,
+  ) {
+    changeFilters(filters);
   }
+
+  const clampPosition = useCallback(
+    (value: number) => Math.max(0, Math.min(maxPosition, value)),
+    [maxPosition],
+  );
+
+  const continueWithMomentum = useCallback(
+    (velocityPxPerMs: number) => {
+      stopPositionAnimation();
+      const target = clampPosition(
+        position.get() + velocityPxPerMs * MOMENTUM_PROJECTION_MS,
+      );
+      if (reduceMotion) {
+        position.jump(target);
+        return;
+      }
+      positionAnimation.current = animate(position, target, {
+        type: "spring",
+        stiffness: 170,
+        damping: 25,
+        mass: 0.82,
+        restDelta: 0.5,
+        restSpeed: 4,
+        onComplete: () => {
+          positionAnimation.current = null;
+        },
+      });
+    },
+    [clampPosition, position, reduceMotion, stopPositionAnimation],
+  );
 
   useLayoutEffect(() => {
     if (filterReset.sequence === 0) return;
@@ -315,7 +392,11 @@ export function QuestGallery({
       if (filterFrameRef.current !== null) {
         window.cancelAnimationFrame(filterFrameRef.current);
       }
+      if (wheelMomentumRef.current.timeout !== null) {
+        window.clearTimeout(wheelMomentumRef.current.timeout);
+      }
       dismissAnimations.current.forEach((controls) => controls.stop());
+      positionAnimation.current?.stop();
     },
     [],
   );
@@ -353,13 +434,20 @@ export function QuestGallery({
       const pixels =
         delta *
         (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? width : 1);
-
-      position.set(
-        Math.max(
-          0,
-          Math.min(maxPosition, position.get() + pixels * WHEEL_SPEED),
-        ),
-      );
+      const now = performance.now();
+      const elapsed = Math.max(8, now - wheelMomentumRef.current.lastAt);
+      const movement = pixels * WHEEL_SPEED;
+      stopPositionAnimation();
+      position.set(clampPosition(position.get() + movement));
+      wheelMomentumRef.current.lastAt = now;
+      wheelMomentumRef.current.velocity = movement / elapsed;
+      if (wheelMomentumRef.current.timeout !== null) {
+        window.clearTimeout(wheelMomentumRef.current.timeout);
+      }
+      wheelMomentumRef.current.timeout = window.setTimeout(() => {
+        wheelMomentumRef.current.timeout = null;
+        continueWithMomentum(wheelMomentumRef.current.velocity);
+      }, 72);
     };
 
     element.addEventListener("wheel", wheel, { passive: false });
@@ -368,10 +456,12 @@ export function QuestGallery({
   }, [
     focusedId,
     isPresent,
-    maxPosition,
+    clampPosition,
+    continueWithMomentum,
     position,
     returning,
     selectedId,
+    stopPositionAnimation,
     width,
   ]);
 
@@ -380,8 +470,14 @@ export function QuestGallery({
   }, [focusedId, focusedIndex]);
 
   useEffect(() => {
-    if (focusedId) setSnapPoint(INFO_SNAP_POINTS[0]);
+    if (focusedId) setSnapPoint(INFO_DEFAULT_SNAP_POINT);
   }, [focusedId]);
+
+  useEffect(() => {
+    if (isPresent) return;
+    setFocusedId(null);
+    stopPositionAnimation();
+  }, [isPresent, setFocusedId, stopPositionAnimation]);
 
   useEffect(() => {
     if (!focusedId || !isPresent || returning || selectedId) return;
@@ -454,7 +550,10 @@ export function QuestGallery({
           className={styles.back}
           variant="highlighted"
           size="medium"
-          onClick={onClose}
+          onClick={() => {
+            setFocusedId(null);
+            onClose();
+          }}
           iconLeft={<ChevronLeftIcon />}
         >
           {t("ui.gallery.back")}
@@ -478,35 +577,18 @@ export function QuestGallery({
               }}
             />
           </label>
-          <label
-            className={`${buttonStyles.button} ${styles.filterControl}`}
-            data-size="medium"
-            data-variant="secondary"
-          >
-            <span aria-hidden>{t(`ui.gallery.${filter}`)}</span>
-            <CaretDownIcon aria-hidden weight="bold" />
-            <select
-              aria-label={t("ui.gallery.filter")}
-              value={filter}
-              onChange={(event) => {
-                setFilter(event.target.value as Filter);
-                setFocusedId(null);
-              }}
-            >
-              {GALLERY_FILTERS.map((value) => (
-                <option value={value} key={value}>
-                  {t(`ui.gallery.${value}`)}
-                </option>
-              ))}
-            </select>
-          </label>
+          <QuestGalleryFilters
+            games={gameOptions}
+            view={view}
+            onApply={applyFilters}
+          />
         </div>
       </header>
       <div
         className={styles.viewport}
         ref={viewport}
         style={{
-          touchAction: focusedId ? "none" : "pan-y",
+          touchAction: "pan-y",
         }}
         tabIndex={0}
         aria-label={t("ui.gallery.browse")}
@@ -540,6 +622,11 @@ export function QuestGallery({
           if (event.button !== 0) return;
           stopFilterScroll();
           stopDismissAnimation();
+          stopPositionAnimation();
+          if (wheelMomentumRef.current.timeout !== null) {
+            window.clearTimeout(wheelMomentumRef.current.timeout);
+            wheelMomentumRef.current.timeout = null;
+          }
 
           suppressClick.current = false;
 
@@ -562,9 +649,12 @@ export function QuestGallery({
             x: event.clientX,
             y: event.clientY,
             position: position.get(),
+            lastX: event.clientX,
+            lastAt: performance.now(),
+            velocityX: 0,
             moved: false,
             axis: null,
-            dismissing: Boolean(focusedCard),
+            dismissing: Boolean(focusedId && focusedCard),
           };
         }}
         onPointerMove={(event) => {
@@ -574,11 +664,19 @@ export function QuestGallery({
           const dx = event.clientX - start.x;
           const dy = event.clientY - start.y;
           const distance = Math.hypot(dx, dy);
+          const now = performance.now();
+          const elapsed = Math.max(1, now - start.lastAt);
+          start.velocityX = (event.clientX - start.lastX) / elapsed;
+          start.lastX = event.clientX;
+          start.lastAt = now;
 
           if (start.dismissing) {
-            if (distance < DRAG_SLOP) return;
+            if (!start.axis && distance >= DRAG_SLOP) {
+              start.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+              start.moved = true;
+            }
+            if (start.axis !== "x") return;
 
-            start.moved = true;
             suppressClick.current = true;
 
             if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
@@ -586,18 +684,7 @@ export function QuestGallery({
             }
 
             dismissX.set(dx);
-            dismissY.set(dy);
-
-            if (distance >= DISMISS_DISTANCE) {
-              drag.current = null;
-
-              if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-                event.currentTarget.releasePointerCapture(event.pointerId);
-              }
-
-              setFocusedId(null);
-              resetDismissOffset();
-            }
+            dismissY.set(0);
 
             return;
           }
@@ -621,7 +708,7 @@ export function QuestGallery({
             event.currentTarget.setPointerCapture(event.pointerId);
           }
 
-          position.set(Math.max(0, Math.min(maxPosition, start.position - dx)));
+          position.set(clampPosition(start.position - dx));
         }}
         onPointerUp={(event) => {
           const start = drag.current;
@@ -631,19 +718,25 @@ export function QuestGallery({
             event.currentTarget.releasePointerCapture(event.pointerId);
           }
 
-          if (!start?.dismissing) return;
+          if (!start) return;
 
-          const distance = Math.hypot(dismissX.get(), dismissY.get());
-          const velocity = Math.hypot(
-            dismissX.getVelocity(),
-            dismissY.getVelocity(),
-          );
-
-          if (distance >= DISMISS_DISTANCE || velocity >= DISMISS_VELOCITY) {
-            setFocusedId(null);
+          if (start.dismissing) {
+            const dx = dismissX.get();
+            if (
+              start.axis === "x" &&
+              (Math.abs(dx) >= FOCUS_SWIPE_DISTANCE ||
+                Math.abs(start.velocityX) >= FOCUS_SWIPE_VELOCITY)
+            ) {
+              const nextIndex = Math.max(
+                0,
+                Math.min(items.length - 1, focusedIndex + (dx < 0 ? 1 : -1)),
+              );
+              setFocusedId(items[nextIndex]?.id ?? null);
+            }
+            resetDismissOffset();
+          } else if (start.axis === "x") {
+            continueWithMomentum(-start.velocityX);
           }
-
-          resetDismissOffset();
         }}
         onPointerCancel={() => {
           drag.current = null;
@@ -711,7 +804,7 @@ export function QuestGallery({
           )}
         </AnimatePresence>
       )}
-      {!desktop && (
+      {!desktop && isPresent && (
         <Drawer.Root
           open={isPresent && selectedId === null && Boolean(focusedQuest)}
           onOpenChange={(open) => {
@@ -722,7 +815,7 @@ export function QuestGallery({
             }
           }}
           closeThreshold={0.2}
-          modal={true}
+          modal={false}
           snapPoints={INFO_SNAP_POINTS}
           activeSnapPoint={snapPoint}
           setActiveSnapPoint={setSnapPoint}
@@ -1096,10 +1189,10 @@ function QuestInfo({
         <SolidButton
           size="medium"
           variant="highlighted"
-          disabled={!count || active}
+          disabled={!progress || active}
           onClick={onRepeat}
         >
-          {t("ui.gallery.repeat")}
+          {t(count > 0 ? "ui.gallery.repeat" : "ui.gallery.start")}
         </SolidButton>
       </div>
       {active && <InfoText>{t("ui.gallery.activeQuest")}</InfoText>}
@@ -1132,9 +1225,6 @@ function QuestInfo({
             </Metric>
           )}
         </dl>
-      )}
-      {!count && progress && (
-        <InfoText>{t("ui.gallery.unlockRepeat")}</InfoText>
       )}
     </div>
   );

@@ -21,10 +21,10 @@ export const englishUi = {
   about: {
     title: "Welcome to sidesidequest.",
     description: "A small starting point for people with too many video games.",
-    stepsHeading: "From choice to play in three steps",
-    step1: "Choose how you want to feel while playing",
-    step2: "Pick one of three quests for your library or any game",
-    step3: "Start the timer, finish the quest, and collect coins",
+    stepsHeading: "How it works",
+    step1: "Choose a mood that fits",
+    step2: "Pick a quest and launch the matching video game",
+    step3: "Start the timer and complete the quest in your game.",
     mismatchHeading: "The quest isn't right for you?",
     mismatchBody:
       "Before starting, return to the cards for free. Once the timer is running, cut a red rope to cancel the quest.",
