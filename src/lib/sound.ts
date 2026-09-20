@@ -8,7 +8,16 @@ import { core, organic } from "../../.web-kits";
 
 const SOUND_ENABLED_STORAGE_KEY = "sidequest.sound.enabled.v1";
 const HOVER_GAP_MS = 110;
-const MASTER_VOLUME = 1.3;
+const MASTER_VOLUME = 1.2;
+
+// TODO: check if this is really a fix or hallucination
+
+// Keep the shared bus at unity. Values above 1 amplify the signal past the
+// Web Audio headroom and can be clipped or perceived differently by browsers.
+// const AUDIO_CONTEXT_OPTIONS = {
+//   latencyHint: "interactive" as const,
+//   sampleRate: 44_100,
+// };
 const SOUND_COOLDOWN_MS: Partial<Record<SoundName, number>> = {
   moodStep: 110,
 };
@@ -108,14 +117,14 @@ const playTimerGrab = defineSound(core.select);
 const playButtonClick = defineSound(minimalClick);
 const playCompletion = defineSound(organic.notification);
 const playMoodStep = defineSound(core.hover);
-const playNewCards = defineSound(organic.notification);
+const playNewCards = defineSound(core.blur);
 let nextCoinHit = 0;
 
 const sounds: Record<SoundName, () => unknown> = {
   accordionClose: defineSound(core.collapse),
   accordionOpen: defineSound(core.expand),
   buttonClick: playButtonClick,
-  buttonHover: defineSound(core.hover),
+  buttonHover: defineSound(core.blur),
   cardHover: defineSound(core.hover),
   cardSelect: defineSound(bloom),
   coinHit: () => {
@@ -133,7 +142,7 @@ const sounds: Record<SoundName, () => unknown> = {
   modalClose: defineSound(core.modalClose),
   modalOpen: defineSound(core.modalOpen),
   moodStep: () => playMoodStep({ volume: 0.15 }),
-  newCards: () => playNewCards({ volume: 0.22 }),
+  newCards: () => playNewCards({ volume: 0.5 }),
   slide: defineSound(core.slide),
   tabSwitch: defineSound(core.tabSwitch),
   timerGrab: () => playTimerGrab({ volume: 0.5 }),

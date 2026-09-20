@@ -1,5 +1,5 @@
 import { animate, motion } from "motion/react";
-import { useEffect, useState, type RefObject } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { Logo } from "../assets/logo";
@@ -19,6 +19,7 @@ import { AboutPanel } from "./AboutPanel";
 import type { CoinImpact } from "../features/active-quest/components/FlyingCoin/FlyingCoin";
 import type { ThemeChoice } from "../lib/theme";
 import { BookBookmarkIcon, InfoIcon } from "@phosphor-icons/react";
+import { FullscreenDialog } from "../shared/ui/FullscreenDialog/FullscreenDialog";
 
 type Props = {
   coinImpact: CoinImpact | null;
@@ -56,6 +57,8 @@ export function AppHeader({
     );
   const [mobileDrawerContainer, setMobileDrawerContainer] =
     useState<HTMLDivElement | null>(null);
+  const [informationOpen, setInformationOpen] = useState(false);
+  const informationTriggerRef = useRef<HTMLButtonElement>(null);
   const [brandRotation, setBrandRotation] = useState(0);
   const totalCoinsCollected = stats.totalCoinsCollected;
   const formattedPoints = formatScore(displayedCoins, language);
@@ -96,27 +99,18 @@ export function AppHeader({
           }
         >
           <div className={styles.navActionGroup}>
-            <ResponsiveDrawer
-              desktopDirection="left"
-              mobileContainer={mobileDrawerContainer}
-              variant="about"
-              trigger={
-                <SolidButton
-                  className={styles.navIconButton}
-                  iconLeft={<InfoIcon weight="bold" />}
-                  aria-label={t("ui.nav.about")}
-                  size="medium"
-                  type="button"
-                  variant="secondary"
-                >
-                  <span className={styles.navButtonLabel}>
-                    {t("ui.nav.about")}
-                  </span>
-                </SolidButton>
-              }
+            <SolidButton
+              ref={informationTriggerRef}
+              className={styles.navIconButton}
+              iconLeft={<InfoIcon weight="bold" />}
+              aria-label={t("ui.nav.about")}
+              size="medium"
+              type="button"
+              variant="secondary"
+              onClick={() => setInformationOpen(true)}
             >
-              <AboutPanel reduceMotion={reduceMotion} />
-            </ResponsiveDrawer>
+              <span className={styles.navButtonLabel}>{t("ui.nav.about")}</span>
+            </SolidButton>
             <SolidButton
               className={styles.navIconButton}
               iconLeft={<BookBookmarkIcon weight="bold" />}
@@ -232,6 +226,16 @@ export function AppHeader({
         </motion.div>
       </button>
       <ResponsiveDrawerContainer setContainer={setMobileDrawerContainer} />
+      <FullscreenDialog
+        closeLabel={t("ui.library.closeInformation")}
+        label={t("ui.about.title")}
+        onOpenChange={setInformationOpen}
+        open={informationOpen}
+        reduceMotion={reduceMotion}
+        triggerRef={informationTriggerRef}
+      >
+        <AboutPanel reduceMotion={reduceMotion} />
+      </FullscreenDialog>
     </>
   );
 }

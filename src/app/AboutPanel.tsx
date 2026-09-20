@@ -1,48 +1,20 @@
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Drawer } from "vaul";
 import { WordmarkLogo } from "../assets/wordmark";
 import { TiltedElement } from "../shared/ui/TiltedElement/TiltedElement";
 import styles from "./AboutPanel.module.css";
 
 type Props = {
-  onPageChange?: () => void;
-  presentation?: "drawer" | "page";
   reduceMotion: boolean;
 };
 
-export function AboutPanel({
-  onPageChange,
-  presentation = "drawer",
-  reduceMotion,
-}: Props) {
+export function AboutPanel({ reduceMotion }: Props) {
   const { t } = useTranslation();
 
-  useEffect(() => {
-    if (presentation === "page") onPageChange?.();
-  }, [onPageChange, presentation]);
-
-  const title = <h2 id="about-title">{t("ui.about.title")}</h2>;
-  const description = <p>{t("ui.about.description")}</p>;
-
   return (
-    <section
-      className={styles.aboutContent}
-      data-presentation={presentation}
-      aria-labelledby="about-title"
-    >
+    <section className={styles.aboutContent} aria-labelledby="about-title">
       <header className={styles.aboutIntro}>
-        {presentation === "drawer" ? (
-          <>
-            <Drawer.Title asChild>{title}</Drawer.Title>
-            <Drawer.Description asChild>{description}</Drawer.Description>
-          </>
-        ) : (
-          <>
-            {title}
-            {description}
-          </>
-        )}
+        <h2 id="about-title">{t("ui.about.title")}</h2>
+        <p>{t("ui.about.description")}</p>
       </header>
 
       <div className={styles.aboutBody}>

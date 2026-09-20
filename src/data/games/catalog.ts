@@ -7,6 +7,23 @@ function game(
   compatibleQuestIds: readonly string[],
   installments: CuratedGameDefinition["installments"] = [],
 ): CuratedGameDefinition {
+  const exclusiveQuests = exclusiveQuestsByGame[id];
+  const listedInstallmentIds = new Set(installments.map((installment) => installment.id));
+  const questInstallmentIds = new Set(
+    exclusiveQuests.flatMap((quest) => quest.curated?.installmentIds ?? []),
+  );
+
+  for (const installmentId of questInstallmentIds) {
+    if (!listedInstallmentIds.has(installmentId)) {
+      throw new Error(`${id} is missing quested installment ${installmentId}`);
+    }
+  }
+  for (const installmentId of listedInstallmentIds) {
+    if (!questInstallmentIds.has(installmentId)) {
+      throw new Error(`${id} lists installment ${installmentId} without a dedicated quest`);
+    }
+  }
+
   return {
     id,
     name,
@@ -14,7 +31,7 @@ function game(
     isSeries: installments.length > 0,
     installments,
     compatibleQuestIds,
-    exclusiveQuestIds: exclusiveQuestsByGame[id].map((quest) => quest.id),
+    exclusiveQuestIds: exclusiveQuests.map((quest) => quest.id),
   };
 }
 
@@ -122,8 +139,8 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
       "loadout-opposite-range",
     ],
     [
-      { id: "rdr-1", name: "1" },
-      { id: "rdr-2", name: "2" },
+      { id: "rdr-1", name: "RDR1" },
+      { id: "rdr-2", name: "RDR2" },
     ],
   ),
   game(
@@ -204,8 +221,8 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
       "a-little-walk",
     ],
     [
-      { id: "skate-3", name: "3" },
-      { id: "skate-2025", name: "2025" },
+      { id: "skate-3", name: "Skate 3" },
+      { id: "skate-2025", name: "skate." },
     ],
   ),
   game(
@@ -245,9 +262,10 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
     ],
     [
       { id: "fc-primal", name: "Primal" },
-      { id: "fc-3", name: "3" },
-      { id: "fc-5", name: "5" },
-      { id: "fc-6", name: "6" },
+      { id: "fc-3", name: "FC3" },
+      { id: "fc-4", name: "FC4" },
+      { id: "fc-5", name: "FC5" },
+      { id: "fc-6", name: "FC6" },
     ],
   ),
   game(
@@ -266,8 +284,8 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
     ],
     [
       { id: "gta-sa", name: "San Andreas" },
-      { id: "gta-iv", name: "IV" },
-      { id: "gta-v", name: "V" },
+      { id: "gta-iv", name: "GTA IV" },
+      { id: "gta-v", name: "GTA V" },
     ],
   ),
   game(
@@ -321,10 +339,11 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
       "squad-call-one-plan",
     ],
     [
-      { id: "bf-4", name: "4" },
-      { id: "bf-1", name: "1" },
-      { id: "bf-v", name: "V" },
-      { id: "bf-2042", name: "2042" },
+      { id: "bf-4", name: "BF4" },
+      { id: "bf-1", name: "BF1" },
+      { id: "bf-v", name: "BFV" },
+      { id: "bf-2042", name: "BF2042" },
+      { id: "bf-6", name: "BF6" },
     ],
   ),
   game(
@@ -345,9 +364,9 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
       "loadout-opposite-range",
     ],
     [
-      { id: "hitman-1", name: "1" },
-      { id: "hitman-2", name: "2" },
-      { id: "hitman-3", name: "3" },
+      { id: "hitman-1", name: "HITMAN 1" },
+      { id: "hitman-2", name: "HITMAN 2" },
+      { id: "hitman-3", name: "HITMAN 3" },
     ],
   ),
 ];

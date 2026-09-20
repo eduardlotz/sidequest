@@ -17,7 +17,6 @@ import { VisuallyHidden } from "../../../../shared/ui/VisuallyHidden/VisuallyHid
 import styles from "./QuestOfferDeck.module.css";
 import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
 import cardStyles from "../../../../shared/quest-card/QuestCard/QuestCard.module.css";
-import { QuestCardBack } from "../../../../shared/quest-card/QuestCardBack/QuestCardBack";
 import { plainObjectiveText } from "../../../../shared/quest-card/QuestObjectiveText/QuestObjectiveText";
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
 import { usePlayLayout } from "../../usePlayLayout";
@@ -68,37 +67,52 @@ type CardProps = {
 
 const CARD_ROTATIONS = [-9, 0, 9];
 const CARD_FADE_EASE = SELECTION_HANDOFF_EASE;
-const MOOD_QUEST_EASE = [0.16, 1, 0.3, 1] as const;
-const MOOD_QUEST_DURATION = 0.56;
-const CARD_POSITION_TRANSITION = {
-  type: "spring" as const,
-  stiffness: 230,
-  damping: 25,
-  mass: 0.9,
-  restDelta: 0.001,
-  restSpeed: 0.001,
-};
-const MOOD_HANDOFF_TRANSITION = {
-  duration: MOOD_QUEST_DURATION,
-  ease: MOOD_QUEST_EASE,
-};
-const CARD_CENTER_STAGGER_SECONDS = 0.04;
+export const QUEST_CARD_PRESENCE_DURATION = 0.42;
 const NEW_CARDS_STAGGER_SECONDS = 0.1;
 const CARD_REST_POSE = {
-  filter: "none",
+  filter: "blur(0px)",
   opacity: 1,
   x: 0,
   y: 0,
   scale: 1,
 };
 
-const QUEST_SIBLING_HIDDEN = {
-  filter: "none",
+const CARD_ENTER_POSE = {
+  filter: "blur(0px)",
   opacity: 0,
   x: 0,
   y: 0,
-  scale: 1,
+  scale: 0.94,
 };
+
+function siblingExitPose(
+  index: number,
+  stackPosition: CardProps["stackPosition"],
+  isCompact: boolean,
+  reduceMotion: boolean,
+) {
+  return {
+    filter: reduceMotion ? "none" : "blur(8px)",
+    opacity: 0,
+    x:
+      reduceMotion || isCompact
+        ? 0
+        : index === 0
+          ? 64
+          : index === 2
+            ? -64
+            : 0,
+    y:
+      reduceMotion || !isCompact
+        ? 0
+        : stackPosition === "middle"
+          ? -17
+          : stackPosition === "back"
+            ? -33
+            : 0,
+    scale: reduceMotion ? 1 : 0.94,
+  };
+}
 
 export function QuestOfferDeck({
   items,
@@ -190,8 +204,10 @@ export function QuestOfferDeck({
       return;
     }
     selectionFrameRef.current = window.requestAnimationFrame(() => {
-      selectionFrameRef.current = null;
-      reveal();
+      selectionFrameRef.current = window.requestAnimationFrame(() => {
+        selectionFrameRef.current = null;
+        reveal();
+      });
     });
   }
 
@@ -358,96 +374,25 @@ function QuestOfferCard({
     if (selectionStarted) resetTilt();
   }, [resetTilt, selectionStarted]);
 
-  const centerOffsetX = isCompact
-    ? 0
-    : index === 0
-      ? -70
-      : index === 2
-        ? 70
-        : 0;
-  // const moodHandoffX = isCompact ? 0 : index === 0 ? 70 : index === 2 ? -70 : 0;
-  const moodHandoffX = index === 0 ? 50 : index === 2 ? -50 : 0;
-  const moodHandoffY = index === 1 ? 0 : 30;
-  const moodHandoffPose = {
-    filter: "none",
-    opacity: 0,
-    x: moodHandoffX,
-    // x: 0,
-    y: 0,
-    // y: moodHandoffY,
-    scale: reduceMotion ? 1 : 0.95,
-  };
-  const centerStaggerDelay = isCompact
-    ? stackPosition === "front"
-      ? 0
-      : stackPosition === "middle"
-        ? CARD_CENTER_STAGGER_SECONDS
-        : CARD_CENTER_STAGGER_SECONDS * 2
-    : Math.abs(index - 1) * CARD_CENTER_STAGGER_SECONDS;
-  const moodHandoffActive =
-    !selectionStarted && (entryMotion === "shared" || returningToMoods);
-  const returningFromActive =
-    entryMotion === "return" && !selectionStarted && !returningToMoods;
-  const positionTransition = returningFromActive
-    ? CARD_RETURN_TRANSITION
-    : moodHandoffActive
-      ? MOOD_HANDOFF_TRANSITION
-      : CARD_POSITION_TRANSITION;
-  const positionDelay =
-    selectionStarted || entryMotion === "return"
-      ? 0
-      : moodHandoffActive
-        ? centerStaggerDelay
-        : index * 0.05;
+  const hiddenSiblingPose = siblingExitPose(
+    index,
+    stackPosition,
+    isCompact,
+    reduceMotion,
+  );
+  const exitingSibling =
+    (selectionStarted && !selected) || returningToMoods;
 
   return (
     <motion.div
       className={styles.previewCardProjection}
-      data-mood-handoff={moodHandoffActive || undefined}
+      data-entry-motion={entryMotion}
       data-position={index === 0 ? "left" : index === 2 ? "right" : "center"}
       data-selected={selected || undefined}
       data-stack-position={stackPosition}
       layout
       layoutId={questCardLayoutId(layoutSessionId, item.offerId)}
       layoutCrossfade={false}
-      initial={
-        reduceMotion || newCardsSequence > 0
-          ? false
-          : entryMotion === "return"
-            ? returnPose
-              ? false
-              : QUEST_SIBLING_HIDDEN
-            : entryMotion === "shared"
-              ? moodHandoffPose
-              : {
-                  filter: "blur(8px)",
-                  opacity: 0,
-                  x: centerOffsetX,
-                  y: 50,
-                  scale: 0.9,
-                }
-      }
-      animate={
-        selectionStarted && !selected
-          ? QUEST_SIBLING_HIDDEN
-          : returningToMoods
-            ? moodHandoffPose
-            : CARD_REST_POSE
-      }
-      exit={
-        returningToMoods
-          ? moodHandoffPose
-          : selectionStarted
-            ? selected
-              ? {
-                  filter: "blur(8px)",
-                  opacity: 0,
-                  scale: 1,
-                  transition: { opacity: { duration: 0 } },
-                }
-              : QUEST_SIBLING_HIDDEN
-            : CARD_REST_POSE
-      }
       transition={
         reduceMotion
           ? { duration: 0 }
@@ -455,175 +400,185 @@ function QuestOfferCard({
               layout: returnPose
                 ? CARD_RETURN_LAYOUT_TRANSITION
                 : CARD_LAYOUT_TRANSITION,
-              x: {
-                ...positionTransition,
-                delay: positionDelay,
-              },
-              y: {
-                ...positionTransition,
-                delay: positionDelay,
-              },
-              scale: {
-                ...positionTransition,
-                delay: positionDelay,
-              },
-              opacity: {
-                duration:
-                  selectionStarted && !selected
-                    ? 0.42
-                    : returningFromActive
-                      ? 0.52
-                      : moodHandoffActive
-                        ? MOOD_QUEST_DURATION
-                        : 0.3,
-                ease: moodHandoffActive ? MOOD_QUEST_EASE : CARD_FADE_EASE,
-                delay: positionDelay,
-              },
-              filter: {
-                duration: 0,
-                ease: CARD_FADE_EASE,
-                delay: positionDelay,
-              },
             }
       }
     >
-      <button
-        className={styles.previewCardHitArea}
-        data-flow-focus={(isCompact ? isTopCard : index === 1) || undefined}
-        data-sound-card
-        data-quest-id={item.id}
-        data-offer-id={item.offerId}
-        data-selected={selected || undefined}
-        data-returning={(returning && returnPose !== undefined) || undefined}
-        type="button"
-        disabled={dealingNewCards || returning}
-        tabIndex={isCompact && !isTopCard ? -1 : undefined}
-        style={getMoodAccentStyle(item.mood.id)}
-        onClick={() => {
-          if (suppressClickRef.current || (isCompact && !isTopCard)) return;
-          resetTilt();
-          onSelect(item.offerId, isCompact ? 0 : (CARD_ROTATIONS[index] ?? 0));
-        }}
-        onKeyDown={(event) => {
-          if (!isCompact || !isTopCard) return;
-          if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-            event.preventDefault();
-            onCycle(event.key === "ArrowRight" ? 1 : -1, true);
-          }
-        }}
-        onPointerEnter={handlePointerEnter}
-        onPointerMove={handlePointerMove}
-        onPointerLeave={handlePointerLeave}
-        onPointerOut={handlePointerLeave}
-        aria-label={t("ui.offers.selectQuest", {
-          name: item.name,
-          title: plainObjectiveText(item.objective),
-        })}
-        aria-pressed={selected}
+      <motion.div
+        className={styles.previewCardPresence}
+        data-exiting={exitingSibling || undefined}
+        initial={
+          reduceMotion || newCardsSequence > 0 || returnPose
+            ? false
+            : CARD_ENTER_POSE
+        }
+        animate={
+          selectionStarted && !selected
+            ? hiddenSiblingPose
+            : returningToMoods
+              ? hiddenSiblingPose
+              : CARD_REST_POSE
+        }
+        exit={
+          returningToMoods
+            ? hiddenSiblingPose
+            : selectionStarted
+              ? selected
+                ? {
+                    opacity: 0,
+                    transition: { opacity: { duration: 0 } },
+                  }
+                : hiddenSiblingPose
+              : CARD_REST_POSE
+        }
+        transition={
+          reduceMotion
+            ? { duration: 0 }
+            : {
+                duration: QUEST_CARD_PRESENCE_DURATION,
+                ease: CARD_FADE_EASE,
+              }
+        }
       >
-        <motion.span
-          className={styles.previewCardDisplay}
-          initial={
-            reduceMotion || !returnPose
-              ? false
-              : { scale: returnPose.scale, rotate: returnPose.rotate }
-          }
-          animate={{
-            scale: 1,
-            rotate: isCompact ? 0 : (CARD_ROTATIONS[index] ?? 0),
+        <button
+          className={styles.previewCardHitArea}
+          data-flow-focus={(isCompact ? isTopCard : index === 1) || undefined}
+          data-sound-card
+          data-quest-id={item.id}
+          data-offer-id={item.offerId}
+          data-selected={selected || undefined}
+          data-returning={(returning && returnPose !== undefined) || undefined}
+          type="button"
+          disabled={dealingNewCards || returning}
+          tabIndex={isCompact && !isTopCard ? -1 : undefined}
+          style={getMoodAccentStyle(item.mood.id)}
+          onClick={() => {
+            if (suppressClickRef.current || (isCompact && !isTopCard)) return;
+            resetTilt();
+            onSelect(
+              item.offerId,
+              isCompact ? 0 : (CARD_ROTATIONS[index] ?? 0),
+            );
           }}
-          transition={
-            reduceMotion
-              ? { duration: 0 }
-              : returnPose
-                ? CARD_RETURN_TRANSITION
-                : CARD_DISPLAY_TRANSITION
-          }
+          onKeyDown={(event) => {
+            if (!isCompact || !isTopCard) return;
+            if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+              event.preventDefault();
+              onCycle(event.key === "ArrowRight" ? 1 : -1, true);
+            }
+          }}
+          onPointerEnter={handlePointerEnter}
+          onPointerMove={handlePointerMove}
+          onPointerLeave={handlePointerLeave}
+          onPointerOut={handlePointerLeave}
+          aria-label={t("ui.offers.selectQuest", {
+            name: item.name,
+            title: plainObjectiveText(item.objective),
+          })}
+          aria-pressed={selected}
         >
           <motion.span
-            className={styles.previewCardTilt}
-            drag={
-              isCompact &&
-              isTopCard &&
-              !selectionStarted &&
-              !dealingNewCards &&
-              !returning
+            className={styles.previewCardDisplay}
+            initial={
+              reduceMotion || !returnPose
+                ? false
+                : { scale: returnPose.scale, rotate: returnPose.rotate }
             }
-            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-            dragElastic={1}
-            dragMomentum={false}
-            onPointerDown={() => {
-              suppressClickRef.current = false;
+            animate={{
+              scale: 1,
+              rotate: isCompact ? 0 : (CARD_ROTATIONS[index] ?? 0),
             }}
-            onDrag={(event, info) => {
-              if (Math.hypot(info.offset.x, info.offset.y) > 8) {
-                suppressClickRef.current = true;
-              }
-              drag.onDrag(event, info);
-            }}
-            onDragEnd={drag.onDragEnd}
-            style={{
-              x: drag.x,
-              y: drag.y,
-              rotate: isCompact ? drag.rotate : 0,
-              rotateX: isCompact ? drag.rotateX : rotateX,
-              rotateY: isCompact ? drag.rotateY : rotateY,
-              // transformPerspective: 1000,
-            }}
+            transition={
+              reduceMotion
+                ? { duration: 0 }
+                : returnPose
+                  ? CARD_RETURN_TRANSITION
+                  : CARD_DISPLAY_TRANSITION
+            }
           >
             <motion.span
-              className={styles.newCardsCard}
-              key={`new-cards-${newCardsSequence}`}
-              initial={reduceMotion || !returnPose ? false : returnPose.surface}
-              animate={{ y: 0, rotateX: 0, rotateY: 0, scale: 1 }}
-              transition={
-                reduceMotion
-                  ? { duration: 0 }
-                  : returnPose
-                    ? CARD_RETURN_TRANSITION
-                    : CARD_DISPLAY_TRANSITION.scale
+              className={styles.previewCardTilt}
+              drag={
+                isCompact &&
+                isTopCard &&
+                !selectionStarted &&
+                !dealingNewCards &&
+                !returning
               }
-              data-new-cards-phase={
-                newCardsPhase === "idle" ? undefined : newCardsPhase
-              }
-              style={
-                {
-                  "--new-cards-delay": `${index * NEW_CARDS_STAGGER_SECONDS}s`,
-                  "--new-cards-drop-rotate": `${(index - 1) * 2.2}deg`,
-                  "--new-cards-enter-rotate": `${(1 - index) * 2.2}deg`,
-                } as CSSProperties
-              }
-              onAnimationEnd={(event) => {
-                if (
-                  event.target !== event.currentTarget ||
-                  newCardsSequence < 1 ||
-                  reduceMotion ||
-                  newCardsPhase !== "incoming"
-                )
-                  return;
-                playSound("newCards");
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={1}
+              dragMomentum={false}
+              onPointerDown={() => {
+                suppressClickRef.current = false;
+              }}
+              onDrag={(event, info) => {
+                if (Math.hypot(info.offset.x, info.offset.y) > 8) {
+                  suppressClickRef.current = true;
+                }
+                drag.onDrag(event, info);
+              }}
+              onDragEnd={drag.onDragEnd}
+              style={{
+                x: drag.x,
+                y: drag.y,
+                rotate: isCompact ? drag.rotate : 0,
+                ...(isCompact ? {} : { rotateX, rotateY }),
               }}
             >
-              <QuestCard
-                bestTimeMs={personalBest}
-                className={`${styles.questSelectionCard} ${styles.newCardsCardFront}`}
-                genres={item.genres}
-                type={item.type}
-                tags={item.tags}
-                game={item.game}
-                minimumDurationMinutes={item.minimumDurationMinutes}
-                moodTitle={item.mood.title}
-                name={item.name}
-                objective={item.objective}
-                suggestedDurationMinutes={item.suggestedDurationMinutes}
+              <motion.span
+                className={styles.newCardsCard}
+                key={`new-cards-${newCardsSequence}`}
+                initial={
+                  reduceMotion || !returnPose ? false : returnPose.surface
+                }
+                animate={{ y: 0, rotateX: 0, rotateY: 0, scale: 1 }}
+                transition={
+                  reduceMotion
+                    ? { duration: 0 }
+                    : returnPose
+                      ? CARD_RETURN_TRANSITION
+                      : CARD_DISPLAY_TRANSITION.scale
+                }
+                data-new-cards-phase={
+                  newCardsPhase === "idle" ? undefined : newCardsPhase
+                }
+                style={
+                  {
+                    "--new-cards-delay": `${index * NEW_CARDS_STAGGER_SECONDS}s`,
+                    "--new-cards-drop-rotate": `${(index - 1) * 2.2}deg`,
+                    "--new-cards-enter-rotate": `${(1 - index) * 2.2}deg`,
+                  } as CSSProperties
+                }
+                onAnimationEnd={(event) => {
+                  if (
+                    event.target !== event.currentTarget ||
+                    newCardsSequence < 1 ||
+                    reduceMotion ||
+                    newCardsPhase !== "incoming"
+                  )
+                    return;
+                  playSound("newCards");
+                }}
               >
-                <span className={styles.newCardsShine} aria-hidden="true" />
-              </QuestCard>
-              <QuestCardBack className={styles.newCardsCardBack} />
+                <QuestCard
+                  bestTimeMs={personalBest}
+                  className={`${styles.questSelectionCard} ${styles.newCardsCardFront}`}
+                  genres={item.genres}
+                  type={item.type}
+                  tags={item.tags}
+                  game={item.game}
+                  minimumDurationMinutes={item.minimumDurationMinutes}
+                  moodTitle={item.mood.title}
+                  name={item.name}
+                  objective={item.objective}
+                  suggestedDurationMinutes={item.suggestedDurationMinutes}
+                >
+                  <span className={styles.newCardsShine} aria-hidden="true" />
+                </QuestCard>
+              </motion.span>
             </motion.span>
           </motion.span>
-        </motion.span>
-      </button>
+        </button>
+      </motion.div>
     </motion.div>
   );
 }

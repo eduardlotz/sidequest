@@ -1,16 +1,5 @@
 .aboutContent {
   display: flex;
-  height: 100%;
-  padding: 34px 28px 26px;
-  overflow: auto;
-  border-radius: 20px;
-  background: var(--color-surface);
-  box-shadow: var(--raised-shadow);
-  flex-direction: column;
-  overscroll-behavior: contain;
-}
-
-.aboutContent[data-presentation="page"] {
   width: min(100%, 720px);
   min-height: 100%;
   height: auto;
@@ -20,6 +9,8 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+  flex-direction: column;
+  overscroll-behavior: contain;
 }
 
 .aboutIntro {
@@ -126,21 +117,6 @@
 
   .aboutWordmarkTilt:hover .aboutWordmarkVisual {
     filter: drop-shadow(0 8px 10px rgb(var(--color-shadow-rgb) / 0.2));
-  }
-}
-
-@media (--mobile) {
-  .aboutContent {
-    padding: 34px 24px 26px;
-    border-radius: 24px;
-  }
-
-  :global([data-mobile-snap="default"]) .aboutContent {
-    overflow: hidden;
-  }
-
-  :global([data-mobile-snap="full"]) .aboutContent {
-    overflow: auto;
   }
 }
 

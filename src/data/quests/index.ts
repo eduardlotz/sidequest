@@ -19,6 +19,7 @@ import { nostalgicQuests } from "./nostalgic";
 import { overwhelmedQuests } from "./overwhelmed";
 import { progressQuests } from "./progress";
 import { relaxQuests } from "./relax";
+import { redditMoodExpansionQuests } from "./reddit-mood-expansion";
 import { restlessQuests } from "./restless";
 import { reusableQuests } from "./reusable";
 import { exclusiveQuests } from "./exclusive";
@@ -50,6 +51,7 @@ const MOOD_QUESTS: Record<MoodId, readonly AuthoredQuestDefinition[]> = {
 export const QUEST_CATALOG: readonly AuthoredQuestDefinition[] = [
   ...MOOD_IDS.flatMap((moodId) => MOOD_QUESTS[moodId]),
   ...reusableQuests,
+  ...redditMoodExpansionQuests,
   ...exclusiveQuests,
   ...timedQuests,
 ];

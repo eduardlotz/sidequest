@@ -77,69 +77,6 @@
   flex-shrink: 0;
 }
 
-.informationPage {
-  position: fixed;
-  z-index: 130;
-  padding: 0;
-  overflow: hidden;
-  background: var(--color-canvas);
-  color: var(--color-text);
-  inset: 0;
-  overscroll-behavior: contain;
-}
-
-.scroll {
-  height: 100%;
-  padding: 76px clamp(24px, 7vw, 72px) 32px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: none;
-  mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    #000 var(--fade-top, 0px),
-    #000 calc(100% - var(--fade-bottom, 0px)),
-    transparent
-  );
-}
-.scroll::-webkit-scrollbar {
-  display: none;
-}
-
-.informationClose {
-  position: fixed;
-  bottom: 40px;
-
-  left: 0;
-  right: 0;
-  margin-inline: auto;
-  z-index: 2;
-
-  display: grid;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border-radius: 50%;
-  place-items: center;
-  background: var(--color-surface);
-  box-shadow: var(--control-shadow);
-  color: var(--color-text);
-
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  cursor: pointer;
-}
-
-.informationClose[data-icon-left="true"] {
-  padding: 0;
-}
-
-.informationClose svg {
-  width: 20px;
-  height: 20px;
-}
-
 @media (max-width: 600px) {
   .setup {
     --flow-frame-edge-inset: 20px;
@@ -149,13 +86,6 @@
   }
   .links {
     gap: 5px;
-  }
-  /* .welcome h1 {
-    font-size: 30px;
-  } */
-
-  .scroll {
-    padding: 72px 20px 24px;
   }
 }
 @media (max-height: 650px) {
