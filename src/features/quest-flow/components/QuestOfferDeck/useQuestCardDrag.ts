@@ -26,22 +26,19 @@ export function useQuestCardDrag({
 }: Options) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const rotateX = useTransform(y, (value) =>
-    reduceMotion ? 0 : clamp(-value * 0.25, 75),
-  );
-  const rotateY = useTransform(x, (value) =>
-    reduceMotion ? 0 : clamp(value * 0.3, 95),
-  );
   const rotate = useTransform(x, (value) =>
-    reduceMotion ? 0 : clamp(value * 0.12, 12),
+    reduceMotion ? 0 : clamp(value * 0.08, 10),
   );
   const suppressClick = useRef(false);
   const animation = useRef<ReturnType<typeof animate> | null>(null);
+  const returnFrame = useRef<number | null>(null);
   const resetClickTimer = useRef<number | null>(null);
 
   useEffect(
     () => () => {
       animation.current?.stop();
+      if (returnFrame.current !== null)
+        window.cancelAnimationFrame(returnFrame.current);
       if (resetClickTimer.current !== null)
         window.clearTimeout(resetClickTimer.current);
     },
@@ -126,11 +123,15 @@ export function useQuestCardDrag({
       if (reduceMotion) {
         x.set(0);
         y.set(0);
+        onReturn();
         onComplete();
       } else {
         moveTo(unitX * exitDistance, unitY * exitDistance, false, () => {
           onReturn();
-          moveTo(0, 0, true, onComplete);
+          returnFrame.current = window.requestAnimationFrame(() => {
+            returnFrame.current = null;
+            moveTo(0, 0, true, onComplete);
+          });
         });
       }
     } else {
@@ -146,8 +147,6 @@ export function useQuestCardDrag({
   return {
     x,
     y,
-    rotateX,
-    rotateY,
     rotate,
     suppressClick,
     onPointerDown: () => {

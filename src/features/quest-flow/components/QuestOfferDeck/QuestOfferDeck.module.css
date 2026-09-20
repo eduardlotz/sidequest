@@ -49,14 +49,16 @@
   width: 100%;
   height: 100%;
   inset: 0;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-  -webkit-backface-visibility: hidden;
-  will-change: transform;
 }
 
-.previewCardProjection[data-mood-handoff] {
-  filter: blur(0) !important;
+.previewCardPresence {
+  position: absolute;
+  display: block;
+  inset: 0;
+}
+
+.previewCardPresence[data-exiting] {
+  will-change: filter, opacity, transform;
 }
 
 :global([data-active-handoff="pending"]) .previewCardProjection[data-selected] {
@@ -101,18 +103,12 @@
   transition:
     filter 180ms ease,
     scale 400ms cubic-bezier(0.03, 0.98, 0.52, 0.99);
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  will-change: transform;
 }
 
 .previewCardDisplay {
   position: absolute;
   display: block;
   inset: 0;
-  transform-style: preserve-3d;
-  perspective: 1000px;
 }
 
 .previewCardHitArea[data-returning] {
@@ -125,7 +121,6 @@
   position: absolute;
   display: block;
   inset: 0;
-  transform-style: preserve-3d;
 }
 
 .newCardsCard[data-new-cards-phase="outgoing"] {
@@ -140,21 +135,8 @@
   will-change: filter, opacity, rotate, scale, translate;
 }
 
-.newCardsCardFront,
-.newCardsCardBack {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
 .newCardsCardFront {
   z-index: 2;
-}
-
-.newCardsCardBack {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  transform: rotateY(180deg);
 }
 
 .newCardsShine {
@@ -265,6 +247,7 @@
 :global([data-play-layout="compact"]) .previewCardSlot[data-swipe-returning] {
   z-index: 0;
   pointer-events: none;
+  transition: none;
 }
 
 @keyframes questCardNewCardsShine {
@@ -328,11 +311,5 @@
 
   .previewCardHitArea:hover .questSelectionCard {
     scale: 1;
-  }
-}
-
-@supports (-webkit-touch-callout: none) {
-  .previewCardProjection {
-    filter: none !important;
   }
 }

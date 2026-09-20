@@ -1,4 +1,5 @@
 import type { GameGenreId } from "./gameGenres";
+import { REDDIT_MOOD_EXPANSION_POOL_TRAITS } from "./quests/reddit-mood-expansion";
 export const QUEST_PLAY_STYLES = {
   "co-op": { en: "Co-op", de: "Co-op" }, online: { en: "Online", de: "Online" },
   offline: { en: "Offline", de: "Offline" }, team: { en: "Team", de: "Team" },
@@ -10,6 +11,8 @@ export type QuestPoolTraits = { genreIds: readonly GameGenreId[]; styleIds: read
 // Authored eligibility for pool preferences. Empty genres mean any genre.
 // Use the required game genre, never incidental words or the mood of the copy.
 export const QUEST_POOL_TRAITS: Record<string, QuestPoolTraits> = {
+  // Flexible Reddit-inspired expansion: exactly 15 identities per mood.
+  ...REDDIT_MOOD_EXPANSION_POOL_TRAITS,
   "auto-read-chapter": {"genreIds": ["narrative"], "styleIds": ["offline", "solo"]},
   "five-exhibits": {"genreIds": ["puzzle"], "styleIds": ["offline", "solo"]},
   "one-solitaire-hand": {"genreIds": ["card"], "styleIds": ["offline", "solo"]},
@@ -308,6 +311,10 @@ export const QUEST_POOL_TRAITS: Record<string, QuestPoolTraits> = {
   "deck-play-the-opening-hand": {"genreIds": ["card", "roguelike"], "styleIds": ["offline", "solo"]},
   "far-cry-primal-owl-opening": {"genreIds": ["shooter", "adventure"], "styleIds": ["offline", "solo"]},
   "far-cry-fc3-tower-landmark": {"genreIds": ["shooter", "adventure"], "styleIds": ["offline", "solo"]},
+  "far-cry-fc4-outpost-master": {"genreIds": ["shooter", "adventure"], "styleIds": ["offline", "solo"]},
+  "far-cry-fc4-buzzer-tower": {"genreIds": ["shooter", "adventure"], "styleIds": ["offline", "solo"]},
+  "far-cry-fc4-elephant-entry": {"genreIds": ["shooter", "adventure"], "styleIds": ["offline", "solo"]},
+  "far-cry-fc4-arena-scavenger": {"genreIds": ["shooter", "adventure"], "styleIds": ["offline", "solo"]},
   "far-cry-fc5-boomer-recon": {"genreIds": ["shooter", "adventure"], "styleIds": ["offline", "solo"]},
   "far-cry-fc6-camera-before-base": {"genreIds": ["shooter", "adventure"], "styleIds": ["offline", "solo"]},
   "gta-sa-road-signs": {"genreIds": ["adventure", "sandbox"], "styleIds": ["offline", "solo"]},
@@ -321,6 +328,10 @@ export const QUEST_POOL_TRAITS: Record<string, QuestPoolTraits> = {
   "battlefield-bf1-smoke-rescue": {"genreIds": ["shooter"], "styleIds": ["online", "squad", "team"]},
   "battlefield-bf4-tank-pit-stop": {"genreIds": ["shooter"], "styleIds": ["online", "squad", "team"]},
   "battlefield-bf2042-drone-first-look": {"genreIds": ["shooter"], "styleIds": ["online", "squad", "team"]},
+  "battlefield-bf6-supply-the-push": {"genreIds": ["shooter"], "styleIds": ["online", "squad", "team"]},
+  "battlefield-bf6-engineer-escort": {"genreIds": ["shooter"], "styleIds": ["online", "squad", "team"]},
+  "battlefield-bf6-motion-before-entry": {"genreIds": ["shooter"], "styleIds": ["online", "squad", "team"]},
+  "battlefield-bf6-inject-the-entry": {"genreIds": ["shooter"], "styleIds": ["online", "squad", "team"]},
   "battlefield-bfv-role-swap": {"genreIds": ["shooter"], "styleIds": ["online", "squad", "team"]},
   "hitman-empty-pockets": {"genreIds": ["stealth"], "styleIds": ["offline", "solo"]},
   "hitman-spare-uniform": {"genreIds": ["stealth"], "styleIds": ["offline", "solo"]},

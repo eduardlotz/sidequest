@@ -24,6 +24,7 @@ type Props = {
   position: MotionValue<number>;
   reduceMotion: boolean;
   richEffects: boolean;
+  tiltEffects: boolean;
   revealCards: boolean;
   returningFromQuests: boolean;
   selectedId: MoodId | null;
@@ -100,8 +101,6 @@ function getOutsidePose(distance: number, radiusX: number) {
   };
 }
 
-// TODO: check if all of math is needed + fix perf issues in safari
-
 export function ArcCard({
   activeIndex,
   index,
@@ -112,6 +111,7 @@ export function ArcCard({
   position,
   reduceMotion,
   richEffects,
+  tiltEffects,
   revealCards,
   returningFromQuests,
   selectedId,
@@ -153,10 +153,6 @@ export function ArcCard({
   // Actual 3D carousel rotation.
   // Left cards turn right, right cards turn left.
   const rotateYOuter = useTransform(distance, (value) => -value * 35);
-  // const rotateXOuter = useTransform(distance, (value) => -value * -20);
-  // const rotateXOuter = -10;
-  // const rotateXOuter = -15;
-  const rotateZOuter = useTransform(distance, (value) => -value * -10);
 
   // Push cards farther away from the viewer as they leave the center.
   const z = useTransform(distance, (value) => -Math.abs(value) * 15);
@@ -188,6 +184,8 @@ export function ArcCard({
   const interactive = Math.abs(discreteDistance) <= 1;
 
   const selected = selectedId === item.id;
+  const centeredTiltEffects = tiltEffects && center;
+  const shaded = richEffects;
 
   /*
    * The mood layer disappears either after selecting a mood
@@ -209,7 +207,7 @@ export function ArcCard({
       : 0;
 
   const canTilt =
-    richEffects && !reduceMotion && center && !selectedId && layerPresent;
+    centeredTiltEffects && !reduceMotion && !selectedId && layerPresent;
 
   const {
     handlePointerEnter,
@@ -226,7 +224,7 @@ export function ArcCard({
       maxTilt: 30,
       scale: 1,
     },
-    reduceMotion: !richEffects || reduceMotion || !center,
+    reduceMotion: !centeredTiltEffects || reduceMotion,
   });
 
   const illustrationX = useTransform(rotateY, (value) => value * -1.7);
@@ -243,6 +241,8 @@ export function ArcCard({
     <motion.div
       className={styles.arcCardSlot}
       data-center={center || undefined}
+      data-shaded={shaded || undefined}
+      data-tilt-effects={centeredTiltEffects || undefined}
       data-visible={visible || undefined}
       style={{
         pointerEvents:
@@ -252,50 +252,34 @@ export function ArcCard({
 
         x,
         y,
-        z,
         rotate,
-        rotateY: rotateYOuter,
-        // rotateX: rotateXOuter,
-        // rotateZ: rotateZOuter,
         scale,
         zIndex,
-
-        transformStyle: "preserve-3d",
+        ...(richEffects
+          ? {
+              z,
+              rotateY: rotateYOuter,
+              transformStyle: "preserve-3d" as const,
+            }
+          : {}),
       }}
     >
       <motion.div
         className={styles.moodCardExit}
         initial={reduceMotion ? false : outsidePose}
         animate={
-          // foregroundExiting
-          //   ? outsidePose
-          //   : {
-          //       opacity: visible && (revealCards || center) ? 1 : 0,
-
-          //       scale: revealCards || center ? 1 : 0.92,
-
-          //       x: 0,
-          //       y: 0,
-
-          //       filter:
-          //         !richEffects || reduceMotion || returningFromQuests
-          //           ? "none"
-          //           : visible && !revealCards && !center
-          //             ? "blur(5px)"
-          //             : "blur(0px)",
-          //     }
-          {
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            x: 0,
-            z: 0,
-            rotate: 0,
-            rotateY: 0,
-            rotateX: 0,
-            rotateZ: 0,
-            filter: "none",
-          }
+          foregroundExiting && !primaryExit
+            ? outsidePose
+            : {
+                opacity: visible && (revealCards || center) ? 1 : 0,
+                scale: revealCards || center ? 1 : 0.92,
+                x: 0,
+                y: 0,
+                filter:
+                  !shaded || reduceMotion || returningFromQuests
+                    ? "none"
+                    : "blur(0px)",
+              }
         }
         transition={
           reduceMotion
@@ -385,12 +369,12 @@ export function ArcCard({
           onPointerMove={canTilt ? handlePointerMove : undefined}
           onPointerLeave={canTilt ? handlePointerLeave : undefined}
         >
-          {richEffects && <MoodCardFilters textFilterId={textFilterId} />}
+          {shaded && <MoodCardFilters textFilterId={textFilterId} />}
 
           <motion.span
             className={styles.moodCardTiltSurface}
             style={
-              richEffects
+              centeredTiltEffects
                 ? {
                     rotateX,
                     rotateY,
@@ -419,7 +403,7 @@ export function ArcCard({
                   <strong
                     className={styles.arcCardTitle}
                     style={
-                      richEffects
+                      shaded
                         ? {
                             filter: `url("#${textFilterId}")`,
                           }
@@ -432,7 +416,7 @@ export function ArcCard({
                   <span
                     className={styles.arcCardDescription}
                     style={
-                      richEffects
+                      shaded
                         ? {
                             filter: `url("#${textFilterId}")`,
                           }
@@ -446,7 +430,7 @@ export function ArcCard({
                 <motion.span
                   className={styles.moodIllustrationLayer}
                   style={
-                    richEffects
+                    centeredTiltEffects
                       ? {
                           x: illustrationX,
                           y: illustrationY,

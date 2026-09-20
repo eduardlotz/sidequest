@@ -20,6 +20,7 @@ import { ArcDeck, type ArcDeckItem } from "../ArcDeck/ArcDeck";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import {
   QuestOfferDeck,
+  QUEST_CARD_PRESENCE_DURATION,
   type NewCardsPhase,
   type QuestOfferItem,
 } from "../QuestOfferDeck/QuestOfferDeck";
@@ -535,9 +536,17 @@ export function QuestScreenContent({
               }
               animate={{ opacity: 1, scale: 1 }}
               exit={{
-                opacity: reduceMotion ? 1 : 0,
+                opacity: reduceMotion
+                  ? 1
+                  : questSelectionClosing
+                    ? 0.999
+                    : 0,
                 scale: 1,
                 pointerEvents: "none",
+                transition: {
+                  duration: reduceMotion ? 0 : QUEST_CARD_PRESENCE_DURATION,
+                  ease: [0.16, 1, 0.3, 1],
+                },
               }}
             >
               <AnimatePresence
@@ -552,9 +561,11 @@ export function QuestScreenContent({
                     exitDuration={
                       editingMood
                         ? SELECTION_RESET_FADE_OUT_DURATION
-                        : SELECTION_LAYER_EXIT_DURATION
+                        : questSelectionClosing
+                          ? QUEST_CARD_PRESENCE_DURATION
+                          : SELECTION_LAYER_EXIT_DURATION
                     }
-                    exitOpacity={0}
+                    exitOpacity={questSelectionClosing ? 0.999 : 0}
                     key="quests"
                     hidden={selectionControlsExiting}
                     reduceMotion={reduceMotion}

@@ -56,6 +56,16 @@ const CAROUSEL_REVEAL_DELAY_MS = 240;
 const MOBILE_CARD_GAP = 330;
 const DESKTOP_CARD_GAP = 520;
 
+function isSafariBrowser() {
+  if (typeof navigator === "undefined") return false;
+  const { userAgent, vendor } = navigator;
+  return (
+    /Safari/i.test(userAgent) &&
+    /Apple/i.test(vendor) &&
+    !/(Chrome|Chromium|CriOS|FxiOS|EdgiOS|OPiOS|Android)/i.test(userAgent)
+  );
+}
+
 export function ArcDeck({
   items,
   initialItemId,
@@ -87,9 +97,7 @@ export function ArcDeck({
   const richEffectsAvailable = useMediaQuery(
     `${DESKTOP_VIEWPORT_QUERY} and (hover: hover) and (pointer: fine)`,
   );
-  const safariPerformanceMode =
-    typeof CSS !== "undefined" &&
-    CSS.supports("-webkit-touch-callout", "none");
+  const safariPerformanceMode = isSafariBrowser();
   const richEffects = richEffectsAvailable && !safariPerformanceMode;
   const [revealCards, setRevealCards] = useState(
     reduceMotion || !initialItemId,
@@ -270,8 +278,10 @@ export function ArcDeck({
       if (!onSelect(itemId)) setSelectedId(null);
     } else {
       selectionFrameRef.current = window.requestAnimationFrame(() => {
-        selectionFrameRef.current = null;
-        if (!onSelect(itemId)) setSelectedId(null);
+        selectionFrameRef.current = window.requestAnimationFrame(() => {
+          selectionFrameRef.current = null;
+          if (!onSelect(itemId)) setSelectedId(null);
+        });
       });
     }
     if (focusNext) {
@@ -282,6 +292,7 @@ export function ArcDeck({
   return (
     <div
       className={styles.arcDeck}
+      data-low-power={!richEffects || undefined}
       data-rich-effects={richEffects || undefined}
       ref={deckRef}
       role="region"
@@ -306,6 +317,7 @@ export function ArcDeck({
             position={position}
             reduceMotion={reduceMotion}
             richEffects={richEffects}
+            tiltEffects={richEffectsAvailable}
             revealCards={revealCards}
             returningFromQuests={returningFromQuests}
             selectedId={selectedId}

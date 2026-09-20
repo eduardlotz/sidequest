@@ -1,16 +1,9 @@
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { GlobeIcon } from "@phosphor-icons/react/dist/csr/Globe";
 import { InfoIcon } from "@phosphor-icons/react/dist/csr/Info";
 import { CaretRightIcon } from "@phosphor-icons/react/dist/csr/CaretRight";
-import { XIcon } from "@phosphor-icons/react/dist/csr/X";
 
 import { SolidButton } from "../../shared/ui/SolidButton/SolidButton";
 import { useLibraryStore } from "../../stores/useLibraryStore";
@@ -30,6 +23,7 @@ import {
   createWelcomePreviewOffers,
 } from "./components/WelcomeQuestPreviews/WelcomeQuestPreviews";
 import { SELECTION_HANDOFF_EASE } from "../../shared/motion/transitions";
+import { FullscreenDialog } from "../../shared/ui/FullscreenDialog/FullscreenDialog";
 
 export function LibrarySetup({
   onThemeChange,
@@ -46,11 +40,6 @@ export function LibrarySetup({
   const [informationOpen, setInformationOpen] = useState(false);
   const informationTriggerRef = useRef<HTMLButtonElement>(null);
   const setupRef = useRef<HTMLElement>(null);
-  const [edges, setEdges] = useState({ top: false, bottom: false });
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
-
-  const transition = { duration: reduced ? 0 : 0.2, ease: "easeOut" as const };
 
   const completeSetup = useLibraryStore((s) => s.completeSetup);
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
@@ -72,21 +61,6 @@ export function LibrarySetup({
     },
   };
   const nextTheme = nextThemeChoice(themeChoice);
-  const closeInformation = useCallback(() => {
-    setInformationOpen(false);
-    window.requestAnimationFrame(() => informationTriggerRef.current?.focus());
-  }, []);
-  const resetInformationScroll = useCallback(() => {
-    window.requestAnimationFrame(() => {
-      const node = scrollRef.current;
-      if (!node) return;
-      node.scrollTop = 0;
-      setEdges({
-        top: false,
-        bottom: node.scrollHeight - node.clientHeight > 8,
-      });
-    });
-  }, []);
 
   useEffect(() => {
     // The app suppresses its first presence entrance; explicitly start this stagger.
@@ -101,38 +75,6 @@ export function LibrarySetup({
   useLayoutEffect(() => {
     setupRef.current?.scrollTo({ top: 0 });
   }, [personal]);
-
-  useEffect(() => {
-    if (!informationOpen) return;
-    function closeOnEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") closeInformation();
-    }
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [closeInformation, informationOpen]);
-
-  useEffect(() => {
-    if (!informationOpen || !scrollRef.current) return;
-    const node = scrollRef.current;
-    const update = () => {
-      const top = Math.max(0, node.scrollTop);
-      const bottom = node.scrollHeight - node.clientHeight - top > 8;
-      setEdges((previous) =>
-        previous.top === top > 8 && previous.bottom === bottom
-          ? previous
-          : { top: top > 8, bottom },
-      );
-    };
-    const resize = new ResizeObserver(update);
-    resize.observe(node);
-    if (node.firstElementChild) resize.observe(node.firstElementChild);
-    node.addEventListener("scroll", update, { passive: true });
-    update();
-    return () => {
-      resize.disconnect();
-      node.removeEventListener("scroll", update);
-    };
-  }, [informationOpen]);
 
   return (
     <section
@@ -255,49 +197,16 @@ export function LibrarySetup({
           )}
         </LibraryStep>
       </AnimatePresence>
-      <AnimatePresence initial={false}>
-        {informationOpen ? (
-          <motion.div
-            className={styles.informationPage}
-            role="dialog"
-            aria-modal="true"
-            aria-label={t("ui.about.title")}
-            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: reduceMotion ? 0 : 12 }}
-            transition={{
-              duration: reduceMotion ? 0 : 0.22,
-              ease: "easeOut",
-            }}
-          >
-            <SolidButton
-              autoFocus
-              className={styles.informationClose}
-              aria-label={t("ui.library.closeInformation")}
-              iconLeft={<XIcon weight="bold" />}
-              size="medium"
-              variant="secondary"
-              onClick={closeInformation}
-            />
-            <motion.div
-              className={styles.scroll}
-              ref={scrollRef}
-              initial={false}
-              animate={{
-                "--fade-top": edges.top ? "48px" : "0px",
-                "--fade-bottom": edges.bottom ? "64px" : "0px",
-              }}
-              transition={transition}
-            >
-              <AboutPanel
-                presentation="page"
-                reduceMotion={reduceMotion}
-                onPageChange={resetInformationScroll}
-              />
-            </motion.div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      <FullscreenDialog
+        closeLabel={t("ui.library.closeInformation")}
+        label={t("ui.about.title")}
+        onOpenChange={setInformationOpen}
+        open={informationOpen}
+        reduceMotion={reduceMotion}
+        triggerRef={informationTriggerRef}
+      >
+        <AboutPanel reduceMotion={reduceMotion} />
+      </FullscreenDialog>
     </section>
   );
 }

@@ -277,6 +277,7 @@ export function InteractiveQuestCard({
       data-flipping={cardFlipActive || undefined}
       data-floating={(floating && !reduceMotion) || undefined}
       data-float-paused={floatPaused || cardFlipActive || undefined}
+      data-show-back={showBack || undefined}
       tabIndex={onActivate ? 0 : -1}
       role={onActivate ? "button" : undefined}
       onKeyDown={(event) => {
