@@ -45,13 +45,17 @@ type DragState = {
   pointerId: number;
   startX: number;
   startPosition: number;
-  lastX: number;
+  startTarget: number;
   lastAt: number;
-  velocityX: number;
+  samples: { x: number; at: number }[];
   moved: boolean;
 };
 
 const WHEEL_SETTLE_MS = 90;
+const DRAG_SNAP_DISTANCE_PX = 70;
+const FLICK_MIN_DISTANCE_PX = 18;
+const FLICK_VELOCITY_PX_PER_MS = 0.65;
+const FLICK_WINDOW_MS = 100;
 const CAROUSEL_REVEAL_DELAY_MS = 240;
 const MOBILE_CARD_GAP = 330;
 const DESKTOP_CARD_GAP = 520;
@@ -190,7 +194,7 @@ export function ArcDeck({
 
   function handleWheel(event: WheelEvent<HTMLDivElement>) {
     // event.preventDefault();
-    if (selectedId || items.length < 2) return;
+    if (selectedId || items.length < 2 || dragRef.current) return;
     const raw =
       Math.abs(event.deltaX) > Math.abs(event.deltaY)
         ? event.deltaX
@@ -209,16 +213,21 @@ export function ArcDeck({
   }
 
   function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
-    if (selectedId || items.length < 2 || event.button !== 0) return;
+    if (selectedId || items.length < 2 || event.button !== 0 || dragRef.current)
+      return;
     animationRef.current?.stop();
-    targetRef.current = position.get();
+    if (wheelTimeoutRef.current !== null) {
+      window.clearTimeout(wheelTimeoutRef.current);
+      wheelTimeoutRef.current = null;
+    }
+    const now = performance.now();
     dragRef.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
       startPosition: position.get(),
-      lastX: event.clientX,
-      lastAt: performance.now(),
-      velocityX: 0,
+      startTarget: Math.round(targetRef.current),
+      lastAt: now,
+      samples: [{ x: event.clientX, at: now }],
       moved: false,
     };
   }
@@ -228,10 +237,14 @@ export function ArcDeck({
     if (!drag || drag.pointerId !== event.pointerId) return;
     const now = performance.now();
     const movement = event.clientX - drag.startX;
-    const elapsed = Math.max(1, now - drag.lastAt);
-    drag.velocityX = (event.clientX - drag.lastX) / elapsed;
-    drag.lastX = event.clientX;
     drag.lastAt = now;
+    drag.samples.push({ x: event.clientX, at: now });
+    while (
+      drag.samples.length > 2 &&
+      drag.samples[1].at < now - FLICK_WINDOW_MS
+    ) {
+      drag.samples.shift();
+    }
 
     if (Math.abs(movement) > 7 && !drag.moved) {
       drag.moved = true;
@@ -240,30 +253,48 @@ export function ArcDeck({
     if (!drag.moved) return;
 
     const next = drag.startPosition - movement / cardGap;
-    targetRef.current = next;
     position.set(next);
   }
 
-  function finishPointer(event: ReactPointerEvent<HTMLDivElement>) {
+  function finishPointer(
+    event: ReactPointerEvent<HTMLDivElement>,
+    cancelled = false,
+  ) {
     const drag = dragRef.current;
     if (!drag || drag.pointerId !== event.pointerId) return;
-    const projected = clamp(
-      position.get() + (-drag.velocityX * 180) / cardGap,
-      position.get() - 2.5,
-      position.get() + 2.5,
+    const now = performance.now();
+    const releaseX = cancelled
+      ? drag.samples[drag.samples.length - 1].x
+      : event.clientX;
+    const movement = releaseX - drag.startX;
+    const recentSample = drag.samples.find(
+      (sample) => sample.at >= now - FLICK_WINDOW_MS,
     );
-    suppressClickRef.current = drag.moved;
-    if (drag.moved) {
+    const recentMovement = recentSample ? releaseX - recentSample.x : 0;
+    const recentDuration = recentSample ? Math.max(1, now - recentSample.at) : 1;
+    const quickFlick =
+      !cancelled &&
+      now - drag.lastAt <= FLICK_WINDOW_MS &&
+      Math.abs(movement) >= FLICK_MIN_DISTANCE_PX &&
+      Math.sign(recentMovement) === Math.sign(movement) &&
+      Math.abs(recentMovement / recentDuration) >= FLICK_VELOCITY_PX_PER_MS;
+    const shouldAdvance =
+      Math.abs(movement) >= DRAG_SNAP_DISTANCE_PX || quickFlick;
+    const steps = shouldAdvance
+      ? Math.max(1, Math.round(Math.abs(movement) / cardGap))
+      : 0;
+    const next = drag.startTarget - Math.sign(movement) * steps;
+    suppressClickRef.current = drag.moved || Math.abs(movement) > 7;
+    if (suppressClickRef.current) {
       window.setTimeout(() => {
         suppressClickRef.current = false;
       }, 0);
     }
-    targetRef.current = projected;
     dragRef.current = null;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
-    moveTo(Math.round(projected));
+    moveTo(next);
   }
 
   function select(itemId: MoodId, focusNext = false) {
@@ -302,7 +333,7 @@ export function ArcDeck({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={finishPointer}
-      onPointerCancel={finishPointer}
+      onPointerCancel={(event) => finishPointer(event, true)}
     >
       <div className={styles.arcDeckTrack}>
         {items.map((item, index) => (
