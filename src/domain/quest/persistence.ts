@@ -48,10 +48,15 @@ export function migratePersistedQuestState(
 ): PersistedQuestState {
   if (version < 14 || version > STORE_VERSION) return createDefaultQuestState();
   if (version < 20 && isRecord(persistedState)) {
-    return sanitizePersistedQuestState({
-      ...persistedState,
-      poolPreferences: migrateLegacyPoolPreferences(persistedState.poolPreferences),
-    }, now, random, libraryGames);
+    return sanitizePersistedQuestState(
+      {
+        ...persistedState,
+        // poolPreferences: migrateLegacyPoolPreferences(persistedState.poolPreferences),
+      },
+      now,
+      random,
+      libraryGames,
+    );
   }
   return sanitizePersistedQuestState(persistedState, now, random, libraryGames);
 }
