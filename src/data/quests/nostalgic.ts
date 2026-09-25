@@ -12,7 +12,6 @@ export const nostalgicQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Childhood Save",
@@ -35,7 +34,6 @@ export const nostalgicQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Back Then",
@@ -43,7 +41,7 @@ export const nostalgicQuests = [
       },
       "de": {
         "name": "Weißt du noch",
-        "objective": "Starte **ein Spiel aus einer früheren Spielfreundschaft**. **Kehre zu eurer Karte, eurem Modus oder eurer Figur zurück**, auch wenn du heute allein spielst."
+        "objective": "Starte **ein Spiel, das du früher oft mit jemandem zusammen gespielt hast**. **Kehre zu eurer Karte, eurem Modus oder eurer Figur zurück**, auch wenn du heute allein spielst."
       }
     }
   },
@@ -59,7 +57,6 @@ export const nostalgicQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Same Place Again",
@@ -67,7 +64,7 @@ export const nostalgicQuests = [
       },
       "de": {
         "name": "Wieder am selben Ort",
-        "objective": "Such **einen alten Screenshot aus einem noch spielbaren Spiel**. Kehre an den Ort zurück und stelle den Blickwinkel nach. **Speichere ein neues Bild neben dem alten**."
+        "objective": "Such **einen alten Screenshot aus einem Spiel, das du noch starten kannst**. Geh an denselben Ort und stell den Blickwinkel nach. **Mach ein neues Bild aus derselben Perspektive**."
       }
     }
   },
@@ -83,7 +80,6 @@ export const nostalgicQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Old Route",
@@ -107,7 +103,6 @@ export const nostalgicQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Your First Character",

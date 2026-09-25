@@ -24,7 +24,6 @@ export function defineGameQuests(
     tags: quest.tags,
     minimumDurationMinutes: quest.minimum ?? 2,
     suggestedDurationMinutes: quest.minutes,
-    genres: [],
     universal: false,
     curated: {
       gameId,

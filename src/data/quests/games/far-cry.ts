@@ -17,7 +17,7 @@ export const farCryQuests = defineGameQuests("far-cry", [
     de: {
       name: "Die Eule beginnt",
       objective:
-        "Spähe in **Far Cry Primal** mit freigeschaltetem Eulenangriff einen noch nicht eroberten Außenposten durch deine Eule aus. **Lass sie einen Hornbläser ausschalten und erobere den Posten, ohne dass Verstärkung gerufen wird**. Ertönt ein Horn, beende den Kampf und den Versuch.",
+        "Schick in **Far Cry Primal** deine Eule über einen noch nicht eroberten Außenposten, um die Wachen auszukundschaften. **Lass sie einen Hornbläser ausschalten und erobere den Posten, bevor Verstärkung gerufen wird**. Geht ein Horn los, kämpf zu Ende und beende den Versuch.",
     },
   },
   {
@@ -55,7 +55,7 @@ export const farCryQuests = defineGameQuests("far-cry", [
     de: {
       name: "Eine lautlose Route",
       objective:
-        "Wiederhole in **Far Cry 4 Outpost Master** einen vertrauten Außenposten und markiere vor dem Betreten alle Wachen. Plane eine Route entlang der Alarmanlagen und einzelner Gegner und **erobere den Posten, ohne einen Alarm auszulösen**. Nach Erfolg oder drei Versuchen ist Schluss.",
+        "Wiederhole in **Far Cry 4 Outpost Master** einen Außenposten, den du kennst, und markiere alle Wachen. Plan einen Weg vorbei an Alarmanlagen und einzelnen Wachen und **erobere den Posten, ohne Alarm auszulösen**. Hör nach dem Erfolg oder drei Versuchen auf.",
     },
   },
   {
@@ -88,12 +88,12 @@ export const farCryQuests = defineGameQuests("far-cry", [
     en: {
       name: "Elephant Entry",
       objective:
-        "In **Far Cry 4**, with Elephant Rider unlocked, approach a hostile outpost on an elephant. Break through an outer barrier and defeat three guards from the saddle, then **finish the outpost on foot and compare how the loud entry changed the fight**.",
+        "In **Far Cry 4**, with Elephant Rider unlocked, ride an elephant into an uncaptured outpost. **Defeat one guard from the saddle**, then finish the outpost on foot. Notice how that loud opening changed the fight.",
     },
     de: {
       name: "Angriff per Elefant",
       objective:
-        "Reite in **Far Cry 4** mit freigeschaltetem Elefantenreiten zu einem feindlichen Außenposten. Durchbrich eine äußere Barriere und besiege drei Wachen vom Sattel aus. **Erobere den Posten zu Fuß und vergleiche, wie der laute Einstieg den Kampf verändert hat**.",
+        "Reite in **Far Cry 4** mit freigeschaltetem Elefantenreiten in einen noch nicht eroberten Außenposten. **Besiege eine Wache vom Sattel aus** und erobere den Posten dann zu Fuß. Achte darauf, wie der laute Einstieg den Kampf verändert hat.",
     },
   },
   {
@@ -145,12 +145,12 @@ export const farCryQuests = defineGameQuests("far-cry", [
     en: {
       name: "Know Their Weakness",
       objective:
-        "In **Far Cry 6**, scout an FND base with your phone and read the ammo weakness of three guards. Set up matching ammo at a workbench, then **capture the base with that ammo and without using a Supremo**. Notice where the prepared loadout changes your route.",
+        "In **Far Cry 6**, scout an FND base with your phone and identify one guard's ammo weakness. Fit that ammo at a workbench, then **use it on that guard and capture the base without a Supremo**. Notice whether the prepared shot changed your route.",
     },
     de: {
       name: "Kenne ihre Schwäche",
       objective:
-        "Spähe in **Far Cry 6** eine FND-Basis mit dem Handy aus und lies bei drei Wachen die Munitionsschwäche. Stelle an einer Werkbank passende Munition ein und **erobere die Basis damit, ohne einen Supremo zu nutzen**. Achte darauf, wie die vorbereitete Ausrüstung deinen Weg verändert.",
+        "Späh in **Far Cry 6** eine FND-Basis mit dem Handy aus und finde heraus, gegen welche Munition eine Wache schwach ist. Rüste sie an einer Werkbank aus. **Setz sie gegen diese Wache ein und erobere die Basis ohne Supremo**. Schau, ob dir die Vorbereitung einen anderen Weg eröffnet.",
     },
   },
 ]);

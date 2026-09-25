@@ -17,7 +17,7 @@ export const battlefieldQuests = defineGameQuests("battlefield", [
     de: {
       name: "Sicher wiederbeleben",
       objective:
-        "Spiele in **Battlefield 1 im Mehrspielermodus** Sanitäter mit Rauch und Spritze. **Versperre bei drei Squadmitgliedern die Sicht des Gegners mit Rauch, belebe sie in Deckung wieder und heile sie**, bevor du weiterziehst. Beende die Runde mit deinem Squad.",
+        "Spiel in **Battlefield 1 im Mehrspielermodus** Sanitäter mit Rauch und Spritze. Wirf bei drei gefallenen Squadmitgliedern jeweils Rauch, um Gegnern die Sicht zu nehmen. **Belebe sie in Deckung wieder und heile sie**, bevor du weiterziehst. Spiel danach die Runde mit deinem Squad zu Ende.",
     },
   },
   {
@@ -29,14 +29,14 @@ export const battlefieldQuests = defineGameQuests("battlefield", [
     minutes: 30,
     minimum: 5,
     en: {
-      name: "Tank Pit Stop",
+      name: "One Tank Repair",
       objective:
-        "In **Battlefield 4 multiplayer**, play Engineer with a repair tool and ride as a friendly tank's passenger. **Earn repair points during three separate stops in cover**, rejoining the tank after each one, then finish the round.",
+        "In **Battlefield 4 multiplayer**, play Engineer with a repair tool and ride in a friendly tank. After it takes damage, ask the driver to stop near cover. **Get out, earn repair points, and rejoin the tank**, then finish the round.",
     },
     de: {
-      name: "Boxenstopp für Panzer",
+      name: "Eine Panzerreparatur",
       objective:
-        "Spiele in **Battlefield 4 im Mehrspielermodus** Pionier mit Reparaturwerkzeug und fahre in einem verbündeten Panzer mit. **Bekomme bei drei einzelnen Stopps in Deckung Reparaturpunkte**, steige danach jeweils wieder ein und beende die Runde.",
+        "Spiele in **Battlefield 4 im Mehrspielermodus** Pionier mit Reparaturwerkzeug und fahre in einem verbündeten Panzer mit. Bitte den Fahrer nach einem Treffer, in Deckung anzuhalten. **Steig aus, repariere den Panzer und steig wieder ein**. Spiel die Runde zu Ende.",
     },
   },
   {
@@ -48,14 +48,14 @@ export const battlefieldQuests = defineGameQuests("battlefield", [
     minutes: 30,
     minimum: 5,
     en: {
-      name: "First Look",
+      name: "Drone First",
       objective:
-        "In **Battlefield 2042 Conquest**, play Casper near your squad. Fly the recon drone over the next enemy objective and **spot five defenders before your squad pushes in**, then recall the drone, join the push, and finish the round.",
+        "In **Battlefield 2042 Conquest**, play Casper near your squad. Fly the recon drone over a contested objective and **spot five enemies across the round**. Recall the drone, join a push, and stay until the round ends.",
     },
     de: {
-      name: "Der erste Blick",
+      name: "Erst die Drohne",
       objective:
-        "Spiele in **Battlefield 2042 Eroberung** Casper nahe deinem Squad. Fliege mit der Aufklärungsdrohne über das nächste feindliche Ziel und **markiere fünf Verteidiger, bevor dein Squad angreift**. Hole die Drohne zurück, greife mit an und beende die Runde.",
+        "Spiel in **Battlefield 2042 Eroberung** Casper und bleib nah bei deinem Squad. Flieg mit der Drohne über ein umkämpftes Ziel und **markiere im Lauf der Runde fünf Gegner**. Hol die Drohne zurück, greif mit an und bleib bis zum Ende dabei.",
     },
   },
   {
@@ -74,7 +74,7 @@ export const battlefieldQuests = defineGameQuests("battlefield", [
     de: {
       name: "Vormarsch versorgen",
       objective:
-        "Spiele in **Battlefield 6 im Mehrspielermodus** Support und zieh mit deinem Squad zwischen Zielen weiter. Platziere deine Versorgungstasche hinter nutzbarer Deckung und **versorge fünf Squadmitglieder an zwei umkämpften Zielen**, bevor du die Runde beendest.",
+        "Spiel in **Battlefield 6 im Mehrspielermodus** Support und zieh mit deinem Squad von Ziel zu Ziel. Leg deine Versorgungstasche hinter Deckung und **versorge an zwei umkämpften Zielen insgesamt fünf Squadmitglieder**. Spiel die Runde zu Ende.",
     },
   },
   {
@@ -93,7 +93,7 @@ export const battlefieldQuests = defineGameQuests("battlefield", [
     de: {
       name: "Pionier-Begleitung",
       objective:
-        "Spiele in **Battlefield 6 im Mehrspielermodus** Pionier und fahre in einem verbündeten Fahrzeug mit. Steige an zwei verschiedenen Zielen in Deckung aus und **erhalte Reparaturpunkte, bevor du wieder einsteigst**. Beende die Runde als Pionier.",
+        "Spiele in **Battlefield 6 im Mehrspielermodus** Pionier und fahre in einem verbündeten Fahrzeug mit. Steig an zwei verschiedenen Zielen in Deckung aus und **repariere das Fahrzeug, bevor du wieder einsteigst**. Spiel die Runde als Pionier zu Ende.",
     },
   },
   {
@@ -105,14 +105,14 @@ export const battlefieldQuests = defineGameQuests("battlefield", [
     minutes: 30,
     minimum: 5,
     en: {
-      name: "Motion Before Entry",
+      name: "Sensor on the Point",
       objective:
-        "In **Battlefield 6 multiplayer**, play Recon near your squad. Place a Motion Sensor before entering a contested objective and **spot five moving enemies while your squad attacks or defends**, then stay for the objective result.",
+        "In **Battlefield 6 multiplayer**, play Recon near your squad. Place a Motion Sensor at a contested objective and **earn a sensor spot on an enemy**. Help your squad at that point and finish the round.",
     },
     de: {
-      name: "Bewegung vor Angriff",
+      name: "Sensor am Ziel",
       objective:
-        "Spiele in **Battlefield 6 im Mehrspielermodus** Aufklärung nahe deinem Squad. Platziere vor dem Betreten eines umkämpften Ziels einen Bewegungssensor und **markiere fünf bewegte Gegner, während dein Squad angreift oder verteidigt**. Bleib bis zum Ergebnis des Ziels.",
+        "Spiele in **Battlefield 6 im Mehrspielermodus** Aufklärung und bleib in der Nähe deines Squads. Platziere einen Bewegungssensor an einem umkämpften Ziel und **lass ihn einen Gegner markieren**. Unterstütze dein Squad dort und spiel die Runde zu Ende.",
     },
   },
   {
@@ -131,7 +131,7 @@ export const battlefieldQuests = defineGameQuests("battlefield", [
     de: {
       name: "Injektion vorm Angriff",
       objective:
-        "Spiele in **Battlefield 6 im Mehrspielermodus** Sturmsoldat und nutze den Adrenalin-Injektor direkt vor dem Betreten von zwei umkämpften Zielen. Nimm jedes Mal einen anderen Eingang und **vergleiche, bei welchem Weg du länger am Ziel bleiben konntest**. Beende danach die Runde.",
+        "Spiel in **Battlefield 6 im Mehrspielermodus** Sturmsoldat. Nutz den Adrenalin-Injektor, bevor du zwei umkämpfte Ziele betrittst, und nimm jedes Mal einen anderen Eingang. **Vergleich, über welchen Weg du länger am Ziel bleiben kannst**, und spiel die Runde zu Ende.",
     },
   },
   {
@@ -145,12 +145,12 @@ export const battlefieldQuests = defineGameQuests("battlefield", [
     en: {
       name: "Change Your Role",
       objective:
-        "In **Battlefield V multiplayer**, choose the class your squad currently lacks and keep it for a full round. **Use that class's primary team tool at three different objectives**, then compare the round with your usual role.",
+        "In **Battlefield V multiplayer**, choose a class you rarely play and keep it for a full round. **Use its primary team tool at two objectives**, then compare the round with your usual role.",
     },
     de: {
       name: "Andere Rolle",
       objective:
-        "Wähle in **Battlefield V im Mehrspielermodus** die Klasse, die deinem Squad gerade fehlt, und behalte sie eine ganze Runde. **Nutze das wichtigste Teamwerkzeug der Klasse an drei verschiedenen Zielen** und vergleiche die Runde danach mit deiner üblichen Rolle.",
+        "Wähle in **Battlefield V im Mehrspielermodus** eine Klasse, die du selten spielst, und behalte sie eine ganze Runde. **Nutze ihr wichtigstes Teamwerkzeug an zwei Zielen** und vergleiche die Runde mit deiner üblichen Rolle.",
     },
   },
 ]);

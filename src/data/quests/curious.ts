@@ -12,7 +12,6 @@ export const curiousQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Different Genre",
@@ -20,7 +19,7 @@ export const curiousQuests = [
       },
       "de": {
         "name": "Ein anderes Genre",
-        "objective": "Starte **ein installiertes Spiel aus einem ungewohnten Genre**. Beginne mit der Einführung und **probiere Neues aus**. Du musst es heute noch nicht meistern."
+        "objective": "Starte **ein installiertes Spiel aus einem Genre, das du kaum spielst**. Spiel den Einstieg und **probier eine Mechanik aus, die dir neu ist**. Du musst sie heute nicht meistern."
       }
     }
   },
@@ -35,7 +34,6 @@ export const curiousQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Same Era",
@@ -43,7 +41,7 @@ export const curiousQuests = [
       },
       "de": {
         "name": "Dieselbe Epoche",
-        "objective": "Wähle **ein historisches Spiel** aus der Zeit eines kürzlich gesehenen Films oder einer Serie. **Erkunde seine Straßen, Kleidung und den Alltag**."
+        "objective": "Wähle **ein historisches Spiel**, das zur Zeit eines Films oder einer Serie spielt, die du kürzlich gesehen hast. **Schau dir Straßen, Kleidung und Alltag im Spiel an**."
       }
     }
   },
@@ -59,7 +57,6 @@ export const curiousQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Someone New",
@@ -82,7 +79,6 @@ export const curiousQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Change One Variable",
@@ -106,7 +102,6 @@ export const curiousQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Another Perspective",
@@ -114,7 +109,7 @@ export const curiousQuests = [
       },
       "de": {
         "name": "Eine andere Perspektive",
-        "objective": "Starte **ein Abenteuerspiel mit mehreren spielbaren Perspektiven**. Wähle ein freigeschaltetes Kapitel einer anderen Figur und **sieh die Welt durch ihre Augen**."
+        "objective": "Starte **ein Abenteuerspiel mit mehreren spielbaren Figuren**. Wähle ein freigeschaltetes Kapitel einer anderen Figur und **spiel es aus ihrer Perspektive**."
       }
     }
   },
@@ -129,7 +124,6 @@ export const curiousQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Break the Seal",
@@ -137,7 +131,7 @@ export const curiousQuests = [
       },
       "de": {
         "name": "Endlich anfangen",
-        "objective": "Wähle **ein installiertes Spiel, das du noch nie gestartet hast**. Beginne auf dem Standardschwierigkeitsgrad, passe Barrierefreiheitsoptionen nach Bedarf an und entdecke in dieser Session seine Einführung. Spiele nur weiter, solange du neugierig bist."
+        "objective": "Wähle **ein installiertes Spiel, das du noch nie gestartet hast**. Starte mit dem normalen Schwierigkeitsgrad, passe Barrierefreiheitsoptionen bei Bedarf an und spiel den Einstieg. Mach nur weiter, solange du neugierig bist."
       }
     }
   },
@@ -153,7 +147,6 @@ export const curiousQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Forgotten Install",

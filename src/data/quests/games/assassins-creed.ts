@@ -17,7 +17,7 @@ export const assassinsCreedQuests = defineGameQuests("assassins-creed", [
     de: {
       name: "Von Deck zu Deck",
       objective:
-        "Setze in **Assassin's Creed IV: Black Flag** mit freigeschalteter Jackdaw einen feindlichen Schoner außer Gefecht. Schwing dich am Seil an Bord und **erfülle die Enterziele nur mit Schwertern und versteckter Klinge**. Nach Erfolg oder drei Enterversuchen ist Schluss.",
+        "Setz in **Assassin's Creed IV: Black Flag** mit der freigeschalteten Jackdaw einen feindlichen Schoner außer Gefecht. Schwing dich an Bord und **schaff alle Enterziele nur mit Schwertern und versteckter Klinge**. Hör nach dem Erfolg oder drei Enterversuchen auf.",
     },
   },
   {
@@ -63,7 +63,7 @@ export const assassinsCreedQuests = defineGameQuests("assassins-creed", [
     installments: ["ac-valhalla"],
     moods: ["curious", "focused"],
     type: "experiment",
-    tags: ["one-round", "new-approach"],
+    tags: ["new-approach"],
     minutes: 20,
     minimum: 3,
     en: {
@@ -74,7 +74,7 @@ export const assassinsCreedQuests = defineGameQuests("assassins-creed", [
     de: {
       name: "Andere Gunst",
       objective:
-        "Starte in **Assassin's Creed Valhalla** eine Orlog-Partie mit drei freigeschalteten Göttergunsten. Wähle eine selten genutzte Gunst und aktiviere sie mindestens einmal. **Beende die Partie und achte darauf, welche Token-Würfel dadurch wertvoller wurden**.",
+        "Spiel in **Assassin's Creed Valhalla** eine Partie Orlog mit drei freigeschalteten Göttergunsten. Nimm eine Gunst, die du selten nutzt, und aktiviere sie mindestens einmal. **Spiel die Partie zu Ende und achte darauf, welche Würfel dadurch nützlicher werden**.",
     },
   },
 ]);

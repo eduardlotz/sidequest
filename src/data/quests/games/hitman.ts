@@ -1,5 +1,8 @@
 import { defineGameQuests } from "../defineGameQuests";
 
+// Guided stories with their guidance turned off, from player challenge ideas:
+// https://www.reddit.com/r/HiTMAN/comments/qeqd11/
+
 const trilogy = ["hitman-1", "hitman-2", "hitman-3"];
 
 export const hitmanQuests = defineGameQuests("hitman", [
@@ -19,7 +22,7 @@ export const hitmanQuests = defineGameQuests("hitman", [
     de: {
       name: "Leere Taschen",
       objective:
-        "Wiederhole in **HITMAN 1, 2 oder 3** eine abgeschlossene Kampagnenmission am Standard-Startpunkt mit leeren Ausrüstungs- und Schmuggelplätzen. **Erledige die Ziele nur mit vor Ort gefundenen Gegenständen und verlasse die Karte, ohne Nicht-Ziele zu töten**. Nach Erfolg oder drei Versuchen ist Schluss.",
+        "Wiederhole in **HITMAN 1, 2 oder 3** eine abgeschlossene Kampagnenmission vom Standard-Startpunkt aus, ohne Ausrüstung oder Schmuggelware mitzunehmen. **Erledige die Ziele nur mit Gegenständen, die du vor Ort findest, und entkomme, ohne andere Personen zu töten**. Hör nach dem Erfolg oder drei Versuchen auf.",
     },
   },
   {
@@ -27,7 +30,7 @@ export const hitmanQuests = defineGameQuests("hitman", [
     installments: trilogy,
     moods: ["focused", "challenge"],
     type: "challenge",
-    tags: ["stealth", "no-detection"],
+    tags: ["stealth", "three-attempts"],
     minutes: 30,
     minimum: 5,
     en: {
@@ -76,7 +79,24 @@ export const hitmanQuests = defineGameQuests("hitman", [
     de: {
       name: "Der Story folgen",
       objective:
-        "Starte in **HITMAN 1, 2 oder 3** eine noch nicht gespielte Kampagnenmission mit aktivierter Missionsstory-Führung. Folge einer Story-Spur und lass dir den Ort durch ihre Gespräche und Gelegenheiten zeigen, bevor du den Rest improvisierst.",
+        "Starte in **HITMAN 1, 2 oder 3** eine Kampagnenmission, die du noch nicht gespielt hast, mit eingeschalteter Missionsstory-Führung. Folge einer Story-Spur und hör auf die Gespräche, die dich zur nächsten Gelegenheit führen. Den Rest kannst du improvisieren.",
+    },
+  },
+  {
+    id: "story-without-guidance",
+    installments: trilogy,
+    moods: ["challenge", "focused"],
+    type: "challenge",
+    tags: ["no-hints", "three-attempts"],
+    minutes: 35,
+    minimum: 5,
+    en: {
+      name: "Follow the Clues",
+      objective: "In **HITMAN 1, 2, or 3**, replay a completed mission with Mission Story guidance off. Follow a story lead through conversations and clues, then **use its opportunity on one target, finish the other targets, and exit**. Stop after success or three attempts.",
+    },
+    de: {
+      name: "Den Hinweisen folgen",
+      objective: "Wiederhole in **HITMAN 1, 2 oder 3** eine abgeschlossene Mission ohne Missionsstory-Führung. Hör Gesprächen zu und folge den Hinweisen einer Story-Spur. **Nutze ihre Gelegenheit für ein Ziel, erledige die übrigen und entkomme**. Hör nach dem Erfolg oder drei Versuchen auf.",
     },
   },
 ]);

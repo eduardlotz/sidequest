@@ -12,7 +12,6 @@ type Props = {
   unknown?: boolean;
   bestTimeMs?: number | null;
   game: GameReference | null;
-  genres: readonly string[];
   type: QuestTypeId;
   tags: readonly QuestTagId[];
   minimumDurationMinutes: number;
@@ -27,7 +26,6 @@ export function QuestCardFront({
   unknown = false,
   bestTimeMs,
   game,
-  genres,
   type,
   tags,
   minimumDurationMinutes,
@@ -41,9 +39,7 @@ export function QuestCardFront({
   const language = i18n.resolvedLanguage?.startsWith("de") ? "de" : "en";
   const labels = [
     QUEST_TYPES[type].title[language],
-    ...Array.from(
-      new Set([...tags.map((tag) => QUEST_TAGS[tag][language]), ...genres]),
-    ).slice(0, 2),
+    ...Array.from(new Set(tags.map((tag) => QUEST_TAGS[tag][language]))).slice(0, 2),
   ];
   return (
     <>

@@ -521,7 +521,9 @@ function QuestOfferCard({
                 x: drag.x,
                 y: drag.y,
                 rotate: isCompact ? drag.rotate : 0,
-                ...(isCompact ? {} : { rotateX, rotateY }),
+                ...(isCompact
+                  ? {}
+                  : { rotateX, rotateY, transformPerspective: 1_400 }),
               }}
             >
               <motion.span
@@ -562,7 +564,6 @@ function QuestOfferCard({
                 <QuestCard
                   bestTimeMs={personalBest}
                   className={`${styles.questSelectionCard} ${styles.newCardsCardFront}`}
-                  genres={item.genres}
                   type={item.type}
                   tags={item.tags}
                   game={item.game}

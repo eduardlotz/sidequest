@@ -74,6 +74,7 @@ export const QUEST_TAGS = {
   parry: { en: "Parrying", de: "Parieren" },
   "three-attempts": { en: "Up to 3 attempts", de: "Bis zu 3 Versuche" },
   "one-round": { en: "One round", de: "Eine Runde" },
+  "two-rounds": { en: "Two rounds", de: "Zwei Runden" },
   "one-life": { en: "One life", de: "Ein Leben" },
   "no-hints": { en: "No hints", de: "Ohne Hinweise" },
   puzzles: { en: "Puzzles", de: "Rätsel" },

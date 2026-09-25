@@ -13,7 +13,6 @@ export const exploreQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Side Street",
@@ -37,7 +36,6 @@ export const exploreQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Deep Dive",
@@ -45,7 +43,7 @@ export const exploreQuests = [
       },
       "de": {
         "name": "Tauchgang",
-        "objective": "Starte **ein Spiel mit Unterwasser-Erkundung**. Verlasse die Gewässer um deine Basis und **folge einem unbekannten Riff oder Tunnel**. Kehre um, bevor die Luft knapp wird."
+        "objective": "Starte **ein Spiel mit Unterwasser-Erkundung**. Schwimm von deiner Basis weg und **folge einem Riff oder Tunnel, den du noch nicht kennst**. Kehr um, bevor dir die Luft ausgeht."
       }
     }
   },
@@ -60,7 +58,6 @@ export const exploreQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Beyond That Door",
@@ -68,7 +65,7 @@ export const exploreQuests = [
       },
       "de": {
         "name": "Hinter der Tür",
-        "objective": "Starte ein Spiel mit **markierten unerforschten Ausgängen auf der Karte**. Betritt den nächsten erreichbaren neuen Raum und **finde seinen nächsten Ausgang**, bevor du wieder die Karte öffnest."
+        "objective": "Starte ein Spiel, dessen Karte **einen noch unerforschten Ausgang** zeigt. Geh durch den nächsten erreichbaren Ausgang und **finde einen Weg aus dem neuen Raum**, bevor du wieder auf die Karte schaust."
       }
     }
   },
@@ -84,7 +81,6 @@ export const exploreQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Over the Rooftops",
@@ -92,7 +88,7 @@ export const exploreQuests = [
       },
       "de": {
         "name": "Über die Dächer",
-        "objective": "Starte **ein Stadtspiel mit erkletterbaren Gebäuden**. Steig auf ein unbekanntes Dach, **wechsle auf ein zweites Gebäude** und suche einen Abstieg."
+        "objective": "Starte **ein Stadtspiel, in dem du auf Gebäude klettern kannst**. Steig auf ein Dach, auf dem du noch nicht warst, **gelang von dort auf ein zweites Gebäude** und such einen Weg nach unten."
       }
     }
   },
@@ -108,7 +104,6 @@ export const exploreQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Next Stop",
@@ -116,7 +111,7 @@ export const exploreQuests = [
       },
       "de": {
         "name": "Nächste Haltestelle",
-        "objective": "Starte ein Spiel mit **Nahverkehr und erkundbaren Haltestellen**. Nimm eine unbekannte Linie und steige an einem neuen Ort aus. **Streife durch die umliegenden Straßen**."
+        "objective": "Starte ein Spiel, in dem du **mit Bus oder Bahn neue Orte erreichen kannst**. Nimm eine Linie, die du noch nicht kennst, steig an einer neuen Haltestelle aus und **schau dich in den Straßen dort um**."
       }
     }
   },

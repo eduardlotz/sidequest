@@ -38,6 +38,59 @@ function game(
 // A series match must work across its supported installments; tags never opt in.
 export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
   game(
+    "stardew-valley",
+    "Stardew Valley",
+    [
+      "going-fishing", "fish-two-waters", "first-recipe", "cook-a-new-dish",
+      "one-patch-at-a-time", "care-first", "plant-a-small-row",
+      "garden-pattern", "animals-off-the-clock", "fish-at-home",
+    ],
+  ),
+  game(
+    "the-sims",
+    "The Sims",
+    [
+      "build-a-memory", "two-color-look",
+    ],
+    [
+      { id: "sims-3", name: "The Sims 3" },
+      { id: "sims-4", name: "The Sims 4" },
+    ],
+  ),
+  game(
+    "animal-crossing",
+    "Animal Crossing",
+    [
+      "going-fishing", "fish-two-waters", "two-color-look",
+    ],
+    [
+      { id: "new-leaf", name: "New Leaf" },
+      { id: "new-horizons", name: "New Horizons" },
+    ],
+  ),
+  game(
+    "baldurs-gate-3",
+    "Baldur’s Gate 3",
+    [
+      "main-mission", "story-without-rushing", "one-slot-swap",
+      "spell-single-school", "spell-new-opener", "spells-two-openers",
+      "lore-follow-a-reference", "dialogue-follow-a-topic",
+      "trade-three-kinds",
+    ],
+  ),
+  game(
+    "zelda",
+    "The Legend of Zelda",
+    [
+      "a-little-walk", "beyond-the-map", "movement-new-line",
+      "movement-two-approaches", "open-world-follow-the-edge",
+    ],
+    [
+      { id: "botw", name: "Breath of the Wild" },
+      { id: "totk", name: "Tears of the Kingdom" },
+    ],
+  ),
+  game(
     "no-mans-sky",
     "No Man’s Sky",
     [
@@ -83,7 +136,6 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
       "fish-two-waters",
       "first-recipe",
       "one-patch-at-a-time",
-      "care-first",
       "starter-gear",
       "one-slot-swap",
       "open-world-follow-the-edge",
@@ -102,7 +154,6 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
       "a-little-walk",
       "beyond-the-map",
       "main-mission",
-      "one-level-no-detours",
       "starter-gear",
       "one-slot-swap",
       "quiet-entry-exit",
@@ -129,7 +180,6 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
       "a-little-walk",
       "beyond-the-map",
       "main-mission",
-      "one-level-no-detours",
       "starter-gear",
       "one-slot-swap",
       "hunt-single-species",
@@ -244,7 +294,6 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
       "a-little-walk",
       "beyond-the-map",
       "main-mission",
-      "one-level-no-detours",
       "starter-gear",
       "one-slot-swap",
       "quiet-entry-exit",
@@ -295,7 +344,6 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
       "a-little-walk",
       "beyond-the-map",
       "main-mission",
-      "one-level-no-detours",
       "starter-gear",
       "one-slot-swap",
       "quiet-entry-exit",
@@ -351,7 +399,6 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
     "HITMAN",
     [
       "main-mission",
-      "one-level-no-detours",
       "one-slot-swap",
       "quiet-entry-exit",
       "watch-one-patrol",

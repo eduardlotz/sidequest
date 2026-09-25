@@ -8,7 +8,6 @@ export const reusableQuests = [
     tags: ["free-roam", "on-foot"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "A Little Walk",
@@ -20,9 +19,9 @@ export const reusableQuests = [
       de: {
         name: "Ein kleiner Spaziergang",
         objective:
-          "Starte ein **frei erkundbares Spiel**. Spaziere durch einen Ort, den du magst, und **folge der Umgebung statt Zielen**. Geh dorthin, wo es interessant aussieht.",
+          "Starte ein **Spiel mit offener Welt**. Geh an einen Ort, den du magst, und **schau dich dort um, statt einem Ziel zu folgen**. Lauf weiter, wenn dich etwas neugierig macht.",
         gameObjective:
-          "Starte **{{game}}**. Spaziere durch einen Ort, den du magst, und **folge der Umgebung statt Zielen**. Geh dorthin, wo es interessant aussieht.",
+          "Starte **{{game}}**. Geh an einen Ort, den du magst, und **schau dich dort um, statt einem Ziel zu folgen**. Lauf weiter, wenn dich etwas neugierig macht.",
       },
     },
     customGameCompatibility: {
@@ -36,7 +35,6 @@ export const reusableQuests = [
     tags: ["exploration", "on-foot"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 20,
-    genres: [],
     translations: {
       en: {
         name: "Beyond the Map",
@@ -46,11 +44,11 @@ export const reusableQuests = [
           "Open **{{game}}**. Pick an unvisited landmark and **find your own way there and back**. Use the world around you to navigate.",
       },
       de: {
-        name: "Hinter der Karte",
+        name: "Abseits der Karte",
         objective:
-          "Starte ein **frei erkundbares Spiel**. Wähle einen unbekannten Orientierungspunkt und **finde selbst einen Weg hin und zurück**. Orientiere dich an der Umgebung.",
+          "Starte ein **frei erkundbares Spiel**. Such dir einen Ort, an dem du noch nicht warst, und **find selbst einen Weg hin und zurück**. Orientier dich an dem, was du in der Spielwelt siehst.",
         gameObjective:
-          "Starte **{{game}}**. Wähle einen unbekannten Orientierungspunkt und **finde selbst einen Weg hin und zurück**. Orientiere dich an der Umgebung.",
+          "Starte **{{game}}**. Such dir einen Ort, an dem du noch nicht warst, und **find selbst einen Weg hin und zurück**. Orientier dich an dem, was du in der Spielwelt siehst.",
       },
     },
     customGameCompatibility: {
@@ -64,7 +62,6 @@ export const reusableQuests = [
     tags: ["current-save"],
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 30,
-    genres: [],
     translations: {
       en: {
         name: "Move the Story",
@@ -92,25 +89,17 @@ export const reusableQuests = [
     tags: ["current-save"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "Straight to the Exit",
         objective:
           "Open a **game with short missions or levels**. Start a short mission or level and **follow the main route to the end**. Skip optional rooms and collectibles.",
-        gameObjective:
-          "Open **{{game}}**. Start a short mission or level and **follow the main route to the end**. Skip optional rooms and collectibles.",
       },
       de: {
         name: "Direkt zum Ausgang",
         objective:
-          "Starte ein **Spiel mit kurzen Missionen oder Leveln**. Starte eine kurze Mission oder ein Level und **folge dem Hauptweg bis zum Ende**. Lass optionale Räume und Sammelobjekte aus.",
-        gameObjective:
-          "Starte **{{game}}**. Starte eine kurze Mission oder ein Level und **folge dem Hauptweg bis zum Ende**. Lass optionale Räume und Sammelobjekte aus.",
+          "Starte ein **Spiel mit kurzen Missionen oder Leveln**. Wähle eine kurze Mission oder ein Level und **bleib bis zum Ende auf dem Hauptweg**. Optionale Räume und Sammelobjekte lässt du aus.",
       },
-    },
-    customGameCompatibility: {
-      capabilityIds: ["missions-or-levels"],
     },
   },
   {
@@ -120,7 +109,6 @@ export const reusableQuests = [
     tags: ["one-round"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "One Round",
@@ -132,9 +120,9 @@ export const reusableQuests = [
       de: {
         name: "Eine Runde",
         objective:
-          "Starte ein **vertrautes Spiel mit kurzen Runden**. Behalte dein Setup und **spiele eine volle, eigenständige Runde**. Nimm das Ergebnis an und hör danach auf.",
+          "Starte ein **vertrautes Spiel mit kurzen Runden**. Behalte dein Setup und **spiel eine ganze Runde**. Nimm das Ergebnis an und hör danach auf.",
         gameObjective:
-          "Starte **{{game}}**. Behalte dein Setup und **spiele eine volle, eigenständige Runde**. Nimm das Ergebnis an und hör danach auf.",
+          "Starte **{{game}}**. Behalte dein Setup und **spiel eine ganze Runde**. Nimm das Ergebnis an und hör danach auf.",
       },
     },
     customGameCompatibility: {
@@ -145,10 +133,9 @@ export const reusableQuests = [
     id: "quick-matches",
     moodIds: ["restless"],
     type: "objective",
-    tags: ["one-round"],
+    tags: ["two-rounds"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "Straight In",
@@ -160,9 +147,9 @@ export const reusableQuests = [
       de: {
         name: "Direkt rein",
         objective:
-          "Starte ein **Spiel mit kurzen Runden**. Nimm einen bekannten Modus und **spiele zwei eigenständige Runden direkt hintereinander**. Behalte dasselbe Setup.",
+          "Starte ein **Spiel mit kurzen Runden**. Nimm einen bekannten Modus und **spiel zwei Runden direkt hintereinander**. Behalte dasselbe Setup.",
         gameObjective:
-          "Starte **{{game}}**. Nimm einen bekannten Modus und **spiele zwei eigenständige Runden direkt hintereinander**. Behalte dasselbe Setup.",
+          "Starte **{{game}}**. Nimm einen bekannten Modus und **spiel zwei Runden direkt hintereinander**. Behalte dasselbe Setup.",
       },
     },
     customGameCompatibility: {
@@ -176,7 +163,6 @@ export const reusableQuests = [
     tags: ["one-weapon", "three-attempts"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "One Weapon",
@@ -204,7 +190,6 @@ export const reusableQuests = [
     tags: ["loadout", "new-approach"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "Weapon Swap",
@@ -229,10 +214,9 @@ export const reusableQuests = [
     id: "spell-single-school",
     moodIds: ["challenge", "focused"],
     type: "challenge",
-    tags: ["spells", "one-weapon"],
+    tags: ["spells", "three-attempts"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "One Spell Only",
@@ -244,9 +228,9 @@ export const reusableQuests = [
       de: {
         name: "Nur ein Zauber",
         objective:
-          "Starte ein **Spiel mit Schadenszaubern**. Wähle einen Zauber und **gewinne einen Kampf nur mit dessen Schaden**. Nach Erfolg oder drei Versuchen ist Schluss.",
+          "Starte ein **Spiel mit Schadenszaubern**. Wähle einen Zauber und **gewinn einen Kampf, indem du nur mit diesem Zauber Schaden machst**. Hör nach dem Sieg oder drei Versuchen auf.",
         gameObjective:
-          "Starte **{{game}}**. Wähle einen Zauber und **gewinne einen Kampf nur mit dessen Schaden**. Nach Erfolg oder drei Versuchen ist Schluss.",
+          "Starte **{{game}}**. Wähle einen Zauber und **gewinn einen Kampf, indem du nur mit diesem Zauber Schaden machst**. Hör nach dem Sieg oder drei Versuchen auf.",
       },
     },
     customGameCompatibility: {
@@ -260,7 +244,6 @@ export const reusableQuests = [
     tags: ["spells", "new-approach"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "A Different Spell",
@@ -288,7 +271,6 @@ export const reusableQuests = [
     tags: ["space", "exploration"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 25,
-    genres: [],
     translations: {
       en: {
         name: "Two Worlds",
@@ -316,7 +298,6 @@ export const reusableQuests = [
     tags: ["diving"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "Under and Back",
@@ -328,9 +309,9 @@ export const reusableQuests = [
       de: {
         name: "Hin, runter, zurück",
         objective:
-          "Starte ein **Spiel mit Schwimmen und Tauchen**. Wähle einen sichtbaren Punkt auf der anderen Wasserseite. **Schwimme hin, tauche ab und kehre zurück**.",
+          "Starte ein **Spiel mit Schwimmen und Tauchen**. Such dir einen Punkt auf der anderen Seite des Wassers. **Schwimm hin, tauch dort ab und kehr wieder zurück**.",
         gameObjective:
-          "Starte **{{game}}**. Wähle einen sichtbaren Punkt auf der anderen Wasserseite. **Schwimme hin, tauche ab und kehre zurück**.",
+          "Starte **{{game}}**. Such dir einen Punkt auf der anderen Seite des Wassers. **Schwimm hin, tauch dort ab und kehr wieder zurück**.",
       },
     },
     customGameCompatibility: {
@@ -344,7 +325,6 @@ export const reusableQuests = [
     tags: ["boss", "three-attempts"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 20,
-    genres: [],
     translations: {
       en: {
         name: "Read the Boss",
@@ -356,9 +336,9 @@ export const reusableQuests = [
       de: {
         name: "Den Boss lesen",
         objective:
-          "Starte ein **Spiel mit wiederholbaren Bosskämpfen**. Probiere eine neue Reaktion auf einen Angriff, der dich oft trifft. **Besiege den Boss oder beende drei Versuche**.",
+          "Starte ein **Spiel mit wiederholbaren Bosskämpfen**. Nimm dir einen Angriff vor, der dich oft trifft, und probier eine andere Reaktion darauf. **Besieg den Boss oder hör nach drei Versuchen auf**.",
         gameObjective:
-          "Starte **{{game}}**. Probiere eine neue Reaktion auf einen Angriff, der dich oft trifft. **Besiege den Boss oder beende drei Versuche**.",
+          "Starte **{{game}}**. Nimm dir einen Angriff vor, der dich oft trifft, und probier eine andere Reaktion darauf. **Besieg den Boss oder hör nach drei Versuchen auf**.",
       },
     },
     customGameCompatibility: {
@@ -372,7 +352,6 @@ export const reusableQuests = [
     tags: ["stealth", "no-detection"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "In and Out",
@@ -384,9 +363,9 @@ export const reusableQuests = [
       de: {
         name: "Rein und raus",
         objective:
-          "Starte ein **Spiel mit Schleichen**. Wähle eine bewachte Tür oder Passage. **Schleiche hin und zurück, ohne anzugreifen**. Nach Erfolg oder drei Versuchen ist Schluss.",
+          "Starte ein **Spiel mit Schleichen**. Wähle eine bewachte Tür oder Passage. **Schleich ungesehen hindurch und wieder zurück, ohne anzugreifen**. Nach Erfolg oder drei Versuchen ist Schluss.",
         gameObjective:
-          "Starte **{{game}}**. Wähle eine bewachte Tür oder Passage. **Schleiche hin und zurück, ohne anzugreifen**. Nach Erfolg oder drei Versuchen ist Schluss.",
+          "Starte **{{game}}**. Wähle eine bewachte Tür oder Passage. **Schleich ungesehen hindurch und wieder zurück, ohne anzugreifen**. Nach Erfolg oder drei Versuchen ist Schluss.",
       },
     },
     customGameCompatibility: {
@@ -400,7 +379,6 @@ export const reusableQuests = [
     tags: ["stealth", "new-approach"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "Watch the Patrol",
@@ -412,9 +390,9 @@ export const reusableQuests = [
       de: {
         name: "Die Patrouille",
         objective:
-          "Starte ein **Spiel mit patrouillierenden Wachen**. Beobachte eine Patrouille aus der Deckung und suche eine Lücke. **Schleiche durch sie ungesehen vorbei**.",
+          "Starte ein **Spiel mit patrouillierenden Wachen**. Beobachte eine Patrouille aus der Deckung. Wenn sich eine Lücke auftut, **schleich ungesehen an ihr vorbei**.",
         gameObjective:
-          "Starte **{{game}}**. Beobachte eine Patrouille aus der Deckung und suche eine Lücke. **Schleiche durch sie ungesehen vorbei**.",
+          "Starte **{{game}}**. Beobachte eine Patrouille aus der Deckung. Wenn sich eine Lücke auftut, **schleich ungesehen an ihr vorbei**.",
       },
     },
     customGameCompatibility: {
@@ -428,7 +406,6 @@ export const reusableQuests = [
     tags: ["puzzles", "no-hints"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 20,
-    genres: [],
     translations: {
       en: {
         name: "No Hints",
@@ -456,7 +433,6 @@ export const reusableQuests = [
     tags: ["puzzles", "no-timer"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "One Puzzle",
@@ -484,7 +460,6 @@ export const reusableQuests = [
     tags: ["building"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 20,
-    genres: [],
     translations: {
       en: {
         name: "Three Materials",
@@ -512,7 +487,6 @@ export const reusableQuests = [
     tags: ["building"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 20,
-    genres: [],
     translations: {
       en: {
         name: "Room from Memory",
@@ -524,9 +498,9 @@ export const reusableQuests = [
       de: {
         name: "Raum aus Erinnerung",
         objective:
-          "Starte ein **Spiel mit freiem Bauen**. Baue grob einen Raum nach, den du kennst. **Füge die Türöffnung hinzu und speichere den Bau**. Halte die Details einfach.",
+          "Starte ein **Spiel mit freiem Bauen**. Bau einen Raum nach, an den du dich gut erinnerst. **Setz die Tür an die richtige Stelle und speichere den Bau**. Die kleinen Details können warten.",
         gameObjective:
-          "Starte **{{game}}**. Baue grob einen Raum nach, den du kennst. **Füge die Türöffnung hinzu und speichere den Bau**. Halte die Details einfach.",
+          "Starte **{{game}}**. Bau einen Raum nach, an den du dich gut erinnerst. **Setz die Tür an die richtige Stelle und speichere den Bau**. Die kleinen Details können warten.",
       },
     },
     customGameCompatibility: {
@@ -540,7 +514,6 @@ export const reusableQuests = [
     tags: ["crafting"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "From Storage",
@@ -568,7 +541,6 @@ export const reusableQuests = [
     tags: ["crafting", "new-approach"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "Unused Recipe",
@@ -596,7 +568,6 @@ export const reusableQuests = [
     tags: ["fishing"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "Three Fish",
@@ -624,7 +595,6 @@ export const reusableQuests = [
     tags: ["fishing", "exploration"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "Another Fishing Spot",
@@ -652,7 +622,6 @@ export const reusableQuests = [
     tags: ["cooking"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "From the Pantry",
@@ -680,7 +649,6 @@ export const reusableQuests = [
     tags: ["cooking", "new-approach"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "A New Dish",
@@ -708,7 +676,6 @@ export const reusableQuests = [
     tags: ["farming"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "One Patch",
@@ -736,7 +703,6 @@ export const reusableQuests = [
     tags: ["animals"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "Feeding Time",
@@ -764,7 +730,6 @@ export const reusableQuests = [
     tags: ["driving", "new-approach"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "The Same Road",
@@ -789,10 +754,9 @@ export const reusableQuests = [
     id: "drive-clean",
     moodIds: ["focused"],
     type: "challenge",
-    tags: ["racing"],
+    tags: ["racing", "three-attempts"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 25,
-    genres: [],
     translations: {
       en: {
         name: "A Clean Race",
@@ -804,9 +768,9 @@ export const reusableQuests = [
       de: {
         name: "Ein sauberes Rennen",
         objective:
-          "Starte ein **Rennspiel**. Wähle eine vertraute Strecke und **beende ein Rennen ohne Berührung von Begrenzungen oder Autos**. Nach Erfolg oder drei Rennen ist Schluss.",
+          "Starte ein **Rennspiel**. Nimm eine Strecke, die du kennst, und **fahr ein Rennen zu Ende, ohne Leitplanken oder andere Autos zu berühren**. Hör nach dem Erfolg oder drei Rennen auf.",
         gameObjective:
-          "Starte **{{game}}**. Wähle eine vertraute Strecke und **beende ein Rennen ohne Berührung von Begrenzungen oder Autos**. Nach Erfolg oder drei Rennen ist Schluss.",
+          "Starte **{{game}}**. Nimm eine Strecke, die du kennst, und **fahr ein Rennen zu Ende, ohne Leitplanken oder andere Autos zu berühren**. Hör nach dem Erfolg oder drei Rennen auf.",
       },
     },
     customGameCompatibility: {
@@ -820,7 +784,6 @@ export const reusableQuests = [
     tags: ["traversal", "new-approach"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "A New Way Up",
@@ -848,7 +811,6 @@ export const reusableQuests = [
     tags: ["outfit", "two-colors"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "Two Colors",
@@ -876,7 +838,6 @@ export const reusableQuests = [
     tags: ["photography"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "Three Angles",
@@ -904,7 +865,6 @@ export const reusableQuests = [
     tags: ["photography"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "A Small Detail",
@@ -932,7 +892,6 @@ export const reusableQuests = [
     tags: ["co-op", "support"],
     minimumDurationMinutes: 5,
     suggestedDurationMinutes: 45,
-    genres: [],
     translations: {
       en: {
         name: "Stay Together",
@@ -944,9 +903,9 @@ export const reusableQuests = [
       de: {
         name: "Zusammenbleiben",
         objective:
-          "Starte ein **Online-Teamspiel**. Schließe dich einem Teammitglied am Ziel an. **Hilf gemeinsam bis zum Zielabschluss oder Rundenende**.",
+          "Starte ein **Online-Teamspiel**. Schließe dich einem Teammitglied am Ziel an. **Unterstütze dein Teammitglied, bis das Ziel geschafft oder die Runde vorbei ist**.",
         gameObjective:
-          "Starte **{{game}}**. Schließe dich einem Teammitglied am Ziel an. **Hilf gemeinsam bis zum Zielabschluss oder Rundenende**.",
+          "Starte **{{game}}**. Schließe dich einem Teammitglied am Ziel an. **Unterstütze dein Teammitglied, bis das Ziel geschafft oder die Runde vorbei ist**.",
       },
     },
     customGameCompatibility: {
@@ -960,7 +919,6 @@ export const reusableQuests = [
     tags: ["local-play"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 25,
-    genres: [],
     translations: {
       en: {
         name: "Three Turns Each",
@@ -988,7 +946,6 @@ export const reusableQuests = [
     tags: ["collectibles"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 20,
-    genres: [],
     translations: {
       en: {
         name: "One Gap Less",
@@ -1016,7 +973,6 @@ export const reusableQuests = [
     tags: ["dialogue", "story"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "Hear Them Out",
@@ -1028,9 +984,9 @@ export const reusableQuests = [
       de: {
         name: "Erst mal zuhören",
         objective:
-          "Starte ein **Spiel mit optionalen Dialogen oder Storyeinträgen**. Wähle ein ungelesenes Gespräch oder einen offenen Storyeintrag und **lies oder hör bis zum Ende**.",
+          "Starte ein **Spiel mit optionalen Dialogen oder Storyeinträgen**. Such dir ein optionales Gespräch oder einen Storyeintrag, den du noch nicht kennst, und **hör oder lies ihn bis zum Ende**.",
         gameObjective:
-          "Starte **{{game}}**. Wähle ein ungelesenes Gespräch oder einen offenen Storyeintrag und **lies oder hör bis zum Ende**.",
+          "Starte **{{game}}**. Such dir ein optionales Gespräch oder einen Storyeintrag, den du noch nicht kennst, und **hör oder lies ihn bis zum Ende**.",
       },
     },
     customGameCompatibility: {
@@ -1044,7 +1000,6 @@ export const reusableQuests = [
     tags: ["trading"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "Sell and Replace",
@@ -1056,9 +1011,9 @@ export const reusableQuests = [
       de: {
         name: "Verkaufen und ersetzen",
         objective:
-          "Starte ein **Spiel mit Händlern**. Besuche einen nahen Händler und **verkaufe drei ungenutzte Items**. Kaufe von dem Erlös ein neues Item beim nächsten Händler.",
+          "Starte ein **Spiel mit Händlern**. Verkauf bei einem Händler **drei Items, die du nicht mehr brauchst**. Kauf dir vom Erlös bei einem anderen Händler etwas Neues.",
         gameObjective:
-          "Starte **{{game}}**. Besuche einen nahen Händler und **verkaufe drei ungenutzte Items**. Kaufe von dem Erlös ein neues Item beim nächsten Händler.",
+          "Starte **{{game}}**. Verkauf bei einem Händler **drei Items, die du nicht mehr brauchst**. Kauf dir vom Erlös bei einem anderen Händler etwas Neues.",
       },
     },
     customGameCompatibility: {
@@ -1072,7 +1027,6 @@ export const reusableQuests = [
     tags: ["hunting"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 20,
-    genres: [],
     translations: {
       en: {
         name: "One Species",
@@ -1084,9 +1038,9 @@ export const reusableQuests = [
       de: {
         name: "Eine Tierart",
         objective:
-          "Starte ein **Spiel mit Jagd**. Das erste jagdbare Tier bestimmt die Art. **Erlege zwei Tiere dieser Art und sammle ihr Material**.",
+          "Starte ein **Spiel mit Jagd**. Das erste Tier, das du jagen kannst, bestimmt die Art. **Erleg zwei Tiere dieser Art und sammle ihre Materialien**.",
         gameObjective:
-          "Starte **{{game}}**. Das erste jagdbare Tier bestimmt die Art. **Erlege zwei Tiere dieser Art und sammle ihr Material**.",
+          "Starte **{{game}}**. Das erste Tier, das du jagen kannst, bestimmt die Art. **Erleg zwei Tiere dieser Art und sammle ihre Materialien**.",
       },
     },
     customGameCompatibility: {
@@ -1100,7 +1054,6 @@ export const reusableQuests = [
     tags: ["new-approach"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "Let Them Lead",
@@ -1112,9 +1065,9 @@ export const reusableQuests = [
       de: {
         name: "Begleiter zuerst",
         objective:
-          "Starte ein **Spiel mit einem Tierbegleiter im Kampf**. Lass deinen Tierbegleiter den nächsten Kampf beginnen und greife danach ein. **Beendet den Kampf gemeinsam**.",
+          "Starte ein **Spiel mit einem Tierbegleiter im Kampf**. Lass deinen Tierbegleiter den nächsten Kampf eröffnen und greif danach ein. **Gewinnt den Kampf zusammen**.",
         gameObjective:
-          "Starte **{{game}}**. Lass deinen Tierbegleiter den nächsten Kampf beginnen und greife danach ein. **Beendet den Kampf gemeinsam**.",
+          "Starte **{{game}}**. Lass deinen Tierbegleiter den nächsten Kampf eröffnen und greif danach ein. **Gewinnt den Kampf zusammen**.",
       },
     },
     customGameCompatibility: {
@@ -1128,7 +1081,6 @@ export const reusableQuests = [
   //   tags: ["skating", "new-approach"],
   //   minimumDurationMinutes: 2,
   //   suggestedDurationMinutes: 15,
-  //   genres: [],
   //   translations: {
   //     en: {
   //       name: "Three Flips",
@@ -1156,7 +1108,6 @@ export const reusableQuests = [
     tags: ["vs-bots", "three-attempts"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 20,
-    genres: [],
     translations: {
       en: {
         name: "Two Points Ahead",
@@ -1184,7 +1135,6 @@ export const reusableQuests = [
     tags: ["extraction"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 25,
-    genres: [],
     translations: {
       en: {
         name: "Three Containers",
@@ -1196,9 +1146,9 @@ export const reusableQuests = [
       de: {
         name: "Drei Behälter",
         objective:
-          "Starte ein **Solo-Extraktionsspiel**. Starte mit deiner üblichen Ausrüstung. Plündere nur die **ersten drei Behälter** und **extrahiere mit deiner Beute**.",
+          "Starte ein **Solo-Extraktionsspiel**. Geh mit deiner üblichen Ausrüstung in eine Runde. Plündere nur die **ersten drei Behälter**, die du findest, und **versuch mit dieser Beute zu extrahieren**.",
         gameObjective:
-          "Starte **{{game}}**. Starte mit deiner üblichen Ausrüstung. Plündere nur die **ersten drei Behälter** und **extrahiere mit deiner Beute**.",
+          "Starte **{{game}}**. Geh mit deiner üblichen Ausrüstung in eine Runde. Plündere nur die **ersten drei Behälter**, die du findest, und **versuch mit dieser Beute zu extrahieren**.",
       },
     },
     customGameCompatibility: {
@@ -1220,7 +1170,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Along the Water",
@@ -1252,7 +1201,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Above and Below",
@@ -1261,8 +1209,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Oben und unten",
-        "objective": "Starte ein **Spiel mit Erkundung und Klettern**. Schau dich am Fuß eines erkletterbaren Hügels oder Bauwerks um. Steig hinauf und **suche einen von unten verdeckten Orientierungspunkt**.",
-        "gameObjective": "Starte **{{game}}**. Schau dich am Fuß eines erkletterbaren Hügels oder Bauwerks um. Steig hinauf und **suche einen von unten verdeckten Orientierungspunkt**."
+        "objective": "Starte ein **Spiel mit Erkundung und Klettern**. Schau dich am Fuß eines Hügels oder Bauwerks um. Kletter hinauf und **find oben einen Ort, den du von unten nicht sehen konntest**.",
+        "gameObjective": "Starte **{{game}}**. Schau dich am Fuß eines Hügels oder Bauwerks um. Kletter hinauf und **find oben einen Ort, den du von unten nicht sehen konntest**."
       }
     },
     "customGameCompatibility": {
@@ -1285,7 +1233,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Let It Unfold",
@@ -1294,8 +1241,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "In Ruhe weiterspielen",
-        "objective": "Starte ein **vertrautes Storyspiel**. Setze deine laufende Mission fort und **nimm dir Zeit für die Gespräche**. Behalte den Schwierigkeitsgrad und genieße ruhigere Abschnitte ohne Kapitelziel.",
-        "gameObjective": "Starte **{{game}}**. Setze deine laufende Mission fort und **nimm dir Zeit für die Gespräche**. Behalte den Schwierigkeitsgrad und genieße ruhigere Abschnitte ohne Kapitelziel."
+        "objective": "Starte ein **vertrautes Storyspiel**. Spiel deine laufende Mission weiter und **nimm dir Zeit für die Gespräche**. Bleib auf deinem gewohnten Schwierigkeitsgrad. Du musst heute kein Kapitel beenden.",
+        "gameObjective": "Starte **{{game}}**. Spiel deine laufende Mission weiter und **nimm dir Zeit für die Gespräche**. Bleib auf deinem gewohnten Schwierigkeitsgrad. Du musst heute kein Kapitel beenden."
       }
     },
     "customGameCompatibility": {
@@ -1320,7 +1267,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "That Mission Again",
@@ -1329,8 +1275,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Diese eine Mission",
-        "objective": "Starte ein **Spiel mit wiederholbaren Missionen oder Leveln**. Wähle einen freigeschalteten Lieblingsabschnitt und **spiele ihn bis zum Ende**. Nutze den Weg oder die Vorgehensweise von damals.",
-        "gameObjective": "Starte **{{game}}**. Wähle einen freigeschalteten Lieblingsabschnitt und **spiele ihn bis zum Ende**. Nutze den Weg oder die Vorgehensweise von damals."
+        "objective": "Starte ein **Spiel mit wiederholbaren Missionen oder Leveln**. Wähle einen freigeschalteten Lieblingsabschnitt und **spiel ihn bis zum Ende**. Nimm den Weg, den du damals genommen hast.",
+        "gameObjective": "Starte **{{game}}**. Wähle einen freigeschalteten Lieblingsabschnitt und **spiel ihn bis zum Ende**. Nimm den Weg, den du damals genommen hast."
       }
     },
     "customGameCompatibility": {
@@ -1349,7 +1295,6 @@ export const reusableQuests = [
     "tags": [],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Stay in the Mode",
@@ -1358,8 +1303,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Beim Modus bleiben",
-        "objective": "Starte ein **Spiel mit kurzen eigenständigen Runden**. Behalte einen vertrauten Modus und dein Setup und **verbringe die Session im Spiel**. Beende jede Runde, bevor du eine weitere beginnst.",
-        "gameObjective": "Starte **{{game}}**. Behalte einen vertrauten Modus und dein Setup und **verbringe die Session im Spiel**. Beende jede Runde, bevor du eine weitere beginnst."
+        "objective": "Starte ein **Spiel mit kurzen eigenständigen Runden**. Such dir einen vertrauten Modus aus und **bleib für diese Session dabei**. Behalte dein Setup und spiel jede Runde zu Ende.",
+        "gameObjective": "Starte **{{game}}**. Such dir einen vertrauten Modus aus und **bleib für diese Session dabei**. Behalte dein Setup und spiel jede Runde zu Ende."
       }
     },
     "customGameCompatibility": {
@@ -1380,7 +1325,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 10,
     "suggestedDurationMinutes": 45,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Your Old Main",
@@ -1389,8 +1333,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Dein alter Main",
-        "objective": "Starte ein **Spiel mit wählbaren Figuren**. Wähle eine Figur von früher und **beende ein ganzes Match mit ihr**. Bleib bei deinem üblichen Modus und nimm das Ergebnis an.",
-        "gameObjective": "Starte **{{game}}**. Wähle eine Figur von früher und **beende ein ganzes Match mit ihr**. Bleib bei deinem üblichen Modus und nimm das Ergebnis an."
+        "objective": "Starte ein **Spiel mit wählbaren Figuren**. Wähle eine Figur, die früher dein Main war, und **spiel ein ganzes Match mit ihr**. Bleib bei deinem üblichen Modus, egal wie das Match ausgeht.",
+        "gameObjective": "Starte **{{game}}**. Wähle eine Figur, die früher dein Main war, und **spiel ein ganzes Match mit ihr**. Bleib bei deinem üblichen Modus, egal wie das Match ausgeht."
       }
     },
     "customGameCompatibility": {
@@ -1413,7 +1357,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Old Reliable",
@@ -1422,8 +1365,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Altbewährt",
-        "objective": "Starte ein **Spiel mit wählbaren Waffen**. Rüste eine Lieblingswaffe aus einem früheren Spielabschnitt aus und **nimm sie wieder mit in normale Kämpfe**. Wechsle bei Bedarf.",
-        "gameObjective": "Starte **{{game}}**. Rüste eine Lieblingswaffe aus einem früheren Spielabschnitt aus und **nimm sie wieder mit in normale Kämpfe**. Wechsle bei Bedarf."
+        "objective": "Starte ein **Spiel mit wählbaren Waffen**. Rüste eine Lieblingswaffe aus einem früheren Spielabschnitt aus und **probier sie wieder in normalen Kämpfen aus**. Wechsle bei Bedarf.",
+        "gameObjective": "Starte **{{game}}**. Rüste eine Lieblingswaffe aus einem früheren Spielabschnitt aus und **probier sie wieder in normalen Kämpfen aus**. Wechsle bei Bedarf."
       }
     },
     "customGameCompatibility": {
@@ -1445,7 +1388,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Find Its Range",
@@ -1454,8 +1396,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Die passende Distanz",
-        "objective": "Starte ein **Spiel mit wählbaren Waffen**. Nutze eine vorhandene Waffe in einem nahen und einem entfernten Kampf gegen Bots oder Solo-Gegner. **Beende beide und vergleiche die Handhabung**.",
-        "gameObjective": "Starte **{{game}}**. Nutze eine vorhandene Waffe in einem nahen und einem entfernten Kampf gegen Bots oder Solo-Gegner. **Beende beide und vergleiche die Handhabung**."
+        "objective": "Starte ein **Spiel mit wählbaren Waffen**. Nimm dieselbe Waffe in einen nahen und einen weiter entfernten Kampf gegen Bots oder Solo-Gegner. **Spiel beide zu Ende und achte darauf, auf welche Distanz sie dir besser liegt**.",
+        "gameObjective": "Starte **{{game}}**. Nimm dieselbe Waffe in einen nahen und einen weiter entfernten Kampf gegen Bots oder Solo-Gegner. **Spiel beide zu Ende und achte darauf, auf welche Distanz sie dir besser liegt**."
       }
     },
     "customGameCompatibility": {
@@ -1477,7 +1419,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Two Spell Openers",
@@ -1485,9 +1426,9 @@ export const reusableQuests = [
         "gameObjective": "Open **{{game}}**. Use two unlocked spells to open separate solo fights against the same enemy type. **Finish both and compare range or casting time**."
       },
       "de": {
-        "name": "Zwei Zaubereinstiege",
-        "objective": "Starte ein **Spiel mit Schadenszaubern**. Eröffne mit zwei freigeschalteten Zaubern je einen Solo-Kampf gegen denselben Gegnertyp. **Beende beide und vergleiche Reichweite oder Zauberzeit**.",
-        "gameObjective": "Starte **{{game}}**. Eröffne mit zwei freigeschalteten Zaubern je einen Solo-Kampf gegen denselben Gegnertyp. **Beende beide und vergleiche Reichweite oder Zauberzeit**."
+        "name": "Zwei Zauber zum Start",
+        "objective": "Starte ein **Spiel mit Schadenszaubern**. Beginne zwei Solo-Kämpfe gegen denselben Gegnertyp mit je einem anderen freigeschalteten Zauber. **Spiel beide zu Ende und vergleiche Reichweite und Zauberzeit**.",
+        "gameObjective": "Starte **{{game}}**. Beginne zwei Solo-Kämpfe gegen denselben Gegnertyp mit je einem anderen freigeschalteten Zauber. **Spiel beide zu Ende und vergleiche Reichweite und Zauberzeit**."
       }
     },
     "customGameCompatibility": {
@@ -1509,7 +1450,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Back to Magic",
@@ -1518,8 +1458,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Zurück zur Magie",
-        "objective": "Starte ein **Spiel mit Schadenszaubern**. Kehre zu bekannten Zaubern zurück und **nutze sie in den nächsten Kämpfen**. Richte dich nach den Begegnungen, ohne deine Figur umzubauen.",
-        "gameObjective": "Starte **{{game}}**. Kehre zu bekannten Zaubern zurück und **nutze sie in den nächsten Kämpfen**. Richte dich nach den Begegnungen, ohne deine Figur umzubauen."
+        "objective": "Starte ein **Spiel mit Schadenszaubern**. Kehre zu bekannten Zaubern zurück und **nutze sie in den nächsten Kämpfen**. Ändere sonst nichts an deinem Build, unabhängig von deinem Gegner.",
+        "gameObjective": "Starte **{{game}}**. Kehre zu bekannten Zaubern zurück und **nutze sie in den nächsten Kämpfen**. Ändere sonst nichts an deinem Build, unabhängig von deinem Gegner."
       }
     },
     "customGameCompatibility": {
@@ -1541,7 +1481,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Stay Planetside",
@@ -1573,7 +1512,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Beyond the Landing",
@@ -1582,8 +1520,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Jenseits des Landeplatzes",
-        "objective": "Starte ein **Weltraumspiel mit begehbaren Planeten**. Auf einem sicheren Planeten **gehe zu einem nahen Hügel oder Felsen und zurück**. Nimm einen anderen Rückweg oder kehre bei knappen Vorräten früher um.",
-        "gameObjective": "Starte **{{game}}**. Auf einem sicheren Planeten **gehe zu einem nahen Hügel oder Felsen und zurück**. Nimm einen anderen Rückweg oder kehre bei knappen Vorräten früher um."
+        "objective": "Starte ein **Weltraumspiel mit begehbaren Planeten**. Such dir einen sicheren Planeten und **geh zu einem Hügel oder Felsen in der Nähe und zurück**. Nimm einen anderen Rückweg oder kehre bei knappen Vorräten früher um.",
+        "gameObjective": "Starte **{{game}}**. Such dir einen sicheren Planeten und **geh zu einem Hügel oder Felsen in der Nähe und zurück**. Nimm einen anderen Rückweg oder kehre bei knappen Vorräten früher um."
       }
     },
     "customGameCompatibility": {
@@ -1604,7 +1542,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Under the Surface",
@@ -1613,8 +1550,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Unter der Oberfläche",
-        "objective": "Starte ein **Spiel mit Schwimmen und Tauchen**. Wähle flaches Wasser mit sicherem Ausstieg. **Erkunde den Grund und kehre ans Ufer zurück**, bevor die Luft knapp wird. Vergleiche das Gelände mit dem Ufer.",
-        "gameObjective": "Starte **{{game}}**. Wähle flaches Wasser mit sicherem Ausstieg. **Erkunde den Grund und kehre ans Ufer zurück**, bevor die Luft knapp wird. Vergleiche das Gelände mit dem Ufer."
+        "objective": "Starte ein **Spiel mit Schwimmen und Tauchen**. Such dir flaches Wasser, aus dem du leicht wieder herauskommst. **Schau dich am Grund um und kehr ans Ufer zurück**, bevor dir die Luft ausgeht. Achte auf etwas, das du vom Ufer aus nicht sehen konntest.",
+        "gameObjective": "Starte **{{game}}**. Such dir flaches Wasser, aus dem du leicht wieder herauskommst. **Schau dich am Grund um und kehr ans Ufer zurück**, bevor dir die Luft ausgeht. Achte auf etwas, das du vom Ufer aus nicht sehen konntest."
       }
     },
     "customGameCompatibility": {
@@ -1636,7 +1573,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Dip Nearby",
@@ -1669,7 +1605,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "After the Dodge",
@@ -1678,8 +1613,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Nach dem Ausweichen",
-        "objective": "Starte ein **Spiel mit wiederholbaren Bosskämpfen**. Wähle einen bereits erreichten Solo-Boss. **Triff direkt nach dem Ausweichen vor einem bekannten Angriff**. Besiege den Boss oder hör nach drei Versuchen auf.",
-        "gameObjective": "Starte **{{game}}**. Wähle einen bereits erreichten Solo-Boss. **Triff direkt nach dem Ausweichen vor einem bekannten Angriff**. Besiege den Boss oder hör nach drei Versuchen auf."
+        "objective": "Starte ein **Spiel mit wiederholbaren Bosskämpfen**. Wähle einen bereits erreichten Solo-Boss. Weiche einem Angriff aus, den du schon kennst, und **triff den Boss direkt danach**. Besiege den Boss oder hör nach drei Versuchen auf.",
+        "gameObjective": "Starte **{{game}}**. Wähle einen bereits erreichten Solo-Boss. Weiche einem Angriff aus, den du schon kennst, und **triff den Boss direkt danach**. Besiege den Boss oder hör nach drei Versuchen auf."
       }
     },
     "customGameCompatibility": {
@@ -1700,7 +1635,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Rematch",
@@ -1709,8 +1643,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Das Wiedersehen",
-        "objective": "Starte ein **Spiel mit wiederholbaren Bosskämpfen**. Kehre zu einem verfügbaren Boss zurück, der dir früher Probleme machte. **Probiere ihn mit deiner heutigen Ausrüstung und Erfahrung**. Hör zwischen Versuchen auf, wann du möchtest.",
-        "gameObjective": "Starte **{{game}}**. Kehre zu einem verfügbaren Boss zurück, der dir früher Probleme machte. **Probiere ihn mit deiner heutigen Ausrüstung und Erfahrung**. Hör zwischen Versuchen auf, wann du möchtest."
+        "objective": "Starte ein **Spiel mit wiederholbaren Bosskämpfen**. Kehre zu einem verfügbaren Boss zurück, der dir früher Probleme machte. **Stell dich ihm noch einmal mit deiner jetzigen Ausrüstung und Erfahrung**. Hör zwischen Versuchen auf, wann du möchtest.",
+        "gameObjective": "Starte **{{game}}**. Kehre zu einem verfügbaren Boss zurück, der dir früher Probleme machte. **Stell dich ihm noch einmal mit deiner jetzigen Ausrüstung und Erfahrung**. Hör zwischen Versuchen auf, wann du möchtest."
       }
     },
     "customGameCompatibility": {
@@ -1732,7 +1666,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Another Way Past",
@@ -1763,7 +1696,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Old Hiding Places",
@@ -1772,8 +1704,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Alte Verstecke",
-        "objective": "Starte ein **Schleichspiel**. Kehre in einen vertrauten bewachten Bereich zurück. **Besuche alte Verstecke und Lücken in den Patrouillen**. Lass dir den Weg beim Spielen wieder einfallen.",
-        "gameObjective": "Starte **{{game}}**. Kehre in einen vertrauten bewachten Bereich zurück. **Besuche alte Verstecke und Lücken in den Patrouillen**. Lass dir den Weg beim Spielen wieder einfallen."
+        "objective": "Starte ein **Schleichspiel**. Kehre in einen bewachten Bereich zurück, den du kennst. **Schleich an den Wachen vorbei und nutze dabei deine alten Verstecke**. Schau, an welche Wege du dich noch erinnerst.",
+        "gameObjective": "Starte **{{game}}**. Kehre in einen bewachten Bereich zurück, den du kennst. **Schleich an den Wachen vorbei und nutze dabei deine alten Verstecke**. Schau, an welche Wege du dich noch erinnerst."
       }
     },
     "customGameCompatibility": {
@@ -1794,7 +1726,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Put the Hint to Work",
@@ -1825,7 +1756,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Rules You Know",
@@ -1834,8 +1764,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Bekannte Regeln",
-        "objective": "Starte ein **Rätselspiel**. Wähle vertraute Regeln und eine angenehme Schwierigkeit. **Löse in Ruhe**, mit Hinweisen und Rückgängig nach Bedarf. Keine feste Rätselanzahl.",
-        "gameObjective": "Starte **{{game}}**. Wähle vertraute Regeln und eine angenehme Schwierigkeit. **Löse in Ruhe**, mit Hinweisen und Rückgängig nach Bedarf. Keine feste Rätselanzahl."
+        "objective": "Starte ein **Rätselspiel**. Wähle vertraute Regeln und eine angenehme Schwierigkeit. **Löse Rätsel in deinem Tempo**. Nutze Hinweise und Rückgängig, wann du willst. Du musst keine bestimmte Anzahl schaffen.",
+        "gameObjective": "Starte **{{game}}**. Wähle vertraute Regeln und eine angenehme Schwierigkeit. **Löse Rätsel in deinem Tempo**. Nutze Hinweise und Rückgängig, wann du willst. Du musst keine bestimmte Anzahl schaffen."
       }
     },
     "customGameCompatibility": {
@@ -1856,7 +1786,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Your Waymarker",
@@ -1888,7 +1817,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Frame the View",
@@ -1919,7 +1847,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Made for a Job",
@@ -1928,8 +1855,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Für einen Zweck",
-        "objective": "Starte ein **Spiel mit herstellbaren Werkzeugen oder Verbrauchsitems**. Wähle ein freigeschaltetes Rezept mit vorhandenen Materialien und einem Einsatzzweck in der Nähe. **Stelle das Item her und nutze es einmal**.",
-        "gameObjective": "Starte **{{game}}**. Wähle ein freigeschaltetes Rezept mit vorhandenen Materialien und einem Einsatzzweck in der Nähe. **Stelle das Item her und nutze es einmal**."
+        "objective": "Starte ein **Spiel mit herstellbaren Werkzeugen oder Verbrauchsitems**. Wähle ein Rezept für ein Werkzeug oder Verbrauchsitem, das du gleich in der Nähe brauchen kannst. **Stell es aus deinen Vorräten her und setz es einmal ein**.",
+        "gameObjective": "Starte **{{game}}**. Wähle ein Rezept für ein Werkzeug oder Verbrauchsitem, das du gleich in der Nähe brauchen kannst. **Stell es aus deinen Vorräten her und setz es einmal ein**."
       }
     },
     "customGameCompatibility": {
@@ -1949,7 +1876,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "At the Workbench",
@@ -1958,8 +1884,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "An der Werkbank",
-        "objective": "Starte ein **Spiel mit Crafting**. Schau dir Rezepte mit bereits vorhandenen Materialien an. **Lass deine Vorräte bestimmen, was du herstellst**, passend zu deiner Spielweise.",
-        "gameObjective": "Starte **{{game}}**. Schau dir Rezepte mit bereits vorhandenen Materialien an. **Lass deine Vorräte bestimmen, was du herstellst**, passend zu deiner Spielweise."
+        "objective": "Starte ein **Spiel mit Crafting**. Schau dir Rezepte mit bereits vorhandenen Materialien an. **Stell etwas her, das du mit deinen Vorräten bauen kannst** und das zu deiner Spielweise passt.",
+        "gameObjective": "Starte **{{game}}**. Schau dir Rezepte mit bereits vorhandenen Materialien an. **Stell etwas her, das du mit deinen Vorräten bauen kannst** und das zu deiner Spielweise passt."
       }
     },
     "customGameCompatibility": {
@@ -1981,7 +1907,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Your Fishing Spot",
@@ -1990,8 +1915,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Dein Angelplatz",
-        "objective": "Starte ein **Spiel mit Angeln**. Kehre zu einem vertrauten Angelplatz zurück. **Wirf mit deiner üblichen Angel und deinem Köder aus** und nimm die Fänge, wie sie kommen.",
-        "gameObjective": "Starte **{{game}}**. Kehre zu einem vertrauten Angelplatz zurück. **Wirf mit deiner üblichen Angel und deinem Köder aus** und nimm die Fänge, wie sie kommen."
+        "objective": "Starte ein **Spiel mit Angeln**. Kehre zu deinem vertrauten Angelplatz zurück und **wirf mit deiner üblichen Angel und deinem Köder aus**. Du musst keine bestimmte Fischart fangen.",
+        "gameObjective": "Starte **{{game}}**. Kehre zu deinem vertrauten Angelplatz zurück und **wirf mit deiner üblichen Angel und deinem Köder aus**. Du musst keine bestimmte Fischart fangen."
       }
     },
     "customGameCompatibility": {
@@ -2013,7 +1938,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Two Baits",
@@ -2044,7 +1968,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Food for the Road",
@@ -2053,8 +1976,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Proviant",
-        "objective": "Starte ein **Spiel mit Kochen**. Koche mit einem bekannten Rezept und vorhandenen Zutaten **eine essbare Portion**. Iss sie beim Spielen, wenn ihre Wirkung hilft.",
-        "gameObjective": "Starte **{{game}}**. Koche mit einem bekannten Rezept und vorhandenen Zutaten **eine essbare Portion**. Iss sie beim Spielen, wenn ihre Wirkung hilft."
+        "objective": "Starte ein **Spiel mit Kochen**. Koch aus vorhandenen Zutaten **eine Portion Proviant nach einem Rezept, das du kennst**. Iss sie unterwegs, wenn du ihre Wirkung gebrauchen kannst.",
+        "gameObjective": "Starte **{{game}}**. Koch aus vorhandenen Zutaten **eine Portion Proviant nach einem Rezept, das du kennst**. Iss sie unterwegs, wenn du ihre Wirkung gebrauchen kannst."
       }
     },
     "customGameCompatibility": {
@@ -2076,7 +1999,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Back in the Kitchen",
@@ -2085,8 +2007,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Zurück in die Küche",
-        "objective": "Starte ein **Spiel mit Kochen**. Kehre mit vorhandenen Zutaten in eine vertraute Küche zurück. **Koche alte Lieblingsgerichte**, ohne nach neuen Rezepten zu suchen.",
-        "gameObjective": "Starte **{{game}}**. Kehre mit vorhandenen Zutaten in eine vertraute Küche zurück. **Koche alte Lieblingsgerichte**, ohne nach neuen Rezepten zu suchen."
+        "objective": "Starte ein **Spiel mit Kochen**. Kehre mit vorhandenen Zutaten in eine vertraute Küche zurück. **Koche Gerichte, die du früher gern gemacht hast**, ohne nach neuen Rezepten zu suchen.",
+        "gameObjective": "Starte **{{game}}**. Kehre mit vorhandenen Zutaten in eine vertraute Küche zurück. **Koche Gerichte, die du früher gern gemacht hast**, ohne nach neuen Rezepten zu suchen."
       }
     },
     "customGameCompatibility": {
@@ -2107,7 +2029,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One New Row",
@@ -2138,7 +2059,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Plant a Pattern",
@@ -2169,7 +2089,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Around the Animals",
@@ -2201,7 +2120,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Old Neighborhood",
@@ -2210,8 +2128,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Die alte Gegend",
-        "objective": "Starte ein **Spiel mit freien Autofahrten**. Fahre mit einem Lieblingsfahrzeug von früher in eine vertraute Gegend. **Fahr die alten Wege wieder** und folge bekannten Abzweigungen.",
-        "gameObjective": "Starte **{{game}}**. Fahre mit einem Lieblingsfahrzeug von früher in eine vertraute Gegend. **Fahr die alten Wege wieder** und folge bekannten Abzweigungen."
+        "objective": "Starte ein **Spiel mit freien Autofahrten**. Fahre mit einem Lieblingsfahrzeug von früher in eine vertraute Gegend. **Fahr noch einmal deine Wege von damals** und folge bekannten Abzweigungen.",
+        "gameObjective": "Starte **{{game}}**. Fahre mit einem Lieblingsfahrzeug von früher in eine vertraute Gegend. **Fahr noch einmal deine Wege von damals** und folge bekannten Abzweigungen."
       }
     },
     "customGameCompatibility": {
@@ -2233,7 +2151,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "By Landmarks",
@@ -2242,8 +2159,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Nach Orientierungspunkten",
-        "objective": "Starte ein **Spiel mit freien Autofahrten**. Wähle zwei nahe, von der Straße erkennbare Orte. **Fahre ohne Navigationspunkt von einem zum anderen**. Finde nach falschen Abzweigungen selbst wieder zurück.",
-        "gameObjective": "Starte **{{game}}**. Wähle zwei nahe, von der Straße erkennbare Orte. **Fahre ohne Navigationspunkt von einem zum anderen**. Finde nach falschen Abzweigungen selbst wieder zurück."
+        "objective": "Starte ein **Spiel mit freien Autofahrten**. Such dir zwei Orte in der Nähe, die du von der Straße erkennen kannst. **Fahr ohne Wegpunkt von einem zum anderen**. Wenn du falsch abbiegst, find selbst zurück.",
+        "gameObjective": "Starte **{{game}}**. Such dir zwei Orte in der Nähe, die du von der Straße erkennen kannst. **Fahr ohne Wegpunkt von einem zum anderen**. Wenn du falsch abbiegst, find selbst zurück."
       }
     },
     "customGameCompatibility": {
@@ -2264,7 +2181,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Another Car",
@@ -2297,7 +2213,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Make Up Ground",
@@ -2327,7 +2242,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Keep the Flow",
@@ -2336,8 +2250,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Im Bewegungsfluss",
-        "objective": "Starte ein **Spiel mit Klettern oder Bewegungsfähigkeiten**. Besuche einen Bereich für eine Bewegung, die du magst. **Verbinde Wege mit dieser Bewegung** und folge dem Gelände statt Missionen.",
-        "gameObjective": "Starte **{{game}}**. Besuche einen Bereich für eine Bewegung, die du magst. **Verbinde Wege mit dieser Bewegung** und folge dem Gelände statt Missionen."
+        "objective": "Starte ein **Spiel mit Klettern oder Bewegungsfähigkeiten**. Geh an einen Ort, an dem du deine Lieblingsbewegung gut einsetzen kannst. **Beweg dich damit von einem Weg zum nächsten** und schau, wohin du kommst.",
+        "gameObjective": "Starte **{{game}}**. Geh an einen Ort, an dem du deine Lieblingsbewegung gut einsetzen kannst. **Beweg dich damit von einem Weg zum nächsten** und schau, wohin du kommst."
       }
     },
     "customGameCompatibility": {
@@ -2359,7 +2273,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Two Ways Up",
@@ -2368,8 +2281,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Zwei Wege hinauf",
-        "objective": "Starte ein **Spiel mit Klettern oder Bewegungsfähigkeiten**. Wähle einen sicher wiederholt erreichbaren Vorsprung. **Erreiche ihn mit zwei verschiedenen Wegen oder Bewegungen** und vergleiche beide.",
-        "gameObjective": "Starte **{{game}}**. Wähle einen sicher wiederholt erreichbaren Vorsprung. **Erreiche ihn mit zwei verschiedenen Wegen oder Bewegungen** und vergleiche beide."
+        "objective": "Starte ein **Spiel mit Klettern oder Bewegungsfähigkeiten**. Wähle einen sicher wiederholt erreichbaren Vorsprung. **Finde zwei verschiedene Wege oder Bewegungen, mit denen du ihn erreichst** und vergleiche beide.",
+        "gameObjective": "Starte **{{game}}**. Wähle einen sicher wiederholt erreichbaren Vorsprung. **Finde zwei verschiedene Wege oder Bewegungen, mit denen du ihn erreichst** und vergleiche beide."
       }
     },
     "customGameCompatibility": {
@@ -2390,7 +2303,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Favorite Piece",
@@ -2421,7 +2333,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Dress for the Place",
@@ -2453,7 +2364,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Change the Mood",
@@ -2484,7 +2394,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Place You Remember",
@@ -2515,7 +2424,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Your Usual Role",
@@ -2524,8 +2432,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Deine vertraute Rolle",
-        "objective": "Starte ein **Online-Teamspiel**. Übernimm deine übliche Rolle in einem vertrauten Modus und **genieße das gemeinsame Spielen**. Beende jedes Match, bevor du weitermachst.",
-        "gameObjective": "Starte **{{game}}**. Übernimm deine übliche Rolle in einem vertrauten Modus und **genieße das gemeinsame Spielen**. Beende jedes Match, bevor du weitermachst."
+        "objective": "Starte ein **Online-Teamspiel**. Übernimm deine übliche Rolle in einem Modus, den du kennst, und **spiel ein Match gemeinsam mit deinem Team zu Ende**. Ein zusätzliches Punkteziel brauchst du nicht.",
+        "gameObjective": "Starte **{{game}}**. Übernimm deine übliche Rolle in einem Modus, den du kennst, und **spiel ein Match gemeinsam mit deinem Team zu Ende**. Ein zusätzliches Punkteziel brauchst du nicht."
       }
     },
     "customGameCompatibility": {
@@ -2546,7 +2454,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "You Pick",
@@ -2578,7 +2485,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Old Rivalry",
@@ -2587,8 +2493,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Die alte Rivalität",
-        "objective": "Starte ein **lokales Mehrspielerspiel**. Besuche mit einer früheren Spielbegleitung vor Ort euren gemeinsamen Modus. **Wechselt euch ab und belebt die alte Rivalität wieder**. Redet zwischen den Runden.",
-        "gameObjective": "Starte **{{game}}**. Besuche mit einer früheren Spielbegleitung vor Ort euren gemeinsamen Modus. **Wechselt euch ab und belebt die alte Rivalität wieder**. Redet zwischen den Runden."
+        "objective": "Starte ein **lokales Mehrspielerspiel**. Spielt vor Ort noch einmal den Modus, den ihr früher zusammen gespielt habt. **Wechselt euch ab und beendet ein paar Runden**. Erzählt euch zwischendurch von damals.",
+        "gameObjective": "Starte **{{game}}**. Spielt vor Ort noch einmal den Modus, den ihr früher zusammen gespielt habt. **Wechselt euch ab und beendet ein paar Runden**. Erzählt euch zwischendurch von damals."
       }
     },
     "customGameCompatibility": {
@@ -2610,7 +2516,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Unvisited Corner",
@@ -2619,8 +2524,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Eine neue Ecke",
-        "objective": "Starte ein **frei erkundbares Spiel mit Sammelobjekten**. Wähle ein nahes Gebiet mit Lücken in seiner Sammlung. Suche an Seitenwegen und **finde ein neues erfasstes Item**.",
-        "gameObjective": "Starte **{{game}}**. Wähle ein nahes Gebiet mit Lücken in seiner Sammlung. Suche an Seitenwegen und **finde ein neues erfasstes Item**."
+        "objective": "Starte ein **frei erkundbares Spiel mit Sammelobjekten**. Wähle ein nahes Gebiet mit Lücken in seiner Sammlung. Suche an Seitenwegen und **finde ein Sammelobjekt, das dir noch fehlt**.",
+        "gameObjective": "Starte **{{game}}**. Wähle ein nahes Gebiet mit Lücken in seiner Sammlung. Suche an Seitenwegen und **finde ein Sammelobjekt, das dir noch fehlt**."
       }
     },
     "customGameCompatibility": {
@@ -2641,7 +2546,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Along the Way",
@@ -2650,8 +2554,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Am Wegesrand",
-        "objective": "Starte ein **Spiel mit Sammelobjekten**. Spiele einen vertrauten, verzeihenden Bereich und **sammle mit, was dir unterwegs begegnet**. Verpasste Items dürfen heute liegen bleiben.",
-        "gameObjective": "Starte **{{game}}**. Spiele einen vertrauten, verzeihenden Bereich und **sammle mit, was dir unterwegs begegnet**. Verpasste Items dürfen heute liegen bleiben."
+        "objective": "Starte ein **Spiel mit Sammelobjekten**. Spiel einen leichten Abschnitt, den du gut kennst, und **nimm die Sammelobjekte mit, die dir unterwegs begegnen**. Verpasste Items bleiben heute liegen.",
+        "gameObjective": "Starte **{{game}}**. Spiel einen leichten Abschnitt, den du gut kennst, und **nimm die Sammelobjekte mit, die dir unterwegs begegnen**. Verpasste Items bleiben heute liegen."
       }
     },
     "customGameCompatibility": {
@@ -2673,7 +2577,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Familiar Voice",
@@ -2682,8 +2585,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Eine vertraute Stimme",
-        "objective": "Starte ein **Spiel mit wiederholbaren Dialogen oder Storyeinträgen**. Besuche eine Figur oder einen Erzählstrang von früher wieder. **Lies oder hör auf vergessene Details**, ohne das nächste Ziel zu verfolgen.",
-        "gameObjective": "Starte **{{game}}**. Besuche eine Figur oder einen Erzählstrang von früher wieder. **Lies oder hör auf vergessene Details**, ohne das nächste Ziel zu verfolgen."
+        "objective": "Starte ein **Spiel mit wiederholbaren Dialogen oder Storyeinträgen**. Besuche eine Figur oder einen Erzählstrang von früher wieder. **Achte auf Details, die du vergessen hast**, ohne das nächste Ziel zu verfolgen.",
+        "gameObjective": "Starte **{{game}}**. Besuche eine Figur oder einen Erzählstrang von früher wieder. **Achte auf Details, die du vergessen hast**, ohne das nächste Ziel zu verfolgen."
       }
     },
     "customGameCompatibility": {
@@ -2704,7 +2607,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Follow the Topic",
@@ -2735,7 +2637,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Shelf Clear",
@@ -2744,8 +2645,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Ein Fach frei",
-        "objective": "Starte ein **Spiel mit Händlern**. Wähle bei einem Händler eine Item-Kategorie, die er ankauft. **Verkaufe ihre überflüssigen Vorräte**. Behalte benötigte Ausrüstung und Questitems.",
-        "gameObjective": "Starte **{{game}}**. Wähle bei einem Händler eine Item-Kategorie, die er ankauft. **Verkaufe ihre überflüssigen Vorräte**. Behalte benötigte Ausrüstung und Questitems."
+        "objective": "Starte ein **Spiel mit Händlern**. Wähle bei einem Händler eine Item-Kategorie, die er ankauft. **Verkaufe die Dinge aus dieser Kategorie, die du nicht mehr brauchst**. Behalte benötigte Ausrüstung und Questitems.",
+        "gameObjective": "Starte **{{game}}**. Wähle bei einem Händler eine Item-Kategorie, die er ankauft. **Verkaufe die Dinge aus dieser Kategorie, die du nicht mehr brauchst**. Behalte benötigte Ausrüstung und Questitems."
       }
     },
     "customGameCompatibility": {
@@ -2767,7 +2668,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "From Hunt to Market",
@@ -2776,8 +2676,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Von der Jagd zum Markt",
-        "objective": "Starte ein **Spiel mit Jagd und Händlern**. Erlege nahe einem Händler für Tiermaterialien ein gesichtetes Tier, das du mit deiner Ausrüstung bewältigen kannst. **Sammle und verkaufe sein Material**.",
-        "gameObjective": "Starte **{{game}}**. Erlege nahe einem Händler für Tiermaterialien ein gesichtetes Tier, das du mit deiner Ausrüstung bewältigen kannst. **Sammle und verkaufe sein Material**."
+        "objective": "Starte ein **Spiel mit Jagd und Händlern**. Such dir nahe einem Händler ein Tier, das du mit deiner Ausrüstung jagen kannst. **Erleg es, sammle die Materialien und verkauf sie**.",
+        "gameObjective": "Starte **{{game}}**. Such dir nahe einem Händler ein Tier, das du mit deiner Ausrüstung jagen kannst. **Erleg es, sammle die Materialien und verkauf sie**."
       }
     },
     "customGameCompatibility": {
@@ -2799,7 +2699,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Read the Terrain",
@@ -2830,7 +2729,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Two Directions",
@@ -2839,8 +2737,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Zwei Richtungen",
-        "objective": "Starte ein **Spiel mit befehligbaren Tierbegleitern im Kampf**. Schicke deinen Tierbegleiter in einer Solo-Begegnung auf einen Gegner zu, während du dich aus einer anderen Richtung näherst. **Beende den Kampf und beobachte, wohin sich der Gegner wendet**.",
-        "gameObjective": "In **{{game}}**: Schicke deinen Tierbegleiter in einer Solo-Begegnung auf einen Gegner zu, während du dich aus einer anderen Richtung näherst. **Beende den Kampf und beobachte, wohin sich der Gegner wendet**."
+        "objective": "Starte ein **Spiel mit befehligbaren Tierbegleitern im Kampf**. Schick deinen Tierbegleiter in einem Solo-Kampf von einer Seite auf einen Gegner zu und näher dich von der anderen. **Spiel den Kampf zu Ende und achte darauf, wen der Gegner angreift**.",
+        "gameObjective": "In **{{game}}**: Schick deinen Tierbegleiter in einem Solo-Kampf von einer Seite auf einen Gegner zu und näher dich von der anderen. **Spiel den Kampf zu Ende und achte darauf, wen der Gegner angreift**."
       }
     },
     "customGameCompatibility": {
@@ -2860,7 +2758,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Your Old Companion",
@@ -2869,8 +2766,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Dein alter Begleiter",
-        "objective": "Starte ein **Spiel mit einem Tierkampfgefährten, den du früher genutzt hast**. Nimm diesen bereits verfügbaren Tiergefährten wieder mit. **Kehre mit ihm in normale Begegnungen zurück** und nutze die Befehle, die du noch kennst.",
-        "gameObjective": "In **{{game}}**: Nimm diesen bereits verfügbaren Tiergefährten wieder mit. **Kehre mit ihm in normale Begegnungen zurück** und nutze die Befehle, die du noch kennst."
+        "objective": "Starte ein **Spiel, in dem du früher mit einem Tierbegleiter gekämpft hast**. Hol ihn zurück in dein Team und **setz ihn in normalen Kämpfen ein**. Nutze die Befehle, die du noch kennst.",
+        "gameObjective": "In **{{game}}**: Hol deinen früheren Tiergefährten zurück ins Team und **setz ihn in normalen Kämpfen ein**. Nutze die Befehle, die du noch kennst."
       }
     },
     "customGameCompatibility": {
@@ -2891,7 +2788,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Spot to Skate",
@@ -2900,8 +2796,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Ein Spot zum Skaten",
-        "objective": "Starte ein **Skatespiel mit Grinds und Flip-Tricks**. Such eine Kante, ein Geländer oder eine Schräge, an der du selten gefahren bist. **Mach diesen Spot zum Mittelpunkt deiner Session** und probiere Anfahrten aus, die seine Form nahelegt.",
-        "gameObjective": "In **{{game}}**: Such eine Kante, ein Geländer oder eine Schräge, an der du selten gefahren bist. **Mach diesen Spot zum Mittelpunkt deiner Session** und probiere Anfahrten aus, die seine Form nahelegt."
+        "objective": "Starte ein **Skatespiel mit Grinds und Flip-Tricks**. Such dir eine Kante, ein Geländer oder eine Schräge, an der du selten fährst. **Bleib für diese Session dort und probier verschiedene Anfahrten und Tricks aus**.",
+        "gameObjective": "In **{{game}}**: Such dir eine Kante, ein Geländer oder eine Schräge, an der du selten fährst. **Bleib für diese Session dort und probier verschiedene Anfahrten und Tricks aus**."
       }
     },
     "customGameCompatibility": {
@@ -2923,7 +2819,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Other Direction",
@@ -2955,17 +2850,16 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Flip to Rail",
-        "objective": "Open a **skating game with grinds and flip tricks**. At a familiar low rail, **link a flip trick into a grind and roll away without falling**. Give yourself three attempts; the third attempt also ends the session.",
-        "gameObjective": "In **{{game}}**: At a familiar low rail, **link a flip trick into a grind and roll away without falling**. Give yourself three attempts; the third attempt also ends the session."
+        "objective": "Open a **skating game with grinds and flip tricks**. At a familiar low rail, **link a flip trick into a grind and roll away without falling**. Stop after success or three attempts.",
+        "gameObjective": "In **{{game}}**: At a familiar low rail, **link a flip trick into a grind and roll away without falling**. Stop after success or three attempts."
       },
       "de": {
         "name": "Flip aufs Rail",
-        "objective": "Starte ein **Skatespiel mit Grinds und Flip-Tricks**. Verbinde an einem vertrauten niedrigen Geländer **einen Flip-Trick mit einem Grind und rolle ohne Sturz weiter**. Du hast drei Versuche; der dritte beendet die Session ebenfalls.",
-        "gameObjective": "In **{{game}}**: Verbinde an einem vertrauten niedrigen Geländer **einen Flip-Trick mit einem Grind und rolle ohne Sturz weiter**. Du hast drei Versuche; der dritte beendet die Session ebenfalls."
+        "objective": "Starte ein **Skatespiel mit Grinds und Flip-Tricks**. Verbinde an einem vertrauten niedrigen Geländer **einen Flip-Trick mit einem Grind und rolle ohne Sturz weiter**. Nach Erfolg oder drei Versuchen ist Schluss.",
+        "gameObjective": "In **{{game}}**: Verbinde an einem vertrauten niedrigen Geländer **einen Flip-Trick mit einem Grind und rolle ohne Sturz weiter**. Nach Erfolg oder drei Versuchen ist Schluss."
       }
     },
     "customGameCompatibility": {
@@ -2986,7 +2880,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Friendly Fixture",
@@ -2995,8 +2888,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Ein lockeres Spiel",
-        "objective": "Starte ein **Sportspiel mit CPU-Gegnern**. Wähle ein vertrautes Team und einen angenehmen CPU-Schwierigkeitsgrad. **Lass dich auf den Spielrhythmus ein** und nutze Torchancen, ohne einen Sieg vorauszusetzen.",
-        "gameObjective": "In **{{game}}**: Wähle ein vertrautes Team und einen angenehmen CPU-Schwierigkeitsgrad. **Lass dich auf den Spielrhythmus ein** und nutze Torchancen, ohne einen Sieg vorauszusetzen."
+        "objective": "Starte ein **Sportspiel mit CPU-Gegnern**. Wähle ein vertrautes Team und einen angenehmen CPU-Schwierigkeitsgrad. **Spiel eine Partie zu Ende und nutze die Torchancen, die sich ergeben**. Ein Sieg ist nicht nötig.",
+        "gameObjective": "In **{{game}}**: Wähle ein vertrautes Team und einen angenehmen CPU-Schwierigkeitsgrad. **Spiel eine Partie zu Ende und nutze die Torchancen, die sich ergeben**. Ein Sieg ist nicht nötig."
       }
     },
     "customGameCompatibility": {
@@ -3018,7 +2911,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Pass Before the Shot",
@@ -3027,8 +2919,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Pass vor dem Schuss",
-        "objective": "Starte ein **Sportspiel mit steuerbaren Mitspielern und CPU-Gegnern**. Versuche in einem CPU-Match mit steuerbaren Mitspielern, deine Schüsse durch einen Pass vorzubereiten. **Beende das Match, nachdem du diesen Ansatz genutzt hast**, unabhängig von der Zahl der Tore.",
-        "gameObjective": "In **{{game}}**: Versuche in einem CPU-Match mit steuerbaren Mitspielern, deine Schüsse durch einen Pass vorzubereiten. **Beende das Match, nachdem du diesen Ansatz genutzt hast**, unabhängig von der Zahl der Tore."
+        "objective": "Starte ein **Sportspiel mit steuerbaren Mitspielern und CPU-Gegnern**. Bereite in einer Partie gegen die CPU mindestens einen Schuss mit einem Pass vor. **Spiel das Match zu Ende**. Die Zahl der Tore ist egal.",
+        "gameObjective": "In **{{game}}**: Bereite in einer Partie gegen die CPU mindestens einen Schuss mit einem Pass vor. **Spiel das Match zu Ende**. Die Zahl der Tore ist egal."
       }
     },
     "customGameCompatibility": {
@@ -3049,7 +2941,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Route You Know",
@@ -3058,8 +2949,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Die bekannte Route",
-        "objective": "Starte ein **Spiel mit Solo-Extraktionsrunden**. Starte eine Solo-Runde auf einer Karte mit einem bekannten Extraktionsweg. Plündere entlang dieser Route und **erreiche die Extraktion oder beende die Runde, falls du ausscheidest**. Verlängere den Weg nicht für zusätzliche Beute.",
-        "gameObjective": "In **{{game}}**: Starte eine Solo-Runde auf einer Karte mit einem bekannten Extraktionsweg. Plündere entlang dieser Route und **erreiche die Extraktion oder beende die Runde, falls du ausscheidest**. Verlängere den Weg nicht für zusätzliche Beute."
+        "objective": "Starte ein **Spiel mit Solo-Extraktionsrunden**. Geh auf einer Karte ins Spiel, deren Extraktionsweg du kennst. Plündere unterwegs und **versuch über diesen Weg zu extrahieren**. Wenn du ausscheidest, ist die Runde vorbei. Für zusätzliche Beute machst du keinen Umweg.",
+        "gameObjective": "In **{{game}}**: Geh auf einer Karte ins Spiel, deren Extraktionsweg du kennst. Plündere unterwegs und **versuch über diesen Weg zu extrahieren**. Wenn du ausscheidest, ist die Runde vorbei. Für zusätzliche Beute machst du keinen Umweg."
       }
     },
     "customGameCompatibility": {
@@ -3081,7 +2972,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Side Route",
@@ -3113,17 +3003,16 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Next Checkpoint",
-        "objective": "Open a **platformer with checkpoints**. On a level with checkpoints, continue from your current position and **activate the next checkpoint**. Use retries and available assists; leave the rest of the level for later.",
-        "gameObjective": "In **{{game}}**: On a level with checkpoints, continue from your current position and **activate the next checkpoint**. Use retries and available assists; leave the rest of the level for later."
+        "objective": "Open a **platformer with checkpoints**. On a level with checkpoints, continue from your current position and **activate the next checkpoint**. Use retries and assists if needed. Leave the rest of the level for later.",
+        "gameObjective": "In **{{game}}**: On a level with checkpoints, continue from your current position and **activate the next checkpoint**. Use retries and assists if needed. Leave the rest of the level for later."
       },
       "de": {
         "name": "Der nächste Checkpoint",
-        "objective": "Starte ein **Plattformer mit Checkpoints**. Setze ein Level mit Checkpoints an deiner aktuellen Position fort und **aktiviere den nächsten Checkpoint**. Wiederholungen und verfügbare Hilfen sind erlaubt; der Rest des Levels kommt später.",
-        "gameObjective": "In **{{game}}**: Setze ein Level mit Checkpoints an deiner aktuellen Position fort und **aktiviere den nächsten Checkpoint**. Wiederholungen und verfügbare Hilfen sind erlaubt; der Rest des Levels kommt später."
+        "objective": "Starte ein **Plattformer mit Checkpoints**. Mach an deiner aktuellen Stelle weiter und **erreich den nächsten Checkpoint**. Wiederholungen und Hilfen sind erlaubt. Den Rest des Levels kannst du später spielen.",
+        "gameObjective": "In **{{game}}**: Mach an deiner aktuellen Stelle weiter und **erreich den nächsten Checkpoint**. Wiederholungen und Hilfen sind erlaubt. Den Rest des Levels kannst du später spielen."
       }
     },
     "customGameCompatibility": {
@@ -3148,7 +3037,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Clean Stretch",
@@ -3180,7 +3068,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Pick Your Landing",
@@ -3189,8 +3076,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Den Landepunkt wählen",
-        "objective": "Starte ein **Spiel mit Sprunghindernissen**. Wähle einen sicher wiederholbaren Sprung. Lande einmal nahe am Rand der Zielplattform und einmal eher in ihrer Mitte. **Schaffe beide Landungen und vergleiche den Platz für den nächsten Sprung**.",
-        "gameObjective": "In **{{game}}**: Wähle einen sicher wiederholbaren Sprung. Lande einmal nahe am Rand der Zielplattform und einmal eher in ihrer Mitte. **Schaffe beide Landungen und vergleiche den Platz für den nächsten Sprung**."
+        "objective": "Starte ein **Spiel mit Sprunghindernissen**. Such dir einen Sprung, den du leicht wiederholen kannst. Lande einmal nah am Rand und einmal in der Mitte der Plattform. **Schaff beide Landungen und schau, welche dir mehr Platz für den nächsten Sprung lässt**.",
+        "gameObjective": "In **{{game}}**: Such dir einen Sprung, den du leicht wiederholen kannst. Lande einmal nah am Rand und einmal in der Mitte der Plattform. **Schaff beide Landungen und schau, welche dir mehr Platz für den nächsten Sprung lässt**."
       }
     },
     "customGameCompatibility": {
@@ -3212,7 +3099,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Off the Main Line",
@@ -3248,7 +3134,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Rhythm Returns",
@@ -3257,8 +3142,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Der Rhythmus kommt zurück",
-        "objective": "Starte ein **Spiel mit vertrauten Sprungpassagen**. Kehre zu einem verzeihenden Level oder Weg zurück, dessen Sprünge du noch kennst. **Genieße die Bewegung durch vertrautes Gelände**, mit Wiederholungen oder Hilfen und ohne auf Abschlussprozente zu achten.",
-        "gameObjective": "In **{{game}}**: Kehre zu einem verzeihenden Level oder Weg zurück, dessen Sprünge du noch kennst. **Genieße die Bewegung durch vertrautes Gelände**, mit Wiederholungen oder Hilfen und ohne auf Abschlussprozente zu achten."
+        "objective": "Starte ein **Spiel mit vertrauten Sprungpassagen**. Kehre zu einem leichten Abschnitt zurück, dessen Sprünge du noch kennst. **Spiel ihn in deinem Tempo durch**. Hilfen und neue Versuche sind okay; die Abschlussquote ist egal.",
+        "gameObjective": "In **{{game}}**: Kehre zu einem leichten Abschnitt zurück, dessen Sprünge du noch kennst. **Spiel ihn in deinem Tempo durch**. Hilfen und neue Versuche sind okay; die Abschlussquote ist egal."
       }
     },
     "customGameCompatibility": {
@@ -3280,7 +3165,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Worth the Jump",
@@ -3314,7 +3198,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One New Tool",
@@ -3323,8 +3206,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Ein neues Werkzeug",
-        "objective": "Starte ein **Spiel mit auswählbaren Figuren und Fähigkeiten**. Wähle im Solo-, Trainings- oder Bot-Spiel eine freigeschaltete Figur, die du selten nutzt. **Setze in einer vollständigen Begegnung eine ihrer ungewohnten Fähigkeiten ein** und achte darauf, wann sie geholfen hat.",
-        "gameObjective": "In **{{game}}**: Wähle im Solo-, Trainings- oder Bot-Spiel eine freigeschaltete Figur, die du selten nutzt. **Setze in einer vollständigen Begegnung eine ihrer ungewohnten Fähigkeiten ein** und achte darauf, wann sie geholfen hat."
+        "objective": "Starte ein **Spiel mit auswählbaren Figuren und Fähigkeiten**. Wähle im Solo-, Trainings- oder Bot-Spiel eine freigeschaltete Figur, die du selten spielst. **Setz eine ihrer ungewohnten Fähigkeiten in einem vollständigen Kampf oder einer Runde ein** und achte darauf, wann sie dir hilft.",
+        "gameObjective": "In **{{game}}**: Wähle im Solo-, Trainings- oder Bot-Spiel eine freigeschaltete Figur, die du selten spielst. **Setz eine ihrer ungewohnten Fähigkeiten in einem vollständigen Kampf oder einer Runde ein** und achte darauf, wann sie dir hilft."
       }
     },
     "customGameCompatibility": {
@@ -3347,7 +3230,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Your Own Sequence",
@@ -3356,8 +3238,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Deine eigene Abfolge",
-        "objective": "Starte ein **Spiel mit wählbaren Figurenfähigkeiten**. Wähle im Solo-Spiel oder gegen Bots zwei Aktionen oder Fähigkeiten, die deine Figur verbinden kann. **Setze deine Abfolge in einer Begegnung ein und beende sie**. Passe das Timing beim Spielen an.",
-        "gameObjective": "In **{{game}}**: Wähle im Solo-Spiel oder gegen Bots zwei Aktionen oder Fähigkeiten, die deine Figur verbinden kann. **Setze deine Abfolge in einer Begegnung ein und beende sie**. Passe das Timing beim Spielen an."
+        "objective": "Starte ein **Spiel mit wählbaren Figurenfähigkeiten**. Wähle für deine Figur zwei Aktionen oder Fähigkeiten, die zusammenpassen. **Probier die Abfolge in einem Solo- oder Bot-Kampf aus und spiel ihn zu Ende**. Pass das Timing beim Spielen an.",
+        "gameObjective": "In **{{game}}**: Wähle für deine Figur zwei Aktionen oder Fähigkeiten, die zusammenpassen. **Probier die Abfolge in einem Solo- oder Bot-Kampf aus und spiel ihn zu Ende**. Pass das Timing beim Spielen an."
       }
     },
     "customGameCompatibility": {
@@ -3378,7 +3260,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Comfort Pick",
@@ -3387,8 +3268,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Vertraute Wahl",
-        "objective": "Starte ein **Spiel mit wählbaren Figuren und einem verzeihenden Modus**. Wähle deine vertrauteste Figur in einem bereits bekannten, verzeihenden Modus. **Spiele mit den Fähigkeiten, die du kennst**, ohne den ganzen Kader zu vergleichen oder ein Leistungsziel zu verfolgen. Beende jedes Match regulär.",
-        "gameObjective": "In **{{game}}**: Wähle deine vertrauteste Figur in einem bereits bekannten, verzeihenden Modus. **Spiele mit den Fähigkeiten, die du kennst**, ohne den ganzen Kader zu vergleichen oder ein Leistungsziel zu verfolgen. Beende jedes Match regulär."
+        "objective": "Starte ein **Spiel mit Figurenwahl und einem entspannten Modus**. Nimm eine Figur, die du gut kennst. **Spiel mit ihren vertrauten Fähigkeiten ein Match zu Ende**. Du musst keine anderen Figuren vergleichen oder eine bestimmte Leistung schaffen.",
+        "gameObjective": "In **{{game}}**: Nimm eine Figur, die du gut kennst. **Spiel mit ihren vertrauten Fähigkeiten ein Match zu Ende**. Du musst keine anderen Figuren vergleichen oder eine bestimmte Leistung schaffen."
       }
     },
     "customGameCompatibility": {
@@ -3411,7 +3292,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 45,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Useful Ability",
@@ -3420,8 +3300,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Eine hilfreiche Fähigkeit",
-        "objective": "Starte ein **Online-Teamspiel mit Figurenfähigkeiten**. Wähle eine freigeschaltete Figur, deren Fähigkeiten einem Mitspieler helfen können, etwa durch Schutz, Heilung oder Informationen. **Setze diese Hilfe in einem vollständigen Match ein** und spiele durchgehend für das Teamziel.",
-        "gameObjective": "In **{{game}}**: Wähle eine freigeschaltete Figur, deren Fähigkeiten einem Mitspieler helfen können, etwa durch Schutz, Heilung oder Informationen. **Setze diese Hilfe in einem vollständigen Match ein** und spiele durchgehend für das Teamziel."
+        "objective": "Starte ein **Online-Teamspiel mit Figurenfähigkeiten**. Wähle eine Figur, die Teammitglieder schützen, heilen oder mit Informationen versorgen kann. **Setz diese Hilfe in einem ganzen Match ein** und bleib beim Teamziel.",
+        "gameObjective": "In **{{game}}**: Wähle eine Figur, die Teammitglieder schützen, heilen oder mit Informationen versorgen kann. **Setz diese Hilfe in einem ganzen Match ein** und bleib beim Teamziel."
       }
     },
     "customGameCompatibility": {
@@ -3442,17 +3322,16 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 10,
     "suggestedDurationMinutes": 45,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Watch the Crossing",
-        "objective": "Open a **shooter with round-based matches**. During a match, choose a crossing relevant to your team’s objective. **Cover it from a useful position and adapt when the team moves**. Finish the match; a kill is not required.",
-        "gameObjective": "In **{{game}}**: During a match, choose a crossing relevant to your team’s objective. **Cover it from a useful position and adapt when the team moves**. Finish the match; a kill is not required."
+        "objective": "Open a **shooter with round-based matches**. During a match, choose a crossing relevant to your team’s objective. **Cover it from a useful position and adapt when the team moves**. Finish the match. You do not need a kill.",
+        "gameObjective": "In **{{game}}**: During a match, choose a crossing relevant to your team’s objective. **Cover it from a useful position and adapt when the team moves**. Finish the match. You do not need a kill."
       },
       "de": {
         "name": "Den Durchgang sichern",
-        "objective": "Starte ein **Shooter mit rundenbasierten Matches**. Wähle in einem Match einen für euer Ziel wichtigen Durchgang. **Sichere ihn aus einer geeigneten Position und passe dich an, wenn dein Team weiterzieht**. Beende das Match; ein Abschuss ist nicht nötig.",
-        "gameObjective": "In **{{game}}**: Wähle in einem Match einen für euer Ziel wichtigen Durchgang. **Sichere ihn aus einer geeigneten Position und passe dich an, wenn dein Team weiterzieht**. Beende das Match; ein Abschuss ist nicht nötig."
+        "objective": "Starte ein **Shooter mit rundenbasierten Matches**. Such dir in einem Match einen Durchgang, der für euer Ziel wichtig ist. **Sichere ihn und rück mit deinem Team weiter, wenn sich der Kampf verlagert**. Spiel das Match zu Ende; du brauchst keinen Abschuss.",
+        "gameObjective": "In **{{game}}**: Such dir in einem Match einen Durchgang, der für euer Ziel wichtig ist. **Sichere ihn und rück mit deinem Team weiter, wenn sich der Kampf verlagert**. Spiel das Match zu Ende; du brauchst keinen Abschuss."
       }
     },
     "customGameCompatibility": {
@@ -3480,7 +3359,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Look Before Breaching",
@@ -3489,8 +3367,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Vor dem Öffnen schauen",
-        "objective": "Starte ein **Shooter mit Aufklärungswerkzeugen und Breach-Gadgets**. In einem Solo-, Trainings- oder Bot-Modus, in dem du einen Weg aufklären und öffnen kannst: Schau zuerst auf die andere Seite. **Nutze ein verfügbares Breach-Gadget, geh durch die Öffnung und beende die Begegnung**.",
-        "gameObjective": "In **{{game}}**: In einem Solo-, Trainings- oder Bot-Modus, in dem du einen Weg aufklären und öffnen kannst: Schau zuerst auf die andere Seite. **Nutze ein verfügbares Breach-Gadget, geh durch die Öffnung und beende die Begegnung**."
+        "objective": "Starte ein **Shooter mit Aufklärungswerkzeugen und Breach-Gadgets**. Späh in einem Solo-, Trainings- oder Bot-Modus erst auf die andere Seite eines Durchgangs. **Öffne ihn dann mit einem Breach-Gadget, geh hindurch und spiel den Kampf zu Ende**.",
+        "gameObjective": "In **{{game}}**: Späh in einem Solo-, Trainings- oder Bot-Modus erst auf die andere Seite eines Durchgangs. **Öffne ihn dann mit einem Breach-Gadget, geh hindurch und spiel den Kampf zu Ende**."
       }
     },
     "customGameCompatibility": {
@@ -3515,7 +3393,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Protect the Route",
@@ -3524,8 +3401,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Den Weg schützen",
-        "objective": "Starte ein **Spiel mit schützenden oder wegsperrenden Gadgets**. Wenn dein Loadout ein schützendes oder wegsperrendes Gadget enthält, platziere es an einem für das Ziel wichtigen Weg. **Spiele die Begegnung mit diesem Aufbau zu Ende**. Versetze oder ersetze es, wenn die Situation es verlangt.",
-        "gameObjective": "In **{{game}}**: Wenn dein Loadout ein schützendes oder wegsperrendes Gadget enthält, platziere es an einem für das Ziel wichtigen Weg. **Spiele die Begegnung mit diesem Aufbau zu Ende**. Versetze oder ersetze es, wenn die Situation es verlangt."
+        "objective": "Starte ein **Spiel mit schützenden oder wegsperrenden Gadgets**. Platziere ein schützendes oder wegsperrendes Gadget an einem wichtigen Zugang. **Spiel den Kampf oder die Runde damit zu Ende**. Wenn sich die Lage ändert, darfst du es versetzen.",
+        "gameObjective": "In **{{game}}**: Platziere ein schützendes oder wegsperrendes Gadget an einem wichtigen Zugang. **Spiel den Kampf oder die Runde damit zu Ende**. Wenn sich die Lage ändert, darfst du es versetzen."
       }
     },
     "customGameCompatibility": {
@@ -3548,7 +3425,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Placement Matters",
@@ -3557,8 +3433,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Der Platz zählt",
-        "objective": "Starte ein **Spiel mit platzierbaren taktischen Gadgets**. Probiere im Solo-, Trainings- oder Bot-Spiel ein platzierbares Gadget an zwei Positionen aus. **Spiele mit jedem Aufbau eine Begegnung und vergleiche den geschützten oder kontrollierten Bereich**.",
-        "gameObjective": "In **{{game}}**: Probiere im Solo-, Trainings- oder Bot-Spiel ein platzierbares Gadget an zwei Positionen aus. **Spiele mit jedem Aufbau eine Begegnung und vergleiche den geschützten oder kontrollierten Bereich**."
+        "objective": "Starte ein **Spiel mit platzierbaren taktischen Gadgets**. Platziere dasselbe Gadget in zwei Solo-, Trainings- oder Bot-Kämpfen an verschiedenen Stellen. **Spiel beide Kämpfe zu Ende und vergleiche, welchen Bereich es jeweils schützt oder kontrolliert**.",
+        "gameObjective": "In **{{game}}**: Platziere dasselbe Gadget in zwei Solo-, Trainings- oder Bot-Kämpfen an verschiedenen Stellen. **Spiel beide Kämpfe zu Ende und vergleiche, welchen Bereich es jeweils schützt oder kontrolliert**."
       }
     },
     "customGameCompatibility": {
@@ -3580,7 +3456,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 45,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Help the Entry",
@@ -3589,8 +3464,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Den Einstieg erleichtern",
-        "objective": "Starte ein **Onlinespiel mit taktischen Gadgets**. Wähle ein verfügbares Gadget, das deinem Team einen Weg öffnen, sperren oder schützen kann. **Unterstütze damit euer Vorgehen und bleib bis zum Matchende dabei**. Passe dich an, wenn sich der Plan ändert.",
-        "gameObjective": "In **{{game}}**: Wähle ein verfügbares Gadget, das deinem Team einen Weg öffnen, sperren oder schützen kann. **Unterstütze damit euer Vorgehen und bleib bis zum Matchende dabei**. Passe dich an, wenn sich der Plan ändert."
+        "objective": "Starte ein **Onlinespiel mit taktischen Gadgets**. Wähle ein Gadget, mit dem dein Team einen Weg öffnen, sperren oder sichern kann. **Setz es beim Vorrücken ein und spiel das Match zu Ende**. Wenn sich der Plan ändert, pass dich an.",
+        "gameObjective": "In **{{game}}**: Wähle ein Gadget, mit dem dein Team einen Weg öffnen, sperren oder sichern kann. **Setz es beim Vorrücken ein und spiel das Match zu Ende**. Wenn sich der Plan ändert, pass dich an."
       }
     },
     "customGameCompatibility": {
@@ -3614,7 +3489,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Different View",
@@ -3623,8 +3497,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Ein anderer Blick",
-        "objective": "Starte ein **Spiel mit Kameras oder steuerbaren Aufklärungsdrohnen**. Untersuche in einem Solo- oder Trainingsbereich mit Kameras oder einer steuerbaren Drohne einen Raum aus zwei Positionen. **Suche einen nur aus einer Sicht erkennbaren Zugang und probiere ihn aus**.",
-        "gameObjective": "In **{{game}}**: Untersuche in einem Solo- oder Trainingsbereich mit Kameras oder einer steuerbaren Drohne einen Raum aus zwei Positionen. **Suche einen nur aus einer Sicht erkennbaren Zugang und probiere ihn aus**."
+        "objective": "Starte ein **Spiel mit Kameras oder steuerbaren Aufklärungsdrohnen**. Sieh dir in einem Solo- oder Trainingsbereich denselben Raum mit Kamera oder Drohne aus zwei Blickwinkeln an. **Such einen Zugang, den du nur aus einer Perspektive erkennst, und probier ihn aus**.",
+        "gameObjective": "In **{{game}}**: Sieh dir in einem Solo- oder Trainingsbereich denselben Raum mit Kamera oder Drohne aus zwei Blickwinkeln an. **Such einen Zugang, den du nur aus einer Perspektive erkennst, und probier ihn aus**."
       }
     },
     "customGameCompatibility": {
@@ -3651,7 +3525,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 45,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Useful Information",
@@ -3660,8 +3533,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Nützliche Information",
-        "objective": "Starte ein **Online-Teamspiel mit Aufklärungswerkzeugen**. Prüfe mit einer verfügbaren Kamera, Drohne oder einem Sicht-Totem einen Weg zum Ziel. **Teile nützliche Informationen über die verfügbaren Teamsignale oder den Chat** und bleib bis zum Matchende dabei.",
-        "gameObjective": "In **{{game}}**: Prüfe mit einer verfügbaren Kamera, Drohne oder einem Sicht-Totem einen Weg zum Ziel. **Teile nützliche Informationen über die verfügbaren Teamsignale oder den Chat** und bleib bis zum Matchende dabei."
+        "objective": "Starte ein **Online-Teamspiel mit Kameras, Drohnen oder Wards**. Prüf mit Kamera, Drohne oder Ward einen Weg zum Ziel. **Sag deinem Team per Ping oder Chat, was du gesehen hast**, und bleib bis zum Matchende dabei.",
+        "gameObjective": "In **{{game}}**: Prüf mit Kamera, Drohne oder Ward einen Weg zum Ziel. **Sag deinem Team per Ping oder Chat, was du gesehen hast**, und bleib bis zum Matchende dabei."
       }
     },
     "customGameCompatibility": {
@@ -3685,7 +3558,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 45,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Vision on the Way",
@@ -3694,8 +3566,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Sicht auf dem Weg",
-        "objective": "Starte ein **MOBA mit platzierbaren Sicht-Totems**. Platziere in einem Match mit verfügbarem Sicht-Totem dieses an einem wichtigen Zugangsweg, bevor du zum nächsten Teamziel gehst. **Spiele den Versuch mit und beende das Match**, unabhängig davon, ob ihr das Ziel bekommt.",
-        "gameObjective": "In **{{game}}**: Platziere in einem Match mit verfügbarem Sicht-Totem dieses an einem wichtigen Zugangsweg, bevor du zum nächsten Teamziel gehst. **Spiele den Versuch mit und beende das Match**, unabhängig davon, ob ihr das Ziel bekommt."
+        "objective": "Starte ein **MOBA, in dem du Wards platzieren kannst**. Platziere einen Ward an einem wichtigen Zugangsweg, bevor du zum nächsten Teamziel gehst. **Hilf deinem Team beim Ziel und spiel das Match zu Ende**, unabhängig davon, ob ihr das Ziel bekommt.",
+        "gameObjective": "In **{{game}}**: Platziere einen Ward an einem wichtigen Zugangsweg, bevor du zum nächsten Teamziel gehst. **Hilf deinem Team beim Ziel und spiel das Match zu Ende**, unabhängig davon, ob ihr das Ziel bekommt."
       }
     },
     "customGameCompatibility": {
@@ -3722,7 +3594,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Check the Way Back",
@@ -3731,8 +3602,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Den Rückweg prüfen",
-        "objective": "Starte ein **Spiel mit Aufklärungskameras oder Drohnen**. Prüfe in einer Solo- oder Trainingsbegegnung mit Kamera oder Drohne einen Hin- und einen Rückweg. **Gehe anhand deiner Beobachtungen hinein und wieder zurück** und beende die Begegnung.",
-        "gameObjective": "In **{{game}}**: Prüfe in einer Solo- oder Trainingsbegegnung mit Kamera oder Drohne einen Hin- und einen Rückweg. **Gehe anhand deiner Beobachtungen hinein und wieder zurück** und beende die Begegnung."
+        "objective": "Starte ein **Spiel mit Aufklärungskameras oder Drohnen**. Späh mit Kamera oder Drohne einen Hin- und Rückweg aus. **Geh auf diesem Weg hinein und wieder zurück**. Spiel die Solo- oder Trainingsbegegnung zu Ende.",
+        "gameObjective": "In **{{game}}**: Späh mit Kamera oder Drohne einen Hin- und Rückweg aus. **Geh auf diesem Weg hinein und wieder zurück**. Spiel die Solo- oder Trainingsbegegnung zu Ende."
       }
     },
     "customGameCompatibility": {
@@ -3758,7 +3629,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 45,
-    "genres": [],
     "translations": {
       "en": {
         "name": "With the Wave",
@@ -3767,8 +3637,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Mit der Wave",
-        "objective": "Starte ein **MOBA mit Minion-Lanes und Türmen**. Gehe in einem Bot-Match hinter deinen eigenen Minions auf einen Turm zu. **Hilf, einen gegnerischen Turm zu zerstören, oder beende das Match, falls es vorher endet**. Zieh dich zurück, wenn die Minions als Deckung fehlen.",
-        "gameObjective": "In **{{game}}**: Gehe in einem Bot-Match hinter deinen eigenen Minions auf einen Turm zu. **Hilf, einen gegnerischen Turm zu zerstören, oder beende das Match, falls es vorher endet**. Zieh dich zurück, wenn die Minions als Deckung fehlen."
+        "objective": "Starte ein **MOBA mit Minion-Lanes und Türmen**. Geh in einem Bot-Match mit deinen Minions auf einen gegnerischen Turm zu. **Hilf beim Angriff auf den Turm** und zieh dich zurück, wenn deine Minions weg sind. Spiel das Match danach zu Ende.",
+        "gameObjective": "In **{{game}}**: Geh in einem Bot-Match mit deinen Minions auf einen gegnerischen Turm zu. **Hilf beim Angriff auf den Turm** und zieh dich zurück, wenn deine Minions weg sind. Spiel das Match danach zu Ende."
       }
     },
     "customGameCompatibility": {
@@ -3794,17 +3664,16 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Last-Hit Streak",
-        "objective": "Open a **MOBA with last-hit gold and a practice mode**. In a solo practice mode that rewards last hits, **secure the final hit on five lane minions in a row**. Give yourself three streak attempts; the third attempt also ends the session.",
-        "gameObjective": "In **{{game}}**: In a solo practice mode that rewards last hits, **secure the final hit on five lane minions in a row**. Give yourself three streak attempts; the third attempt also ends the session."
+        "objective": "Open a **MOBA with last-hit gold and a practice mode**. In a solo practice mode that rewards last hits, **secure the final hit on five lane minions in a row**. Stop after success or three streak attempts.",
+        "gameObjective": "In **{{game}}**: In a solo practice mode that rewards last hits, **secure the final hit on five lane minions in a row**. Stop after success or three streak attempts."
       },
       "de": {
         "name": "Letzte Treffer",
-        "objective": "Starte ein **MOBA mit Gold für letzte Treffer und einem Übungsmodus**. Sichere dir in einem Solo-Übungsmodus mit Belohnungen für letzte Treffer **bei fünf Lane-Minions in Folge den letzten Treffer**. Du hast drei Versuche für die Serie; der dritte beendet die Session ebenfalls.",
-        "gameObjective": "In **{{game}}**: Sichere dir in einem Solo-Übungsmodus mit Belohnungen für letzte Treffer **bei fünf Lane-Minions in Folge den letzten Treffer**. Du hast drei Versuche für die Serie; der dritte beendet die Session ebenfalls."
+        "objective": "Starte ein **MOBA, in dem Last Hits Gold geben und du solo üben kannst**. Versuch im Übungsmodus, **fünf Lane-Minions hintereinander den letzten Treffer zu geben**. Wenn die Serie reißt, fang neu an. Hör nach drei Versuchen auf.",
+        "gameObjective": "In **{{game}}**: Versuch im Übungsmodus, **fünf Lane-Minions hintereinander den letzten Treffer zu geben**. Wenn die Serie reißt, fang neu an. Hör nach drei Versuchen auf."
       }
     },
     "customGameCompatibility": {
@@ -3829,7 +3698,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "What Moves the Wave",
@@ -3864,7 +3732,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Back to Your Lane",
@@ -3873,8 +3740,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Zurück auf deine Lane",
-        "objective": "Starte ein **MOBA mit einer Lane und einem Champion von früher**. Kehre in einem vertrauten Modus zu einer Lane und einem verfügbaren Champion zurück, die du früher oft gespielt hast. **Entdecke vertraute Matchups und Abläufe wieder** und passe dich an Änderungen an. Beende jedes Match regulär.",
-        "gameObjective": "In **{{game}}**: Kehre in einem vertrauten Modus zu einer Lane und einem verfügbaren Champion zurück, die du früher oft gespielt hast. **Entdecke vertraute Matchups und Abläufe wieder** und passe dich an Änderungen an. Beende jedes Match regulär."
+        "objective": "Starte ein **MOBA, in dem dein früherer Champion noch verfügbar ist**. Geh in einem vertrauten Modus auf deine alte Lane und nimm den Champion, den du früher oft gespielt hast. **Spiel ein Match mit dieser Kombination zu Ende** und schau, was sich verändert hat.",
+        "gameObjective": "In **{{game}}**: Geh in einem vertrauten Modus auf deine alte Lane und nimm den Champion, den du früher oft gespielt hast. **Spiel ein Match mit dieser Kombination zu Ende** und schau, was sich verändert hat."
       }
     },
     "customGameCompatibility": {
@@ -3899,17 +3766,16 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Your Starting Time",
-        "objective": "Open a **game with replayable time trials**. Choose a short, unlocked timed route with a result screen. **Finish one run and record its time in the game**. Accept mistakes; this run is a reference for later.",
-        "gameObjective": "In **{{game}}**: Choose a short, unlocked timed route with a result screen. **Finish one run and record its time in the game**. Accept mistakes; this run is a reference for later."
+        "objective": "Open a **game with replayable time trials**. Choose a short, unlocked timed route with a result screen. **Finish one run and record its time in the game**. Mistakes are fine. Keep this time as a reference for later.",
+        "gameObjective": "In **{{game}}**: Choose a short, unlocked timed route with a result screen. **Finish one run and record its time in the game**. Mistakes are fine. Keep this time as a reference for later."
       },
       "de": {
         "name": "Deine Ausgangszeit",
-        "objective": "Starte ein **Spiel mit wiederholbaren Zeitrennen**. Wähle eine kurze, freigeschaltete Zeitstrecke mit Ergebnisanzeige. **Beende einen Lauf und lass seine Zeit im Spiel erfassen**. Fehler sind erlaubt; der Lauf dient später als Vergleich.",
-        "gameObjective": "In **{{game}}**: Wähle eine kurze, freigeschaltete Zeitstrecke mit Ergebnisanzeige. **Beende einen Lauf und lass seine Zeit im Spiel erfassen**. Fehler sind erlaubt; der Lauf dient später als Vergleich."
+        "objective": "Starte ein **Spiel mit wiederholbaren Zeitrennen**. Such dir eine kurze freigeschaltete Strecke aus. **Fahr einmal ins Ziel und merk dir deine Zeit**. Fehler sind okay; die Zeit ist dein Ausgangspunkt für später.",
+        "gameObjective": "In **{{game}}**: Such dir eine kurze freigeschaltete Strecke aus. **Fahr einmal ins Ziel und merk dir deine Zeit**. Fehler sind okay; die Zeit ist dein Ausgangspunkt für später."
       }
     },
     "customGameCompatibility": {
@@ -3930,12 +3796,11 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Where Time Goes",
-        "objective": "Open a **game with timed routes and alternative paths**. On an unlocked short time-trial route with a branch, take one path and then the other using the same setup. **Finish both runs and compare the times**; neither has to set a record.",
-        "gameObjective": "In **{{game}}**: On an unlocked short time-trial route with a branch, take one path and then the other using the same setup. **Finish both runs and compare the times**; neither has to set a record."
+        "objective": "Open a **game with timed routes and alternative paths**. On an unlocked short time-trial route with a branch, take one path and then the other using the same setup. **Finish both runs and compare the times**. Neither needs to set a record.",
+        "gameObjective": "In **{{game}}**: On an unlocked short time-trial route with a branch, take one path and then the other using the same setup. **Finish both runs and compare the times**. Neither needs to set a record."
       },
       "de": {
         "name": "Wo die Zeit bleibt",
@@ -3962,7 +3827,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "That Fast Route",
@@ -3993,7 +3857,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Comfortable Tempo",
@@ -4002,8 +3865,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Angenehmes Tempo",
-        "objective": "Starte ein **Rhythmusspiel mit wählbarem Schwierigkeitsgrad**. Wenn du den Schwierigkeitsgrad wählen kannst, spiele vertraute Lieblingssongs auf einer leichten Stufe oder, falls vorhanden, ohne Scheitern. **Spiele für die Musik und bekannte Muster**, ohne Combo- oder Punkteziel.",
-        "gameObjective": "In **{{game}}**: Wenn du den Schwierigkeitsgrad wählen kannst, spiele vertraute Lieblingssongs auf einer leichten Stufe oder, falls vorhanden, ohne Scheitern. **Spiele für die Musik und bekannte Muster**, ohne Combo- oder Punkteziel."
+        "objective": "Starte ein **Rhythmusspiel mit wählbarem Schwierigkeitsgrad**. Spiel vertraute Lieblingssongs auf einer leichten Stufe oder, wenn möglich, ohne Scheitern. **Konzentrier dich auf die Musik und bekannte Muster**. Kombo und Punkte sind egal.",
+        "gameObjective": "In **{{game}}**: Spiel vertraute Lieblingssongs auf einer leichten Stufe oder, wenn möglich, ohne Scheitern. **Konzentrier dich auf die Musik und bekannte Muster**. Kombo und Punkte sind egal."
       }
     },
     "customGameCompatibility": {
@@ -4024,7 +3887,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 5,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Song You Skipped",
@@ -4056,7 +3918,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Fewer Misses",
@@ -4065,8 +3926,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Weniger Fehler",
-        "objective": "Starte ein **Rhythmusspiel mit Fehleranzeige**. Wähle einen kurzen Song mit einer Ergebnisanzeige für verpasste Noten. Spiele ihn einmal und **schaffe dann bei gleichem Schwierigkeitsgrad innerhalb von drei Wiederholungen weniger Fehler** oder hör nach dem dritten Ergebnis auf.",
-        "gameObjective": "In **{{game}}**: Wähle einen kurzen Song mit einer Ergebnisanzeige für verpasste Noten. Spiele ihn einmal und **schaffe dann bei gleichem Schwierigkeitsgrad innerhalb von drei Wiederholungen weniger Fehler** oder hör nach dem dritten Ergebnis auf."
+        "objective": "Starte ein **Rhythmusspiel mit Fehleranzeige**. Spiel einen kurzen Song einmal durch. Versuch danach auf derselben Schwierigkeit, **innerhalb von drei weiteren Durchläufen weniger Noten zu verpassen**. Hör nach dem dritten Ergebnis auf.",
+        "gameObjective": "In **{{game}}**: Spiel einen kurzen Song einmal durch. Versuch danach auf derselben Schwierigkeit, **innerhalb von drei weiteren Durchläufen weniger Noten zu verpassen**. Hör nach dem dritten Ergebnis auf."
       }
     },
     "customGameCompatibility": {
@@ -4088,7 +3949,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 5,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Your Old Track",
@@ -4121,7 +3981,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Card Different",
@@ -4153,7 +4012,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Build Around It",
@@ -4185,7 +4043,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Deck You Know",
@@ -4194,8 +4051,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Dein vertrautes Deck",
-        "objective": "Starte ein **Kartenspiel mit einem vertrauten gespeicherten Deck**. Wähle ein gespeichertes Deck, das du bereits verstehst, und einen verzeihenden Solo- oder Bot-Modus. **Genieße seine vertrauten Kombinationen**, ohne es umzubauen oder neue Listen zu studieren.",
-        "gameObjective": "In **{{game}}**: Wähle ein gespeichertes Deck, das du bereits verstehst, und einen verzeihenden Solo- oder Bot-Modus. **Genieße seine vertrauten Kombinationen**, ohne es umzubauen oder neue Listen zu studieren."
+        "objective": "Starte ein **Kartenspiel mit einem vertrauten gespeicherten Deck**. Nimm dein vertrautes Deck in einen entspannten Solo- oder Bot-Modus. **Spiel seine Kombinationen in einem Kampf aus**. Du musst das Deck nicht umbauen.",
+        "gameObjective": "In **{{game}}**: Nimm dein vertrautes Deck in einen entspannten Solo- oder Bot-Modus. **Spiel seine Kombinationen in einem Kampf aus**. Du musst das Deck nicht umbauen."
       }
     },
     "customGameCompatibility": {
@@ -4218,7 +4075,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Make It Connect",
@@ -4227,8 +4083,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Die Kombination schaffen",
-        "objective": "Starte ein **Kartenspiel mit einem vorhandenen Combo-Deck**. Nutze in Solo- oder Bot-Kämpfen ein verfügbares gültiges Deck mit einem bekannten Zusammenspiel zweier Karten. **Löse es während eines Kampfes aus und beende ihn** oder hör nach drei Kämpfen auf, falls die Karten nie zusammenkommen.",
-        "gameObjective": "In **{{game}}**: Nutze in Solo- oder Bot-Kämpfen ein verfügbares gültiges Deck mit einem bekannten Zusammenspiel zweier Karten. **Löse es während eines Kampfes aus und beende ihn** oder hör nach drei Kämpfen auf, falls die Karten nie zusammenkommen."
+        "objective": "Starte ein **Kartenspiel mit einem vorhandenen Combo-Deck**. Nutze in Solo- oder Bot-Kämpfen ein verfügbares gültiges Deck mit einem bekannten Zusammenspiel zweier Karten. **Bring die beiden Karten in einem Kampf zusammen und spiel ihn zu Ende** oder hör nach drei Kämpfen auf, falls die Karten nie zusammenkommen.",
+        "gameObjective": "In **{{game}}**: Nutze in Solo- oder Bot-Kämpfen ein verfügbares gültiges Deck mit einem bekannten Zusammenspiel zweier Karten. **Bring die beiden Karten in einem Kampf zusammen und spiel ihn zu Ende** oder hör nach drei Kämpfen auf, falls die Karten nie zusammenkommen."
       }
     },
     "customGameCompatibility": {
@@ -4250,7 +4106,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Move as a Group",
@@ -4259,8 +4114,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Als Gruppe vorrücken",
-        "objective": "Starte ein **Spiel mit mehreren befehligbaren Einheiten**. Wähle in einem kurzen Solo- oder CPU-Kampf eine kleine Gruppe verfügbarer Einheiten. **Bewege sie gemeinsam zu einem Szenarioziel und spiele, bis es entschieden ist oder der Kampf endet**.",
-        "gameObjective": "In **{{game}}**: Wähle in einem kurzen Solo- oder CPU-Kampf eine kleine Gruppe verfügbarer Einheiten. **Bewege sie gemeinsam zu einem Szenarioziel und spiele, bis es entschieden ist oder der Kampf endet**."
+        "objective": "Starte ein **Spiel mit mehreren befehligbaren Einheiten**. Wähle in einem kurzen Solo- oder CPU-Kampf eine kleine Einheitengruppe. **Beweg sie zusammen zum Ziel und spiel den Kampf zu Ende**.",
+        "gameObjective": "In **{{game}}**: Wähle in einem kurzen Solo- oder CPU-Kampf eine kleine Einheitengruppe. **Beweg sie zusammen zum Ziel und spiel den Kampf zu Ende**."
       }
     },
     "customGameCompatibility": {
@@ -4282,7 +4137,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Change the Formation",
@@ -4291,8 +4145,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Anders aufstellen",
-        "objective": "Starte ein **Taktikspiel mit steuerbaren Einheitenpositionen**. Stelle in einem Solo-Szenario mit frei platzierbaren Einheiten eine robuste Einheit vor eine empfindlichere. **Spiele eine Begegnung mit dieser Anordnung und vergleiche sie mit deiner üblichen Aufstellung**.",
-        "gameObjective": "In **{{game}}**: Stelle in einem Solo-Szenario mit frei platzierbaren Einheiten eine robuste Einheit vor eine empfindlichere. **Spiele eine Begegnung mit dieser Anordnung und vergleiche sie mit deiner üblichen Aufstellung**."
+        "objective": "Starte ein **Taktikspiel, in dem du deine Einheiten selbst aufstellen kannst**. Stelle in einem Solo-Szenario mit frei platzierbaren Einheiten eine robuste Einheit vor eine empfindlichere. **Spiel mit dieser Aufstellung einen Kampf und vergleiche sie mit deiner üblichen Taktik**.",
+        "gameObjective": "In **{{game}}**: Stelle in einem Solo-Szenario mit frei platzierbaren Einheiten eine robuste Einheit vor eine empfindlichere. **Spiel mit dieser Aufstellung einen Kampf und vergleiche sie mit deiner üblichen Taktik**."
       }
     },
     "customGameCompatibility": {
@@ -4317,7 +4171,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Keep the Group Alive",
@@ -4326,8 +4179,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Die Gruppe erhalten",
-        "objective": "Starte ein **Taktikspiel mit wiederholbaren Solo-Kämpfen**. Wähle einen verfügbaren, kurzen, wiederholbaren Solo-Kampf und eine kleine Einheitengruppe. **Gewinne, ohne eine Einheit dieser Gruppe zu verlieren**, oder beende drei Versuche. Andere Einheiten dürfen helfen.",
-        "gameObjective": "In **{{game}}**: Wähle einen verfügbaren, kurzen, wiederholbaren Solo-Kampf und eine kleine Einheitengruppe. **Gewinne, ohne eine Einheit dieser Gruppe zu verlieren**, oder beende drei Versuche. Andere Einheiten dürfen helfen."
+        "objective": "Starte ein **Taktikspiel mit wiederholbaren Solo-Kämpfen**. Wähle einen kurzen Solo-Kampf, den du wiederholen kannst, und eine kleine Gruppe von Einheiten. **Gewinn, ohne jemanden aus dieser Gruppe zu verlieren**. Andere Einheiten dürfen helfen; hör nach drei Versuchen auf.",
+        "gameObjective": "In **{{game}}**: Wähle einen kurzen Solo-Kampf, den du wiederholen kannst, und eine kleine Gruppe von Einheiten. **Gewinn, ohne jemanden aus dieser Gruppe zu verlieren**. Andere Einheiten dürfen helfen; hör nach drei Versuchen auf."
       }
     },
     "customGameCompatibility": {
@@ -4351,7 +4204,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Your Old Army",
@@ -4385,7 +4237,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Working Chain",
@@ -4416,7 +4267,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Follow One Item",
@@ -4425,8 +4275,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Einem Item folgen",
-        "objective": "Starte ein **Spiel mit automatisierten Produktionsketten**. Wähle eine laufende Produktionskette und folge einem Material vom Eingang durch die Maschinen. **Erkenne seine Verarbeitungsschritte und beobachte, wie ein fertiges Item den Ausgang erreicht**.",
-        "gameObjective": "In **{{game}}**: Wähle eine laufende Produktionskette und folge einem Material vom Eingang durch die Maschinen. **Erkenne seine Verarbeitungsschritte und beobachte, wie ein fertiges Item den Ausgang erreicht**."
+        "objective": "Starte ein **Spiel mit automatisierten Produktionsketten**. Wähle eine laufende Produktionskette und folge einem Material vom Eingang durch die Maschinen. **Schau zu, wie es verarbeitet wird und am Ende ein fertiges Item herauskommt**.",
+        "gameObjective": "In **{{game}}**: Wähle eine laufende Produktionskette und folge einem Material vom Eingang durch die Maschinen. **Schau zu, wie es verarbeitet wird und am Ende ein fertiges Item herauskommt**."
       }
     },
     "customGameCompatibility": {
@@ -4446,7 +4296,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Stay With This Line",
@@ -4455,8 +4304,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Bei dieser Kette bleiben",
-        "objective": "Starte ein **Automatisierungsspiel mit einer bestehenden Fabrik**. Kehre zu einer bereits funktionierenden Produktionskette zurück. **Verbringe die Session damit, diese Kette zu beobachten und zu betreuen**. Ausbaupläne und der Rest der Fabrik kommen später.",
-        "gameObjective": "In **{{game}}**: Kehre zu einer bereits funktionierenden Produktionskette zurück. **Verbringe die Session damit, diese Kette zu beobachten und zu betreuen**. Ausbaupläne und der Rest der Fabrik kommen später."
+        "objective": "Starte ein **Automatisierungsspiel mit einer bestehenden Fabrik**. Kehre zu einer bereits funktionierenden Produktionskette zurück. **Schau der Kette beim Laufen zu und greif ein, wenn sie stockt**. Ausbaupläne und der Rest der Fabrik kommen später.",
+        "gameObjective": "In **{{game}}**: Kehre zu einer bereits funktionierenden Produktionskette zurück. **Schau der Kette beim Laufen zu und greif ein, wenn sie stockt**. Ausbaupläne und der Rest der Fabrik kommen später."
       }
     },
     "customGameCompatibility": {
@@ -4477,17 +4326,16 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 45,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Through the Result",
-        "objective": "Open a **game with full matches**. Use your familiar mode and setup. **Play one whole match through its final result**, including every round; a win is not required. Allow enough time to finish even if it runs longer than expected.",
-        "gameObjective": "In **{{game}}**: Use your familiar mode and setup. **Play one whole match through its final result**, including every round; a win is not required. Allow enough time to finish even if it runs longer than expected."
+        "objective": "Open a **game with full matches**. Use your familiar mode and setup. **Play one whole match through its final result**, including every round. A win is not required. Allow enough time to finish even if it runs longer than expected.",
+        "gameObjective": "In **{{game}}**: Use your familiar mode and setup. **Play one whole match through its final result**, including every round. A win is not required. Allow enough time to finish even if it runs longer than expected."
       },
       "de": {
         "name": "Bis zum Ergebnis",
-        "objective": "Starte ein **Spiel mit vollständigen Matches**. Nutze deinen vertrauten Modus und dein übliches Setup. **Spiele ein ganzes Match bis zum Endergebnis**, einschließlich aller Runden; ein Sieg ist nicht nötig. Plane genug Zeit ein, auch wenn es länger dauert als erwartet.",
-        "gameObjective": "In **{{game}}**: Nutze deinen vertrauten Modus und dein übliches Setup. **Spiele ein ganzes Match bis zum Endergebnis**, einschließlich aller Runden; ein Sieg ist nicht nötig. Plane genug Zeit ein, auch wenn es länger dauert als erwartet."
+        "objective": "Starte ein **Spiel mit vollständigen Matches**. Nimm deinen vertrauten Modus und dein übliches Setup. **Spiel alle Runden bis zum Ergebnisbildschirm**. Ein Sieg ist nicht nötig; nimm dir die Zeit dafür.",
+        "gameObjective": "In **{{game}}**: Nimm deinen vertrauten Modus und dein übliches Setup. **Spiel alle Runden bis zum Ergebnisbildschirm**. Ein Sieg ist nicht nötig; nimm dir die Zeit dafür."
       }
     },
     "customGameCompatibility": {
@@ -4507,7 +4355,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 10,
     "suggestedDurationMinutes": 45,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Follow the Match",
@@ -4516,8 +4363,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Dem Match folgen",
-        "objective": "Starte ein **Spiel mit vollständigen Matches**. Wähle deinen vertrautesten Modus und **achte darauf, wie sich das Match entwickelt**. Passe deine gewohnte Spielweise an Veränderungen an. Widme die Session diesem Match und beende es, bevor du über den nächsten Schritt entscheidest.",
-        "gameObjective": "In **{{game}}**: Wähle deinen vertrautesten Modus und **achte darauf, wie sich das Match entwickelt**. Passe deine gewohnte Spielweise an Veränderungen an. Widme die Session diesem Match und beende es, bevor du über den nächsten Schritt entscheidest."
+        "objective": "Starte ein **Spiel mit vollständigen Matches**. Nimm deinen vertrautesten Modus und **spiel ein ganzes Match aufmerksam zu Ende**. Wenn Gegner oder Team ihre Taktik ändern, pass deine Spielweise daran an.",
+        "gameObjective": "In **{{game}}**: Nimm deinen vertrautesten Modus und **spiel ein ganzes Match aufmerksam zu Ende**. Wenn Gegner oder Team ihre Taktik ändern, pass deine Spielweise daran an."
       }
     },
     "customGameCompatibility": {
@@ -4539,7 +4386,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 10,
     "suggestedDurationMinutes": 45,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Your Regular Group",
@@ -4548,8 +4394,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Deine gewohnte Runde",
-        "objective": "Starte ein **Teamspiel, das du mit vertrauten Mitspielern teilst**. Spiele mit vertrauten Mitspielern einen Modus, den ihr schon gemeinsam kennt. **Genießt das eingespielte Zusammenspiel und eure Gespräche**, ohne zusätzliches Punkteziel. Beendet jedes Match, bevor jemand aufhört.",
-        "gameObjective": "In **{{game}}**: Spiele mit vertrauten Mitspielern einen Modus, den ihr schon gemeinsam kennt. **Genießt das eingespielte Zusammenspiel und eure Gespräche**, ohne zusätzliches Punkteziel. Beendet jedes Match, bevor jemand aufhört."
+        "objective": "Starte ein **Teamspiel mit Leuten, mit denen du früher oft gespielt hast**. Wählt einen Modus, den ihr zusammen kennt, und **spielt ein Match zu Ende**. Redet dabei und lasst zusätzliche Punkteziele weg.",
+        "gameObjective": "In **{{game}}**: Wählt einen Modus, den ihr zusammen kennt, und **spielt ein Match zu Ende**. Redet dabei und lasst zusätzliche Punkteziele weg."
       }
     },
     "customGameCompatibility": {
@@ -4571,7 +4417,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One New Choice",
@@ -4580,8 +4425,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Eine neue Wahl",
-        "objective": "Starte ein **Spiel mit wählbaren Figuren und vollständigen Bot-Matches**. Wähle in einem vollständigen Bot-Match eine freigeschaltete Figur, die du länger nicht benutzt hast. **Nutze ihre Fähigkeiten im Match und erreiche das Endergebnis**. Achte auf eine Entscheidung, die du anders triffst als mit deiner üblichen Figur.",
-        "gameObjective": "In **{{game}}**: Wähle in einem vollständigen Bot-Match eine freigeschaltete Figur, die du länger nicht benutzt hast. **Nutze ihre Fähigkeiten im Match und erreiche das Endergebnis**. Achte auf eine Entscheidung, die du anders triffst als mit deiner üblichen Figur."
+        "objective": "Starte ein **Spiel mit wählbaren Figuren und vollständigen Bot-Matches**. Nimm in einem Bot-Match eine freigeschaltete Figur, die du länger nicht gespielt hast. **Setz ihre Fähigkeiten ein und spiel bis zum Ergebnis**. Achte darauf, was du anders machst als mit deiner üblichen Figur.",
+        "gameObjective": "In **{{game}}**: Nimm in einem Bot-Match eine freigeschaltete Figur, die du länger nicht gespielt hast. **Setz ihre Fähigkeiten ein und spiel bis zum Ergebnis**. Achte darauf, was du anders machst als mit deiner üblichen Figur."
       }
     },
     "customGameCompatibility": {
@@ -4604,7 +4449,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Stay Above Ground",
@@ -4613,8 +4457,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Über dem Boden bleiben",
-        "objective": "Starte ein **Spiel mit Klettern oder Bewegungsfähigkeiten**. Wähle in einem Solo-Bereich drei nahe Vorsprünge oder Plattformen, die du mit deinen verfügbaren Bewegungen erreichen kannst. **Verbinde alle drei, ohne auf den Ausgangsboden zurückzufallen**, oder beende drei Versuche.",
-        "gameObjective": "In **{{game}}**: Wähle in einem Solo-Bereich drei nahe Vorsprünge oder Plattformen, die du mit deinen verfügbaren Bewegungen erreichen kannst. **Verbinde alle drei, ohne auf den Ausgangsboden zurückzufallen**, oder beende drei Versuche."
+        "objective": "Starte ein **Spiel mit Klettern oder Bewegungsfähigkeiten**. Such dir im Solo-Spiel drei Vorsprünge oder Plattformen in der Nähe aus. **Verbinde sie, ohne wieder auf den Boden am Start zu fallen**. Wenn es nicht klappt, hör nach drei Versuchen auf.",
+        "gameObjective": "In **{{game}}**: Such dir im Solo-Spiel drei Vorsprünge oder Plattformen in der Nähe aus. **Verbinde sie, ohne wieder auf den Boden am Start zu fallen**. Wenn es nicht klappt, hör nach drei Versuchen auf."
       }
     },
     "customGameCompatibility": {
@@ -4636,7 +4480,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Follow the Edge",
@@ -4668,7 +4511,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Change the Approach",
@@ -4677,8 +4519,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Anders herangehen",
-        "objective": "Starte ein **Spiel mit wiederholbaren Missionen und wählbarer Ausrüstung**. Spiele eine kurze Mission mit einer vorhandenen Waffe oder einem Werkzeug, das du beim ersten Mal nicht benutzt hast. **Beende die Mission und achte darauf, welche Begegnung sich am stärksten verändert**.",
-        "gameObjective": "In **{{game}}**: Spiele eine kurze Mission mit einer vorhandenen Waffe oder einem Werkzeug, das du beim ersten Mal nicht benutzt hast. **Beende die Mission und achte darauf, welche Begegnung sich am stärksten verändert**."
+        "objective": "Starte ein **Spiel mit wiederholbaren Missionen und wählbarer Ausrüstung**. Wiederhole eine kurze Mission mit einer Waffe oder einem Werkzeug, das du beim ersten Mal nicht benutzt hast. **Spiel sie zu Ende und achte darauf, bei welchem Kampf dir die andere Ausrüstung am meisten geholfen hat**.",
+        "gameObjective": "In **{{game}}**: Wiederhole eine kurze Mission mit einer Waffe oder einem Werkzeug, das du beim ersten Mal nicht benutzt hast. **Spiel sie zu Ende und achte darauf, bei welchem Kampf dir die andere Ausrüstung am meisten geholfen hat**."
       }
     },
     "customGameCompatibility": {
@@ -4701,7 +4543,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Stay as a Pair",
@@ -4710,8 +4551,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Als Duo zusammenbleiben",
-        "objective": "Starte ein **Online-Teamspiel mit Missionszielen**. Wähle ein Squadmitglied und bleibt beim nächsten Ziel nah genug zusammen, um euch zu unterstützen. **Erreicht gemeinsam das Ergebnis des Ziels**, auch wenn der restliche Squad einen anderen Weg nimmt.",
-        "gameObjective": "In **{{game}}**: Wähle ein Squadmitglied und bleibt beim nächsten Ziel nah genug zusammen, um euch zu unterstützen. **Erreicht gemeinsam das Ergebnis des Ziels**, auch wenn der restliche Squad einen anderen Weg nimmt."
+        "objective": "Starte ein **Online-Teamspiel mit Missionszielen**. Bleib beim nächsten Ziel nah bei einem Squadmitglied, damit ihr euch helfen könnt. **Haltet zusammen, bis das Ziel erreicht oder verloren ist**, auch wenn der Rest des Squads woanders hinzieht.",
+        "gameObjective": "In **{{game}}**: Bleib beim nächsten Ziel nah bei einem Squadmitglied, damit ihr euch helfen könnt. **Haltet zusammen, bis das Ziel erreicht oder verloren ist**, auch wenn der Rest des Squads woanders hinzieht."
       }
     },
     "customGameCompatibility": {
@@ -4734,7 +4575,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Swap Your Role",
@@ -4743,8 +4583,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Rolle tauschen",
-        "objective": "Starte ein **Online-Teamspiel mit kurzen Runden**. Übernimm für eine volle Runde eine verfügbare Rolle, die du sonst nicht spielst, etwa Support, Verteidigung oder Eröffnung. **Beende die Runde mit Fokus auf diese Aufgabe** statt auf dein gewohntes Punktemuster.",
-        "gameObjective": "In **{{game}}**: Übernimm für eine volle Runde eine verfügbare Rolle, die du sonst nicht spielst, etwa Support, Verteidigung oder Eröffnung. **Beende die Runde mit Fokus auf diese Aufgabe** statt auf dein gewohntes Punktemuster."
+        "objective": "Starte ein **Online-Teamspiel mit kurzen Runden**. Übernimm für eine ganze Runde eine Rolle, die du sonst nicht spielst, etwa Support oder Verteidigung. **Kümmere dich um diese Aufgabe und spiel die Runde zu Ende**. Deine üblichen Punkte sind heute egal.",
+        "gameObjective": "In **{{game}}**: Übernimm für eine ganze Runde eine Rolle, die du sonst nicht spielst, etwa Support oder Verteidigung. **Kümmere dich um diese Aufgabe und spiel die Runde zu Ende**. Deine üblichen Punkte sind heute egal."
       }
     },
     "customGameCompatibility": {
@@ -4767,7 +4607,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 10,
     "suggestedDurationMinutes": 45,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Shared Plan",
@@ -4776,8 +4615,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Ein gemeinsamer Plan",
-        "objective": "Starte ein **Online-Squadspiel mit vollständigen Matches**. Einigt euch vor dem Match auf einen einfachen Teamplan wie eine Route, Eröffnung oder Verteidigungsposition. **Kehrt im Verlauf immer wieder zu diesem Plan zurück** und beendet das Match gemeinsam.",
-        "gameObjective": "In **{{game}}**: Einigt euch vor dem Match auf einen einfachen Teamplan wie eine Route, Eröffnung oder Verteidigungsposition. **Kehrt im Verlauf immer wieder zu diesem Plan zurück** und beendet das Match gemeinsam."
+        "objective": "Starte ein **Online-Squadspiel mit vollständigen Matches**. Einigt euch vor dem Match auf einen einfachen Plan für Route, Eröffnung oder Verteidigung. **Setzt ihn gemeinsam um und spielt das Match zu Ende**. Sprecht euch ab, wenn ihr ihn ändern müsst.",
+        "gameObjective": "In **{{game}}**: Einigt euch vor dem Match auf einen einfachen Plan für Route, Eröffnung oder Verteidigung. **Setzt ihn gemeinsam um und spielt das Match zu Ende**. Sprecht euch ab, wenn ihr ihn ändern müsst."
       }
     },
     "customGameCompatibility": {
@@ -4800,7 +4639,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Opposite Range",
@@ -4809,8 +4647,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Andere Distanz",
-        "objective": "Starte ein **Spiel mit wählbarer Kampfausrüstung**. Nimm eine vorhandene Waffe für eine andere Distanz als deine übliche Wahl. **Beende in Solo- oder Bot-Spiel eine Begegnung und passe deine Position an diese Reichweite an**.",
-        "gameObjective": "In **{{game}}**: Nimm eine vorhandene Waffe für eine andere Distanz als deine übliche Wahl. **Beende in Solo- oder Bot-Spiel eine Begegnung und passe deine Position an diese Reichweite an**."
+        "objective": "Starte ein **Spiel mit wählbarer Kampfausrüstung**. Nimm eine vorhandene Waffe für eine andere Distanz als deine übliche Wahl. **Pass deine Position an die neue Reichweite an und beende damit einen Solo- oder Bot-Kampf**.",
+        "gameObjective": "In **{{game}}**: Nimm eine vorhandene Waffe für eine andere Distanz als deine übliche Wahl. **Pass deine Position an die neue Reichweite an und beende damit einen Solo- oder Bot-Kampf**."
       }
     },
     "customGameCompatibility": {
@@ -4832,7 +4670,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Two Openers",
@@ -4841,8 +4678,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Zwei Eröffnungen",
-        "objective": "Starte ein **Spiel mit mehreren freigeschalteten Kampfzaubern**. Eröffne zwei ähnliche Solo-Begegnungen jeweils mit einem anderen Zauber und beende beide frei. **Vergleiche, welche Eröffnung deine nächste Entscheidung verändert hat**.",
-        "gameObjective": "In **{{game}}**: Eröffne zwei ähnliche Solo-Begegnungen jeweils mit einem anderen freigeschalteten Zauber und beende beide frei. **Vergleiche, welche Eröffnung deine nächste Entscheidung verändert hat**."
+        "objective": "Starte ein **Spiel mit mehreren freigeschalteten Kampfzaubern**. Eröffne zwei ähnliche Solo-Begegnungen jeweils mit einem anderen Zauber und beende beide frei. **Vergleiche, wie du nach den beiden Eröffnungen weiterspielst**.",
+        "gameObjective": "In **{{game}}**: Eröffne zwei ähnliche Solo-Begegnungen jeweils mit einem anderen freigeschalteten Zauber und beende beide frei. **Vergleiche, wie du nach den beiden Eröffnungen weiterspielst**."
       }
     },
     "customGameCompatibility": {
@@ -4864,7 +4701,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Next Stop",
@@ -4873,8 +4709,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Der nächste Halt",
-        "objective": "Starte ein **Weltraumspiel mit entdeckten Zielen**. Reise zu einem nahen Ziel, das du länger nicht besucht hast. **Lande, docke an oder gehe in den Orbit und sieh dir die Aussicht an**. Speichere, bevor du eine weitere Reise auswählst.",
-        "gameObjective": "In **{{game}}**: Reise zu einem nahen entdeckten Ziel, das du länger nicht besucht hast. **Lande, docke an oder gehe in den Orbit und sieh dir die Aussicht an**. Speichere, bevor du eine weitere Reise auswählst."
+        "objective": "Starte ein **Weltraumspiel, in dem du schon mehrere Reiseziele entdeckt hast**. Reise zu einem Ziel in der Nähe, das du länger nicht besucht hast. **Lande, docke an oder flieg in den Orbit und schau dich um**. Speichere, bevor du weiterreist.",
+        "gameObjective": "In **{{game}}**: Reise zu einem Ziel in der Nähe, das du länger nicht besucht hast. **Lande, docke an oder flieg in den Orbit und schau dich um**. Speichere, bevor du weiterreist."
       }
     },
     "customGameCompatibility": {
@@ -4896,7 +4732,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Three Breaths",
@@ -4904,9 +4739,9 @@ export const reusableQuests = [
         "gameObjective": "In **{{game}}**: Choose three visible underwater landmarks within safe reach. **Swim to each in one route, surfacing between landmarks**, then return to shore or your vessel."
       },
       "de": {
-        "name": "Drei Atemzüge",
-        "objective": "Starte ein **Spiel mit freiem Tauchen**. Wähle drei sichtbare Unterwasser-Orte in sicherer Reichweite. **Schwimme sie auf einer Route ab und tauche zwischen den Orten auf**. Kehre danach ans Ufer oder zu deinem Fahrzeug zurück.",
-        "gameObjective": "In **{{game}}**: Wähle drei sichtbare Unterwasser-Orte in sicherer Reichweite. **Schwimme sie auf einer Route ab und tauche zwischen den Orten auf**. Kehre danach ans Ufer oder zu deinem Fahrzeug zurück."
+        "name": "Drei Tauchstopps",
+        "objective": "Starte ein **Spiel mit freiem Tauchen**. Such dir drei Stellen unter Wasser aus, die du sicher erreichen kannst. **Schwimm sie nacheinander ab und hol zwischen den Stellen Luft**. Kehr danach ans Ufer oder zu deinem Fahrzeug zurück.",
+        "gameObjective": "In **{{game}}**: Such dir drei Stellen unter Wasser aus, die du sicher erreichen kannst. **Schwimm sie nacheinander ab und hol zwischen den Stellen Luft**. Kehr danach ans Ufer oder zu deinem Fahrzeug zurück."
       }
     },
     "customGameCompatibility": {
@@ -4928,7 +4763,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Read Before Striking",
@@ -4937,8 +4771,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Erst lesen, dann schlagen",
-        "objective": "Starte ein **Spiel mit wiederholbarem Bosskampf**. Greife im ersten Versuch nicht an, bevor du drei verschiedene Bossattacken gesehen hast. Kämpfe danach normal und **besiege den Boss oder beende drei Versuche**.",
-        "gameObjective": "In **{{game}}**: Greife im ersten Versuch nicht an, bevor du drei verschiedene Bossattacken gesehen hast. Kämpfe danach normal und **besiege den Boss oder beende drei Versuche**."
+        "objective": "Starte ein **Spiel mit wiederholbarem Bosskampf**. Schau dir im ersten Versuch drei verschiedene Angriffe des Bosses an, bevor du selbst angreifst. **Kämpf danach normal weiter und besieg ihn**. Wenn es nicht klappt, hör nach drei Versuchen auf.",
+        "gameObjective": "In **{{game}}**: Schau dir im ersten Versuch drei verschiedene Angriffe des Bosses an, bevor du selbst angreifst. **Kämpf danach normal weiter und besieg ihn**. Wenn es nicht klappt, hör nach drei Versuchen auf."
       }
     },
     "customGameCompatibility": {
@@ -4959,7 +4793,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Name the Rule",
@@ -4991,7 +4824,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Build Upward",
@@ -5022,7 +4854,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Use What You Have",
@@ -5053,7 +4884,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Defense First",
@@ -5062,8 +4892,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Erst die Defensive",
-        "objective": "Starte ein **Sportspiel mit CPU-Gegnern**. Spiele eine volle Partie mit einem vertrauten Team, aber achte vor dem Angriff zuerst auf Deckung, Positionierung, Paraden oder Ballgewinn. **Beende die Partie und nimm das Ergebnis an**.",
-        "gameObjective": "In **{{game}}**: Spiele eine volle Partie mit einem vertrauten Team, aber achte vor dem Angriff zuerst auf Deckung, Positionierung, Paraden oder Ballgewinn. **Beende die Partie und nimm das Ergebnis an**."
+        "objective": "Starte ein **Sportspiel mit CPU-Gegnern**. Spiel mit einem vertrauten Team gegen die CPU. Achte zuerst auf Deckung, Position und Ballgewinn, bevor du angreifst. **Bring die Partie zu Ende, egal wie sie ausgeht**.",
+        "gameObjective": "In **{{game}}**: Spiel mit einem vertrauten Team gegen die CPU. Achte zuerst auf Deckung, Position und Ballgewinn, bevor du angreifst. **Bring die Partie zu Ende, egal wie sie ausgeht**."
       }
     },
     "customGameCompatibility": {
@@ -5085,7 +4915,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Squad Contract",
@@ -5094,8 +4923,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Ein Squad-Auftrag",
-        "objective": "Starte ein **Online-Extraction-Spiel mit Squads**. Wählt vor dem Einsatz einen verfügbaren Auftrag, Gegenstand oder Ort, den der Squad priorisiert. **Arbeitet auf dieses gemeinsame Ziel hin und extrahiert oder beendet den Run, falls der Squad ausgeschaltet wird**.",
-        "gameObjective": "In **{{game}}**: Wählt vor dem Einsatz einen verfügbaren Auftrag, Gegenstand oder Ort, den der Squad priorisiert. **Arbeitet auf dieses gemeinsame Ziel hin und extrahiert oder beendet den Run, falls der Squad ausgeschaltet wird**."
+        "objective": "Starte ein **Online-Extraction-Spiel mit Squads**. Legt vor dem Einsatz fest, welchen Auftrag, Gegenstand oder Ort euer Squad zuerst angeht. **Arbeitet zusammen daran und versucht danach zu extrahieren**. Wenn der Squad ausscheidet, endet der Run dort.",
+        "gameObjective": "In **{{game}}**: Legt vor dem Einsatz fest, welchen Auftrag, Gegenstand oder Ort euer Squad zuerst angeht. **Arbeitet zusammen daran und versucht danach zu extrahieren**. Wenn der Squad ausscheidet, endet der Run dort."
       }
     },
     "customGameCompatibility": {
@@ -5118,7 +4947,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Route in Three Frames",
@@ -5127,8 +4955,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Drei Bilder vom Weg",
-        "objective": "Starte ein **frei erkundbares Spiel mit Fotomodus**. Wähle eine kurze Route und mache je ein Bild am Anfang, in der Mitte und am Ziel. **Behalte die drei Bilder als Folge, die den Weg zeigt**.",
-        "gameObjective": "In **{{game}}**: Wähle eine kurze Route und mache je ein Bild am Anfang, in der Mitte und am Ziel. **Behalte die drei Bilder als Folge, die den Weg zeigt**."
+        "objective": "Starte ein **frei erkundbares Spiel mit Fotomodus**. Wähle eine kurze Route und mache je ein Bild am Anfang, in der Mitte und am Ziel. **Speichere die drei Bilder als kleine Geschichte deiner Route**.",
+        "gameObjective": "In **{{game}}**: Wähle eine kurze Route und mache je ein Bild am Anfang, in der Mitte und am Ziel. **Speichere die drei Bilder als kleine Geschichte deiner Route**."
       }
     },
     "customGameCompatibility": {
@@ -5151,7 +4979,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Follow the Reference",
@@ -5183,7 +5010,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Remove the Detour",
@@ -5192,8 +5018,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Den Umweg entfernen",
-        "objective": "Starte ein **Spiel mit einer bestehenden automatisierten Produktionslinie**. Finde ein Material, das durch eine unnötige Schleife oder Kreuzung läuft. Leite es direkter um und **beobachte drei fertige Items, die über die neue Route den Ausgang erreichen**.",
-        "gameObjective": "In **{{game}}**: Finde ein Material, das durch eine unnötige Schleife oder Kreuzung läuft. Leite es direkter um und **beobachte drei fertige Items, die über die neue Route den Ausgang erreichen**."
+        "objective": "Starte ein **Spiel mit einer bestehenden automatisierten Produktionslinie**. Such ein Material, das auf dem Weg durch deine Produktionslinie unnötig im Kreis läuft. Leite es direkter und **prüf, ob danach drei fertige Items am Ausgang ankommen**.",
+        "gameObjective": "In **{{game}}**: Such ein Material, das auf dem Weg durch deine Produktionslinie unnötig im Kreis läuft. Leite es direkter und **prüf, ob danach drei fertige Items am Ausgang ankommen**."
       }
     },
     "customGameCompatibility": {
@@ -5215,7 +5041,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Safe Route",
@@ -5224,8 +5049,8 @@ export const reusableQuests = [
       },
       "de": {
         "name": "Der sichere Weg",
-        "objective": "Starte ein **Plattformspiel mit einem vertrauten Level**. Nimm den sichersten bekannten Weg, halte vor schwierigen Sprüngen kurz inne und **spiele ohne Jagd auf Sammelobjekte oder Bestzeit**. Hör am nächsten Kontrollpunkt oder Ausgang auf.",
-        "gameObjective": "In **{{game}}**: Nimm den sichersten Weg durch ein vertrautes Level, halte vor schwierigen Sprüngen kurz inne und **spiele ohne Jagd auf Sammelobjekte oder Bestzeit**. Hör am nächsten Kontrollpunkt oder Ausgang auf."
+        "objective": "Starte ein **Plattformspiel mit einem vertrauten Level**. Nimm den sichersten bekannten Weg, halte vor schwierigen Sprüngen kurz inne und **spiel, ohne auf Sammelobjekte oder Bestzeit zu achten**. Hör am nächsten Kontrollpunkt oder Ausgang auf.",
+        "gameObjective": "In **{{game}}**: Nimm den sichersten Weg durch ein vertrautes Level, halte vor schwierigen Sprüngen kurz inne und **spiel, ohne auf Sammelobjekte oder Bestzeit zu achten**. Hör am nächsten Kontrollpunkt oder Ausgang auf."
       }
     },
     "customGameCompatibility": {
@@ -5246,7 +5071,6 @@ export const reusableQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Keep the Opening Hand",

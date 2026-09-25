@@ -1,5 +1,8 @@
 import { defineGameQuests } from "../defineGameQuests";
 
+// Backboard defense as a focused training challenge:
+// https://www.reddit.com/r/RocketLeagueSchool/comments/ew3201/
+
 export const rocketLeagueQuests = defineGameQuests("rocket-league", [
   {
     "id": "small-pad-match",
@@ -9,28 +12,29 @@ export const rocketLeagueQuests = defineGameQuests("rocket-league", [
     ],
     "type": "challenge",
     "tags": [
-      "vs-bots"
+      "full-match",
+      "three-attempts"
     ],
     "minutes": 25,
     "minimum": 5,
     "en": {
       "name": "Small Pads Only",
-      "objective": "In **Rocket League**, play a Soccar exhibition against bots with normal boost settings. **Finish the match using only small boost pads and register a goal or save**. Starting boost is allowed; try at most three matches."
+      "objective": "In **Rocket League**, play a Soccar exhibition against bots with normal boost settings. **Finish the match using only small boost pads and register a goal or save**. Starting boost is allowed. Stop after success or three matches."
     },
     "de": {
       "name": "Nur kleine Pads",
-      "objective": "Spiele in **Rocket League** ein Soccar-Schaukampf-Match gegen Bots mit normalen Boost-Einstellungen. **Beende das Match nur mit kleinen Boost-Pads und verbuche ein Tor oder eine Parade**. Startboost ist erlaubt; höchstens drei Matches."
+      "objective": "Spiel in **Rocket League** ein Soccar-Schaukampf-Match gegen Bots mit normalen Boost-Einstellungen. **Nutz nur kleine Boost-Pads und erziele ein Tor oder halte einen Schuss**. Spiel das Match zu Ende; Startboost ist erlaubt. Hör nach dem Erfolg oder drei Matches auf."
     }
   },
   {
     "id": "wall-bank-goal",
     "moods": [
-      "curious",
+      "challenge",
       "focused"
     ],
-    "type": "experiment",
+    "type": "challenge",
     "tags": [
-      "vs-bots",
+      "full-match",
       "three-attempts"
     ],
     "minutes": 25,
@@ -65,5 +69,21 @@ export const rocketLeagueQuests = defineGameQuests("rocket-league", [
       "name": "Zum hinteren Pfosten",
       "objective": "Kehre in **Rocket League Casual 2v2** nach deinen Angriffen zum ballfernen Torpfosten zurück und sammle kleine Pads auf dem Weg. **Nutze den Rückweg dreimal und beende das Match**, ohne dein Teammitglied allein zu lassen."
     }
+  },
+  {
+    id: "backboard-saves",
+    moods: ["challenge", "focused"],
+    type: "challenge",
+    tags: ["three-attempts"],
+    minutes: 20,
+    minimum: 3,
+    en: {
+      name: "Off the Backboard",
+      objective: "In **Rocket League**, open a backboard-defense training pack with at least three shots. Try each of the first three shots up to three times. **Save each shot once**, then stop after the third shot's final try.",
+    },
+    de: {
+      name: "Weg vom Backboard",
+      objective: "Öffne in **Rocket League** ein Backboard-Defensivtraining mit mindestens drei Schüssen. Versuch, **jeden der ersten drei Schüsse einmal zu halten**. Du hast pro Schuss höchstens drei Versuche; danach ist Schluss.",
+    },
   }
 ]);

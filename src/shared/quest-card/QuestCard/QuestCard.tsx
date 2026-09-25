@@ -12,7 +12,6 @@ type Props = {
   unknown?: boolean;
   bestTimeMs?: number | null;
   game?: GameReference | null;
-  genres: readonly string[];
   type: QuestTypeId;
   tags: readonly QuestTagId[];
   minimumDurationMinutes: number;
@@ -31,7 +30,6 @@ export function QuestCard({
   unknown = false,
   bestTimeMs,
   game = null,
-  genres,
   type,
   tags,
   minimumDurationMinutes,
@@ -54,7 +52,6 @@ export function QuestCard({
         unknown={unknown}
         bestTimeMs={bestTimeMs}
         game={game}
-        genres={genres}
         type={type}
         tags={tags}
         minimumDurationMinutes={minimumDurationMinutes}

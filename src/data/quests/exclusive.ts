@@ -12,6 +12,11 @@ import { gtaQuests } from "./games/gta";
 import { assassinsCreedQuests } from "./games/assassins-creed";
 import { battlefieldQuests } from "./games/battlefield";
 import { hitmanQuests } from "./games/hitman";
+import { stardewValleyQuests } from "./games/stardew-valley";
+import { theSimsQuests } from "./games/the-sims";
+import { animalCrossingQuests } from "./games/animal-crossing";
+import { baldursGate3Quests } from "./games/baldurs-gate-3";
+import { zeldaQuests } from "./games/zelda";
 
 export const exclusiveQuestsByGame = {
   "no-mans-sky": noMansSkyQuests,
@@ -28,6 +33,11 @@ export const exclusiveQuestsByGame = {
   "assassins-creed": assassinsCreedQuests,
   battlefield: battlefieldQuests,
   hitman: hitmanQuests,
+  "stardew-valley": stardewValleyQuests,
+  "the-sims": theSimsQuests,
+  "animal-crossing": animalCrossingQuests,
+  "baldurs-gate-3": baldursGate3Quests,
+  zelda: zeldaQuests,
 };
 
 export const exclusiveQuests = Object.values(exclusiveQuestsByGame).flat();

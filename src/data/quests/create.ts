@@ -12,7 +12,6 @@ export const createQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Tiny Home",
@@ -20,7 +19,7 @@ export const createQuests = [
       },
       "de": {
         "name": "Kleines Zuhause",
-        "objective": "Starte **ein Sandbox-Bauspiel**. **Beginne ein kleineres Haus als sonst** und probiere Grundrisse aus. Es darf unfertig bleiben."
+        "objective": "Starte **ein Sandbox-Bauspiel**. **Fang ein kleineres Haus an, als du sonst bauen würdest**, und probiere verschiedene Grundrisse aus. Es darf unfertig bleiben."
       }
     }
   },
@@ -35,7 +34,6 @@ export const createQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Around One Object",
@@ -58,7 +56,6 @@ export const createQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Short Course",
@@ -66,7 +63,7 @@ export const createQuests = [
       },
       "de": {
         "name": "Ein kurzer Parcours",
-        "objective": "Baue in einem **Spiel mit spielbarem Leveleditor** einen Start, drei Hindernisse und ein Ziel. Halte die Strecke kurz, **schaffe einen Probelauf und speichere das Level**."
+        "objective": "Bau in einem **Spiel, in dem du eigene Level testen kannst**, eine kurze Strecke mit Start, drei Hindernissen und Ziel. **Schaff einen Probelauf und speichere das Level**."
       }
     }
   },
@@ -81,7 +78,6 @@ export const createQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Eight Bars",
@@ -105,7 +101,6 @@ export const createQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Borrow an Idea",

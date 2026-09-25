@@ -12,7 +12,6 @@ export const connectQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Back Together",
@@ -20,7 +19,7 @@ export const connectQuests = [
       },
       "de": {
         "name": "Wieder zusammen",
-        "objective": "Starte **ein Koop-Spiel, das du mit jemandem teilst**. Besucht euren gemeinsamen Spielstand und **spielt heute das, worauf die andere Person Lust hat**."
+        "objective": "Starte **ein Koop-Spiel, das du früher mit jemandem zusammen gespielt hast**. Ladet euren gemeinsamen Spielstand und **spielt heute das, worauf die andere Person Lust hat**."
       }
     }
   },
@@ -35,7 +34,6 @@ export const connectQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Pass the Controller",
@@ -59,7 +57,6 @@ export const connectQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Join the Event",
@@ -83,7 +80,6 @@ export const connectQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Team Signals",
@@ -108,7 +104,6 @@ export const connectQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Think Together",

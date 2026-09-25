@@ -12,7 +12,6 @@ export const lowEnergyQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Let the Story Run",
@@ -20,7 +19,7 @@ export const lowEnergyQuests = [
       },
       "de": {
         "name": "Die Geschichte läuft",
-        "objective": "Setze eine **Visual Novel mit automatischem Textlauf** fort. **Lass die Dialoge laufen** und entscheide, wenn du gefragt wirst. Hör auf, wann du möchtest."
+        "objective": "Setze eine **Visual Novel mit Auto-Modus** fort. **Lass den Text von selbst weiterlaufen** und entscheide nur, wenn das Spiel dich fragt. Hör auf, wann du möchtest."
       }
     }
   },
@@ -35,7 +34,6 @@ export const lowEnergyQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Museum Visit",
@@ -59,7 +57,6 @@ export const lowEnergyQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Hand",
@@ -67,7 +64,7 @@ export const lowEnergyQuests = [
       },
       "de": {
         "name": "Eine Partie",
-        "objective": "Öffne **digitales Solitaire ohne Zeitlimit**. Spiele die erste Auslage, bis **alle Karten abgelegt sind oder kein Zug mehr möglich ist**. Rückgängig und Hinweise sind erlaubt."
+        "objective": "Öffne **eine Partie Solitaire ohne Zeitlimit**. Spiel die Auslage, bis **alle Karten abgelegt sind oder du nicht mehr ziehen kannst**. Hinweise und Rückgängig sind erlaubt."
       }
     }
   },
@@ -83,7 +80,6 @@ export const lowEnergyQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Small Jigsaw",
@@ -105,7 +101,6 @@ export const lowEnergyQuests = [
     "tags": [],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Hidden Details",

@@ -120,6 +120,8 @@ export function QuestScreenContent({
     moodIds: [],
     genreIds: [],
     playStyleIds: [],
+    connectionModeIds: [],
+    typeIds: [],
     gameId: null,
     tagIds: [],
   });
@@ -419,7 +421,13 @@ export function QuestScreenContent({
       <LayoutGroup id="quest-flow">
         <AnimatePresence
           initial={animateEntrance}
-          custom={isReturning ? "return" : undefined}
+          custom={
+            isReturning
+              ? "return"
+              : showActive && activeSource === "gallery"
+                ? "gallery-selection"
+                : undefined
+          }
           mode="popLayout"
           onExitComplete={finishReturn}
         >
@@ -480,13 +488,18 @@ export function QuestScreenContent({
               key={`gallery-${lastActiveSessionIdRef.current}`}
               inert={isReturning}
               aria-busy={isReturning || undefined}
-              // initial={false}
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{
-                opacity: 0,
-                scale: reduceMotion ? 1 : 0.985,
-                pointerEvents: "none",
+              exit="exit"
+              variants={{
+                exit: (reason: string | undefined) =>
+                  reason === "gallery-selection"
+                    ? { opacity: 0.999, scale: 1, pointerEvents: "none" }
+                    : {
+                        opacity: 0,
+                        scale: reduceMotion ? 1 : 0.985,
+                        pointerEvents: "none",
+                      },
               }}
               transition={{
                 opacity: {

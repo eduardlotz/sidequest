@@ -122,6 +122,13 @@
 .card[data-uncompleted] {
   --quest-card-content-opacity: 0.6;
 }
+.gallery[data-selecting] .header {
+  opacity: 0;
+  transition: opacity 0.24s ease;
+}
+:global([data-active-handoff="started"]) .gallery[data-selecting] .card[data-selected] {
+  visibility: hidden;
+}
 .card [role="button"] {
   cursor: pointer;
   border-radius: 30px;
@@ -149,6 +156,32 @@
 }
 .actions > button:last-child {
   flex: 1;
+}
+.statusData {
+  display: flex;
+  width: 100%;
+  min-height: 164px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 20px 16px;
+  border-radius: 18px;
+  background: var(--color-surface);
+}
+.statusIllustration {
+  width: 80px;
+  height: 80px;
+  opacity: 0.35;
+}
+.statusData p {
+  max-width: 215px;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .metrics {

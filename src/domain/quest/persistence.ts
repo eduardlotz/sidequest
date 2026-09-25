@@ -36,7 +36,7 @@ import {
   safeNonNegativeInteger,
 } from "./rules";
 import { createQuestProgress, progressAfterCompletion } from "./progress";
-import { sanitizePoolPreferences } from "./pool";
+import { migrateLegacyPoolPreferences, sanitizePoolPreferences } from "./pool";
 import type { QuestPoolPreferences } from "./model";
 
 export function migratePersistedQuestState(
@@ -46,9 +46,14 @@ export function migratePersistedQuestState(
   random: () => number = Math.random,
   libraryGames: readonly LibraryGame[] = [],
 ): PersistedQuestState {
-  return version >= 14 && version <= STORE_VERSION
-    ? sanitizePersistedQuestState(persistedState, now, random, libraryGames)
-    : createDefaultQuestState();
+  if (version < 14 || version > STORE_VERSION) return createDefaultQuestState();
+  if (version < 20 && isRecord(persistedState)) {
+    return sanitizePersistedQuestState({
+      ...persistedState,
+      poolPreferences: migrateLegacyPoolPreferences(persistedState.poolPreferences),
+    }, now, random, libraryGames);
+  }
+  return sanitizePersistedQuestState(persistedState, now, random, libraryGames);
 }
 
 export function sanitizePersistedQuestState(
@@ -506,6 +511,9 @@ function gameReferenceFromUnknown(value: unknown): GameReference | null {
   }
   const iconId = isGameIconId(value.iconId) ? value.iconId : undefined;
   const colorId = isGameColorId(value.colorId) ? value.colorId : undefined;
+  if (value.source === "curated" && value.id === "zelda-tears-of-the-kingdom") {
+    return { id: "zelda", name: "The Legend of Zelda", source: "curated" };
+  }
   return {
     id: value.id,
     name: value.name.trim().slice(0, 80),

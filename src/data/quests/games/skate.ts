@@ -39,11 +39,11 @@ export const skateQuests = defineGameQuests("skate", [
     "minutes": 15,
     "minimum": 2,
     "en": {
-      "name": "Own It Twice",
+      "name": "Own the Spot",
       "objective": "In **Skate 3**, replay an unlocked Own the Spot challenge. **Beat its Own It score without repeating a scored trick in the same run**. Finish after success or three attempts."
     },
     "de": {
-      "name": "Zweimal dein Spot",
+      "name": "Der Spot gehört dir",
       "objective": "Wiederhole in **Skate 3** eine freigeschaltete Own-the-Spot-Challenge. **Überbiete die Own-It-Punktzahl, ohne einen gewerteten Trick im selben Lauf zu wiederholen**. Nach Erfolg oder drei Versuchen ist Schluss."
     },
     "installments": [
@@ -69,7 +69,7 @@ export const skateQuests = defineGameQuests("skate", [
     },
     "de": {
       "name": "Ein Teil, ein Spot",
-      "objective": "Platziere in **skate. (2025)** mit freigeschaltetem Quick Drop ein grindbares Objekt neben einer niedrigen Kante, ohne eine Challenge zu blockieren. **Verbinde je einen Grind daran zu einer Line und rolle weiter**. Entferne das Objekt danach."
+      "objective": "Platziere in **skate. (2025)** mit freigeschaltetem Quick Drop ein grindbares Objekt neben einer niedrigen Kante, ohne eine Challenge zu blockieren. **Grinde erst an deinem Objekt, dann an der Kante und rolle ohne Sturz weiter**. Entferne das Objekt danach."
     },
     "installments": [
       "skate-2025"
@@ -94,7 +94,7 @@ export const skateQuests = defineGameQuests("skate", [
     },
     "de": {
       "name": "Dasselbe Rail, Switch",
-      "objective": "Setze in **skate. (2025)** eine Session-Markierung an einer unbekannten niedrigen Rail. **Lande daran einen 50-50-Grind in normaler Haltung und danach in Switch**. Rolle nach beiden weiter und vergleiche die Anfahrt."
+      "objective": "Setz in **skate. (2025)** eine Session-Markierung an einer niedrigen Rail, die du noch nicht gefahren bist. **Lande dort einen 50-50-Grind erst normal und dann in Switch**. Rolle beide Male weiter und achte darauf, wie sich die Anfahrt ändert."
     },
     "installments": [
       "skate-2025"

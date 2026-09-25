@@ -16,11 +16,11 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
     "minimum": 5,
     "en": {
       "name": "Planet Field Card",
-      "objective": "On a planet with land animals in **No Man’s Sky**, scan an unfamiliar animal, plant, and mineral. **Save a photo of the animal in its habitat and upload the three discoveries**."
+      "objective": "On a planet with land animals in **No Man’s Sky**, scan one unfamiliar animal, plant, and mineral. **Save a photo of the animal in its habitat** and check that all three appear in Discoveries."
     },
     "de": {
       "name": "Steckbrief eines Planeten",
-      "objective": "Scanne in **No Man’s Sky** auf einem Planeten mit Landtieren ein unbekanntes Tier, eine Pflanze und ein Mineral. **Fotografiere das Tier in seinem Lebensraum und lade die drei Entdeckungen hoch**."
+      "objective": "Scanne in **No Man’s Sky** auf einem Planeten mit Landtieren ein unbekanntes Tier, eine Pflanze und ein Mineral. **Speichere ein Foto des Tiers in seinem Lebensraum** und prüfe, ob alle drei unter Entdeckungen stehen."
     }
   },
   {
@@ -41,7 +41,7 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
     },
     "de": {
       "name": "Wieder einsatzbereit",
-      "objective": "Nimm in **No Man’s Sky** ein bereits beanspruchtes Schiffswrack. Wähle einen beschädigten Platz, dessen Materialien in der Nähe verfügbar sind. **Sammle oder veredle sie und repariere den Platz**, ohne Vorräte zu kaufen."
+      "objective": "Such dir in **No Man’s Sky** ein Schiffswrack aus, das du schon beansprucht hast. Wähle ein beschädigtes Bauteil, für das du die Materialien in der Nähe findest. **Sammle oder veredle sie und repariere das Bauteil**, ohne Vorräte zu kaufen."
     }
   },
   {
@@ -58,12 +58,12 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
     "minutes": 20,
     "minimum": 3,
     "en": {
-      "name": "New Travel Buddy",
-      "objective": "On a planet in **No Man’s Sky**, bring Creature Pellets and spend time with the animals you meet. Feed an approachable creature and see whether you want it along for your travels; adoption is optional."
+      "name": "Meet a Creature",
+      "objective": "On a planet in **No Man’s Sky**, bring Creature Pellets and spend time with the animals you meet. Feed an approachable creature and see whether you want it along for your travels. Adoption is optional."
     },
     "de": {
-      "name": "Neue Reisebegleitung",
-      "objective": "Nimm in **No Man’s Sky** Kreaturenpellets mit auf einen Planeten und beschäftige dich mit den Tieren, denen du begegnest. Füttere ein zutrauliches Wesen und schau, ob du es auf Reisen dabeihaben möchtest. Du musst es nicht adoptieren."
+      "name": "Tierbegegnung",
+      "objective": "Nimm in **No Man’s Sky** Kreaturenpellets mit auf einen Planeten und schau dir die Tiere an, denen du begegnest. Füttere ein zutrauliches Wesen und schau, ob du es auf Reisen dabeihaben möchtest. Du musst es nicht adoptieren."
     }
   },
   {
@@ -84,7 +84,7 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
     },
     "de": {
       "name": "Für den Koch",
-      "objective": "Koche in **No Man’s Sky** mit einem Nährstoffprozessor ein Gericht aus vorhandenen Zutaten; du brauchst Zugang zur Anomalie. **Gib Cronus eine Portion und hör dir sein Urteil an**. Eine bestimmte Bewertung ist nicht nötig."
+      "objective": "Koch in **No Man’s Sky** mit vorhandenen Zutaten ein Gericht im Nährstoffprozessor. Besuch danach Cronus in der Anomalie. **Gib ihm eine Portion und hör dir sein Urteil an**. Eine bestimmte Bewertung brauchst du nicht."
     }
   },
   {
@@ -106,7 +106,7 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
     },
     "de": {
       "name": "Frisch gefangen",
-      "objective": "Nimm in **No Man’s Sky** Angelausrüstung und Nährstoffprozessor mit zur Küste. Fange einen Fisch, den der Prozessor annimmt, und **koche und iss eine Portion aus diesem Fang**."
+      "objective": "Nimm in **No Man’s Sky** Angelausrüstung und Nährstoffprozessor mit zur Küste. Fange einen Fisch, den du im Prozessor verarbeiten kannst, und **koche und iss eine Portion aus diesem Fang**."
     }
   },
   {
@@ -128,7 +128,7 @@ export const noMansSkyQuests = defineGameQuests("no-mans-sky", [
     },
     "de": {
       "name": "Bodenteam",
-      "objective": "Markiere in **No Man’s Sky** mit dem Visier ein nahes vergrabenes Technologiemodul; dein Exofahrzeug muss bereitstehen. Fahre hin, grabe die geborgenen Daten aus und **kehre im selben Exofahrzeug zum Schiff zurück**, ohne ein Fahrzeug herbeizurufen."
+      "objective": "Markiere in **No Man’s Sky** ein vergrabenes Technologiemodul in der Nähe deines Schiffs. Fahr mit deinem Exofahrzeug hin, grab die Daten aus und **kehr mit demselben Fahrzeug zum Schiff zurück**. Ruf unterwegs kein anderes Fahrzeug."
     }
   }
 ]);

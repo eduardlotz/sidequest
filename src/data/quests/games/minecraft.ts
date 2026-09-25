@@ -20,7 +20,7 @@ export const minecraftQuests = defineGameQuests("minecraft", [
     },
     "de": {
       "name": "Der Steg ist offen",
-      "objective": "Baue in **Minecraft** an einem Ufer nahe deinem Zuhause einen kleinen Steg mit Fass und Beleuchtung. Lass vor dem Angelplatz offenes Wasser und **fange vom Steg einen Fisch, den du ins Fass legst**."
+      "objective": "Bau in **Minecraft** am Ufer nahe deinem Zuhause einen kleinen Steg mit Fass und Licht. Lass davor genug freies Wasser zum Angeln und **fang vom Steg einen Fisch, den du ins Fass legst**."
     }
   },
   {
@@ -42,7 +42,7 @@ export const minecraftQuests = defineGameQuests("minecraft", [
     },
     "de": {
       "name": "Zahltag im Dorf",
-      "objective": "Nutze in **Minecraft im Überlebensmodus** ein bestehendes Weizenfeld und einen Bauern, der Weizen kauft. **Ernte genug für einen Handel, säe die abgeernteten Stellen neu ein und verdiene die Smaragde**. Lass die Heuballen im Dorf stehen."
+      "objective": "Nutze in **Minecraft im Überlebensmodus** ein bestehendes Weizenfeld und einen Bauern, der Weizen kauft. **Ernte genug Weizen für einen Handel, säe die abgeernteten Stellen neu ein und tausch den Weizen gegen Smaragde**. Lass die Heuballen im Dorf stehen."
     }
   },
   {
@@ -144,12 +144,12 @@ export const minecraftQuests = defineGameQuests("minecraft", [
     "minutes": 30,
     "minimum": 5,
     "en": {
-      "name": "Put Home on Paper",
-      "objective": "Open a new, unexpanded map at your base in **Minecraft**. Explore its area on foot until **all blank patches are filled**, then display it in an item frame at home. Bring food and an empty map before starting."
+      "name": "Map One Corner",
+      "objective": "In **Minecraft**, open a new, unexpanded map at your base. Choose one reachable quadrant and **fill its blank patches on foot**. Return home and put the map in an item frame. Bring food before leaving."
     },
     "de": {
-      "name": "Zuhause auf Papier",
-      "objective": "Öffne in **Minecraft** an deiner Basis eine neue, nicht vergrößerte Karte. Erkunde ihr Gebiet zu Fuß, bis **alle leeren Stellen ausgefüllt sind**, und hänge sie zu Hause in einen Rahmen. Nimm vorher Essen und eine leere Karte mit."
+      "name": "Die Umgebung kartieren",
+      "objective": "Öffne in **Minecraft** an deiner Basis eine neue, nicht vergrößerte Karte. Such dir darauf einen Bereich aus und **deck seine leeren Stellen zu Fuß auf**. Geh mit Essen los, kehr nach Hause zurück und häng die Karte in einen Rahmen."
     }
   }
 ]);

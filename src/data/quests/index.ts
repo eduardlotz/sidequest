@@ -7,7 +7,7 @@ import {
   type QuestTranslation,
 } from "../questTypes";
 import { isQuestTypeAllowed } from "../questTraits";
-import { QUEST_POOL_TRAITS } from "../questPoolTraits";
+import { QUEST_POOL_TRAITS, isQuestConnectionModeId, isQuestPlayStyleId } from "../questPoolTraits";
 import { challengeQuests } from "./challenge";
 import { connectQuests } from "./connect";
 import { createQuests } from "./create";
@@ -19,7 +19,7 @@ import { nostalgicQuests } from "./nostalgic";
 import { overwhelmedQuests } from "./overwhelmed";
 import { progressQuests } from "./progress";
 import { relaxQuests } from "./relax";
-import { redditMoodExpansionQuests } from "./reddit-mood-expansion";
+import { flexibleQuests } from "./flexible";
 import { restlessQuests } from "./restless";
 import { reusableQuests } from "./reusable";
 import { exclusiveQuests } from "./exclusive";
@@ -51,7 +51,7 @@ const MOOD_QUESTS: Record<MoodId, readonly AuthoredQuestDefinition[]> = {
 export const QUEST_CATALOG: readonly AuthoredQuestDefinition[] = [
   ...MOOD_IDS.flatMap((moodId) => MOOD_QUESTS[moodId]),
   ...reusableQuests,
-  ...redditMoodExpansionQuests,
+  ...flexibleQuests,
   ...exclusiveQuests,
   ...timedQuests,
 ];
@@ -65,6 +65,10 @@ for (const quest of QUEST_CATALOG) {
   if (!QUEST_POOL_TRAITS[quest.id]) {
     throw new Error(`Quest ${quest.id} is missing pool metadata`);
   }
+  const styles = QUEST_POOL_TRAITS[quest.id].styleIds;
+  if (!styles.some(isQuestConnectionModeId) || !styles.some(isQuestPlayStyleId)) {
+    throw new Error(`Quest ${quest.id} needs both a connection mode and a play style`);
+  }
 }
 
 export const QUEST_TRANSLATIONS_BY_ID = Object.fromEntries(
@@ -75,7 +79,8 @@ export const QUESTS: readonly MoodQuestDefinition[] = QUEST_CATALOG.map(
   ({ translations, ...quest }) => ({
     ...quest,
     gameGenreIds: QUEST_POOL_TRAITS[quest.id].genreIds,
-    playStyleIds: QUEST_POOL_TRAITS[quest.id].styleIds,
+    connectionModeIds: QUEST_POOL_TRAITS[quest.id].styleIds.filter(isQuestConnectionModeId),
+    playStyleIds: QUEST_POOL_TRAITS[quest.id].styleIds.filter(isQuestPlayStyleId),
     universal: quest.universal !== false,
     gameBindable: Boolean(
       translations.en.gameObjective && translations.de.gameObjective,
@@ -103,8 +108,8 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     minimumDurationMinutes,
     maximumDurationMinutes,
     suggestedDurationMinutes,
-    genres,
     gameGenreIds,
+    connectionModeIds,
     playStyleIds,
     universal,
     gameBindable,
@@ -118,8 +123,8 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     minimumDurationMinutes,
     maximumDurationMinutes,
     suggestedDurationMinutes,
-    genres,
     gameGenreIds,
+    connectionModeIds,
     playStyleIds,
     universal,
     gameBindable,

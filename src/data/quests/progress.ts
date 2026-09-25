@@ -13,7 +13,6 @@ export const progressQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Still Unfinished",
@@ -36,7 +35,6 @@ export const progressQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Loose Ends",
@@ -44,7 +42,7 @@ export const progressQuests = [
       },
       "de": {
         "name": "Offene Geschichten",
-        "objective": "Starte **ein Rollenspiel mit offenen Nebenquests**. **Besuche ihre Figuren und Orte wieder** und folge diesen Geschichten eine Weile. Neue Quests kommen später."
+        "objective": "Starte **ein Rollenspiel mit offenen Nebenquests**. Such dir eine aus, deren Figur oder Ort dich interessiert, und **folge ihrer Geschichte ein Stück weiter**. Neue Quests können warten."
       }
     }
   },
@@ -59,7 +57,6 @@ export const progressQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Missing Piece",
@@ -82,7 +79,6 @@ export const progressQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Put It to Use",
@@ -107,7 +103,6 @@ export const progressQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Small Adventure",
@@ -115,7 +110,7 @@ export const progressQuests = [
       },
       "de": {
         "name": "Ein kleines Abenteuer",
-        "objective": "Setze **ein begonnenes kurzes Abenteuer** fort. **Folge dem nächsten Erzählstrang**, ohne nachzuschlagen, wie viel noch fehlt. Hör an einem Speicherpunkt auf, wenn es reicht."
+        "objective": "Setze **ein begonnenes kurzes Abenteuer** fort. **Spiel die nächste Szene oder Mission**, ohne nachzuschlagen, wie viel noch kommt. Hör an einem Speicherpunkt auf, wenn es reicht."
       }
     }
   },
@@ -131,7 +126,6 @@ export const progressQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "The Second Session",
@@ -155,7 +149,6 @@ export const progressQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Close the Chapter",

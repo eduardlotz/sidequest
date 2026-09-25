@@ -4,8 +4,10 @@ import { Drawer } from "vaul";
 import { FunnelIcon } from "@phosphor-icons/react";
 import { MOODS, type MoodId } from "../../data/moods";
 import { GAME_GENRES, GAME_GENRE_IDS, type GameGenreId } from "../../data/gameGenres";
-import { QUEST_TAGS, type QuestTagId } from "../../data/questTraits";
+import { QUEST_TAGS, QUEST_TYPES, type QuestTagId, type QuestTypeId } from "../../data/questTraits";
 import {
+  QUEST_CONNECTION_MODES,
+  QUEST_CONNECTION_MODE_IDS,
   QUEST_PLAY_STYLES,
   QUEST_PLAY_STYLE_IDS,
 } from "../../data/questPoolTraits";
@@ -26,6 +28,7 @@ import styles from "./QuestGalleryFilters.module.css";
 export type GalleryGameOption = { id: string; name: string };
 
 const TAG_IDS = Object.keys(QUEST_TAGS) as QuestTagId[];
+const TYPE_IDS = Object.keys(QUEST_TYPES) as QuestTypeId[];
 const STATUS_FILTERS: readonly GalleryFilter[] = [
   "all",
   "found",
@@ -55,7 +58,9 @@ export function QuestGalleryFilters({
     Number(view.filter !== "all") +
     view.moodIds.length +
     view.genreIds.length +
+    view.connectionModeIds.length +
     view.playStyleIds.length +
+    view.typeIds.length +
     view.tagIds.length +
     Number(Boolean(view.gameId));
 
@@ -64,7 +69,9 @@ export function QuestGalleryFilters({
       filter: "all",
       moodIds: [],
       genreIds: [],
+      connectionModeIds: [],
       playStyleIds: [],
+      typeIds: [],
       gameId: null,
       tagIds: [],
     });
@@ -161,6 +168,22 @@ export function QuestGalleryFilters({
                 ))}
               </FilterGroup>
 
+              <FilterGroup title={t("ui.gallery.connectionModeFilter")}>
+                {QUEST_CONNECTION_MODE_IDS.map((modeId) => (
+                  <FilterChoice
+                    key={modeId}
+                    active={draft.connectionModeIds.includes(modeId)}
+                    label={QUEST_CONNECTION_MODES[modeId][language]}
+                    onClick={() =>
+                      setDraft((current) => ({
+                        ...current,
+                        connectionModeIds: toggle(current.connectionModeIds, modeId),
+                      }))
+                    }
+                  />
+                ))}
+              </FilterGroup>
+
               <FilterGroup title={t("ui.gallery.playStyleFilter")}>
                 {QUEST_PLAY_STYLE_IDS.map((styleId) => (
                   <FilterChoice
@@ -174,6 +197,22 @@ export function QuestGalleryFilters({
                           current.playStyleIds,
                           styleId,
                         ),
+                      }))
+                    }
+                  />
+                ))}
+              </FilterGroup>
+
+              <FilterGroup title={t("ui.gallery.typeFilter")}>
+                {TYPE_IDS.map((typeId) => (
+                  <FilterChoice
+                    key={typeId}
+                    active={draft.typeIds.includes(typeId)}
+                    label={QUEST_TYPES[typeId].title[language]}
+                    onClick={() =>
+                      setDraft((current) => ({
+                        ...current,
+                        typeIds: toggle(current.typeIds, typeId),
                       }))
                     }
                   />
@@ -235,7 +274,9 @@ function filterDraft(view: QuestGalleryView) {
     filter: view.filter,
     moodIds: [...view.moodIds],
     genreIds: [...view.genreIds],
+    connectionModeIds: [...view.connectionModeIds],
     playStyleIds: [...view.playStyleIds],
+    typeIds: [...view.typeIds],
     gameId: view.gameId,
     tagIds: [...view.tagIds],
   };

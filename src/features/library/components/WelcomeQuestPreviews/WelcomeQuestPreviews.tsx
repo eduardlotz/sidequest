@@ -88,7 +88,6 @@ export function WelcomeQuestPreviews({
               >
                 <QuestCard
                   game={quest.game}
-                  genres={quest.genres}
                   type={quest.type}
                   tags={quest.tags}
                   minimumDurationMinutes={quest.minimumDurationMinutes}

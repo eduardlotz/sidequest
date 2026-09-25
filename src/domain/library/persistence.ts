@@ -23,7 +23,7 @@ export function migratePersistedLibraryState(
   persistedState: unknown,
   version: number,
 ): PersistedLibraryState {
-  if (version !== 1 && version !== LIBRARY_STORE_VERSION) {
+  if (version !== 1 && version !== 2 && version !== LIBRARY_STORE_VERSION) {
     return { ...DEFAULT_LIBRARY_STATE };
   }
   const state = sanitizePersistedLibraryState(persistedState);
@@ -36,6 +36,11 @@ export function migratePersistedLibraryState(
       revision: state.revision + 1,
     };
   }
+  if (version === 2) {
+    // Refresh offers after the standalone Tears of the Kingdom entry becomes
+    // the selected installment of the Zelda series.
+    return { ...state, revision: state.revision + 1 };
+  }
   return state;
 }
 
@@ -43,9 +48,11 @@ export function sanitizePersistedLibraryState(
   value: unknown,
 ): PersistedLibraryState {
   if (!isRecord(value)) return { ...DEFAULT_LIBRARY_STATE };
-  const selectedCuratedGameIds = uniqueStrings(
-    value.selectedCuratedGameIds,
-  ).filter((id) => Object.hasOwn(CURATED_GAMES_BY_ID, id));
+  const storedGameIds = uniqueStrings(value.selectedCuratedGameIds);
+  const hadStandaloneTears = storedGameIds.includes("zelda-tears-of-the-kingdom");
+  const selectedCuratedGameIds = Array.from(new Set(
+    storedGameIds.map((id) => id === "zelda-tears-of-the-kingdom" ? "zelda" : id),
+  )).filter((id) => Object.hasOwn(CURATED_GAMES_BY_ID, id));
   const customGames = Array.isArray(value.customGames)
     ? value.customGames.flatMap((entry) => {
         const game = customGameFromUnknown(entry);
@@ -68,6 +75,12 @@ export function sanitizePersistedLibraryState(
         ),
       };
     }
+  }
+  if (hadStandaloneTears && !curatedGamePreferences.zelda) {
+    curatedGamePreferences.zelda = {
+      questMode: "curated-and-flexible",
+      installmentIds: ["totk"],
+    };
   }
 
   return {
