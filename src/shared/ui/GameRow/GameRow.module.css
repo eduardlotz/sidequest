@@ -1,0 +1,37 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: var(--game-row-padding, 8px 0);
+}
+
+.copy {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+
+  strong {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: var(--game-title-wrap, nowrap);
+    font-weight: 600;
+  }
+
+  > span {
+    color: var(--color-muted);
+  }
+}
+
+button.row {
+  width: 100%;
+  text-align: left;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+button.row:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}

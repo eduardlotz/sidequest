@@ -19,9 +19,10 @@ export function App() {
   const reduceMotion = Boolean(useReducedMotion());
   const profileTriggerRef = useRef<HTMLButtonElement>(null);
   const [galleryOpen, setGalleryOpen] = useState(false);
-  const { currentSession, points, selectedMoodId } = useQuestStore(
+  const { currentSession, gameSelection, points, selectedMoodId } = useQuestStore(
     useShallow((state) => ({
       currentSession: state.currentSession,
+      gameSelection: state.gameSelection,
       points: state.profile.points,
       selectedMoodId: state.selectedMoodId,
     })),
@@ -41,7 +42,7 @@ export function App() {
             ? "gallery"
             : currentSession
               ? "active"
-              : selectedMoodId
+              : selectedMoodId || gameSelection
                 ? "quests"
                 : "moods"
       }
@@ -77,6 +78,7 @@ export function App() {
               <QuestScreen
                 galleryOpen={galleryOpen}
                 onGalleryOpenChange={setGalleryOpen}
+                onOpenLibrary={() => profileTriggerRef.current?.click()}
                 reduceMotion={reduceMotion}
                 onCoinFlightStart={coinBalanceAnimation.startFlight}
                 onCoinHit={coinBalanceAnimation.receivePoints}

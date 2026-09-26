@@ -1,5 +1,8 @@
 import { defineGameQuests } from "../defineGameQuests";
 
+// Session-sized version of a player-made equipment rule:
+// https://www.reddit.com/r/skyrim/comments/18nswjv/what_are_some_self_imposed_challenges_you_use_to/
+
 export const skyrimQuests = defineGameQuests("skyrim", [
   {
     "id": "roadside-blessing",
@@ -15,12 +18,12 @@ export const skyrimQuests = defineGameQuests("skyrim", [
     "minutes": 20,
     "minimum": 3,
     "en": {
-      "name": "Roadside Blessing",
-      "objective": "Return to Riverwood in **Skyrim** and walk the road toward Whiterun. Gather flowers or stop at the farms as you go, leaving fast travel and dungeon clearing for another session."
+      "name": "The Road to Whiterun",
+      "objective": "In **Skyrim**, walk from Riverwood toward Whiterun without fast travel. Stop at a farm or pick a few flowers on the way. Let the road be the whole session."
     },
     "de": {
-      "name": "Segen am Weg",
-      "objective": "Kehre in **Skyrim** nach Flusswald zurück und gehe die Straße Richtung Weißlauf entlang. Sammle unterwegs Blumen oder halte an den Höfen. Schnellreise und Dungeons sind heute nicht nötig."
+      "name": "Der Weg nach Weißlauf",
+      "objective": "Geh in **Skyrim** von Flusswald Richtung Weißlauf, ohne Schnellreise. Halte unterwegs an einem Hof oder pflücke ein paar Blumen. Mehr musst du heute nicht vorhaben."
     }
   },
   {
@@ -42,7 +45,7 @@ export const skyrimQuests = defineGameQuests("skyrim", [
     },
     "de": {
       "name": "Seele im Stahl",
-      "objective": "Nimm in **Skyrim** Seelenfalle, einen leeren winzigen Seelenstein, eine unverzauberte Waffe und eine bekannte Waffenverzauberung mit. **Fange die Seele einer Schlammkrabbe, verzaubere damit die Waffe und rüste sie aus**."
+      "objective": "Nimm in **Skyrim** Seelenfalle, einen leeren winzigen Seelenstein, eine unverzauberte Waffe und eine Waffenverzauberung mit, die du schon gelernt hast. **Fang die Seele einer Schlammkrabbe, verzaubere damit die Waffe und rüste sie aus**."
     }
   },
   {
@@ -65,5 +68,21 @@ export const skyrimQuests = defineGameQuests("skyrim", [
       "name": "Medizin vom Wegesrand",
       "objective": "Sammle in **Skyrim** drei blaue Bergblumen und drei orange Schmetterlingsflügel. **Braue daraus an einem Alchemielabor drei Heiltränke**. Kaufe keine Zutaten."
     }
+  },
+  {
+    id: "handmade-weapon",
+    moods: ["challenge", "focused"],
+    type: "challenge",
+    tags: ["crafting", "one-weapon", "three-attempts"],
+    minutes: 25,
+    minimum: 5,
+    en: {
+      name: "Made and Wielded",
+      objective: "In **Skyrim**, use materials you already own to forge one weapon. Pick a nearby ordinary fight and **win using only that weapon for damage**. Stop after success or three attempts.",
+    },
+    de: {
+      name: "Selbst geschmiedet",
+      objective: "Schmiede in **Skyrim** aus Materialien, die du schon hast, eine Waffe. Such dir einen normalen Kampf in der Nähe und **gewinne ihn, indem du nur mit dieser Waffe Schaden machst**. Nach dem Sieg oder drei Versuchen ist Schluss.",
+    },
   }
 ]);

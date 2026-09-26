@@ -1,3 +1,4 @@
+import { SegmentedControl } from "../../../../shared/ui/SegmentedControl/SegmentedControl";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import {
   CircleHalfIcon,
@@ -12,7 +13,7 @@ import {
 } from "@phosphor-icons/react";
 import { QuestPoolSettings } from "../QuestPoolSettings/QuestPoolSettings";
 import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./ProfileDrawer.module.css";
 import { formatScore } from "../../../../lib/format";
@@ -86,7 +87,7 @@ export function ProfileDrawer({
             <GlobeIcon aria-hidden weight="bold" />
             {t("ui.profile.language")}
           </span>
-          <SettingSegmentedControl
+          <SegmentedControl
             label={t("ui.profile.language")}
             value={language}
             options={SUPPORTED_LANGUAGES.map((choice) => ({
@@ -101,7 +102,7 @@ export function ProfileDrawer({
             <CircleHalfIcon aria-hidden weight="bold" />
             {t("ui.profile.theme")}
           </span>
-          <SettingSegmentedControl
+          <SegmentedControl
             label={t("ui.profile.theme")}
             value={themeChoice}
             options={(["light", "dark", "auto"] as const).map((choice) => {
@@ -225,39 +226,6 @@ function ProfileMetric({ label, value }: { label: string; value: string }) {
     <div>
       <dt>{label}</dt>
       <dd>{value}</dd>
-    </div>
-  );
-}
-
-function SettingSegmentedControl<Value extends string>({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: Value;
-  options: readonly { value: Value; label: string; icon?: ReactNode }[];
-  onChange: (value: Value) => void;
-}) {
-  return (
-    <div
-      className={styles.settingSegmentedControl}
-      role="group"
-      aria-label={label}
-    >
-      {options.map((option) => (
-        <button
-          type="button"
-          aria-pressed={value === option.value}
-          aria-label={option.label}
-          title={option.icon ? option.label : undefined}
-          key={option.value}
-          onClick={() => onChange(option.value)}
-        >
-          {option.icon ?? option.label}
-        </button>
-      ))}
     </div>
   );
 }

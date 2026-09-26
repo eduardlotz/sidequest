@@ -1,5 +1,7 @@
 .arcDeck {
   --arc-track-top: var(--mood-arc-track-top);
+  --arc-card-height: calc(var(--mood-card-width) * 0.75);
+  --arc-controls-gap: 46px;
   position: relative;
   width: 100%;
   height: calc(
@@ -53,6 +55,40 @@
   transform-origin: 50% 50%;
   transform-style: preserve-3d;
   will-change: auto;
+}
+
+.arcDeck[data-card-shape="portrait"] {
+  /* Hover can enter the header's open space; the screen owns vertical clipping. */
+  overflow-y: visible;
+  --arc-track-top: calc(var(--mood-arc-track-top) - 30px);
+  --arc-card-max-width: 270px;
+  --arc-footer-space: 122px;
+  --arc-card-width: min(
+    70cqw,
+    var(--arc-card-max-width),
+    calc((var(--app-height) - var(--mood-screen-top) - var(--mood-header-height) - var(--arc-track-top) - var(--arc-footer-space)) * 270 / 365)
+  );
+  --arc-card-height: calc(var(--arc-card-width) * 365 / 270);
+}
+
+:global([data-play-layout="paired"]) .arcDeck[data-card-shape="portrait"] {
+  --arc-card-max-width: 290px;
+  --arc-controls-gap: 20px;
+  --arc-footer-space: 96px;
+}
+
+:global([data-play-layout="wide"]) .arcDeck[data-card-shape="portrait"] {
+  --arc-card-max-width: 320px;
+  --arc-track-top: calc(var(--mood-arc-track-top) - 50px);
+  --arc-controls-gap: 12px;
+  --arc-footer-space: 88px;
+}
+
+.arcDeck[data-card-shape="portrait"] .arcCardSlot {
+  --mood-card-radius: 26px;
+  width: var(--arc-card-width);
+  margin-left: calc(var(--arc-card-width) / -2);
+  aspect-ratio: 270 / 365;
 }
 
 .arcCardSlot[data-visible] {
@@ -334,7 +370,7 @@
 .moodDeckControls {
   position: absolute;
   top: calc(
-    var(--arc-track-top) - 42px + (var(--mood-card-width) * 0.75) + 46px
+    var(--arc-track-top) - 42px + var(--arc-card-height) + var(--arc-controls-gap)
   );
   left: 50%;
   z-index: 60;
@@ -391,6 +427,11 @@
     .moodIllustrationLayer
   ) {
   transform-style: flat;
+}
+
+/* Preserve the text's depth even when the carousel uses its lighter effects. */
+.arcDeck[data-card-shape="portrait"] .moodCardTiltSurface {
+  transform-style: preserve-3d;
 }
 
 @media (--mobile) {

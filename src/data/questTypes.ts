@@ -1,6 +1,6 @@
 import type { QuestTypeId, QuestTagId } from "./questTraits";
 import type { CustomGameCompatibility } from "./gameCompatibility";
-import type { QuestPlayStyleId } from "./questPoolTraits";
+import type { QuestConnectionModeId, QuestPlayStyleId } from "./questPoolTraits";
 import type { GameGenreId } from "./gameGenres";
 
 export const MOOD_IDS = [
@@ -45,7 +45,6 @@ export type AuthoredQuestDefinition = {
   minimumDurationMinutes: number;
   maximumDurationMinutes?: number;
   suggestedDurationMinutes: number;
-  genres: readonly string[];
   universal?: boolean;
   curated?: CuratedQuestDetails;
   customGameCompatibility?: CustomGameCompatibility;
@@ -63,8 +62,8 @@ export type MoodQuestDefinition = {
   minimumDurationMinutes: number;
   maximumDurationMinutes?: number;
   suggestedDurationMinutes: number;
-  genres: readonly string[];
   gameGenreIds: readonly GameGenreId[];
+  connectionModeIds: readonly QuestConnectionModeId[];
   playStyleIds: readonly QuestPlayStyleId[];
   universal: boolean;
   gameBindable: boolean;
@@ -81,8 +80,8 @@ export type QuestCoreDefinition = Pick<
   | "minimumDurationMinutes"
   | "maximumDurationMinutes"
   | "suggestedDurationMinutes"
-  | "genres"
   | "gameGenreIds"
+  | "connectionModeIds"
   | "playStyleIds"
   | "universal"
   | "gameBindable"

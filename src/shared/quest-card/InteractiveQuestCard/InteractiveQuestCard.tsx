@@ -313,7 +313,10 @@ export function InteractiveQuestCard({
           scaleY: wobbleScaleY,
         }}
       >
-        <motion.div className={styles.surface} style={{ rotateX, rotateY, scale }}>
+        <motion.div
+          className={styles.surface}
+          style={{ rotateX, rotateY, scale, transformPerspective: 1_400 }}
+        >
           <div className={styles.front}>
             {children}
             {overlay}

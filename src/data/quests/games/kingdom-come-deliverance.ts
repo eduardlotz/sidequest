@@ -9,7 +9,7 @@ export const kingdomComeQuests = defineGameQuests("kingdom-come-deliverance", [
     ],
     "type": "objective",
     "tags": [
-      "cooking",
+      "crafting",
       "trading"
     ],
     "minutes": 30,
@@ -20,7 +20,7 @@ export const kingdomComeQuests = defineGameQuests("kingdom-come-deliverance", [
     },
     "de": {
       "name": "Ehrlich verdient",
-      "objective": "Sammle in **Kingdom Come: Deliverance (1)** mit bekanntem Ringelblumen-Rezept Brennnesseln und Ringelblumen und braue von Hand. Verkaufe die Tränke und **bezahle von den Einnahmen ein verfügbares Bett im Gasthaus**. Keine gekauften Kräuter oder gestohlenen Waren."
+      "objective": "Wenn du in **Kingdom Come: Deliverance (1)** das Rezept für Ringelblumentrank kennst, sammle Brennnesseln und Ringelblumen und brau den Trank selbst. Verkaufe die Tränke und **bezahle von den Einnahmen ein verfügbares Bett im Gasthaus**. Keine gekauften Kräuter oder gestohlenen Waren."
     },
     "installments": [
       "kcd-1"
@@ -68,7 +68,7 @@ export const kingdomComeQuests = defineGameQuests("kingdom-come-deliverance", [
     },
     "de": {
       "name": "Von Heinrich gemacht",
-      "objective": "Bring in **Kingdom Come: Deliverance II** nach dem Schmiedelernen die Materialien für eine vorhandene Schwertskizze mit. Erhitze und hämmere die Klinge selbst und **stelle dein eigenes Schwert fertig und rüste es aus**."
+      "objective": "Wenn du in **Kingdom Come: Deliverance II** Schmieden gelernt hast und eine Schwertskizze besitzt, besorg die Materialien dafür. **Schmiede das Schwert selbst und rüste es aus**."
     },
     "installments": [
       "kcd-2"
@@ -88,11 +88,11 @@ export const kingdomComeQuests = defineGameQuests("kingdom-come-deliverance", [
     "minimum": 3,
     "en": {
       "name": "Leave the Lucky Dice",
-      "objective": "Sit down for tavern dice in **Kingdom Come: Deliverance II**. Use ordinary dice and a small stake you can spare; enjoy the table without a winnings target or a special build."
+      "objective": "Sit down for tavern dice in **Kingdom Come: Deliverance II**. Use ordinary dice and a small stake you can spare. Finish one game without chasing a winnings target."
     },
     "de": {
       "name": "Ohne Glückswürfel",
-      "objective": "Setze dich in **Kingdom Come: Deliverance II** zum Würfeln ins Wirtshaus. Nimm gewöhnliche Würfel und einen kleinen Einsatz, den du übrig hast. Spiele ohne Gewinnziel oder besonderes Setup."
+      "objective": "Setze dich in **Kingdom Come: Deliverance II** zum Würfeln ins Wirtshaus. Nimm gewöhnliche Würfel und einen kleinen Einsatz, den du übrig hast. Spiele eine Partie zu Ende, ohne einem Gewinnziel hinterherzujagen."
     },
     "installments": [
       "kcd-2"
@@ -141,7 +141,7 @@ export const kingdomComeQuests = defineGameQuests("kingdom-come-deliverance", [
     },
     "de": {
       "name": "Frisch oder getrocknet",
-      "objective": "Sammle in **Kingdom Come: Deliverance II** mit Zugang zu Alchemietisch und Trockengestell Kräuter für zwei Ringelblumentränke. Trockne eine Portion. **Braue beide mit denselben Schritten und vergleiche ihre Qualität** im Inventar."
+      "objective": "Sammle in **Kingdom Come: Deliverance II** Kräuter für zwei Ringelblumentränke. Trockne eine Portion. **Brau beide Tränke mit denselben Schritten und vergleiche ihre Qualität** im Inventar. Du brauchst dafür Alchemietisch und Trockengestell."
     },
     "installments": [
       "kcd-2"

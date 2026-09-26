@@ -12,7 +12,6 @@ export const challengeQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Life",
@@ -20,7 +19,7 @@ export const challengeQuests = [
       },
       "de": {
         "name": "Ein Leben",
-        "objective": "Starte **ein Roguelike, in dem der Tod den Durchlauf beendet**. **Nutze die Vorräte, die du sonst aufhebst**, und schau, wie weit du kommst."
+        "objective": "Starte **ein Roguelike, bei dem der Tod deinen Run beendet**. **Verbrauch die Vorräte, die du sonst für später aufhebst**, und schau, wie weit du kommst."
       }
     }
   },
@@ -35,7 +34,6 @@ export const challengeQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "A Step Harder",
@@ -43,7 +41,7 @@ export const challengeQuests = [
       },
       "de": {
         "name": "Eine Stufe schwerer",
-        "objective": "Starte **ein Rhythmusspiel**. Wähle Songs knapp über deiner üblichen Schwierigkeit und **probier die schwereren Muster**. Keine Pflichtkombo und kein Punkteziel."
+        "objective": "Starte **ein Rhythmusspiel**. Wähle Songs eine Stufe über deinem üblichen Schwierigkeitsgrad und **probier die schwereren Muster aus**. Du brauchst weder eine perfekte Kombo noch eine bestimmte Punktzahl."
       }
     }
   },
@@ -59,15 +57,14 @@ export const challengeQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Beat Your Lap",
         "objective": "In **a racing time trial**, set a clean lap on a familiar short track. Keep the same setup and **beat your time within three more attempts**. Stop after the third result."
       },
       "de": {
-        "name": "Schlag deine Runde",
-        "objective": "Fahre in **einem Rennspiel mit Zeitfahren** eine saubere Runde auf einer vertrauten kurzen Strecke. Behalte dein Setup und **unterbiete die Zeit in drei weiteren Versuchen**. Nach dem dritten Ergebnis ist Schluss."
+        "name": "Schlag deine Zeit",
+        "objective": "Fahr in **einem Rennspiel mit Zeitfahren** eine saubere Runde auf einer kurzen Strecke, die du kennst. Behalte dein Setup und **versuch, deine Zeit in drei weiteren Runden zu schlagen**. Danach ist Schluss."
       }
     }
   },
@@ -82,7 +79,6 @@ export const challengeQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Land the Combo",
@@ -90,7 +86,7 @@ export const challengeQuests = [
       },
       "de": {
         "name": "Die Kombo landen",
-        "objective": "Starte **ein Kampfspiel mit Kombo-Training**. Lerne eine offene Kombo und **lande sie in einem CPU-Match**. Beende dieses Match oder hör nach drei ganzen Matches auf."
+        "objective": "Starte **ein Kampfspiel mit Kombo-Training**. Üb eine Kombo, die du noch nicht sicher kannst, und **lande sie in einem Match gegen die CPU**. Spiel das Match zu Ende oder hör nach drei Matches auf."
       }
     }
   },
@@ -106,7 +102,6 @@ export const challengeQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Tricky Jumps",
@@ -114,7 +109,7 @@ export const challengeQuests = [
       },
       "de": {
         "name": "Knifflige Sprünge",
-        "objective": "Starte **einen Präzisionsplattformer mit schnellen Wiederholungen**. Wähle einen freigeschalteten Abschnitt und **probier seine kniffligen Sprünge**. Mach zwischen den Versuchen Pause, wann du möchtest."
+        "objective": "Starte **einen Plattformer mit schnellem Movement und kniffligen Abschnitten**. Such dir einen freigeschalteten Abschnitt und **probier dich an seinen Sprüngen**. Mach zwischen den Versuchen Pause, wann du möchtest."
       }
     }
   },

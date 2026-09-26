@@ -12,10 +12,13 @@ import { useMoodWindowRefresh } from "../../app/hooks/useMoodWindowRefresh";
 import type { CoinImpact } from "../active-quest/components/FlyingCoin/FlyingCoin";
 import { questOfferId } from "../../domain/quest/rules";
 import { useLibraryStore } from "../../stores/useLibraryStore";
+import { libraryStore } from "../../stores/useLibraryStore";
+import { libraryGamesFromState } from "../../domain/library/rules";
 
 type Props = {
   galleryOpen: boolean;
   onGalleryOpenChange: (open: boolean) => void;
+  onOpenLibrary: () => void;
   reduceMotion: boolean;
   onCoinFlightStart: (pointsAwarded: number) => void;
   onCoinHit: (pointsReceived: number, impact?: CoinImpact) => void;
@@ -24,6 +27,7 @@ type Props = {
 export function QuestScreen({
   galleryOpen,
   onGalleryOpenChange,
+  onOpenLibrary,
   reduceMotion,
   onCoinFlightStart,
   onCoinHit,
@@ -32,9 +36,12 @@ export function QuestScreen({
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const {
     completeQuest,
+    chooseGame,
     currentSession,
     discardCurrentSession,
     editMood,
+    editGame,
+    gameSelection,
     moodSelectedAt,
     offeredQuests,
     pauseQuest,
@@ -53,9 +60,12 @@ export function QuestScreen({
   } = useQuestStore(
     useShallow((state) => ({
       completeQuest: state.completeQuest,
+      chooseGame: state.chooseGame,
       currentSession: state.currentSession,
       discardCurrentSession: state.discardCurrentSession,
       editMood: state.editMood,
+      editGame: state.editGame,
+      gameSelection: state.gameSelection,
       moodSelectedAt: state.moodSelectedAt,
       offeredQuests: state.offeredQuests,
       pauseQuest: state.pauseQuest,
@@ -75,6 +85,7 @@ export function QuestScreen({
   );
   const introReady = useIntroReady(reduceMotion);
   const libraryRevision = useLibraryStore((state) => state.revision);
+  const libraryGames = useMemo(() => libraryGamesFromState(libraryStore.getState()), [libraryRevision]);
   const hasCurrentSession = Boolean(currentSession);
   useMoodWindowRefresh(currentSession, moodSelectedAt, refreshMoodWindow);
 
@@ -129,6 +140,9 @@ export function QuestScreen({
       <QuestScreenContent
         galleryOpen={galleryOpen}
         onGalleryOpenChange={onGalleryOpenChange}
+        onOpenLibrary={onOpenLibrary}
+        libraryGames={libraryGames}
+        gameSelection={gameSelection}
         currentQuest={currentQuest}
         currentSession={currentSession}
         selectedMood={selectedMood}
@@ -139,6 +153,8 @@ export function QuestScreen({
         animateEntrance={!introReady}
         reduceMotion={reduceMotion}
         onSelectMood={selectMood}
+        onChooseGame={chooseGame}
+        onEditGame={editGame}
         onEditMood={editMood}
         onRevealQuest={revealQuest}
         onRepeatQuest={repeatQuest}

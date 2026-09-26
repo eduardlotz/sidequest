@@ -21,3 +21,16 @@
   background: white;
   color: var(--color-brand);
 }
+.icon {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+  background: white;
+}
+.icon img {
+  width: 16px;
+  height: 16px;
+}

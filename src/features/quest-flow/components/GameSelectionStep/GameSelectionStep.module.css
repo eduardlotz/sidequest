@@ -1,0 +1,13 @@
+.empty {
+  display: grid;
+  width: min(100% - 32px, 360px);
+  min-height: 40vh;
+  margin: 0 auto;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.empty p { margin: 0; }

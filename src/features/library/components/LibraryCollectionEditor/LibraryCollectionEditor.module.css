@@ -32,32 +32,6 @@
   background: var(--color-canvas);
 }
 
-.gameRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 56px;
-  padding: 8px 0;
-}
-
-.gameCopy {
-  flex: 1;
-  min-width: 0;
-  font-size: 14px;
-
-  strong {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-weight: 600;
-  }
-
-  > span {
-    color: var(--color-muted);
-  }
-}
-
 .customGameActions {
   display: flex;
   gap: 4px;

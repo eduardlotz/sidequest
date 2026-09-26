@@ -12,7 +12,6 @@ export const focusedQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Listen Closely",
@@ -35,7 +34,6 @@ export const focusedQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Build",
@@ -58,7 +56,6 @@ export const focusedQuests = [
     ],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Find the Bottleneck",
@@ -66,7 +63,7 @@ export const focusedQuests = [
       },
       "de": {
         "name": "Finde den Engpass",
-        "objective": "Öffne **einen Automatisierungs-Spielstand mit einer stillstehenden Linie**. Finde und behebe die fehlende Zufuhr. **Warte auf drei fertige Produkte am Ausgang**."
+        "objective": "Öffne **einen Spielstand, in dem eine Produktionslinie stillsteht**. Finde heraus, was ihr fehlt, und bring sie wieder zum Laufen. **Warte, bis drei Produkte am Ausgang ankommen**."
       }
     }
   },
@@ -81,7 +78,6 @@ export const focusedQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Follow One Lead",
@@ -89,7 +85,7 @@ export const focusedQuests = [
       },
       "de": {
         "name": "Eine Spur verfolgen",
-        "objective": "Setze **ein Detektivspiel mit offener Spur und Beweistafel** fort. Folge ihren Hinweisen und Gesprächen, bis **ein neuer Beweis festgehalten wird**."
+        "objective": "Setze **ein Detektivspiel mit einer offenen Spur** fort. Geh den Hinweisen nach und sprich mit den Beteiligten, bis **ein neuer Beweis auf deiner Beweistafel landet**."
       }
     }
   },
@@ -103,7 +99,6 @@ export const focusedQuests = [
     "tags": [],
     "minimumDurationMinutes": 5,
     "suggestedDurationMinutes": 25,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Front",
@@ -111,7 +106,7 @@ export const focusedQuests = [
       },
       "de": {
         "name": "Eine Front",
-        "objective": "Öffne **einen rundenbasierten Strategiespielstand mit mehreren Fronten**. **Kümmere dich um eine Region oder Einheitengruppe**. Versorge die anderen Fronten nur nach Bedarf."
+        "objective": "Öffne **einen rundenbasierten Strategiespielstand mit mehreren Fronten**. **Konzentrier dich auf eine Region oder Einheitengruppe**. Um die anderen Fronten kümmerst du dich nur, wenn es nötig ist."
       }
     }
   },
@@ -127,7 +122,6 @@ export const focusedQuests = [
     ],
     "minimumDurationMinutes": 10,
     "suggestedDurationMinutes": 30,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Ending in Sight",
@@ -135,7 +129,7 @@ export const focusedQuests = [
       },
       "de": {
         "name": "Das Ende in Sicht",
-        "objective": "Kehre zu **einem unfertigen Storyspiel zurück, dessen Ende nahe wirkt**. Folge nur dem Hauptweg und widme dem letzten Abschnitt deine volle Aufmerksamkeit. Hör an einem Speicherpunkt auf, falls das Ende weiter entfernt ist als gedacht."
+        "objective": "Kehre zu **einem Storyspiel zurück, bei dem das Ende in Sicht ist**. Bleib auf dem Hauptweg und lass Nebenquests aus. Wenn das Ende doch weiter weg ist, hör am nächsten Speicherpunkt auf."
       }
     }
   },

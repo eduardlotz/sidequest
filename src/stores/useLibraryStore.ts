@@ -16,11 +16,8 @@ import {
   type LibraryStore,
   type PersistedLibraryState,
 } from "../domain/library/model";
-import {
-  migratePersistedLibraryState,
-  sanitizeCustomGameInput,
-  sanitizePersistedLibraryState,
-} from "../domain/library/persistence";
+import { isPersistedLibraryState, sanitizeCustomGameInput } from "../domain/library/persistence";
+import { resetOnInvalidStorage } from "./resetOnInvalidStorage";
 
 type StoreOptions = {
   createGameId?: () => string;
@@ -132,7 +129,7 @@ export function createLibraryStore(
   return createStore<LibraryStore>()(
     persist(stateCreator, {
       name: LIBRARY_STORE_KEY,
-      storage,
+      storage: resetOnInvalidStorage(storage, LIBRARY_STORE_VERSION, isPersistedLibraryState),
       version: LIBRARY_STORE_VERSION,
       partialize: ({
         setupCompleted,
@@ -146,11 +143,6 @@ export function createLibraryStore(
         curatedGamePreferences,
         customGames,
         revision,
-      }),
-      migrate: migratePersistedLibraryState,
-      merge: (persistedState, currentState) => ({
-        ...currentState,
-        ...sanitizePersistedLibraryState(persistedState),
       }),
     }),
   );

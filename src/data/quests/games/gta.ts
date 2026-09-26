@@ -34,9 +34,9 @@ export const gtaQuests = defineGameQuests("gta", [
         "In **GTA IV story mode**, call an available friend for bowling. Pick them up yourself, drive to the alley without gaining a wanted level, and **finish one full bowling game before driving them home**. Use no taxi skips.",
     },
     de: {
-      name: "Hol sie ab",
+      name: "Bowling mit Abholung",
       objective:
-        "Ruf im **Story-Modus von GTA IV** einen verfügbaren Freund zum Bowling an. Hole ihn selbst ab, fahre ohne Fahndungssterne zur Bahn und **beende ein ganzes Bowling-Spiel, bevor du ihn heimfährst**. Nutze keine übersprungenen Taxifahrten.",
+        "Ruf im **Story-Modus von GTA IV** einen verfügbaren Freund zum Bowling an. Hol ihn selbst ab, fahr ohne Fahndungssterne zur Bahn und **spiel eine ganze Partie, bevor du ihn nach Hause bringst**. Überspring die Fahrt nicht mit einem Taxi.",
     },
   },
   {
@@ -55,7 +55,7 @@ export const gtaQuests = defineGameQuests("gta", [
     de: {
       name: "Drei Fahrgäste",
       objective:
-        "Starte im **Story-Modus von GTA V** Taxiarbeit in einem Taxi. **Liefere drei Fahrgäste im selben Wagen ab, ohne ihn fahruntüchtig zu machen oder Fahndungssterne zu erhalten**. Halte an jedem Ziel vollständig an. Nach Erfolg oder bei einem fahruntüchtigen Taxi endet die Schicht.",
+        "Steig im **Story-Modus von GTA V** in ein Taxi und nimm Fahraufträge an. **Bring drei Fahrgäste im selben Wagen ans Ziel, ohne Fahndungssterne zu bekommen oder das Taxi fahruntüchtig zu machen**. Halt an jedem Ziel vollständig an. Danach ist deine Schicht vorbei.",
     },
   },
   {
@@ -69,12 +69,12 @@ export const gtaQuests = defineGameQuests("gta", [
     en: {
       name: "Back to Los Santos",
       objective:
-        "Return to a **GTA V story save you have not finished**. Switch through the available protagonists once, notice where each one was left, then choose the story lead that makes you want to keep playing.",
+        "Return to an unfinished **GTA V story save where character switching is unlocked**. Check in with each available protagonist, then **follow one story lead that interests you**.",
     },
     de: {
       name: "Zurück in Los Santos",
       objective:
-        "Kehre zu einem **noch nicht beendeten Spielstand im Story-Modus von GTA V** zurück. Wechsle einmal durch die verfügbaren Hauptfiguren, schau dir ihre aktuellen Situationen an und folge dann der Story-Spur, auf die du Lust hast.",
+        "Lade einen noch nicht beendeten **GTA-V-Story-Spielstand mit freigeschaltetem Figurenwechsel**. Schau bei allen verfügbaren Hauptfiguren vorbei und **spiel dann die Story-Mission weiter, auf die du am meisten Lust hast**.",
     },
   },
 ]);

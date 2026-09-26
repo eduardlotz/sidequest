@@ -1,0 +1,208 @@
+import { defineGameQuests } from "../defineGameQuests";
+
+export const zeldaQuests = defineGameQuests("zelda", [
+  {
+    id: "breath-of-the-wild-follow-the-land",
+    moods: ["explore", "curious"],
+    type: "objective",
+    tags: ["exploration", "no-fast-travel"],
+    minutes: 25,
+    minimum: 5,
+    installments: ["botw"],
+    en: {
+      name: "Follow the Land",
+      objective: "In **Breath of the Wild**, start at a stable you know. Pick one nearby landmark you can see, close the map, and **reach it on foot or horseback without fast travel**. Use the terrain to find your way.",
+    },
+    de: {
+      name: "Dem Gelände folgen",
+      objective: "Starte in **Breath of the Wild** an einem bekannten Stall. Wähle eine nahe sichtbare Landmarke, schließe die Karte und **erreiche sie zu Fuß oder zu Pferd ohne Schnellreise**. Orientiere dich am Gelände.",
+    },
+  },
+  {
+    id: "breath-of-the-wild-three-new-entries",
+    moods: ["curious", "focused"],
+    type: "objective",
+    tags: ["photography", "collectibles"],
+    minutes: 25,
+    minimum: 5,
+    installments: ["botw"],
+    en: {
+      name: "Three New Entries",
+      objective: "In **Breath of the Wild**, with the Camera Rune unlocked, find a nearby creature, plant or material, and weapon missing from your Hyrule Compendium. **Photograph one of each and confirm all three new entries**.",
+    },
+    de: {
+      name: "Drei neue Einträge",
+      objective: "Such in **Breath of the Wild** mit freigeschaltetem Kamera-Modul ein Tier, eine Pflanze oder Zutat und eine Waffe, die dir im Hyrule-Handbuch noch fehlen. **Fotografiere alle drei und prüfe die neuen Einträge**.",
+    },
+  },
+  {
+    id: "breath-of-the-wild-one-snow-run",
+    moods: ["challenge", "restless"],
+    type: "challenge",
+    tags: ["traversal", "three-attempts"],
+    minutes: 20,
+    minimum: 3,
+    installments: ["botw"],
+    en: {
+      name: "One Snow Run",
+      objective: "In **Breath of the Wild**, find a short snowy slope and mark a visible finish near its base. **Shield-surf from the top to that point without falling**, or stop after three tries. Bring a shield you can spare.",
+    },
+    de: {
+      name: "Eine Abfahrt im Schnee",
+      objective: "Such dir in **Breath of the Wild** einen kurzen Schneehang und ein Ziel, das du von oben sehen kannst. **Surfe auf deinem Schild bis dorthin, ohne zu stürzen**, oder hör nach drei Versuchen auf. Nimm ein Schild, das du nicht mehr brauchst.",
+    },
+  },
+  {
+    id: "breath-of-the-wild-korok-portrait",
+    moods: ["create", "relax"],
+    type: "creation",
+    tags: ["photography", "exploration"],
+    minutes: 25,
+    minimum: 5,
+    installments: ["botw"],
+    en: {
+      name: "Korok Portrait",
+      objective: "In **Breath of the Wild**, with the Camera Rune unlocked, reveal a reachable Korok you have not found yet. **Save a selfie with Link and the Korok in frame**. Pick a clue on safe ground.",
+    },
+    de: {
+      name: "Krog-Porträt",
+      objective: "Finde in **Breath of the Wild** mit freigeschaltetem Kamera-Modul einen noch unentdeckten Krog an einem gut erreichbaren Ort. **Speichere ein Selfie mit Link und dem Krog im Bild**.",
+    },
+  },
+  {
+    id: "breath-of-the-wild-campfire-supper",
+    moods: ["relax", "low-energy"],
+    type: "objective",
+    tags: ["cooking", "no-timer"],
+    minutes: 15,
+    minimum: 3,
+    installments: ["botw"],
+    en: {
+      name: "Campfire Supper",
+      objective: "In **Breath of the Wild**, start beside a safe cooking pot. Gather edible ingredients nearby, **cook one meal using only what you just found, and eat it beside the pot**.",
+    },
+    de: {
+      name: "Essen am Feuer",
+      objective: "Beginne in **Breath of the Wild** an einer sicheren Kochstelle. Sammle essbare Zutaten in der Nähe, **koche daraus eine Mahlzeit und iss sie an der Kochstelle**. Nutze nur, was du gerade gefunden hast.",
+    },
+  },
+  {
+    id: "tears-of-the-kingdom-no-steering-stick",
+    moods: ["curious", "explore"],
+    type: "experiment",
+    tags: ["building", "traversal"],
+    minutes: 30,
+    minimum: 5,
+    installments: ["totk"],
+    en: {
+      name: "No Steering Stick",
+      objective: "In **Tears of the Kingdom**, with Ultrahand unlocked, pick a small stream or gap you can see from both sides. Build a device without a steering stick and **cross the obstacle on it**. Use nearby parts and try another design if the first fails.",
+    },
+    de: {
+      name: "Ohne Steuerknüppel",
+      objective: "Wähle in **Tears of the Kingdom** mit freigeschaltetem Ultrahand einen kleinen Bach oder Spalt, dessen beide Seiten du sehen kannst. Baue ein Gefährt ohne Steuerknüppel und **überquere damit das Hindernis**. Nutze Teile aus der Nähe und probiere bei Bedarf einen zweiten Entwurf.",
+    },
+  },
+  {
+    id: "tears-of-the-kingdom-fuse-from-here",
+    moods: ["progress", "curious"],
+    type: "objective",
+    tags: ["crafting", "new-approach"],
+    minutes: 20,
+    minimum: 3,
+    installments: ["totk"],
+    en: {
+      name: "Fuse From Here",
+      objective: "In **Tears of the Kingdom**, with Fuse unlocked, pick up a material in your current area and attach it to a weapon. **Win one ordinary fight using that fused weapon**. Choose an encounter you can already handle.",
+    },
+    de: {
+      name: "Fusion vor Ort",
+      objective: "Sammle in **Tears of the Kingdom** mit freigeschalteter Synthese ein Material aus deiner Umgebung und verbinde es mit einer Waffe. Such dir einen Gegner, den du gut besiegen kannst, und **gewinne den Kampf mit deiner neu fusionierten Waffe**.",
+    },
+  },
+  {
+    id: "tears-of-the-kingdom-reachable-sky-island",
+    moods: ["create", "focused"],
+    type: "creation",
+    tags: ["building", "traversal"],
+    minutes: 45,
+    minimum: 10,
+    installments: ["totk"],
+    en: {
+      name: "Skyward Build",
+      objective: "In **Tears of the Kingdom**, launch from a Skyview Tower or start on a sky island. Choose a lower island you can see, build a device from available Zonai parts, and **use it to cross the last gap and land there**.",
+    },
+    de: {
+      name: "Zur nächsten Himmelsinsel",
+      objective: "Starte in **Tears of the Kingdom** von einem Kartografierturm oder einer Himmelsinsel. Wähle eine Insel, die du sehen kannst und die tiefer liegt. Bau aus verfügbaren Sonau-Bauteilen ein Gefährt und **überquere damit die letzte Lücke bis zur Landung**.",
+    },
+  },
+  {
+    id: "tears-of-the-kingdom-old-tool-new-use",
+    moods: ["curious", "focused"],
+    type: "experiment",
+    tags: ["abilities", "new-approach"],
+    minutes: 20,
+    minimum: 3,
+    installments: ["totk"],
+    en: {
+      name: "Recall the Route",
+      objective: "In **Tears of the Kingdom**, with Ultrahand and Recall unlocked, move a loose object across a reachable gap. Return it to the start, stand on it, and **use Recall to ride it across**. Pick a safe gap with room to land.",
+    },
+    de: {
+      name: "Weg zurückspulen",
+      objective: "Beweg in **Tears of the Kingdom** mit Ultrahand einen losen Gegenstand über einen sicheren Spalt. Hol ihn zurück, stell dich darauf und **lass dich mit Zeitumkehr auf die andere Seite tragen**. Such dir eine Stelle mit genug Platz zum Landen.",
+    },
+  },
+  {
+    id: "tears-of-the-kingdom-korok-courier",
+    moods: ["connect", "progress"],
+    type: "objective",
+    tags: ["building", "traversal"],
+    minutes: 30,
+    minimum: 5,
+    installments: ["totk"],
+    en: {
+      name: "Korok Courier",
+      objective: "In **Tears of the Kingdom**, find a backpack Korok whose friend is nearby. Build a simple carrier with Ultrahand, **bring the Korok to the friend, detach it, and speak to finish the delivery**.",
+    },
+    de: {
+      name: "Krog-Kurier",
+      objective: "Finde in **Tears of the Kingdom** einen Krog mit Rucksack, dessen Freund in der Nähe wartet. Bau mit Ultrahand ein einfaches Transportmittel und **bring den Krog zu seinem Freund**. Löse ihn vom Gefährt und sprich mit ihm, damit die Lieferung zählt.",
+    },
+  },
+  {
+    id: "tears-of-the-kingdom-hold-the-sign",
+    moods: ["curious", "focused"],
+    type: "experiment",
+    tags: ["building", "new-approach"],
+    minutes: 20,
+    minimum: 3,
+    installments: ["totk"],
+    en: {
+      name: "Hold the Sign",
+      objective: "In **Tears of the Kingdom**, find one sign Addison is holding. Prop it up with nearby Ultrahand materials, ask him to let go, and **keep it standing until he secures it**. Move the supports and try again if it falls.",
+    },
+    de: {
+      name: "Schild stützen",
+      objective: "Finde in **Tears of the Kingdom** ein Schild, das Addison festhält. Stütze es mit Ultrahand und Material aus der Nähe, bitte ihn loszulassen und **halte es aufrecht, bis er es befestigt**. Versetze die Stützen, falls es umfällt.",
+    },
+  },
+  {
+    id: "tears-of-the-kingdom-lightroot-by-landmark",
+    moods: ["explore", "focused"],
+    type: "objective",
+    tags: ["exploration", "no-fast-travel"],
+    minutes: 35,
+    minimum: 5,
+    installments: ["totk"],
+    en: {
+      name: "Below the Shrine",
+      objective: "In **Tears of the Kingdom**, with the Depths accessible, choose a surface shrine above an unlit Lightroot you can reach from a known chasm. Mark its matching spot below, travel there using Brightbloom Seeds, and **activate that Lightroot**.",
+    },
+    de: {
+      name: "Unter dem Schrein",
+      objective: "Such dir in **Tears of the Kingdom** einen Oberwelt-Schrein aus, unter dem eine noch dunkle Lichtwurzel liegt. Markiere die Stelle im Untergrund, erreich sie von einem bekannten Abgrund aus mit Leuchtsamen und **aktiviere die Lichtwurzel**.",
+    },
+  },
+]);

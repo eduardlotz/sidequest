@@ -6,6 +6,8 @@ import { AnimatePresence } from "motion/react";
 import { FolderStarIcon } from "@phosphor-icons/react/dist/csr/FolderStar";
 import { FolderUserIcon } from "@phosphor-icons/react/dist/csr/FolderUser";
 import { CURATED_GAMES } from "../../../../data/games";
+import { sortGamesByName } from "../../../../data/games/sort";
+import { normalizeLanguage } from "../../../../localization/i18n";
 import type {
   CustomGame,
   CustomGameInput,
@@ -16,7 +18,7 @@ import {
   ResponsiveNestedDrawerContent,
   ResponsiveNestedDrawerRoot,
 } from "../../../../shared/ui/ResponsiveDrawer/ResponsiveDrawer";
-import { GameVisual } from "../../../../shared/ui/GameVisual/GameVisual";
+import { GameRow } from "../../../../shared/ui/GameRow/GameRow";
 import { FlowFrame } from "../../../../shared/ui/FlowFrame/FlowFrame";
 import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
@@ -42,7 +44,8 @@ export function LibraryCollectionEditor({
   footer?: ReactNode;
   title?: ReactNode;
 }) {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
+  const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const {
     addCustomGame,
     customGames,
@@ -63,8 +66,10 @@ export function LibraryCollectionEditor({
   const [editorTarget, setEditorTarget] = useState<EditorTarget>(null);
   const overviewScroll = useRef(0);
   const overviewScrollRef = useRef<HTMLDivElement>(null);
-  const selectedCuratedGames = CURATED_GAMES.filter((game) =>
-    selectedCuratedGameIds.includes(game.id),
+  const selectedCuratedGames = sortGamesByName(
+    CURATED_GAMES.filter((game) => selectedCuratedGameIds.includes(game.id)),
+    language,
+    (game) => game.name,
   );
   const editingGame =
     editorTarget?.kind === "edit"
@@ -139,27 +144,23 @@ export function LibraryCollectionEditor({
         {selectedCuratedGames.length ? (
           <div className={styles.gameList}>
             {selectedCuratedGames.map((game) => (
-              <div className={styles.gameRow} key={game.id}>
-                <GameVisual
-                  game={{ id: game.id, name: game.name, source: "curated" }}
-                />
-                <div className={styles.gameCopy}>
-                  <strong>{game.name}</strong>
+              <GameRow key={game.id} game={{ id: game.id, name: game.name, source: "curated" }}>
                   {game.isSeries && (
-                    <div className={styles.installments}>
-                      {game.installments
-                        .filter((entry) =>
+                    <span className={styles.installments}>
+                      {sortGamesByName(
+                        game.installments.filter((entry) =>
                           curatedGamePreferences[
                             game.id
                           ]?.installmentIds.includes(entry.id),
-                        )
-                        .map((entry) => (
-                          <span key={entry.id}>{entry.name}</span>
-                        ))}
-                    </div>
+                        ),
+                        language,
+                        (entry) => entry.name,
+                      ).map((entry) => (
+                        <span key={entry.id}>{entry.name}</span>
+                      ))}
+                    </span>
                   )}
-                </div>
-              </div>
+              </GameRow>
             ))}
           </div>
         ) : (
@@ -202,7 +203,7 @@ export function LibraryCollectionEditor({
         </div>
         {customGames.length ? (
           <div className={styles.gameList}>
-            {customGames.map((game) => (
+            {sortGamesByName(customGames, language, (game) => game.name).map((game) => (
               <CustomGameRow
                 game={game}
                 key={game.id}
@@ -291,16 +292,7 @@ function CustomGameRow({
   const { t } = useTranslation();
   const [confirming, setConfirming] = useState(false);
   return (
-    <div className={styles.gameRow} data-confirming={confirming || undefined}>
-      <GameVisual game={{ ...game, source: "custom" }} />
-      <div className={styles.gameCopy}>
-        <strong>{game.name}</strong>
-        <span>
-          {t("ui.library.questCount", {
-            count: customGameQuestIds(game).length,
-          })}
-        </span>
-      </div>
+    <GameRow game={{ ...game, source: "custom" }} actions={
       <div className={styles.customGameActions}>
         {confirming ? (
           <>
@@ -335,7 +327,9 @@ function CustomGameRow({
           </>
         )}
       </div>
-    </div>
+    }>
+      <span>{t("ui.library.questCount", { count: customGameQuestIds(game).length })}</span>
+    </GameRow>
   );
 }
 

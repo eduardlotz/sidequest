@@ -105,7 +105,9 @@ export type GameReference = {
 export type CuratedGameDefinition = {
   id: string;
   name: string;
-  artwork: string;
+  artwork?: string;
+  iconId?: GameIconId;
+  colorId?: GameColorId;
   isSeries?: boolean;
   installments: readonly { id: string; name: string }[];
   compatibleQuestIds: readonly string[];

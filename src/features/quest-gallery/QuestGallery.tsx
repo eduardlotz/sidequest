@@ -27,9 +27,10 @@ import { HeartIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { QUESTS } from "../../data/quests";
 import type { MoodId } from "../../data/moods";
 import type { GameGenreId } from "../../data/gameGenres";
-import type { QuestTagId } from "../../data/questTraits";
-import type { QuestPlayStyleId } from "../../data/questPoolTraits";
+import type { QuestTagId, QuestTypeId } from "../../data/questTraits";
+import type { QuestConnectionModeId, QuestPlayStyleId } from "../../data/questPoolTraits";
 import { CURATED_GAMES_BY_ID } from "../../data/games";
+import { sortGamesByName } from "../../data/games/sort";
 import { getMoodAccentStyle } from "../../data/questColors";
 import { hydrateQuest } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
@@ -63,6 +64,10 @@ import {
   type GalleryGameOption,
 } from "./QuestGalleryFilters";
 import styles from "./QuestGallery.module.css";
+import unknownIllustration from "./assets/unknown-quest.svg";
+import unfinishedIllustration from "./assets/unfinished-quest.svg";
+import unknownStatusIcon from "./assets/unknown-status.svg";
+import unfinishedStatusIcon from "./assets/unfinished-status.svg";
 
 const GALLERY_FILTERS = [
   "all",
@@ -78,7 +83,9 @@ export type QuestGalleryView = {
   focusedId: string | null;
   moodIds: MoodId[];
   genreIds: GameGenreId[];
+  connectionModeIds: QuestConnectionModeId[];
   playStyleIds: QuestPlayStyleId[];
+  typeIds: QuestTypeId[];
   gameId: string | null;
   tagIds: QuestTagId[];
 };
@@ -241,8 +248,7 @@ export function QuestGallery({
       catalog.filter((quest) => {
         const known = progress[quest.id];
         const completed = (counts[quest.id] ?? 0) > 0;
-        const genres =
-          quest.customGameCompatibility?.genreIds ?? quest.gameGenreIds;
+        const genres = quest.gameGenreIds;
         if (
           (filter === "found" && !known) ||
           (filter === "favorites" && !known?.favorite) ||
@@ -253,12 +259,15 @@ export function QuestGallery({
           (view.genreIds.length > 0 &&
             genres.length > 0 &&
             !genres.some((id) => view.genreIds.includes(id))) ||
+          (view.connectionModeIds.length > 0 &&
+            !quest.connectionModeIds.some((id) => view.connectionModeIds.includes(id))) ||
           (view.playStyleIds.length > 0 &&
             !quest.playStyleIds.some((id) =>
               view.playStyleIds.includes(id),
             )) ||
           (view.gameId !== null &&
             (quest.game?.id ?? quest.curated?.gameId) !== view.gameId) ||
+          (view.typeIds.length > 0 && !view.typeIds.includes(quest.type)) ||
           (view.tagIds.length > 0 &&
             !quest.tags.some((id) => view.tagIds.includes(id)))
         )
@@ -286,9 +295,7 @@ export function QuestGallery({
         if (game) games.set(game.id, { id: game.id, name: game.name });
       }
     }
-    return [...games.values()].sort((a, b) =>
-      a.name.localeCompare(b.name, language),
-    );
+    return sortGamesByName([...games.values()], language, (game) => game.name);
   }, [catalog, language]);
 
   const cardWidth = Math.min(desktop ? 300 : width * 0.76, 300);
@@ -551,6 +558,7 @@ export function QuestGallery({
   return (
     <section
       className={styles.gallery}
+      data-selecting={selectedId !== null || undefined}
       inert={!isPresent || returning || selectedId !== null}
     >
       <header className={styles.header}>
@@ -764,6 +772,7 @@ export function QuestGallery({
               quest={quest}
               layoutSessionId={layoutSessionId}
               selected={selectedId === quest.id}
+              selecting={selectedId !== null}
               returnPose={
                 questOfferId(
                   quest.mood.id,
@@ -804,7 +813,7 @@ export function QuestGallery({
               key={focusedQuest.id}
               className={styles.infoPanel}
               initial={{ opacity: 0, x: reduceMotion ? 0 : 16 }}
-              animate={{ opacity: 1, x: 0 }}
+              animate={{ opacity: selectedId ? 0 : 1, x: 0 }}
               exit={{ opacity: 0, x: reduceMotion ? 0 : 10 }}
               transition={{ duration: reduceMotion ? 0 : 0.2 }}
             >
@@ -862,6 +871,7 @@ function GalleryCard({
   quest,
   layoutSessionId,
   selected,
+  selecting,
   returnPose,
   returning,
   filtering,
@@ -882,6 +892,7 @@ function GalleryCard({
   quest: Quest;
   layoutSessionId: string;
   selected: boolean;
+  selecting: boolean;
   returnPose?: CardReturnPose;
   returning: boolean;
   filtering: MotionValue<boolean>;
@@ -1027,6 +1038,7 @@ function GalleryCard({
     <motion.div
       className={`${cardStyles.questCardFrame} ${styles.card}`}
       data-gallery-card
+      data-selected={selected || undefined}
       data-focused={focused || undefined}
       data-uncompleted={!completed || undefined}
       inert={!isPresent}
@@ -1049,11 +1061,11 @@ function GalleryCard({
             ? false
             : { opacity: 0, y: 10, scale: 0.985 }
         }
-        animate={{ opacity: 1, y: 0, scale: 1 }}
+        animate={{ opacity: selecting && !selected ? 0 : 1, y: 0, scale: 1 }}
         exit="filterExit"
         variants={{
           filterExit: (reason: "filter" | "screen") => ({
-            opacity: 0,
+            opacity: reason === "screen" && selected ? 1 : 0,
             y: reduceMotion || reason === "screen" ? 0 : 12,
             scale: reduceMotion || reason === "screen" ? 1 : 0.985,
           }),
@@ -1071,9 +1083,7 @@ function GalleryCard({
           )}
           layoutCrossfade={false}
           initial={false}
-          exit={
-            selected ? { opacity: 0, transition: { duration: 0 } } : undefined
-          }
+          data-selected={selected || undefined}
           transition={
             reduceMotion
               ? { duration: 0 }
@@ -1124,7 +1134,6 @@ function GalleryCard({
                   completed={completed}
                   bestTimeMs={progress?.bestTimeMs}
                   game={quest.game}
-                  genres={quest.genres}
                   type={quest.type}
                   tags={quest.tags}
                   minimumDurationMinutes={quest.minimumDurationMinutes}
@@ -1170,7 +1179,17 @@ function QuestInfo({
   };
   return (
     <div className={styles.info} data-gallery-details>
-      <InfoText completed={count > 0}>
+      <InfoText
+        completed={count > 0}
+        icon={
+          count > 0 ? undefined : (
+            <img
+              src={progress ? unfinishedStatusIcon : unknownStatusIcon}
+              alt=""
+            />
+          )
+        }
+      >
         {t(
           count > 0
             ? "ui.gallery.questCompleted"
@@ -1205,7 +1224,23 @@ function QuestInfo({
         </SolidButton>
       </div>
       {active && <InfoText>{t("ui.gallery.activeQuest")}</InfoText>}
-      {progress && (
+      {count === 0 && (
+        <div className={styles.statusData}>
+          <img
+            className={styles.statusIllustration}
+            src={progress ? unfinishedIllustration : unknownIllustration}
+            alt=""
+          />
+          <p>
+            {t(
+              progress
+                ? "ui.gallery.unfinishedDescription"
+                : "ui.gallery.unknownCard",
+            )}
+          </p>
+        </div>
+      )}
+      {count > 0 && progress && (
         <dl className={styles.metrics}>
           <Metric label={t("ui.profile.timePlayed")}>
             {time(progress.totalPlayedMs)}

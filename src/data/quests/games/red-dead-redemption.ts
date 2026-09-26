@@ -5,7 +5,7 @@ export const redDeadQuests = defineGameQuests("red-dead-redemption", [
     id: "rdr2-camp-coffee",
     moods: ["relax", "low-energy"],
     type: "inspiration",
-    tags: ["free-roam"],
+    tags: ["cooking", "no-timer"],
     minutes: 10,
     minimum: 3,
     en: {
@@ -73,7 +73,7 @@ export const redDeadQuests = defineGameQuests("red-dead-redemption", [
     de: {
       name: "Wildpferd",
       objective:
-        "Finde in **Red Dead Redemption im Storymodus** ein Wildpferd. **Fange es mit dem Lasso, reite es zu und bring es in die Stadt**. Beende die Quest an einem Anbindepfosten.",
+        "Finde in **Red Dead Redemption im Storymodus** ein Wildpferd. **Fang es mit dem Lasso, reit es zu und bring es in die Stadt**. Bind es dort an einem Pfosten fest.",
     },
     installments: ["rdr-1"],
   },

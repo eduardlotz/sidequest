@@ -4,6 +4,8 @@ import { Drawer } from "vaul";
 import { GAME_GENRES, GAME_GENRE_IDS } from "../../../../data/gameGenres";
 import { QUEST_TYPES, type QuestTypeId } from "../../../../data/questTraits";
 import {
+  QUEST_CONNECTION_MODES,
+  QUEST_CONNECTION_MODE_IDS,
   QUEST_PLAY_STYLES,
   QUEST_PLAY_STYLE_IDS,
 } from "../../../../data/questPoolTraits";
@@ -28,6 +30,7 @@ export function QuestPoolSettings() {
   const [draft, setDraft] = useState(() => ({
     genreIds: [...preferences.genreIds],
     typeIds: [...preferences.typeIds],
+    connectionModeIds: [...preferences.connectionModeIds],
     styleIds: [...preferences.styleIds],
   }));
   return (
@@ -35,7 +38,7 @@ export function QuestPoolSettings() {
       <LibraryStep>
         <FlowFrame
           titleInContent
-          title={t("ui.pool.genreHint")}
+          title={t("ui.pool.description")}
           footer={
             <>
               <Drawer.Close asChild>
@@ -61,11 +64,22 @@ export function QuestPoolSettings() {
             <div className={styles.fields}>
               <ChoiceGroup
                 title={t("ui.pool.genres")}
+                hint={t("ui.pool.genreHint")}
                 ids={GAME_GENRE_IDS}
                 selected={draft.genreIds}
                 label={(id) => GAME_GENRES[id].title[language]}
                 onChange={(genreIds) =>
                   setDraft((current) => ({ ...current, genreIds }))
+                }
+              />
+              <ChoiceGroup
+                title={t("ui.pool.connectionModes")}
+                hint={t("ui.pool.connectionModeHint")}
+                ids={QUEST_CONNECTION_MODE_IDS}
+                selected={draft.connectionModeIds}
+                label={(id) => QUEST_CONNECTION_MODES[id][language]}
+                onChange={(connectionModeIds) =>
+                  setDraft((current) => ({ ...current, connectionModeIds }))
                 }
               />
               <ChoiceGroup
@@ -80,6 +94,7 @@ export function QuestPoolSettings() {
               />
               <ChoiceGroup
                 title={t("ui.pool.types")}
+                hint={t("ui.pool.typeHint")}
                 ids={Object.keys(QUEST_TYPES) as QuestTypeId[]}
                 selected={draft.typeIds}
                 label={(id) => QUEST_TYPES[id].title[language]}

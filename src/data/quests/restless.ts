@@ -12,7 +12,6 @@ export const restlessQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Keep Moving",
@@ -20,7 +19,7 @@ export const restlessQuests = [
       },
       "de": {
         "name": "In Bewegung",
-        "objective": "Starte ein Spiel mit **freiem Rennen, Schwingen oder Greifhaken**. **Verbinde die Bewegungen, die dich in Fahrt halten**. Missionsmarkierungen kommen ein andermal dran."
+        "objective": "Starte ein Spiel, in dem du **frei rennen, schwingen oder einen Greifhaken nutzen kannst**. **Komm mit diesen Bewegungen von einem Punkt zum nächsten**. Missionsmarkierungen können warten."
       }
     }
   },
@@ -35,7 +34,6 @@ export const restlessQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Flat Out",
@@ -43,7 +41,7 @@ export const restlessQuests = [
       },
       "de": {
         "name": "Vollgas",
-        "objective": "Starte **ein Arcade-Rennspiel mit schnellen Rennen**. Nimm deinen gewohnten Wagen und **fahr direkt auf die Strecke**. Diese Session gehört dem Fahren statt dem Tuning."
+        "objective": "Starte **ein Arcade-Rennspiel mit kurzen schnellen Rennen**. Nimm deinen gewohnten Wagen und **fahr direkt auf die Strecke**. Das Tuningmenü bleibt heute zu."
       }
     }
   },
@@ -58,7 +56,6 @@ export const restlessQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Three Songs",
@@ -82,7 +79,6 @@ export const restlessQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Five in a Line",
@@ -104,7 +100,6 @@ export const restlessQuests = [
     "tags": [],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Into the Brawl",

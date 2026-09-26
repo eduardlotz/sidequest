@@ -38,6 +38,7 @@ export const SelectionLayer = forwardRef<HTMLDivElement, Props>(
         className={className}
         ref={ref}
         aria-hidden={hidden || !present || undefined}
+        inert={hidden || !present}
         initial={
           reduceMotion || enterFromOpacity === undefined
             ? false

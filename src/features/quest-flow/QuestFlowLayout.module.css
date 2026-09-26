@@ -67,6 +67,12 @@
   inset: 0;
 }
 
+.emptyQuestDeck {
+  display: grid;
+  min-height: var(--quest-deck-height);
+  place-items: center;
+}
+
 .selectionScreen {
   --mood-card-inline-size: min(
     88cqw,
@@ -194,7 +200,18 @@
   justify-self: center;
   display: inline-flex;
   z-index: 10;
+  gap: 10px;
 }
+
+.pickerToggle {
+  position: absolute;
+  z-index: 70;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
 
 /* .moodEditButton[data-variant="secondary"] {
   padding-inline: 12px;

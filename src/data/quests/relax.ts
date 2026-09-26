@@ -8,7 +8,6 @@ export const relaxQuests = [
     tags: ["driving", "no-timer"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "Scenic Drive",
@@ -29,7 +28,6 @@ export const relaxQuests = [
     tags: ["space", "free-roam"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "Between the Stars",
@@ -50,7 +48,6 @@ export const relaxQuests = [
     tags: ["puzzles", "no-timer"],
     minimumDurationMinutes: 3,
     suggestedDurationMinutes: 15,
-    genres: [],
     translations: {
       en: {
         name: "Three Puzzles",
@@ -71,7 +68,6 @@ export const relaxQuests = [
     tags: ["replay", "no-timer"],
     minimumDurationMinutes: 2,
     suggestedDurationMinutes: 10,
-    genres: [],
     translations: {
       en: {
         name: "Familiar Level",
@@ -95,7 +91,6 @@ export const relaxQuests = [
     "tags": [],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Around Town",

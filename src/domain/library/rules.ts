@@ -49,6 +49,8 @@ export function libraryGamesFromState(state: LibraryState): LibraryGame[] {
             id: game.id,
             name: game.name,
             source: "curated" as const,
+            iconId: game.iconId,
+            colorId: game.colorId,
             questIds: curatedGameQuestIds(state, gameId),
           },
         ]

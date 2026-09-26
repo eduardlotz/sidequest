@@ -12,7 +12,6 @@ export const overwhelmedQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Just Continue",
@@ -20,7 +19,7 @@ export const overwhelmedQuests = [
       },
       "de": {
         "name": "Einfach fortsetzen",
-        "objective": "Starte dein **zuletzt gespieltes Spiel mit Fortsetzen-Taste**. **Spiele dort weiter, wo du aufgehört hast**, mit demselben Spielstand, denselben Einstellungen und derselben Ausrüstung."
+        "objective": "Starte dein **zuletzt gespieltes Spiel, das du direkt fortsetzen kannst**. **Spiel mit deinem bisherigen Spielstand und Setup weiter**, genau dort, wo du aufgehört hast."
       }
     }
   },
@@ -35,7 +34,6 @@ export const overwhelmedQuests = [
     ],
     "minimumDurationMinutes": 3,
     "suggestedDurationMinutes": 15,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Back to the Start",
@@ -59,7 +57,6 @@ export const overwhelmedQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Today’s Puzzle",
@@ -82,7 +79,6 @@ export const overwhelmedQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 10,
-    "genres": [],
     "translations": {
       "en": {
         "name": "One Corner",
@@ -106,7 +102,6 @@ export const overwhelmedQuests = [
     ],
     "minimumDurationMinutes": 2,
     "suggestedDurationMinutes": 20,
-    "genres": [],
     "translations": {
       "en": {
         "name": "Ease Back In",
@@ -114,7 +109,7 @@ export const overwhelmedQuests = [
       },
       "de": {
         "name": "Wieder reinkommen",
-        "objective": "Starte **einen vertrauten Solo- oder Bot-Modus**. Behalte dein Setup und **werde wieder mit der Steuerung vertraut**. Kein neuer Schwierigkeitsgrad und kein Pflichtsieg."
+        "objective": "Starte **einen vertrauten Solo- oder Bot-Modus**. Behalte dein Setup und **spiel eine Runde, um wieder in die Steuerung zu kommen**. Du brauchst weder eine höhere Schwierigkeit noch einen Sieg."
       }
     }
   },

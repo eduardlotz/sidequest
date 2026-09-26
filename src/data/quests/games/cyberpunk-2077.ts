@@ -20,7 +20,7 @@ export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
     },
     "de": {
       "name": "Fremde Augen",
-      "objective": "Wähle in **Cyberpunk 2077** mit Cyberdeck einen offenen Diebstahl-Gig mit zugänglichen Überwachungskameras. Spähe durch die Kameras und **hole das Ziel ungesehen, ohne Wachen zu töten oder bewusstlos zu schlagen**. Ablenkung über Geräte ist erlaubt."
+      "objective": "Such dir in **Cyberpunk 2077** mit Cyberdeck einen offenen Diebstahl-Gig mit zugänglichen Kameras. Späh durch die Kameras und **stiehl den gesuchten Gegenstand ungesehen, ohne Wachen zu töten oder bewusstlos zu schlagen**. Du darfst Geräte zur Ablenkung hacken."
     }
   },
   {
@@ -29,7 +29,7 @@ export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
       "relax",
       "explore"
     ],
-    "type": "inspiration",
+    "type": "objective",
     "tags": [
       "free-roam",
       "photography"
@@ -38,11 +38,11 @@ export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
     "minimum": 3,
     "en": {
       "name": "Metro Postcards",
-      "objective": "After getting your NCART pass in **Cyberpunk 2077**, ride the metro through Night City. Get off at a station you rarely use and wander its surrounding streets. Take a photo if a view catches your eye."
+      "objective": "After getting your NCART pass in **Cyberpunk 2077**, ride to a station you rarely use. Explore the streets around it and **save one photo of a view you found there**."
     },
     "de": {
       "name": "Postkarte aus der Metro",
-      "objective": "Fahre in **Cyberpunk 2077** mit deinem NCART-Pass durch Night City. Steige an einer selten genutzten Station aus und erkunde die Straßen darum. Mach ein Foto, wenn dir ein Ausblick gefällt."
+      "objective": "Fahr in **Cyberpunk 2077** mit deinem NCART-Pass zu einer Station, an der du selten aussteigst. Erkunde die Straßen ringsum und **mach ein Foto von einer Aussicht, die du dort entdeckst**."
     }
   },
   {
@@ -64,7 +64,7 @@ export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
     },
     "de": {
       "name": "Outfit fürs Viertel",
-      "objective": "Schau dir in **Cyberpunk 2077** die Kleidung von drei NPCs im Viertel an. Übernimm eine ihrer Farben für ein Outfit aus deinem Kleiderschrank und **speichere es und fotografiere V damit im selben Viertel**."
+      "objective": "Schau dir in **Cyberpunk 2077** die Kleidung von drei NPCs in einem Viertel an. Übernimm eine ihrer Farben für einen Look aus deinem Kleiderschrank. **Speichere den Look und fotografiere V damit im selben Viertel**."
     }
   },
   {
@@ -108,7 +108,7 @@ export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
     },
     "de": {
       "name": "Falsche Richtung",
-      "objective": "Suche in **Cyberpunk 2077** mit Cyberdeck eine Wache an einem Durchgang neben einem hackbaren Gerät. Löse eine Ablenkung aus und **gehe im richtigen Moment ungesehen vorbei**, ohne die Wache zu hacken oder anzugreifen."
+      "objective": "Such in **Cyberpunk 2077** mit Cyberdeck eine Wache neben einem hackbaren Gerät. Lenk sie über das Gerät ab und **schleich vorbei, während sie abgelenkt ist**. Hack die Wache selbst nicht und greif sie nicht an."
     }
   },
   {
@@ -125,12 +125,12 @@ export const cyberpunkQuests = defineGameQuests("cyberpunk-2077", [
     "minutes": 10,
     "minimum": 2,
     "en": {
-      "name": "Above the Traffic",
-      "objective": "With Air Dash unlocked in **Cyberpunk 2077**, choose two nearby rooftop gaps you can cross. **Air-dash over both and return without touching the street**. Give the route three attempts."
+      "name": "One Rooftop Gap",
+      "objective": "With Air Dash unlocked in **Cyberpunk 2077**, choose one rooftop gap whose landing side you can see and reach safely. **Air-dash across it and land on the far roof**. Stop after success or three attempts."
     },
     "de": {
-      "name": "Über dem Verkehr",
-      "objective": "Suche in **Cyberpunk 2077** mit freigeschaltetem Luftsprint zwei überquerbare Dachlücken in der Nähe. **Überquere beide mit Luftsprints und kehre zurück, ohne die Straße zu berühren**. Du hast drei Versuche."
+      "name": "Eine Dachlücke",
+      "objective": "Wähle in **Cyberpunk 2077** mit freigeschaltetem Luftsprint eine Dachlücke, deren sichere Landefläche du sehen und erreichen kannst. **Sprinte darüber und lande auf dem anderen Dach**. Nach Erfolg oder drei Versuchen ist Schluss."
     }
   }
 ]);

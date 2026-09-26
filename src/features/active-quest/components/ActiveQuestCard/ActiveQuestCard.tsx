@@ -1126,7 +1126,6 @@ export function ActiveQuestCard({
                 bestTimeMs={personalBest}
                 className={styles.activeQuestCard}
                 completed={showFinishedFace}
-                genres={quest.genres}
                 type={quest.type}
                 tags={quest.tags}
                 game={quest.game}
