@@ -36,7 +36,7 @@ export function resolveGameVisual(
 ): ResolvedGameVisual {
   if (game.source === "curated") {
     const curatedGame = CURATED_GAMES_BY_ID[game.id];
-    if (curatedGame) {
+    if (curatedGame?.artwork) {
       return {
         kind: "artwork",
         src: `${import.meta.env.BASE_URL}${curatedGame.artwork}`,

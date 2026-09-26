@@ -13,10 +13,12 @@ import {
 } from "../../../../data/moods";
 import { localizeMood } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
-import type { Quest, QuestSession } from "../../../../domain/quest/model";
+import type { GameSelection, Quest, QuestSession } from "../../../../domain/quest/model";
+import type { LibraryGame } from "../../../../domain/library/model";
 import { ActiveQuestCard } from "../../../active-quest/components/ActiveQuestCard/ActiveQuestCard";
 import type { CoinImpact } from "../../../active-quest/components/FlyingCoin/FlyingCoin";
 import { ArcDeck, type ArcDeckItem } from "../ArcDeck/ArcDeck";
+import { SegmentedControl } from "../../../../shared/ui/SegmentedControl/SegmentedControl";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import {
   QuestOfferDeck,
@@ -28,7 +30,7 @@ import { VisuallyHidden } from "../../../../shared/ui/VisuallyHidden/VisuallyHid
 import { PlayLayout } from "../../PlayLayout";
 import styles from "../../QuestFlowLayout.module.css";
 import { NAV_ENTRY_SPRING } from "../../../../shared/motion/transitions";
-import { questOfferId } from "../../../../domain/quest/rules";
+import { questOfferId, questGamesForSelection } from "../../../../domain/quest/rules";
 import type { CardReturnPose } from "../../../../lib/cardMotion";
 import {
   QuestGallery,
@@ -38,6 +40,7 @@ import {
   SelectionLayer,
   SELECTION_LAYER_EXIT_DURATION,
 } from "../SelectionLayer/SelectionLayer";
+import { GameSelectionStep, gamePickerItemId } from "../GameSelectionStep/GameSelectionStep";
 
 const NAV_ITEM_TRANSITION = NAV_ENTRY_SPRING;
 
@@ -59,6 +62,9 @@ type ReturnTransition = {
 type Props = {
   galleryOpen: boolean;
   onGalleryOpenChange: (open: boolean) => void;
+  onOpenLibrary: () => void;
+  libraryGames: readonly LibraryGame[];
+  gameSelection: GameSelection | null;
   currentQuest: Quest | null;
   currentSession: QuestSession | null;
   selectedMood: MoodDefinition | null;
@@ -69,6 +75,8 @@ type Props = {
   animateEntrance: boolean;
   reduceMotion: boolean;
   onSelectMood: (moodId: MoodId) => boolean;
+  onChooseGame: (gameId: string, installmentId?: string) => boolean;
+  onEditGame: () => boolean;
   onEditMood: () => void;
   onRevealQuest: (offerId: string) => boolean;
   onRepeatQuest: (questId: string) => boolean;
@@ -87,6 +95,9 @@ type Props = {
 export function QuestScreenContent({
   galleryOpen,
   onGalleryOpenChange,
+  onOpenLibrary,
+  libraryGames,
+  gameSelection,
   currentQuest,
   currentSession,
   selectedMood,
@@ -97,6 +108,8 @@ export function QuestScreenContent({
   animateEntrance,
   reduceMotion,
   onSelectMood,
+  onChooseGame,
+  onEditGame,
   onEditMood,
   onRevealQuest,
   onRepeatQuest,
@@ -130,6 +143,11 @@ export function QuestScreenContent({
     "selection",
   );
   const isActive = Boolean(currentQuest && currentSession);
+  const gameReady = Boolean(gameSelection);
+  const questReady = Boolean(selectedMood || gameReady);
+  const [pickerMode, setPickerMode] = useState<"mood" | "game">(
+    gameSelection ? "game" : "mood",
+  );
   const [returnTransition, setReturnTransition] =
     useState<ReturnTransition | null>(null);
   const isReturning =
@@ -169,18 +187,22 @@ export function QuestScreenContent({
   if (selectedMood) {
     lastSelectedMoodIdRef.current = selectedMood.id;
   }
+  const lastSelectedGameIdRef = useRef<string | undefined>(undefined);
+  if (gameSelection) {
+    lastSelectedGameIdRef.current = gamePickerItemId(gameSelection.gameId, gameSelection.installmentId);
+  }
   const previousSelectionModeRef = useRef<"moods" | "quests">(
-    selectedMood ? "quests" : "moods",
+    questReady ? "quests" : "moods",
   );
   const questEntryMotion = selectionReturn
     ? "return"
-    : returnedFromActive || previousSelectionModeRef.current === "quests"
+    : returnedFromActive || gameReady || previousSelectionModeRef.current === "quests"
       ? "bottom"
       : "shared";
   const [newCardsSequence, setNewCardsSequence] = useState(0);
   const [newCardsPhase, setNewCardsPhase] = useState<NewCardsPhase>("idle");
   const isDealingNewCards = newCardsPhase !== "idle";
-  const [editingMood, setEditingMood] = useState(false);
+  const [editingSelection, setEditingSelection] = useState(false);
   const [selectionPresenceGeneration, setSelectionPresenceGeneration] =
     useState(0);
   const [questDeckGeneration, setQuestDeckGeneration] = useState(0);
@@ -190,7 +212,7 @@ export function QuestScreenContent({
   const selectionLayoutSessionId = `${layoutSessionIdRef.current}-selection`;
   const questLayoutSessionId = `${layoutSessionIdRef.current}-quests-${questDeckGeneration}`;
   const galleryLayoutSessionId = `${questLayoutSessionId}-gallery`;
-  const editMoodFrameRef = useRef<number | null>(null);
+  const editSelectionFrameRef = useRef<number | null>(null);
   const newCardsSwapTimeoutRef = useRef<number | null>(null);
   const newCardsCompletionTimeoutRef = useRef<number | null>(null);
   const handoffFrameRef = useRef<number | null>(null);
@@ -210,33 +232,32 @@ export function QuestScreenContent({
       }),
     [language],
   );
-
   useEffect(() => {
     wasActiveRef.current = isActive;
   }, [isActive]);
 
   useEffect(() => {
     if (isActive) return;
-    previousSelectionModeRef.current = selectedMood ? "quests" : "moods";
-  }, [isActive, selectedMood]);
+    previousSelectionModeRef.current = questReady ? "quests" : "moods";
+  }, [isActive, questReady]);
 
   useEffect(() => {
-    if (selectedMood) setEditingMood(false);
-  }, [selectedMood]);
+    if (questReady) setEditingSelection(false);
+  }, [questReady]);
 
   useEffect(() => {
-    if (selectedMood || !editingMood) return;
+    if (questReady || !editingSelection) return;
     setQuestDeckGeneration((generation) => generation + 1);
-  }, [editingMood, selectedMood]);
+  }, [editingSelection, questReady]);
 
   useEffect(() => {
-    if (!isActive && selectedMood) setQuestSelectionClosing(false);
-  }, [isActive, selectedMood]);
+    if (!isActive && questReady) setQuestSelectionClosing(false);
+  }, [isActive, questReady]);
 
   useEffect(
     () => () => {
-      if (editMoodFrameRef.current !== null) {
-        window.cancelAnimationFrame(editMoodFrameRef.current);
+      if (editSelectionFrameRef.current !== null) {
+        window.cancelAnimationFrame(editSelectionFrameRef.current);
       }
       if (newCardsSwapTimeoutRef.current !== null) {
         window.clearTimeout(newCardsSwapTimeoutRef.current);
@@ -273,37 +294,49 @@ export function QuestScreenContent({
     }, NEW_CARDS_COMPLETE_DELAY_MS);
   }
 
+  function resetSelectionTransition() {
+    setReturnTransition(null);
+    setNewCardsSequence(0);
+    setNewCardsPhase("idle");
+    setEditingSelection(false);
+    setQuestSelectionClosing(false);
+  }
+
   function selectMood(moodId: MoodId) {
     const selected = onSelectMood(moodId);
-    if (selected) {
-      setReturnTransition(null);
-      setNewCardsSequence(0);
-      setNewCardsPhase("idle");
-      setEditingMood(false);
-      setQuestSelectionClosing(false);
-    }
+    if (selected) resetSelectionTransition();
     return selected;
   }
 
-  function editMood() {
+  function chooseGame(gameId: string, installmentId?: string) {
+    const selected = onChooseGame(gameId, installmentId);
+    if (selected) resetSelectionTransition();
+    return selected;
+  }
+
+  function changePickerMode(mode: "mood" | "game") {
+    if (isDealingNewCards || isReturning || pickerMode === mode) return;
+    setPickerMode(mode);
+  }
+
+  function editSelection() {
     if (
-      editingMood ||
+      editingSelection ||
       isDealingNewCards ||
       isReturning ||
-      editMoodFrameRef.current !== null
-    ) {
-      return;
-    }
-    setEditingMood(true);
+      editSelectionFrameRef.current !== null
+    ) return;
+    const edit = gameReady ? onEditGame : onEditMood;
+    setEditingSelection(true);
     setReturnTransition(null);
     setSelectionPresenceGeneration((generation) => generation + 1);
     if (reduceMotion) {
-      onEditMood();
+      edit();
       return;
     }
-    editMoodFrameRef.current = window.requestAnimationFrame(() => {
-      editMoodFrameRef.current = null;
-      onEditMood();
+    editSelectionFrameRef.current = window.requestAnimationFrame(() => {
+      editSelectionFrameRef.current = null;
+      edit();
     });
   }
 
@@ -311,7 +344,7 @@ export function QuestScreenContent({
     if (isReturning || !currentSession || !currentOfferId) return false;
     if (
       activeSource !== "gallery" &&
-      (!selectedMood ||
+      (!questReady ||
         !offeredQuests.some((item) => item.offerId === currentOfferId))
     ) {
       return action === "back" ? onReturnToSelection() : onDiscard();
@@ -340,9 +373,9 @@ export function QuestScreenContent({
     previewRotation: number,
     source: "selection" | "gallery",
   ) {
-    if (editMoodFrameRef.current !== null) {
-      window.cancelAnimationFrame(editMoodFrameRef.current);
-      editMoodFrameRef.current = null;
+    if (editSelectionFrameRef.current !== null) {
+      window.cancelAnimationFrame(editSelectionFrameRef.current);
+      editSelectionFrameRef.current = null;
     }
     if (newCardsSwapTimeoutRef.current !== null) {
       window.clearTimeout(newCardsSwapTimeoutRef.current);
@@ -359,7 +392,7 @@ export function QuestScreenContent({
     setReturnTransition(null);
     setNewCardsSequence(0);
     setNewCardsPhase("idle");
-    setEditingMood(false);
+    setEditingSelection(false);
     setQuestSelectionClosing(true);
     setActiveHandoffStarted(false);
     setActiveEntryRotation(previewRotation);
@@ -394,7 +427,7 @@ export function QuestScreenContent({
     );
   }
 
-  const selectionControlsExiting = editingMood || questSelectionClosing;
+  const selectionControlsExiting = editingSelection || questSelectionClosing;
 
   return (
     <PlayLayout
@@ -415,7 +448,11 @@ export function QuestScreenContent({
             ? t("ui.task.currentQuest")
             : selectedMood
               ? t("ui.task.chooseMoodQuest", { mood: selectedMood.title })
-              : t("ui.task.selectMood")}
+              : gameReady
+                ? t("ui.task.chooseGameQuest", { game: questGamesForSelection(gameSelection, libraryGames)[0]?.name ?? "" })
+                : pickerMode === "mood"
+                  ? t("ui.task.selectMood")
+                  : t("ui.task.selectGame")}
       </VisuallyHidden>
 
       <LayoutGroup id="quest-flow">
@@ -565,14 +602,14 @@ export function QuestScreenContent({
               <AnimatePresence
                 initial={Boolean(selectionReturn)}
                 key={`selection-presence-${selectionPresenceGeneration}`}
-                mode={editingMood ? "sync" : "popLayout"}
+                mode={editingSelection ? "sync" : "popLayout"}
                 presenceAffectsLayout={false}
               >
-                {selectedMood ? (
+                {questReady ? (
                   <SelectionLayer
                     className={styles.questSelectionScreen}
                     exitDuration={
-                      editingMood
+                      editingSelection
                         ? SELECTION_RESET_FADE_OUT_DURATION
                         : questSelectionClosing
                           ? QUEST_CARD_PRESENCE_DURATION
@@ -586,7 +623,7 @@ export function QuestScreenContent({
                   >
                     <>
                       <div className={styles.questDeckGroup}>
-                        <QuestOfferDeck
+                        {offeredQuests.length ? <QuestOfferDeck
                           items={offeredQuests}
                           entryMotion={questEntryMotion}
                           layoutSessionId={questLayoutSessionId}
@@ -599,7 +636,7 @@ export function QuestScreenContent({
                           }
                           returnPose={selectionReturn?.pose}
                           returning={isReturning}
-                          returningToMoods={editingMood}
+                          returningToMoods={editingSelection}
                           newCardsSequence={newCardsSequence}
                           newCardsPhase={newCardsPhase}
                           onSelectionStart={(rotation) =>
@@ -608,9 +645,13 @@ export function QuestScreenContent({
                           onSelect={(questId) =>
                             revealSelection(questId, "selection")
                           }
-                        />
+                        /> : (
+                          <div className={styles.emptyQuestDeck}>
+                            <p>{t("ui.task.noMatchingQuestsBody")}</p>
+                          </div>
+                        )}
 
-                        <motion.div
+                        {offeredQuests.length > 0 && <motion.div
                           className={styles.newCardsControl}
                           initial={reduceMotion ? false : { opacity: 0, y: 8 }}
                           animate={{
@@ -632,7 +673,7 @@ export function QuestScreenContent({
                           >
                             {t("ui.task.newCards")}
                           </SolidButton>
-                        </motion.div>
+                        </motion.div>}
 
                         <span className={styles.moodEditControl}>
                           <SolidButton
@@ -640,20 +681,19 @@ export function QuestScreenContent({
                             size="medium"
                             type="button"
                             variant="soft"
-                            aria-describedby="change-mood-tooltip"
-                            onClick={editMood}
+                            onClick={editSelection}
                           >
-                            {t("ui.task.changeMood")}
+                            {t(gameReady ? "ui.task.changeGame" : "ui.task.changeMood")}
                           </SolidButton>
                         </span>
                       </div>
                     </>
                   </SelectionLayer>
-                ) : (
+                ) : pickerMode === "mood" ? (
                   <SelectionLayer
                     className={styles.selectionScreen}
                     enterDuration={SELECTION_RESET_FADE_IN_DURATION}
-                    enterFromOpacity={editingMood ? 0 : undefined}
+                    enterFromOpacity={0}
                     exitDuration={MOOD_QUEST_HANDOFF_DURATION}
                     key="moods"
                     reduceMotion={reduceMotion}
@@ -667,7 +707,7 @@ export function QuestScreenContent({
                           animate={{ opacity: present ? 1 : 0 }}
                           transition={{ duration: reduceMotion ? 0 : 0.2 }}
                         >
-                          <p>{t("ui.task.selectMood")}</p>
+                          <p>{t("ui.task.pickerIntro")}</p>
                         </motion.header>
 
                         <ArcDeck
@@ -677,14 +717,53 @@ export function QuestScreenContent({
                           layerPresent={present}
                           layoutSessionId={selectionLayoutSessionId}
                           reduceMotion={reduceMotion}
-                          returningFromQuests={editingMood}
+                          returningFromQuests={editingSelection}
                           onSelect={selectMood}
                         />
                       </>
                     )}
                   </SelectionLayer>
+                ) : (
+                  <SelectionLayer
+                    className={styles.selectionScreen}
+                    key="games"
+                    enterFromOpacity={0}
+                    enterDuration={SELECTION_RESET_FADE_IN_DURATION}
+                    exitDuration={MOOD_QUEST_HANDOFF_DURATION}
+                    reduceMotion={reduceMotion}
+                    zIndex={2}
+                  >
+                    {(present) => (
+                      <>
+                        <motion.header className={styles.selectionHeader}
+                          initial={reduceMotion ? false : { opacity: 0 }}
+                          animate={{ opacity: present ? 1 : 0 }}
+                          transition={{ duration: reduceMotion ? 0 : 0.2 }}>
+                          <p>{t("ui.task.pickerIntro")}</p>
+                        </motion.header>
+                        <GameSelectionStep games={libraryGames} onSelect={chooseGame}
+                          onOpenLibrary={onOpenLibrary} layerPresent={present}
+                          layoutSessionId={selectionLayoutSessionId} reduceMotion={reduceMotion}
+                          returningFromQuests={editingSelection}
+                          initialItemId={lastSelectedGameIdRef.current} />
+                      </>
+                    )}
+                  </SelectionLayer>
                 )}
               </AnimatePresence>
+              {!questReady && (
+                <div className={styles.pickerToggle}>
+                  <SegmentedControl
+                    label={t("ui.task.pickerMode")}
+                    value={pickerMode}
+                    options={[
+                      { value: "mood", label: t("ui.task.mood") },
+                      { value: "game", label: t("ui.task.game") },
+                    ]}
+                    onChange={changePickerMode}
+                  />
+                </div>
+              )}
             </motion.div>
           ) : null}
         </AnimatePresence>

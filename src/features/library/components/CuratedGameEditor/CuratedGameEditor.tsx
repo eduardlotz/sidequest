@@ -10,6 +10,8 @@ import {
   useReducedMotion,
 } from "motion/react";
 import { CURATED_GAMES } from "../../../../data/games";
+import { sortGamesByName } from "../../../../data/games/sort";
+import { normalizeLanguage } from "../../../../localization/i18n";
 import { DEFAULT_CURATED_PREFERENCES } from "../../../../domain/library/model";
 import {
   createLibraryStore,
@@ -33,7 +35,13 @@ export function CuratedGameEditor({
   onClose: () => void;
   presentation?: "page" | "drawer";
 }) {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
+  const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
+  const sortedCuratedGames = sortGamesByName(
+    CURATED_GAMES,
+    language,
+    (game) => game.name,
+  );
   const reduced = useReducedMotion();
   const collectionStore = useContext(LibraryStoreContext);
   // Keep this step's changes separate from the surrounding library draft.
@@ -116,13 +124,13 @@ export function CuratedGameEditor({
           </div>
           <LayoutGroup id="curated-library-games">
             <div className={styles.curatedList}>
-              {CURATED_GAMES.map((game, index) => {
+              {sortedCuratedGames.map((game, index) => {
                 const selected = selectedCuratedGameIds.includes(game.id);
                 const previousSelected = selectedCuratedGameIds.includes(
-                  CURATED_GAMES[index - 1]?.id ?? "",
+                  sortedCuratedGames[index - 1]?.id ?? "",
                 );
                 const nextSelected = selectedCuratedGameIds.includes(
-                  CURATED_GAMES[index + 1]?.id ?? "",
+                  sortedCuratedGames[index + 1]?.id ?? "",
                 );
                 const preferences =
                   curatedGamePreferences[game.id] ??
@@ -203,7 +211,11 @@ export function CuratedGameEditor({
                           <div className={styles.curatedOptions}>
                             <span>{t("ui.library.installments")}</span>
                             <div className={styles.installmentChips}>
-                              {game.installments.map((entry) => {
+                              {sortGamesByName(
+                                game.installments,
+                                language,
+                                (entry) => entry.name,
+                              ).map((entry) => {
                                 const installmentSelected =
                                   preferences.installmentIds.includes(entry.id);
                                 return (

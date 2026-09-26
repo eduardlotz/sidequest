@@ -6,7 +6,7 @@ import type { QuestTypeId } from "../../data/questTraits";
 import type { QuestConnectionModeId, QuestPlayStyleId } from "../../data/questPoolTraits";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 20;
+export const STORE_VERSION = 23;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const QUEST_OFFER_COUNT = 3;
 export const STORED_COMPLETION_LIMIT = 500;
@@ -87,6 +87,11 @@ export type QuestOffer = {
   game: GameReference | null;
 };
 
+export type GameSelection = {
+  gameId: string;
+  installmentId: string | null;
+};
+
 export type QuestStats = {
   completedQuestCount: number;
   uniqueCompletedQuestCount: number;
@@ -101,6 +106,7 @@ export type QuestStats = {
 };
 
 export type QuestState = {
+  gameSelection: GameSelection | null;
   poolPreferences: QuestPoolPreferences;
   profile: UserProfile;
   selectedMoodId: MoodId | null;
@@ -122,6 +128,8 @@ export type QuestPoolPreferences = {
 };
 
 export type QuestActions = {
+  chooseGame: (gameId: string, installmentId?: string) => boolean;
+  editGame: () => boolean;
   markQuestsSeen: (questIds: readonly string[]) => void;
   toggleQuestFavorite: (questId: string) => void;
   repeatQuest: (questId: string) => boolean;
@@ -147,6 +155,7 @@ export type QuestStore = QuestState & QuestActions;
 
 export type PersistedQuestState = Pick<
   QuestState,
+  | "gameSelection"
   | "profile"
   | "selectedMoodId"
   | "moodSelectedAt"

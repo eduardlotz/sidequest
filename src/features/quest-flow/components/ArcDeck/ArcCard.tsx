@@ -1,23 +1,33 @@
 import { motion, useTransform, type MotionValue } from "motion/react";
-import { useEffect, useId } from "react";
+import { useEffect, type CSSProperties, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import type { MoodId } from "../../../../data/moods";
-import { getMoodArtStyle } from "../../../../data/questColors";
 import { useTiltEffect } from "../../../../hooks/useTiltEffect";
-import { moodCardLayoutId } from "../../../../lib/cardMotion";
 import { SELECTION_HANDOFF_EASE } from "../../../../shared/motion/transitions";
 import { usePlayLayout } from "../../usePlayLayout";
 import styles from "./ArcDeck.module.css";
-import { MoodIllustration } from "../MoodIllustration/MoodIllustration";
-import { SelectionCardBody } from "../SelectionCard/SelectionCard";
-import type { ArcDeckItem } from "./ArcDeck";
+import type { ArcCarouselItem } from "./ArcCarousel";
 import { loopDistance, modulo } from "./arcDeckMath";
-import { MoodCardFilters } from "./MoodCardFilters";
+import { ARC_GEOMETRY, type ArcCardShape } from "./arcDeckGeometry";
 
-type Props = {
+export type ArcCardBodyProps<Item extends ArcCarouselItem> = {
+  item: Item;
+  layoutSessionId: number | string;
+  reduceMotion: boolean;
+  shaded: boolean;
+  centeredTiltEffects: boolean;
+  contentVisible: boolean;
+  contentOpacity: MotionValue<number>;
+  illustrationX: MotionValue<number>;
+  illustrationY: MotionValue<number>;
+};
+
+type Props<Item extends ArcCarouselItem> = {
+  cardShape: ArcCardShape;
+  cardStyle?: CSSProperties;
+  renderBody: (props: ArcCardBodyProps<Item>) => ReactNode;
   activeIndex: number;
   index: number;
-  item: ArcDeckItem;
+  item: Item;
   itemCount: number;
   layerPresent: boolean;
   layoutSessionId: number | string;
@@ -27,25 +37,12 @@ type Props = {
   tiltEffects: boolean;
   revealCards: boolean;
   returningFromQuests: boolean;
-  selectedId: MoodId | null;
+  selectedId: Item["id"] | null;
   onCenter: (index: number, focus?: boolean) => void;
-  onSelect: (id: MoodId, focusNext?: boolean) => void;
+  onSelect: (id: Item["id"], focusNext?: boolean) => void;
 };
 
 const CARD_CENTER_STAGGER_SECONDS = 0.025;
-
-const ARC = {
-  compact: {
-    radiusX: 650,
-    radiusY: 1000,
-    angle: 26,
-  },
-  desktop: {
-    radiusX: 1050,
-    radiusY: 1000,
-    angle: 28,
-  },
-};
 
 const MOOD_QUEST_EASE = [0.16, 1, 0.3, 1] as const;
 const MOOD_QUEST_DURATION = 0.56;
@@ -101,7 +98,10 @@ function getOutsidePose(distance: number, radiusX: number) {
   };
 }
 
-export function ArcCard({
+export function ArcCard<Item extends ArcCarouselItem>({
+  cardShape,
+  cardStyle,
+  renderBody,
   activeIndex,
   index,
   item,
@@ -117,12 +117,10 @@ export function ArcCard({
   selectedId,
   onCenter,
   onSelect,
-}: Props) {
+}: Props<Item>) {
   const { t } = useTranslation();
-  const { isCompact } = usePlayLayout();
+  const { mode } = usePlayLayout();
 
-  const shadingId = useId().replace(/:/g, "");
-  const textFilterId = `${shadingId}-mood-text`;
 
   /*
    * Continuous arc position.
@@ -134,7 +132,7 @@ export function ArcCard({
     loopDistance(index - latest, itemCount),
   );
 
-  const arc = isCompact ? ARC.compact : ARC.desktop;
+  const arc = ARC_GEOMETRY[cardShape][mode];
 
   const angle = useTransform(distance, (value) => value * arc.angle);
 
@@ -336,7 +334,7 @@ export function ArcCard({
             subtitle: item.subtitle,
           })}
           animate="rest"
-          style={getMoodArtStyle(item.id)}
+          style={cardStyle}
           whileHover={canTilt ? "hover" : undefined}
           whileFocus={canTilt ? "focus" : undefined}
           whileTap={reduceMotion || !center ? undefined : "pressed"}
@@ -369,8 +367,6 @@ export function ArcCard({
           onPointerMove={canTilt ? handlePointerMove : undefined}
           onPointerLeave={canTilt ? handlePointerLeave : undefined}
         >
-          {shaded && <MoodCardFilters textFilterId={textFilterId} />}
-
           <motion.span
             className={styles.moodCardTiltSurface}
             style={
@@ -385,66 +381,11 @@ export function ArcCard({
             variants={TILT_VARIANTS}
             transition={TILT_TRANSITION}
           >
-            <SelectionCardBody
-              className={styles.moodSelectionCardBody}
-              contentKey={`mood-${item.id}`}
-              contentClassName={styles.moodSelectionCardContent}
-              contentVisible={!foregroundExiting || primaryExit}
-              layoutId={moodCardLayoutId(layoutSessionId, item.id)}
-              reduceMotion={reduceMotion}
-            >
-              <motion.span
-                className={styles.moodCardVisual}
-                style={{
-                  opacity: contentOpacity,
-                }}
-              >
-                <span className={styles.arcCardContent}>
-                  <strong
-                    className={styles.arcCardTitle}
-                    style={
-                      shaded
-                        ? {
-                            filter: `url("#${textFilterId}")`,
-                          }
-                        : undefined
-                    }
-                  >
-                    {item.title}
-                  </strong>
-
-                  <span
-                    className={styles.arcCardDescription}
-                    style={
-                      shaded
-                        ? {
-                            filter: `url("#${textFilterId}")`,
-                          }
-                        : undefined
-                    }
-                  >
-                    {item.subtitle}
-                  </span>
-                </span>
-
-                <motion.span
-                  className={styles.moodIllustrationLayer}
-                  style={
-                    centeredTiltEffects
-                      ? {
-                          x: illustrationX,
-                          y: illustrationY,
-                        }
-                      : undefined
-                  }
-                >
-                  <MoodIllustration
-                    className={styles.moodIllustration}
-                    moodId={item.id}
-                  />
-                </motion.span>
-              </motion.span>
-            </SelectionCardBody>
+            {renderBody({
+              item, layoutSessionId, reduceMotion, shaded, centeredTiltEffects,
+              contentVisible: !foregroundExiting || primaryExit,
+              contentOpacity, illustrationX, illustrationY,
+            })}
           </motion.span>
         </motion.button>
       </motion.div>

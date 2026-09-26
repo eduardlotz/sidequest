@@ -17,6 +17,11 @@ import { theSimsQuests } from "./games/the-sims";
 import { animalCrossingQuests } from "./games/animal-crossing";
 import { baldursGate3Quests } from "./games/baldurs-gate-3";
 import { zeldaQuests } from "./games/zelda";
+import { crimsonDesertQuests } from "./games/crimson-desert";
+import { eaSportsFcQuests } from "./games/ea-sports-fc";
+import { hotlineMiamiQuests } from "./games/hotline-miami";
+import { falloutQuests } from "./games/fallout";
+import { arcRaidersQuests } from "./games/arc-raiders";
 
 export const exclusiveQuestsByGame = {
   "no-mans-sky": noMansSkyQuests,
@@ -38,6 +43,11 @@ export const exclusiveQuestsByGame = {
   "animal-crossing": animalCrossingQuests,
   "baldurs-gate-3": baldursGate3Quests,
   zelda: zeldaQuests,
+  "crimson-desert": crimsonDesertQuests,
+  "ea-sports-fc": eaSportsFcQuests,
+  "hotline-miami": hotlineMiamiQuests,
+  fallout: falloutQuests,
+  "arc-raiders": arcRaidersQuests,
 };
 
 export const exclusiveQuests = Object.values(exclusiveQuestsByGame).flat();

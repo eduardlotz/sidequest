@@ -10,93 +10,38 @@ import { isGameGenreId } from "../../data/gameGenres";
 import { GAME_COLOR_IDS } from "../../data/gameVisuals";
 import { QUEST_CORES_BY_ID } from "../../data/quests";
 import {
-  DEFAULT_LIBRARY_STATE,
-  LIBRARY_STORE_VERSION,
-  type CustomGame,
   type CustomGameInput,
-  type LibraryState,
   type PersistedLibraryState,
-  type CuratedGamePreferences,
 } from "./model";
 
-export function migratePersistedLibraryState(
-  persistedState: unknown,
-  version: number,
-): PersistedLibraryState {
-  if (version !== 1 && version !== 2 && version !== LIBRARY_STORE_VERSION) {
-    return { ...DEFAULT_LIBRARY_STATE };
-  }
-  const state = sanitizePersistedLibraryState(persistedState);
-  if (version === 1) {
-    // Old per-quest approvals do not guarantee the rewritten objective fits.
-    // Preserve the library and still-valid activities, then recalculate matches.
-    return {
-      ...state,
-      customGames: state.customGames.map((game) => ({ ...game, questOverrides: {} })),
-      revision: state.revision + 1,
-    };
-  }
-  if (version === 2) {
-    // Refresh offers after the standalone Tears of the Kingdom entry becomes
-    // the selected installment of the Zelda series.
-    return { ...state, revision: state.revision + 1 };
-  }
-  return state;
-}
-
-export function sanitizePersistedLibraryState(
-  value: unknown,
-): PersistedLibraryState {
-  if (!isRecord(value)) return { ...DEFAULT_LIBRARY_STATE };
-  const storedGameIds = uniqueStrings(value.selectedCuratedGameIds);
-  const hadStandaloneTears = storedGameIds.includes("zelda-tears-of-the-kingdom");
-  const selectedCuratedGameIds = Array.from(new Set(
-    storedGameIds.map((id) => id === "zelda-tears-of-the-kingdom" ? "zelda" : id),
-  )).filter((id) => Object.hasOwn(CURATED_GAMES_BY_ID, id));
-  const customGames = Array.isArray(value.customGames)
-    ? value.customGames.flatMap((entry) => {
-        const game = customGameFromUnknown(entry);
-        return game ? [game] : [];
-      })
-    : [];
-
-  const curatedGamePreferences: Record<string, CuratedGamePreferences> = {};
-  if (isRecord(value.curatedGamePreferences)) {
-    for (const [gameId, stored] of Object.entries(
-      value.curatedGamePreferences,
-    )) {
-      if (!Object.hasOwn(CURATED_GAMES_BY_ID, gameId)) continue;
-      const game = CURATED_GAMES_BY_ID[gameId];
-      if (!game || !isRecord(stored)) continue;
-      curatedGamePreferences[gameId] = {
-        questMode: "curated-and-flexible",
-        installmentIds: uniqueStrings(stored.installmentIds).filter((id) =>
-          game.installments.some((entry) => entry.id === id),
-        ),
-      };
-    }
-  }
-  if (hadStandaloneTears && !curatedGamePreferences.zelda) {
-    curatedGamePreferences.zelda = {
-      questMode: "curated-and-flexible",
-      installmentIds: ["totk"],
-    };
-  }
-
-  return {
-    setupCompleted: value.setupCompleted === true,
-    selectedCuratedGameIds,
-    curatedGamePreferences,
-    customGames: uniqueCustomGames(customGames),
-    revision: safeNonNegativeInteger(value.revision),
-  };
-}
-
-function customGameFromUnknown(value: unknown): CustomGame | null {
-  if (!isRecord(value) || typeof value.id !== "string" || !value.id)
-    return null;
-  const input = sanitizeCustomGameInput(value);
-  return input ? { id: value.id, ...input } : null;
+export function isPersistedLibraryState(value: unknown): value is PersistedLibraryState {
+  if (!isRecord(value) || typeof value.setupCompleted !== "boolean"
+      || !Number.isSafeInteger(value.revision) || (value.revision as number) < 0
+      || !Array.isArray(value.selectedCuratedGameIds)
+      || value.selectedCuratedGameIds.some((id) => typeof id !== "string" || !CURATED_GAMES_BY_ID[id])
+      || new Set(value.selectedCuratedGameIds).size !== value.selectedCuratedGameIds.length
+      || !isRecord(value.curatedGamePreferences) || !Array.isArray(value.customGames)) return false;
+  if (!Object.entries(value.curatedGamePreferences).every(([gameId, entry]) => {
+    const game = CURATED_GAMES_BY_ID[gameId];
+    return game && isRecord(entry) && entry.questMode === "curated-and-flexible"
+      && Array.isArray(entry.installmentIds)
+      && entry.installmentIds.every((id) => typeof id === "string"
+        && game.installments.some((installment) => installment.id === id))
+      && new Set(entry.installmentIds).size === entry.installmentIds.length;
+  })) return false;
+  if (new Set(value.customGames.map((game) => isRecord(game) ? game.id : null)).size !== value.customGames.length) return false;
+  return value.customGames.every((game) => {
+    if (!isRecord(game) || typeof game.id !== "string" || !game.id
+        || typeof game.name !== "string" || !game.name.trim() || game.name !== game.name.trim()
+        || game.name.length > 80 || !isGameIconId(game.iconId) || !isGameColorId(game.colorId)
+        || !Array.isArray(game.capabilityIds) || !game.capabilityIds.length
+        || !game.capabilityIds.every((id) => typeof id === "string" && isGameCapabilityId(id))
+        || !Array.isArray(game.genreIds)
+        || !game.genreIds.every((id) => typeof id === "string" && isGameGenreId(id))
+        || !isRecord(game.questOverrides)) return false;
+    return Object.entries(game.questOverrides).every(([id, enabled]) =>
+      typeof enabled === "boolean" && Boolean(QUEST_CORES_BY_ID[id]?.customGameCompatibility));
+  });
 }
 
 export function sanitizeCustomGameInput(
@@ -134,15 +79,6 @@ export function sanitizedGameName(value: unknown) {
   return typeof value === "string" ? value.trim().slice(0, 80) : "";
 }
 
-function uniqueCustomGames(games: CustomGame[]) {
-  const ids = new Set<string>();
-  return games.filter((game) => {
-    if (ids.has(game.id)) return false;
-    ids.add(game.id);
-    return true;
-  });
-}
-
 function uniqueStrings(value: unknown): string[] {
   return Array.from(
     new Set(
@@ -169,12 +105,6 @@ function isGameColorId(value: unknown): value is GameColorId {
     typeof value === "string" &&
     (GAME_COLOR_IDS as readonly string[]).includes(value)
   );
-}
-
-function safeNonNegativeInteger(value: unknown) {
-  return typeof value === "number" && Number.isFinite(value)
-    ? Math.max(0, Math.floor(value))
-    : 0;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

@@ -7,7 +7,7 @@ import type {
 import type { GameGenreId } from "../../data/gameGenres";
 
 export const LIBRARY_STORE_KEY = "sidequest.library";
-export const LIBRARY_STORE_VERSION = 3;
+export const LIBRARY_STORE_VERSION = 4;
 
 export type QuestOverrides = Record<string, boolean>;
 

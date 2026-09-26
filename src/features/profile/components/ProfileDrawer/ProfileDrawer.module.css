@@ -181,35 +181,6 @@
   position: relative;
 }
 
-.settingSegmentedControl {
-  display: flex;
-  padding: 3px;
-  align-items: center;
-  border-radius: 999px;
-  background: var(--color-surface-soft);
-}
-
-.settingSegmentedControl button {
-  display: inline-flex;
-  min-width: 52px;
-  min-height: 27px;
-  align-items: center;
-  justify-content: center;
-  padding: 0 10px;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--color-muted);
-  font-size: 0.72rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.settingSegmentedControl button[aria-pressed="true"] {
-  background: var(--color-surface);
-  box-shadow: 0 1px 4px rgb(var(--color-shadow-rgb) / 0.2);
-  color: var(--color-text);
-}
-
 .settingToggle {
   position: relative;
   width: 52px;
@@ -340,11 +311,6 @@
     overflow: auto;
   }
 
-  .settingSegmentedControl button {
-    min-width: 48px;
-    padding: 0 8px;
-  }
-
   :global([data-mobile-snap="default"]) .profileDrawerBody {
     overflow: hidden;
   }
@@ -401,15 +367,6 @@
   min-height: 42px;
   font-size: 14px;
 }
-.profileOverview .settingSegmentedControl {
-  background: var(--profile-muted-surface);
-}
-.profileOverview .settingSegmentedControl button {
-  min-width: 48px;
-  padding-inline: 8px;
-  font-size: 13px;
-}
-
 .profileOverview .profileMetrics > div {
   min-height: 32px;
   padding-block: 5px;

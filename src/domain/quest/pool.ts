@@ -61,28 +61,3 @@ export function sanitizePoolPreferences(value: unknown): QuestPoolPreferences {
     styleIds: selection(data.styleIds, defaults.styleIds),
   };
 }
-
-// TODO: remove everything migration related and start fresh
-// Versions before 20 stored connection modes and play styles in one selection.
-export function migrateLegacyPoolPreferences(
-  value: unknown,
-): QuestPoolPreferences {
-  if (!value || typeof value !== "object") return defaultPoolPreferences();
-  const data = value as Record<string, unknown>;
-  const legacyStyleIds = data.styleIds;
-  if (Array.isArray(data.connectionModeIds) || !Array.isArray(legacyStyleIds)) {
-    return sanitizePoolPreferences(data);
-  }
-
-  function group<T extends string>(allowed: readonly T[]): T[] {
-    if (legacyStyleIds.length === 0) return [];
-    const selected = allowed.filter((id) => legacyStyleIds.includes(id));
-    return selected.length ? selected : [...allowed];
-  }
-
-  return sanitizePoolPreferences({
-    ...data,
-    connectionModeIds: group(QUEST_CONNECTION_MODE_IDS),
-    styleIds: group(QUEST_PLAY_STYLE_IDS),
-  });
-}

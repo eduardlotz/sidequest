@@ -30,6 +30,7 @@ import type { GameGenreId } from "../../data/gameGenres";
 import type { QuestTagId, QuestTypeId } from "../../data/questTraits";
 import type { QuestConnectionModeId, QuestPlayStyleId } from "../../data/questPoolTraits";
 import { CURATED_GAMES_BY_ID } from "../../data/games";
+import { sortGamesByName } from "../../data/games/sort";
 import { getMoodAccentStyle } from "../../data/questColors";
 import { hydrateQuest } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
@@ -294,9 +295,7 @@ export function QuestGallery({
         if (game) games.set(game.id, { id: game.id, name: game.name });
       }
     }
-    return [...games.values()].sort((a, b) =>
-      a.name.localeCompare(b.name, language),
-    );
+    return sortGamesByName([...games.values()], language, (game) => game.name);
   }, [catalog, language]);
 
   const cardWidth = Math.min(desktop ? 300 : width * 0.76, 300);
