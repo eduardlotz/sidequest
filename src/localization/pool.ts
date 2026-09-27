@@ -1,6 +1,10 @@
 export const englishPool = {
   title: "Quest pool",
   description: "Choose which quests can appear. Pick at least one choice in each group.",
+  questSource: "Quest source",
+  all: "All",
+  curated: "Curated only",
+  flexible: "Flexible only",
   genres: "Genre",
   connectionModes: "Connection",
   styles: "Play style",
@@ -18,6 +22,10 @@ export const englishPool = {
 export const germanPool: Record<keyof typeof englishPool, string> = {
   title: "Quest-Pool",
   description: "Wähle, welche Quests erscheinen dürfen. Wähle in jeder Gruppe mindestens eine Option.",
+  questSource: "Quest-Herkunft",
+  all: "Alle",
+  curated: "Nur kuratierte",
+  flexible: "Nur flexible",
   genres: "Genre",
   connectionModes: "Verbindung",
   styles: "Spielweise",

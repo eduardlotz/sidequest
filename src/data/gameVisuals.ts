@@ -33,9 +33,16 @@ export type ResolvedGameVisual =
 
 export function resolveGameVisual(
   game: Pick<GameReference, "id" | "source" | "iconId" | "colorId">,
+  installmentId?: string,
 ): ResolvedGameVisual {
   if (game.source === "curated") {
     const curatedGame = CURATED_GAMES_BY_ID[game.id];
+    if (installmentId && curatedGame?.installments.some((entry) => entry.id === installmentId)) {
+      return {
+        kind: "artwork",
+        src: `${import.meta.env.BASE_URL}games/${installmentId}.jpg`,
+      };
+    }
     if (curatedGame?.artwork) {
       return {
         kind: "artwork",

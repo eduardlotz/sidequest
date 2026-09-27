@@ -6,7 +6,7 @@ import type { QuestTypeId } from "../../data/questTraits";
 import type { QuestConnectionModeId, QuestPlayStyleId } from "../../data/questPoolTraits";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 23;
+export const STORE_VERSION = 25;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const QUEST_OFFER_COUNT = 3;
 export const STORED_COMPLETION_LIMIT = 500;
@@ -121,6 +121,7 @@ export type QuestState = {
 };
 
 export type QuestPoolPreferences = {
+  questSource: "all" | "curated" | "flexible";
   genreIds: GameGenreId[];
   typeIds: QuestTypeId[];
   connectionModeIds: QuestConnectionModeId[];

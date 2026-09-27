@@ -675,7 +675,16 @@ export function QuestScreenContent({
                           </SolidButton>
                         </motion.div>}
 
-                        <span className={styles.moodEditControl}>
+                        <motion.span
+                          className={styles.moodEditControl}
+                          initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                          animate={{
+                            opacity: selectionControlsExiting ? 0 : 1,
+                            y: selectionControlsExiting ? 8 : 0,
+                          }}
+                          exit={{ opacity: 0, y: 8 }}
+                          transition={{ duration: reduceMotion ? 0 : 0.18 }}
+                        >
                           <SolidButton
                             className={styles.moodEditButton}
                             size="medium"
@@ -685,7 +694,7 @@ export function QuestScreenContent({
                           >
                             {t(gameReady ? "ui.task.changeGame" : "ui.task.changeMood")}
                           </SolidButton>
-                        </span>
+                        </motion.span>
                       </div>
                     </>
                   </SelectionLayer>
@@ -751,19 +760,28 @@ export function QuestScreenContent({
                   </SelectionLayer>
                 )}
               </AnimatePresence>
-              {!questReady && (
-                <div className={styles.pickerToggle}>
-                  <SegmentedControl
-                    label={t("ui.task.pickerMode")}
-                    value={pickerMode}
-                    options={[
-                      { value: "mood", label: t("ui.task.mood") },
-                      { value: "game", label: t("ui.task.game") },
-                    ]}
-                    onChange={changePickerMode}
-                  />
-                </div>
-              )}
+              <AnimatePresence initial={false}>
+                {!questReady && (
+                  <motion.div
+                    className={styles.pickerToggle}
+                    key="picker-toggle"
+                    initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 8 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.18 }}
+                  >
+                    <SegmentedControl
+                      label={t("ui.task.pickerMode")}
+                      value={pickerMode}
+                      options={[
+                        { value: "mood", label: t("ui.task.mood") },
+                        { value: "game", label: t("ui.task.game") },
+                      ]}
+                      onChange={changePickerMode}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           ) : null}
         </AnimatePresence>

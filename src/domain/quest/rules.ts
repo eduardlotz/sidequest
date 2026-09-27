@@ -224,11 +224,18 @@ function questOfferPools(moodId: MoodId | null, libraryGames: readonly LibraryGa
   };
 }
 
-export function countGameQuests(
+export function countGameQuestsBySource(
   game: LibraryGame,
   preferences: QuestPoolPreferences = defaultPoolPreferences(),
-): number {
-  return new Set(questOfferPools(null, [game], preferences).bound.map((offer) => offer.questId)).size;
+) {
+  const bound = new Set(questOfferPools(null, [game], preferences).bound.map((offer) => offer.questId));
+  let curated = 0;
+  let flexible = 0;
+  for (const questId of bound) {
+    if (QUEST_CORES_BY_ID[questId].curated) curated += 1;
+    else flexible += 1;
+  }
+  return { curated, flexible };
 }
 
 export function isQuestOfferSetValid(

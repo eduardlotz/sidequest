@@ -1,102 +1,201 @@
-import { MOODS_BY_ID } from "../../data/moods";
-import { QUEST_CORES_BY_ID } from "../../data/quests";
-import { GAME_GENRE_IDS } from "../../data/gameGenres";
-import { QUEST_TYPES } from "../../data/questTraits";
-import { QUEST_CONNECTION_MODE_IDS, QUEST_PLAY_STYLE_IDS } from "../../data/questPoolTraits";
-import { AVATAR_THEMES, QUEST_OFFER_COUNT, type PersistedQuestState } from "./model";
+import { MOODS_BY_ID, type MoodId } from "../../data/moods";
+import { CURATED_GAMES_BY_ID } from "../../data/games";
 import { GAME_ICON_IDS } from "../../data/gameTypes";
+import type { GameReference } from "../../data/gameTypes";
 import { GAME_COLOR_IDS } from "../../data/gameVisuals";
+import { QUEST_CORES_BY_ID } from "../../data/quests";
+import { sanitizePoolPreferences } from "./pool";
+import { createDefaultQuestState } from "./rules";
+import {
+  AVATAR_THEMES,
+  QUEST_OFFER_COUNT,
+  STORED_COMPLETION_LIMIT,
+  type CompletedSession,
+  type PersistedQuestState,
+  type QuestOffer,
+  type QuestProgress,
+  type QuestSession,
+} from "./model";
 
 const record = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
-const integer = (value: unknown): value is number =>
-  typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
-const nullableInteger = (value: unknown) => value === null || integer(value);
-const mood = (value: unknown): value is keyof typeof MOODS_BY_ID =>
+const count = (value: unknown, fallback = 0) =>
+  typeof value === "number" && Number.isSafeInteger(value) && value >= 0
+    ? value : fallback;
+const nullableCount = (value: unknown) => count(value, -1) >= 0 ? value as number : null;
+const mood = (value: unknown): value is MoodId =>
   typeof value === "string" && Object.hasOwn(MOODS_BY_ID, value);
-const quest = (value: unknown) =>
+const quest = (value: unknown): value is string =>
   typeof value === "string" && Object.hasOwn(QUEST_CORES_BY_ID, value);
-const uniqueStrings = (value: unknown, allowed: readonly string[]) =>
-  Array.isArray(value) && value.every((id) => typeof id === "string" && allowed.includes(id))
-  && new Set(value).size === value.length;
-const countRecord = (value: unknown, keys: (id: string) => boolean) =>
-  record(value) && Object.entries(value).every(([id, count]) => keys(id) && integer(count));
 
 function gameReference(value: unknown) {
-  return value === null || (record(value) && typeof value.id === "string" && !!value.id
+  if (value === null) return true;
+  return record(value) && typeof value.id === "string" && !!value.id
     && typeof value.name === "string" && !!value.name
     && (value.source === "curated" || value.source === "custom")
     && (value.iconId === undefined || GAME_ICON_IDS.includes(value.iconId as typeof GAME_ICON_IDS[number]))
-    && (value.colorId === undefined || GAME_COLOR_IDS.includes(value.colorId as typeof GAME_COLOR_IDS[number])));
+    && (value.colorId === undefined || GAME_COLOR_IDS.includes(value.colorId as typeof GAME_COLOR_IDS[number]));
 }
 
-function offer(value: unknown) {
+function liveGameReference(value: unknown) {
+  return gameReference(value) && (value === null || !record(value)
+    || value.source !== "curated" || Object.hasOwn(CURATED_GAMES_BY_ID, value.id as string));
+}
+
+function offer(value: unknown): value is QuestOffer {
   if (!record(value) || !mood(value.moodId) || !quest(value.questId)
-      || !gameReference(value.game) || typeof value.id !== "string" || !value.id) return false;
-  const definition = QUEST_CORES_BY_ID[value.questId as string];
+      || !liveGameReference(value.game) || typeof value.id !== "string" || !value.id
+      || (value.role !== "library" && value.role !== "inspiration" && value.role !== "directed")) return false;
+  const definition = QUEST_CORES_BY_ID[value.questId];
   return definition.moodIds.includes(value.moodId)
-    && (value.game === null ? definition.universal : definition.gameBindable)
-    && (value.role === "library" || value.role === "inspiration" || value.role === "directed");
+    && (value.game === null ? definition.universal : definition.gameBindable);
 }
 
-function session(value: unknown) {
+function session(value: unknown): value is QuestSession {
   return record(value) && typeof value.sessionId === "string" && !!value.sessionId
-    && mood(value.moodId) && quest(value.questId) && gameReference(value.game)
-    && integer(value.revealedAt) && nullableInteger(value.startedAt)
-    && nullableInteger(value.pausedAt) && integer(value.pausedTotalMs)
-    && QUEST_CORES_BY_ID[value.questId as string].moodIds.includes(value.moodId);
+    && mood(value.moodId) && quest(value.questId) && liveGameReference(value.game)
+    && count(value.revealedAt, -1) >= 0
+    && (value.startedAt === null || count(value.startedAt, -1) >= 0)
+    && (value.pausedAt === null || count(value.pausedAt, -1) >= 0)
+    && count(value.pausedTotalMs, -1) >= 0
+    && QUEST_CORES_BY_ID[value.questId].moodIds.includes(value.moodId);
 }
 
-function completion(value: unknown) {
-  return record(value) && typeof value.id === "string" && !!value.id
-    && mood(value.moodId) && quest(value.questId) && gameReference(value.game)
-    && integer(value.durationMs) && integer(value.pointsAwarded)
-    && integer(value.completedAt)
-    && QUEST_CORES_BY_ID[value.questId as string].moodIds.includes(value.moodId);
+function archivedGame(value: unknown): GameReference | null {
+  if (!record(value) || typeof value.id !== "string" || !value.id
+      || typeof value.name !== "string" || !value.name
+      || (value.source !== "curated" && value.source !== "custom")) return null;
+  return {
+    id: value.id,
+    name: value.name,
+    source: value.source,
+    ...(GAME_ICON_IDS.includes(value.iconId as typeof GAME_ICON_IDS[number])
+      ? { iconId: value.iconId as typeof GAME_ICON_IDS[number] } : {}),
+    ...(GAME_COLOR_IDS.includes(value.colorId as typeof GAME_COLOR_IDS[number])
+      ? { colorId: value.colorId as typeof GAME_COLOR_IDS[number] } : {}),
+  };
 }
 
-export function isPersistedQuestState(value: unknown): value is PersistedQuestState {
-  if (!record(value)) return false;
-  const profile = value.profile;
-  const pool = value.poolPreferences;
-  const selection = value.gameSelection;
-  const stats = value.stats;
-  if (!record(profile) || !integer(profile.points) || !integer(profile.redRopes)
-      || !AVATAR_THEMES.includes(profile.avatarTheme as typeof AVATAR_THEMES[number])
-      || typeof profile.debugMode !== "boolean") return false;
-  if (!record(pool)
-      || !uniqueStrings(pool.genreIds, GAME_GENRE_IDS)
-      || !uniqueStrings(pool.typeIds, Object.keys(QUEST_TYPES))
-      || !uniqueStrings(pool.connectionModeIds, QUEST_CONNECTION_MODE_IDS)
-      || !uniqueStrings(pool.styleIds, QUEST_PLAY_STYLE_IDS)) return false;
-  if (selection !== null && (!record(selection) || typeof selection.gameId !== "string"
-      || !selection.gameId || (selection.installmentId !== null
-        && typeof selection.installmentId !== "string"))) return false;
-  if (selection && value.selectedMoodId !== null) return false;
-  if (value.selectedMoodId !== null && !mood(value.selectedMoodId)) return false;
-  if (!nullableInteger(value.moodSelectedAt) || !integer(value.offerLibraryRevision)) return false;
-  if (!Array.isArray(value.offeredQuests) || value.offeredQuests.length > QUEST_OFFER_COUNT
-      || !value.offeredQuests.every(offer)
-      || new Set(value.offeredQuests.map((entry) => entry.id)).size !== value.offeredQuests.length) return false;
-  if (!record(value.offerSetsByMoodId) || !Object.entries(value.offerSetsByMoodId)
-      .every(([id, offers]) => mood(id) && Array.isArray(offers)
-        && offers.length <= QUEST_OFFER_COUNT && offers.every(offer))) return false;
-  if (value.currentSession !== null && !session(value.currentSession)) return false;
-  if (!Array.isArray(value.completedSessions) || !value.completedSessions.every(completion)) return false;
-  if (!record(value.questProgressById) || !Object.entries(value.questProgressById)
-      .every(([id, progress]) => quest(id) && record(progress)
-        && (progress.seenOffer === null || offer(progress.seenOffer))
-        && integer(progress.seenAt) && typeof progress.favorite === "boolean"
-        && integer(progress.totalPlayedMs) && integer(progress.coinsEarned)
-        && integer(progress.longestSessionMs) && nullableInteger(progress.bestTimeMs)
-        && (progress.lastCompletion === null || completion(progress.lastCompletion)))) return false;
-  if (!record(stats) || !integer(stats.completedQuestCount)
-      || !integer(stats.uniqueCompletedQuestCount) || !integer(stats.totalPlayedMs)
-      || !integer(stats.totalCoinsCollected) || !integer(stats.cancelledQuestCount)
-      || !integer(stats.repeatedCompletionCount)
-      || !countRecord(stats.completionCountsByQuestId, quest)
-      || !countRecord(stats.completionCountsByMoodId, mood)
-      || !countRecord(stats.latestCompletionAtByMoodId, mood)
-      || (stats.favoriteMoodId !== null && !mood(stats.favoriteMoodId))) return false;
-  return true;
+// Retired quest/game IDs remain in historical records so their earned coins survive.
+function completion(value: unknown): CompletedSession | null {
+  if (!(record(value) && typeof value.id === "string" && !!value.id
+    && mood(value.moodId) && typeof value.questId === "string" && !!value.questId
+    && count(value.durationMs, -1) >= 0
+    && count(value.pointsAwarded, -1) >= 0 && count(value.completedAt, -1) >= 0)) return null;
+  return {
+    id: value.id,
+    moodId: value.moodId,
+    questId: value.questId,
+    game: archivedGame(value.game),
+    durationMs: value.durationMs as number,
+    pointsAwarded: value.pointsAwarded as number,
+    completedAt: value.completedAt as number,
+  };
+}
+
+function progress(value: unknown): QuestProgress | null {
+  if (!record(value)) return null;
+  const lastCompletion = completion(value.lastCompletion);
+  return {
+    seenOffer: offer(value.seenOffer) ? value.seenOffer : null,
+    seenAt: count(value.seenAt),
+    favorite: value.favorite === true,
+    totalPlayedMs: count(value.totalPlayedMs),
+    coinsEarned: count(value.coinsEarned),
+    longestSessionMs: count(value.longestSessionMs),
+    bestTimeMs: nullableCount(value.bestTimeMs),
+    lastCompletion,
+  };
+}
+
+function countsByKey(value: unknown, validKey: (key: string) => boolean): Record<string, number> {
+  const result: Record<string, number> = {};
+  if (!record(value)) return result;
+  for (const [key, total] of Object.entries(value)) {
+    if (validKey(key) && count(total, -1) >= 0) result[key] = total as number;
+  }
+  return result;
+}
+
+function uniqueOffers(value: unknown): QuestOffer[] {
+  if (!Array.isArray(value)) return [];
+  const ids = new Set<string>();
+  return value.filter((entry): entry is QuestOffer => {
+    if (!offer(entry) || ids.has(entry.id) || ids.size >= QUEST_OFFER_COUNT) return false;
+    ids.add(entry.id);
+    return true;
+  });
+}
+
+/**
+ * Use this on both version changes and same-version hydration. Add future
+ * fields from defaults, retain currency/preferences/history, and invalidate
+ * only live cards or sessions whose catalogue identities disappeared.
+ */
+export function migrateQuestState(value: unknown): PersistedQuestState {
+  const defaults = createDefaultQuestState();
+  if (!record(value)) return defaults;
+  const savedProfile = record(value.profile) ? value.profile : {};
+  const savedStats = record(value.stats) ? value.stats : {};
+  const savedSelection = record(value.gameSelection) && typeof value.gameSelection.gameId === "string"
+    && (value.gameSelection.installmentId === null
+      || typeof value.gameSelection.installmentId === "string")
+    ? { gameId: value.gameSelection.gameId,
+        installmentId: value.gameSelection.installmentId as string | null }
+    : null;
+  // New Horizons is now the standalone Animal Crossing entry. Keep a saved
+  // selection of that installment instead of clearing it during hydration.
+  const selection = savedSelection?.gameId === "animal-crossing"
+    && savedSelection.installmentId === "new-horizons"
+    ? { ...savedSelection, installmentId: null } : savedSelection;
+  const offeredQuests = uniqueOffers(value.offeredQuests);
+  const offerSetsByMoodId: PersistedQuestState["offerSetsByMoodId"] = {};
+  if (record(value.offerSetsByMoodId)) {
+    for (const [id, offers] of Object.entries(value.offerSetsByMoodId)) {
+      if (mood(id)) offerSetsByMoodId[id] = uniqueOffers(offers);
+    }
+  }
+  const questProgressById: PersistedQuestState["questProgressById"] = {};
+  if (record(value.questProgressById)) {
+    for (const [id, saved] of Object.entries(value.questProgressById)) {
+      const normalized = progress(saved);
+      if (normalized) questProgressById[id] = normalized;
+    }
+  }
+  return {
+    gameSelection: selection,
+    poolPreferences: sanitizePoolPreferences(value.poolPreferences),
+    profile: {
+      points: count(savedProfile.points, count(savedProfile.coins)),
+      redRopes: count(savedProfile.redRopes, defaults.profile.redRopes),
+      avatarTheme: AVATAR_THEMES.includes(savedProfile.avatarTheme as typeof AVATAR_THEMES[number])
+        ? savedProfile.avatarTheme as typeof AVATAR_THEMES[number]
+        : defaults.profile.avatarTheme,
+      debugMode: typeof savedProfile.debugMode === "boolean"
+        ? savedProfile.debugMode : defaults.profile.debugMode,
+    },
+    selectedMoodId: selection ? null : mood(value.selectedMoodId) ? value.selectedMoodId : null,
+    moodSelectedAt: nullableCount(value.moodSelectedAt),
+    offeredQuests,
+    offerSetsByMoodId,
+    offerLibraryRevision: count(value.offerLibraryRevision),
+    currentSession: session(value.currentSession) ? value.currentSession : null,
+    completedSessions: Array.isArray(value.completedSessions)
+      ? value.completedSessions.map(completion)
+          .filter((entry): entry is CompletedSession => entry !== null)
+          .slice(0, STORED_COMPLETION_LIMIT) : [],
+    questProgressById,
+    stats: {
+      completedQuestCount: count(savedStats.completedQuestCount),
+      uniqueCompletedQuestCount: count(savedStats.uniqueCompletedQuestCount),
+      totalPlayedMs: count(savedStats.totalPlayedMs),
+      totalCoinsCollected: count(savedStats.totalCoinsCollected),
+      cancelledQuestCount: count(savedStats.cancelledQuestCount),
+      repeatedCompletionCount: count(savedStats.repeatedCompletionCount),
+      completionCountsByQuestId: countsByKey(savedStats.completionCountsByQuestId, () => true),
+      completionCountsByMoodId: countsByKey(savedStats.completionCountsByMoodId, mood),
+      latestCompletionAtByMoodId: countsByKey(savedStats.latestCompletionAtByMoodId, mood),
+      favoriteMoodId: mood(savedStats.favoriteMoodId) ? savedStats.favoriteMoodId : null,
+    },
+  };
 }

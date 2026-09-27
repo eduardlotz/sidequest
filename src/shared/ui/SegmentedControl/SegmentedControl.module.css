@@ -7,6 +7,7 @@
 }
 
 .control button {
+  position: relative;
   display: inline-flex;
   min-width: 48px;
   min-height: 27px;
@@ -23,9 +24,24 @@
 }
 
 .control button[aria-pressed="true"] {
+  color: var(--color-text);
+}
+
+.indicator {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
   background: var(--color-surface);
   box-shadow: 0 1px 4px rgb(var(--color-shadow-rgb) / 0.2);
-  color: var(--color-text);
+  pointer-events: none;
+}
+
+.buttonLabel {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 

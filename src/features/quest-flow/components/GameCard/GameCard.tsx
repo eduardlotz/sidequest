@@ -12,15 +12,15 @@ export type GameCardItem = {
   installmentId?: string;
   title: string;
   subtitle: string;
-  eligibleCount: number;
-  totalCount: number;
+  curated: number;
+  flexible: number;
 };
 
 export function GameCard({
   item, contentOpacity, centeredTiltEffects, illustrationX, illustrationY,
 }: ArcCardBodyProps<GameCardItem>) {
   const { t } = useTranslation();
-  const visual = resolveGameVisual(item.game);
+  const visual = resolveGameVisual(item.game, item.installmentId);
   return (
     <span className={styles.card}>
       <span className={`${arcStyles.moodSelectionCardBody} ${styles.body}`}>
@@ -40,8 +40,8 @@ export function GameCard({
       <motion.span className={styles.content}
         style={{ opacity: contentOpacity, z: centeredTiltEffects ? 24 : 0 }}>
         <strong className={styles.title}>{item.title}</strong>
-        <span className={styles.count}>{t("ui.arc.availableQuests", { count: item.eligibleCount })}</span>
-        <span className={styles.total}>{t("ui.arc.totalGameQuests", { count: item.totalCount })}</span>
+        <span className={styles.count}>{t("ui.arc.curatedQuests", { count: item.curated })}</span>
+        <span className={styles.total}>{t("ui.arc.flexibleQuests", { count: item.flexible })}</span>
       </motion.span>
     </span>
   );

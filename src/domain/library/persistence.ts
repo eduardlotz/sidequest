@@ -8,40 +8,60 @@ import {
 import { CURATED_GAMES_BY_ID } from "../../data/games";
 import { isGameGenreId } from "../../data/gameGenres";
 import { GAME_COLOR_IDS } from "../../data/gameVisuals";
-import { QUEST_CORES_BY_ID } from "../../data/quests";
 import {
+  DEFAULT_CURATED_PREFERENCES,
+  DEFAULT_LIBRARY_STATE,
+  LIBRARY_STORE_VERSION,
   type CustomGameInput,
   type PersistedLibraryState,
 } from "./model";
 
-export function isPersistedLibraryState(value: unknown): value is PersistedLibraryState {
-  if (!isRecord(value) || typeof value.setupCompleted !== "boolean"
-      || !Number.isSafeInteger(value.revision) || (value.revision as number) < 0
-      || !Array.isArray(value.selectedCuratedGameIds)
-      || value.selectedCuratedGameIds.some((id) => typeof id !== "string" || !CURATED_GAMES_BY_ID[id])
-      || new Set(value.selectedCuratedGameIds).size !== value.selectedCuratedGameIds.length
-      || !isRecord(value.curatedGamePreferences) || !Array.isArray(value.customGames)) return false;
-  if (!Object.entries(value.curatedGamePreferences).every(([gameId, entry]) => {
-    const game = CURATED_GAMES_BY_ID[gameId];
-    return game && isRecord(entry) && entry.questMode === "curated-and-flexible"
-      && Array.isArray(entry.installmentIds)
-      && entry.installmentIds.every((id) => typeof id === "string"
-        && game.installments.some((installment) => installment.id === id))
-      && new Set(entry.installmentIds).size === entry.installmentIds.length;
-  })) return false;
-  if (new Set(value.customGames.map((game) => isRecord(game) ? game.id : null)).size !== value.customGames.length) return false;
-  return value.customGames.every((game) => {
-    if (!isRecord(game) || typeof game.id !== "string" || !game.id
-        || typeof game.name !== "string" || !game.name.trim() || game.name !== game.name.trim()
-        || game.name.length > 80 || !isGameIconId(game.iconId) || !isGameColorId(game.colorId)
-        || !Array.isArray(game.capabilityIds) || !game.capabilityIds.length
-        || !game.capabilityIds.every((id) => typeof id === "string" && isGameCapabilityId(id))
-        || !Array.isArray(game.genreIds)
-        || !game.genreIds.every((id) => typeof id === "string" && isGameGenreId(id))
-        || !isRecord(game.questOverrides)) return false;
-    return Object.entries(game.questOverrides).every(([id, enabled]) =>
-      typeof enabled === "boolean" && Boolean(QUEST_CORES_BY_ID[id]?.customGameCompatibility));
-  });
+/**
+ * Keep library choices through schema and catalogue changes. Retired curated
+ * IDs and installments are filtered, while custom games and their overrides
+ * are normalized field by field instead of resetting the entire library.
+ */
+export function migrateLibraryState(
+  value: unknown,
+  fromVersion = LIBRARY_STORE_VERSION,
+): PersistedLibraryState {
+  if (!isRecord(value)) return { ...DEFAULT_LIBRARY_STATE };
+  const selectedCuratedGameIds = uniqueStrings(value.selectedCuratedGameIds)
+    .filter((id) => Boolean(CURATED_GAMES_BY_ID[id]));
+  const curatedGamePreferences: PersistedLibraryState["curatedGamePreferences"] = {};
+  if (isRecord(value.curatedGamePreferences)) {
+    for (const [id, saved] of Object.entries(value.curatedGamePreferences)) {
+      const game = CURATED_GAMES_BY_ID[id];
+      if (!game || !isRecord(saved)) continue;
+      curatedGamePreferences[id] = {
+        ...DEFAULT_CURATED_PREFERENCES,
+        installmentIds: uniqueStrings(saved.installmentIds)
+          .filter((installmentId) => game.installments.some((item) => item.id === installmentId)),
+      };
+    }
+  }
+  const customGames: PersistedLibraryState["customGames"] = [];
+  const seenIds = new Set<string>();
+  if (Array.isArray(value.customGames)) {
+    for (const saved of value.customGames) {
+      if (!isRecord(saved) || typeof saved.id !== "string" || !saved.id
+          || seenIds.has(saved.id)) continue;
+      const input = sanitizeCustomGameInput(saved);
+      if (!input) continue;
+      customGames.push({ id: saved.id, ...input });
+      seenIds.add(saved.id);
+    }
+  }
+  const revision = Number.isSafeInteger(value.revision) && (value.revision as number) >= 0
+    ? value.revision as number : 0;
+  return {
+    setupCompleted: typeof value.setupCompleted === "boolean"
+      ? value.setupCompleted : DEFAULT_LIBRARY_STATE.setupCompleted,
+    selectedCuratedGameIds,
+    curatedGamePreferences,
+    customGames,
+    revision: revision + (fromVersion === LIBRARY_STORE_VERSION ? 0 : 1),
+  };
 }
 
 export function sanitizeCustomGameInput(
@@ -53,13 +73,9 @@ export function sanitizeCustomGameInput(
   const questOverrides: Record<string, boolean> = {};
   if (isRecord(value.questOverrides)) {
     for (const [questId, enabled] of Object.entries(value.questOverrides)) {
-      if (
-        typeof enabled !== "boolean" ||
-        !Object.hasOwn(QUEST_CORES_BY_ID, questId)
-      )
-        continue;
-      const quest = QUEST_CORES_BY_ID[questId];
-      if (!quest.gameBindable || !quest.customGameCompatibility) continue;
+      // Unknown IDs remain saved for history/future catalogue merges; eligibility
+      // only reads overrides for quests that currently exist.
+      if (typeof enabled !== "boolean" || !questId) continue;
       questOverrides[questId] = enabled;
     }
   }

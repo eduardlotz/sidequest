@@ -183,9 +183,11 @@
 
 .settingToggle {
   position: relative;
+  display: flex;
   width: 52px;
   height: 28px;
-  padding: 0;
+  padding: 4px;
+  align-items: center;
   border-radius: 100px;
   background: var(--color-surface-pressed);
   cursor: pointer;
@@ -197,18 +199,15 @@
 }
 
 .settingToggle > span {
-  position: absolute;
-  top: 4px;
-  left: 4px;
   width: 28px;
   height: 20px;
+  flex-shrink: 0;
   border-radius: 100px;
   background: var(--color-surface);
   box-shadow:
     0 0.5px 1px rgb(33, 33, 33, 0.07),
     0 1px 4px rgb(33, 33, 33, 0.07),
     inset 0 1px px rgb(255, 255, 255, 0.5);
-  transition: transform 180ms cubic-bezier(0.22, 0.8, 0.24, 1);
 }
 
 :global(:root[data-theme="dark"]) .settingToggle[aria-checked="true"] > span {
@@ -228,7 +227,7 @@
 }
 
 .settingToggle[aria-checked="true"] > span {
-  transform: translateX(16px);
+  margin-left: auto;
 }
 
 .settingLabelWithInfo {

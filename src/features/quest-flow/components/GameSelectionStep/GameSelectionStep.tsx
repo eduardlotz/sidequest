@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { CURATED_GAMES_BY_ID } from "../../../../data/games";
 import { sortGamesByName } from "../../../../data/games/sort";
 import type { LibraryGame } from "../../../../domain/library/model";
-import { countGameQuests, gameForInstallment } from "../../../../domain/quest/rules";
+import { countGameQuestsBySource, gameForInstallment } from "../../../../domain/quest/rules";
 import { useLibraryStore } from "../../../../stores/useLibraryStore";
 import { useQuestStore } from "../../../../stores/useQuestStore";
 import { normalizeLanguage } from "../../../../localization/i18n";
@@ -39,12 +39,11 @@ export function GameSelectionStep({
         })
       : [{ game, installmentId: undefined }];
     return entries.map(({ game: entryGame, installmentId }) => {
-      const eligibleCount = countGameQuests(entryGame, poolPreferences);
-      const totalCount = countGameQuests(entryGame);
+      const counts = countGameQuestsBySource(entryGame, poolPreferences);
       return {
         id: gamePickerItemId(game.id, installmentId),
-        game: entryGame, installmentId, title: entryGame.name, eligibleCount, totalCount,
-        subtitle: `${t("ui.arc.availableQuests", { count: eligibleCount })}. ${t("ui.arc.totalGameQuests", { count: totalCount })}`,
+        game: entryGame, installmentId, title: entryGame.name, ...counts,
+        subtitle: `${t("ui.arc.curatedQuests", { count: counts.curated })}. ${t("ui.arc.flexibleQuests", { count: counts.flexible })}`,
       };
     });
   }), language, (item) => item.title), [games, language, preferences, poolPreferences, t]);

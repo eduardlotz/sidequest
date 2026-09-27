@@ -144,22 +144,25 @@ export function LibraryCollectionEditor({
         {selectedCuratedGames.length ? (
           <div className={styles.gameList}>
             {selectedCuratedGames.map((game) => (
-              <GameRow key={game.id} game={{ id: game.id, name: game.name, source: "curated" }}>
-                  {game.isSeries && (
-                    <span className={styles.installments}>
-                      {sortGamesByName(
-                        game.installments.filter((entry) =>
-                          curatedGamePreferences[
-                            game.id
-                          ]?.installmentIds.includes(entry.id),
-                        ),
-                        language,
-                        (entry) => entry.name,
-                      ).map((entry) => (
-                        <span key={entry.id}>{entry.name}</span>
-                      ))}
-                    </span>
-                  )}
+              <GameRow
+                key={game.id}
+                game={{ id: game.id, name: game.name, source: "curated" }}
+              >
+                {game.isSeries && (
+                  <span className={styles.installments}>
+                    {sortGamesByName(
+                      game.installments.filter((entry) =>
+                        curatedGamePreferences[
+                          game.id
+                        ]?.installmentIds.includes(entry.id),
+                      ),
+                      language,
+                      (entry) => entry.name,
+                    ).map((entry) => (
+                      <span key={entry.id}>{entry.name}</span>
+                    ))}
+                  </span>
+                )}
               </GameRow>
             ))}
           </div>
@@ -203,15 +206,17 @@ export function LibraryCollectionEditor({
         </div>
         {customGames.length ? (
           <div className={styles.gameList}>
-            {sortGamesByName(customGames, language, (game) => game.name).map((game) => (
-              <CustomGameRow
-                game={game}
-                key={game.id}
-                onEdit={() => openEditor({ kind: "edit", gameId: game.id })}
-                presentation={presentation}
-                onRemove={() => removeCustomGame(game.id)}
-              />
-            ))}
+            {sortGamesByName(customGames, language, (game) => game.name).map(
+              (game) => (
+                <CustomGameRow
+                  game={game}
+                  key={game.id}
+                  onEdit={() => openEditor({ kind: "edit", gameId: game.id })}
+                  presentation={presentation}
+                  onRemove={() => removeCustomGame(game.id)}
+                />
+              ),
+            )}
           </div>
         ) : (
           <div className={styles.emptyState}>
@@ -292,43 +297,48 @@ function CustomGameRow({
   const { t } = useTranslation();
   const [confirming, setConfirming] = useState(false);
   return (
-    <GameRow game={{ ...game, source: "custom" }} actions={
-      <div className={styles.customGameActions}>
-        {confirming ? (
-          <>
-            <button type="button" onClick={() => setConfirming(false)}>
-              {t("ui.library.cancel")}
-            </button>
-            <button type="button" data-action="remove" onClick={onRemove}>
-              {t("ui.library.confirmRemove")}
-            </button>
-          </>
-        ) : (
-          <>
-            <LibraryEditorTrigger presentation={presentation}>
+    <GameRow
+      game={{ ...game, source: "custom" }}
+      actions={
+        <div className={styles.customGameActions}>
+          {confirming ? (
+            <>
+              <button type="button" onClick={() => setConfirming(false)}>
+                {t("ui.library.cancel")}
+              </button>
+              <button type="button" data-action="remove" onClick={onRemove}>
+                {t("ui.library.confirmRemove")}
+              </button>
+            </>
+          ) : (
+            <>
+              <LibraryEditorTrigger presentation={presentation}>
+                <button
+                  type="button"
+                  onClick={onEdit}
+                  aria-label={t("ui.library.editGame", { game: game.name })}
+                  title={t("ui.library.edit")}
+                >
+                  <EditIcon />
+                </button>
+              </LibraryEditorTrigger>
               <button
                 type="button"
-                onClick={onEdit}
-                aria-label={t("ui.library.editGame", { game: game.name })}
-                title={t("ui.library.edit")}
+                data-action="remove"
+                onClick={() => setConfirming(true)}
+                aria-label={t("ui.library.removeGame", { game: game.name })}
+                title={t("ui.library.remove")}
               >
-                <EditIcon />
+                <RemoveIcon />
               </button>
-            </LibraryEditorTrigger>
-            <button
-              type="button"
-              data-action="remove"
-              onClick={() => setConfirming(true)}
-              aria-label={t("ui.library.removeGame", { game: game.name })}
-              title={t("ui.library.remove")}
-            >
-              <RemoveIcon />
-            </button>
-          </>
-        )}
-      </div>
-    }>
-      <span>{t("ui.library.questCount", { count: customGameQuestIds(game).length })}</span>
+            </>
+          )}
+        </div>
+      }
+    >
+      <span>
+        {t("ui.library.questCount", { count: customGameQuestIds(game).length })}
+      </span>
     </GameRow>
   );
 }

@@ -134,23 +134,4 @@ export const farCryQuests = defineGameQuests("far-cry", [
         "Schicke in **Far Cry 5** den freigeschalteten Boomer voraus, damit er die Wachen eines feindlichen Außenpostens markiert. **Dringe nur mit seinen Markierungen ein, schalte einen Alarm aus und verlasse den Posten wieder, ohne das Fernglas zu öffnen**. Vergleiche Boomers Aufklärung mit deiner üblichen Vorgehensweise.",
     },
   },
-  {
-    id: "fc6-camera-before-base",
-    installments: ["fc-6"],
-    moods: ["curious", "focused"],
-    type: "experiment",
-    tags: ["scouting", "loadout"],
-    minutes: 25,
-    minimum: 5,
-    en: {
-      name: "Know Their Weakness",
-      objective:
-        "In **Far Cry 6**, scout an FND base with your phone and identify one guard's ammo weakness. Fit that ammo at a workbench, then **use it on that guard and capture the base without a Supremo**. Notice whether the prepared shot changed your route.",
-    },
-    de: {
-      name: "Kenne ihre Schwäche",
-      objective:
-        "Späh in **Far Cry 6** eine FND-Basis mit dem Handy aus und finde heraus, gegen welche Munition eine Wache schwach ist. Rüste sie an einer Werkbank aus. **Setz sie gegen diese Wache ein und erobere die Basis ohne Supremo**. Schau, ob dir die Vorbereitung einen anderen Weg eröffnet.",
-    },
-  },
 ]);

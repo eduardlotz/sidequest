@@ -5,7 +5,7 @@ import {
   formatRunningDuration,
   formatScore,
 } from "../../../../lib/format";
-import { hydrateQuest } from "../../../../localization/catalog";
+import { hydrateQuest, localizeMood } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
 import { GameVisual } from "../../../../shared/ui/GameVisual/GameVisual";
 import { ProfilePanel } from "../ProfileDrawer/ProfilePanel";
@@ -41,7 +41,7 @@ export function QuestHistoryDrawer({
               completion.game,
               language,
             );
-            if (!quest) return null;
+            const mood = quest?.mood ?? localizeMood(completion.moodId, language);
             return (
               <li key={completion.id}>
                 <div className={styles.historyIdentity}>
@@ -53,7 +53,7 @@ export function QuestHistoryDrawer({
                     </span>
                   )} */}
                   <div>
-                    <strong>{quest.name}</strong>
+                    <strong>{quest?.name ?? (language === "de" ? "Archivierte Quest" : "Archived quest")}</strong>
                     <span>
                       {completion.game?.name ?? t("ui.history.anyGame")}
                     </span>
@@ -67,7 +67,7 @@ export function QuestHistoryDrawer({
                 <dl className={styles.historyMeta}>
                   <div>
                     <dt>{t("ui.history.mood")}</dt>
-                    <dd>{quest.mood.title}</dd>
+                    <dd>{mood?.title ?? completion.moodId}</dd>
                   </div>
                   <div>
                     <dt>{t("ui.history.duration")}</dt>

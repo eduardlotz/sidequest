@@ -25,6 +25,14 @@
   inset: 0;
   overflow: hidden;
   border-radius: inherit;
+  clip-path: inset(0 round var(--mood-card-radius));
+}
+
+/* iOS WebKit otherwise clips the artwork only after the card starts moving. */
+@supports (-webkit-touch-callout: none) {
+  .coverClip {
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+  }
 }
 
 .cover {

@@ -58,7 +58,12 @@ export const QUEST_CATALOG: readonly AuthoredQuestDefinition[] = [
 
 // Catch authoring mistakes at the catalogue boundary, before any screen or store
 // can use an incompatible pairing. Eligibility also consults the same table.
+const seenQuestIds = new Set<string>();
 for (const quest of QUEST_CATALOG) {
+  if (seenQuestIds.has(quest.id)) {
+    throw new Error(`Duplicate quest identity ${quest.id}`);
+  }
+  seenQuestIds.add(quest.id);
   if (quest.moodIds.some((moodId) => !isQuestTypeAllowed(quest.type, moodId))) {
     throw new Error(`Quest ${quest.id} has a mood incompatible with ${quest.type}`);
   }

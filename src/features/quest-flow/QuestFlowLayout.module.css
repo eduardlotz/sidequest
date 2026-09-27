@@ -207,8 +207,10 @@
   position: absolute;
   z-index: 70;
   bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  width: max-content;
+  margin-inline: auto;
 }
 
 

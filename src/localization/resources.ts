@@ -32,7 +32,7 @@ export const englishUi = {
       "Read the full objective before you start. Some quests require a mode, item, mechanic, or a save with enough progress.",
     libraryHeading: "Quests for your library",
     libraryBody:
-      "Choose from the starter collection or add any game yourself. Starter games receive their own curated quests plus flexible quests that fit their features.",
+      "Choose from Eddie’s own games or add any game yourself. Games in Eddie’s Collection have their own quests, plus flexible quests that fit their features.",
     libraryChoice:
       "For a series, select the entries you actually play so installment-specific quests stay accurate. You can edit the library later from your profile. Cards without a named game still work with any library.",
     coinsHeading: "What do I do with the coins?",
@@ -89,10 +89,10 @@ export const englishUi = {
   },
   arc: {
     gameCards: "Game cards",
-    availableQuests_one: "{{count}} sidequest available",
-    availableQuests_other: "{{count}} sidequests available",
-    totalGameQuests_one: "{{count}} total for this game",
-    totalGameQuests_other: "{{count}} total for this game",
+    curatedQuests_one: "{{count}} curated quest",
+    curatedQuests_other: "{{count}} curated quests",
+    flexibleQuests_one: "{{count}} flexible quest",
+    flexibleQuests_other: "{{count}} flexible quests",
     choose: "Choose",
     center: "Center",
     cardLabel: "{{action}} {{title}}. {{subtitle}}",
@@ -230,7 +230,7 @@ export const germanUi = {
       "Lies die ganze Aufgabe vor dem Start. Manche Quests brauchen einen Modus, Gegenstand, eine Mechanik oder einen ausreichend fortgeschrittenen Spielstand.",
     libraryHeading: "Quests für deine Bibliothek",
     libraryBody:
-      "Wähle Spiele aus der Starter-Sammlung oder füg deine eigenen hinzu. Die Starter-Sammlung enthält Spiele mit speziell für sie entwickelten Quests",
+      "Wähle Spiele aus Eddies eigener Sammlung oder füg eigene hinzu. Für Eddies Spiele gibt es speziell entwickelte Quests",
     libraryChoice:
       "Bei einer Reihe wählst du die Teile, die du wirklich spielst, damit Quests für einzelne Teile stimmen. Die Bibliothek kannst du später im Profil",
     coinsHeading: "Was mache ich mit den Münzen?",
@@ -288,10 +288,10 @@ export const germanUi = {
   },
   arc: {
     gameCards: "Spielkarten",
-    availableQuests_one: "{{count}} Sidequest verfügbar",
-    availableQuests_other: "{{count}} Sidequests verfügbar",
-    totalGameQuests_one: "{{count}} insgesamt für dieses Spiel",
-    totalGameQuests_other: "{{count}} insgesamt für dieses Spiel",
+    curatedQuests_one: "{{count}} kuratierte Quest",
+    curatedQuests_other: "{{count}} kuratierte Quests",
+    flexibleQuests_one: "{{count}} flexible Quest",
+    flexibleQuests_other: "{{count}} flexible Quests",
     choose: "Wählen",
     center: "Zentrieren",
     cardLabel: "{{action}}: {{title}}. {{subtitle}}",

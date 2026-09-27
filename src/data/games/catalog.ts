@@ -27,6 +27,16 @@ function game(
         `${id} lists installment ${installmentId} without a dedicated quest`,
       );
     }
+    const dedicatedCount = new Set(exclusiveQuests.filter((quest) =>
+      quest.curated?.installmentIds.length === 1
+      && quest.curated.installmentIds[0] === installmentId
+    ).map((quest) => quest.id)).size;
+    if (dedicatedCount < 10) {
+      throw new Error(`${id} installment ${installmentId} has only ${dedicatedCount} dedicated quests`);
+    }
+  }
+  if (!installments.length && new Set(exclusiveQuests.map((quest) => quest.id)).size < 10) {
+    throw new Error(`${id} has fewer than ten distinct dedicated quests`);
   }
 
   return {
@@ -66,24 +76,9 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
   ),
   game(
     "animal-crossing",
-    "Animal Crossing",
+    "Animal Crossing: New Horizons",
     ["going-fishing", "fish-two-waters", "two-color-look"],
-    [
-      { id: "new-leaf", name: "Animal Crossing: New Leaf" },
-      { id: "new-horizons", name: "Animal Crossing: New Horizons" },
-    ],
   ),
-  game("baldurs-gate-3", "Baldur’s Gate 3", [
-    "main-mission",
-    "story-without-rushing",
-    "one-slot-swap",
-    "spell-single-school",
-    "spell-new-opener",
-    "spells-two-openers",
-    "lore-follow-a-reference",
-    "dialogue-follow-a-topic",
-    "trade-three-kinds",
-  ]),
   game(
     "zelda",
     "The Legend of Zelda",
@@ -229,35 +224,6 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
     ],
   ),
   game(
-    "skyrim",
-    "The Elder Scrolls V: Skyrim",
-    [
-      "a-little-walk",
-      "beyond-the-map",
-      "main-mission",
-      "starter-gear",
-      "one-slot-swap",
-      "spell-single-school",
-      "spell-new-opener",
-      "quiet-entry-exit",
-      "watch-one-patrol",
-      "craft-from-storage",
-      "craft-unused-recipe",
-      "first-recipe",
-      "cook-a-new-dish",
-      "hunt-single-species",
-      "trade-three-kinds",
-      "follow-one-character",
-      "open-world-follow-the-edge",
-      "mission-change-the-approach",
-      "loadout-opposite-range",
-      "spells-two-openers",
-      "cook-from-the-pantry",
-      "lore-follow-a-reference",
-    ],
-    [],
-  ),
-  game(
     "rocket-league",
     "Rocket League",
     [
@@ -323,7 +289,6 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
       { id: "fc-3", name: "Far Cry 3" },
       { id: "fc-4", name: "Far Cry 4" },
       { id: "fc-5", name: "Far Cry 5" },
-      { id: "fc-6", name: "Far Cry 6" },
     ],
   ),
   game(
@@ -344,85 +309,6 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
       { id: "gta-sa", name: "Grand Theft Auto: San Andreas" },
       { id: "gta-iv", name: "Grand Theft Auto IV" },
       { id: "gta-v", name: "Grand Theft Auto V" },
-    ],
-  ),
-  game(
-    "assassins-creed",
-    "Assassin’s Creed",
-    [
-      "a-little-walk",
-      "beyond-the-map",
-      "main-mission",
-      "starter-gear",
-      "one-slot-swap",
-      "quiet-entry-exit",
-      "watch-one-patrol",
-      "story-without-rushing",
-      "replay-a-favorite-mission",
-      "stealth-second-passage",
-      "stealth-familiar-ground",
-      "movement-new-line",
-      "movement-stay-above-ground",
-      "open-world-follow-the-edge",
-      "mission-change-the-approach",
-      "loadout-opposite-range",
-    ],
-    [
-      { id: "ac-black-flag", name: "Assassin’s Creed IV Black Flag" },
-      { id: "ac-unity", name: "Assassin’s Creed Unity" },
-      { id: "ac-valhalla", name: "Assassin’s Creed Valhalla" },
-      { id: "ac-mirage", name: "Assassin’s Creed Mirage" },
-    ],
-  ),
-  game(
-    "battlefield",
-    "Battlefield",
-    [
-      "follow-a-teammate",
-      "team-regular-role",
-      "shooter-hold-a-crossing",
-      "shooter-open-with-information",
-      "gadget-protect-a-route",
-      "gadget-try-another-position",
-      "gadget-help-the-entry",
-      "scout-a-new-angle",
-      "scout-then-communicate",
-      "match-stay-to-the-result",
-      "match-one-thread-to-follow",
-      "match-with-your-regulars",
-      "match-one-unfamiliar-option",
-      "squad-shadow-one-teammate",
-      "round-role-swap",
-      "squad-call-one-plan",
-    ],
-    [
-      { id: "bf-4", name: "Battlefield 4" },
-      { id: "bf-1", name: "Battlefield 1" },
-      { id: "bf-v", name: "Battlefield V" },
-      { id: "bf-2042", name: "Battlefield 2042" },
-      { id: "bf-6", name: "Battlefield 6" },
-    ],
-  ),
-  game(
-    "hitman",
-    "HITMAN",
-    [
-      "main-mission",
-      "one-slot-swap",
-      "quiet-entry-exit",
-      "watch-one-patrol",
-      "story-without-rushing",
-      "replay-a-favorite-mission",
-      "stealth-second-passage",
-      "stealth-familiar-ground",
-      "gadget-try-another-position",
-      "mission-change-the-approach",
-      "loadout-opposite-range",
-    ],
-    [
-      { id: "hitman-1", name: "HITMAN" },
-      { id: "hitman-2", name: "HITMAN 2" },
-      { id: "hitman-3", name: "HITMAN 3" },
     ],
   ),
   game("crimson-desert", "Crimson Desert", [], [], {
@@ -455,14 +341,9 @@ export const CURATED_GAMES: readonly CuratedGameDefinition[] = [
     "Fallout",
     [],
     [
-      { id: "fallout-3", name: "Fallout 3" },
       { id: "fallout-4", name: "Fallout 4" },
       { id: "fallout-76", name: "Fallout 76" },
     ],
     { iconId: "radiation", colorId: "progress" },
   ),
-  game("arc-raiders", "ARC Raiders", [], [], {
-    iconId: "shooter",
-    colorId: "challenge",
-  }),
 ];

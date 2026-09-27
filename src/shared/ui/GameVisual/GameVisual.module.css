@@ -87,6 +87,11 @@
   border-radius: var(--game-card-visual-radius, 6px);
 }
 
+.visual[data-visual="artwork"] {
+  width: auto;
+  aspect-ratio: 3 / 4;
+}
+
 @media (--reduced-motion) {
   .visualChanging,
   .iconGlyphChanging {

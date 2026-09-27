@@ -28,6 +28,7 @@ export function QuestPoolSettings() {
   const preferences = useQuestStore((state) => state.poolPreferences);
   const save = useQuestStore((state) => state.savePoolPreferences);
   const [draft, setDraft] = useState(() => ({
+    questSource: preferences.questSource,
     genreIds: [...preferences.genreIds],
     typeIds: [...preferences.typeIds],
     connectionModeIds: [...preferences.connectionModeIds],
@@ -62,6 +63,22 @@ export function QuestPoolSettings() {
         >
           <ResponsiveNestedDrawerRoot>
             <div className={styles.fields}>
+              <section className={styles.group} aria-label={t("ui.pool.questSource")}>
+                <InfoLabel label={t("ui.pool.questSource")} />
+                <div className={styles.choices}>
+                  {(["all", "curated", "flexible"] as const).map((questSource) => (
+                    <SolidButton
+                      key={questSource}
+                      size="medium"
+                      variant={draft.questSource === questSource ? "primary" : "soft"}
+                      aria-pressed={draft.questSource === questSource}
+                      onClick={() => setDraft((current) => ({ ...current, questSource }))}
+                    >
+                      {t(`ui.pool.${questSource}`)}
+                    </SolidButton>
+                  ))}
+                </div>
+              </section>
               <ChoiceGroup
                 title={t("ui.pool.genres")}
                 hint={t("ui.pool.genreHint")}

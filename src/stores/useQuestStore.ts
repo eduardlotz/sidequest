@@ -27,10 +27,7 @@ import {
   type QuestState,
   type QuestStore,
 } from "../domain/quest/model";
-import {
-  isPersistedQuestState,
-} from "../domain/quest/persistence";
-import { resetOnInvalidStorage } from "./resetOnInvalidStorage";
+import { migrateQuestState } from "../domain/quest/persistence";
 import {
   activeSessionDurationMs,
   calculateCompletionPoints,
@@ -612,11 +609,15 @@ export function createQuestStore(
   return createStore<QuestStore>()(
     persist(stateCreator, {
       name: STORE_KEY,
-      storage: resetOnInvalidStorage(storage, STORE_VERSION, isPersistedQuestState),
+      storage,
       version: STORE_VERSION,
+      migrate: (persisted) => migrateQuestState(persisted),
       merge: (persisted, current) => {
-        if (!isPersistedQuestState(persisted)) return current;
-        const state = { ...current, ...persisted };
+        const migrated = migrateQuestState(persisted);
+        const state = {
+          ...current,
+          ...migrated,
+        };
         // Library edits can invalidate a selection without invalidating progress.
         if (!state.currentSession && state.gameSelection && !isGameSelectionAvailable(
           state.gameSelection, options.getLibraryGames(), options.getCuratedGamePreferences(),

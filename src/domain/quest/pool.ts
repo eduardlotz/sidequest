@@ -9,6 +9,7 @@ import type { QuestPoolPreferences } from "./model";
 
 export function defaultPoolPreferences(): QuestPoolPreferences {
   return {
+    questSource: "all",
     genreIds: [...GAME_GENRE_IDS],
     typeIds: Object.keys(QUEST_TYPES) as QuestTypeId[],
     connectionModeIds: [...QUEST_CONNECTION_MODE_IDS],
@@ -21,7 +22,10 @@ export function matchesPoolPreferences(
 ) {
   // Pool genre is authored independently of custom-game compatibility.
   const genres = quest.gameGenreIds;
+  const matchesSource = preferences.questSource === "all" ||
+    (preferences.questSource === "curated" ? Boolean(quest.curated) : !quest.curated);
   return (
+    matchesSource &&
     preferences.typeIds.includes(quest.type) &&
     preferences.genreIds.length > 0 &&
     (!genres.length ||
@@ -52,6 +56,9 @@ export function sanitizePoolPreferences(value: unknown): QuestPoolPreferences {
       : [...allowed];
   }
   return {
+    questSource: data.questSource === "curated" || data.questSource === "flexible"
+      ? data.questSource
+      : defaults.questSource,
     genreIds: selection(data.genreIds, defaults.genreIds),
     typeIds: selection(data.typeIds, defaults.typeIds),
     connectionModeIds: selection(

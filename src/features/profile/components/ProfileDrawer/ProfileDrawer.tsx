@@ -14,6 +14,7 @@ import {
 import { QuestPoolSettings } from "../QuestPoolSettings/QuestPoolSettings";
 import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
 import { useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import styles from "./ProfileDrawer.module.css";
 import { formatScore } from "../../../../lib/format";
@@ -239,6 +240,8 @@ function SettingToggle({
   label: string;
   onChange: (checked: boolean) => void;
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <button
       className={styles.settingToggle}
@@ -248,7 +251,15 @@ function SettingToggle({
       aria-label={label}
       onClick={() => onChange(!checked)}
     >
-      <span aria-hidden="true" />
+      <motion.span
+        aria-hidden="true"
+        layout="position"
+        transition={
+          reduceMotion
+            ? { duration: 0 }
+            : { type: "spring", stiffness: 420, damping: 30 }
+        }
+      />
     </button>
   );
 }

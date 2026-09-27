@@ -63,6 +63,7 @@
   --arc-track-top: calc(var(--mood-arc-track-top) - 30px);
   --arc-card-max-width: 270px;
   --arc-footer-space: 122px;
+  --arc-controls-gap: 54px;
   --arc-card-width: min(
     70cqw,
     var(--arc-card-max-width),
@@ -73,14 +74,14 @@
 
 :global([data-play-layout="paired"]) .arcDeck[data-card-shape="portrait"] {
   --arc-card-max-width: 290px;
-  --arc-controls-gap: 20px;
+  --arc-controls-gap: 28px;
   --arc-footer-space: 96px;
 }
 
 :global([data-play-layout="wide"]) .arcDeck[data-card-shape="portrait"] {
   --arc-card-max-width: 320px;
   --arc-track-top: calc(var(--mood-arc-track-top) - 50px);
-  --arc-controls-gap: 12px;
+  --arc-controls-gap: 20px;
   --arc-footer-space: 88px;
 }
 
