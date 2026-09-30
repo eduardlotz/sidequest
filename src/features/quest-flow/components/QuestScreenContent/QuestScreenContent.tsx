@@ -128,6 +128,8 @@ export function QuestScreenContent({
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const [galleryView, setGalleryView] = useState<QuestGalleryView>({
     filter: "all",
+    questSource: "all",
+    rarity: "all",
     query: "",
     focusedId: null,
     moodIds: [],

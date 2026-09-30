@@ -280,14 +280,13 @@ export const germanLibrary = {
   moreColors: "Weitere Farben",
   previousColors: "Vorherige Farben",
   iconPage: "Icon-Seite {{page}}",
-  previewRelax: "Entspannung",
+  previewRelax: "Entspannt",
   previewNostalgia: "Nostalgie",
   scrollDown: "Weiter nach unten",
 
   setupEyebrow: "Dein Spieleregal",
   setupTitle: "Willkommen auf sidesidequest",
-  setupDescription:
-    "Wähle aus Eddies Sammlung oder erstelle deine eigene.",
+  setupDescription: "Wähle aus Eddies Sammlung oder erstelle deine eigene.",
   curatedHeading: "Eddies Sammlung",
   supportedGames: "Unterstützte Spiele",
   noCuratedGames: "Keine Spiele aus Eddies Sammlung ausgewählt",
@@ -432,7 +431,8 @@ export const germanLibrary = {
   continueWithoutGames: "Mit Quests für beliebige Spiele starten",
   backToStart: "Zurück",
   backToLibrary: "Zur Bibliothek",
-  collectionHint: "Spiele und Reihen aus Eddies eigener Sammlung, mit eigenen Quests",
+  collectionHint:
+    "Spiele und Reihen aus Eddies eigener Sammlung, mit eigenen Quests",
   addAll: "Alle hinzufügen",
   removeAll: "Alle entfernen",
   searchGames: "Spiel oder Reihe suchen",

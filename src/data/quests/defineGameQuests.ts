@@ -1,8 +1,10 @@
 import type { QuestTypeId, QuestTagId } from "../questTraits";
 import type { AuthoredQuestDefinition, MoodId } from "../questTypes";
+import type { QuestRarity } from "../questRarity";
 
 type GameQuest = {
   id: string;
+  rarity?: QuestRarity;
   moods: readonly MoodId[];
   type: QuestTypeId;
   tags: readonly QuestTagId[];
@@ -19,6 +21,7 @@ export function defineGameQuests(
 ): AuthoredQuestDefinition[] {
   return quests.map((quest) => ({
     id: `${gameId}-${quest.id}`,
+    rarity: quest.rarity,
     moodIds: quest.moods,
     type: quest.type,
     tags: quest.tags,

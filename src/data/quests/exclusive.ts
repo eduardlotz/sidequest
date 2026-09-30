@@ -19,7 +19,10 @@ import { hotlineMiamiQuests } from "./games/hotline-miami";
 import { falloutQuests } from "./games/fallout";
 
 function withExtra(gameId: string, quests: typeof noMansSkyQuests) {
-  return [...quests, ...(extraGameQuestsByGame[gameId] ?? [])];
+  return [
+    ...quests,
+    ...(extraGameQuestsByGame[gameId] ?? []),
+  ];
 }
 
 export const exclusiveQuestsByGame = {

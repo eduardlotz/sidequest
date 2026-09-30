@@ -23,20 +23,24 @@ import {
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { Drawer } from "vaul";
-import { HeartIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
+import { HeartIcon, MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
 import { QUESTS } from "../../data/quests";
 import type { MoodId } from "../../data/moods";
 import type { GameGenreId } from "../../data/gameGenres";
 import type { QuestTagId, QuestTypeId } from "../../data/questTraits";
+import type { QuestRarity } from "../../data/questRarity";
 import type { QuestConnectionModeId, QuestPlayStyleId } from "../../data/questPoolTraits";
 import { CURATED_GAMES_BY_ID } from "../../data/games";
 import { sortGamesByName } from "../../data/games/sort";
 import { getMoodAccentStyle } from "../../data/questColors";
-import { hydrateQuest } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
 import { formatRunningDuration } from "../../lib/format";
-import type { Quest, QuestProgress } from "../../domain/quest/model";
-import { questOfferId } from "../../domain/quest/rules";
+import type {
+  Quest,
+  QuestPoolPreferences,
+  QuestProgress,
+} from "../../domain/quest/model";
+import { matchesQuestSource } from "../../domain/quest/pool";
 import {
   CARD_LAYOUT_TRANSITION,
   CARD_RETURN_LAYOUT_TRANSITION,
@@ -55,15 +59,17 @@ import { InteractiveQuestCard } from "../../shared/quest-card/InteractiveQuestCa
 import { QuestCard } from "../../shared/quest-card/QuestCard/QuestCard";
 import cardStyles from "../../shared/quest-card/QuestCard/QuestCard.module.css";
 import { SolidButton } from "../../shared/ui/SolidButton/SolidButton";
+import { BottomCloseButton } from "../../shared/ui/BottomCloseButton/BottomCloseButton";
 import buttonStyles from "../../shared/ui/SolidButton/SolidButton.module.css";
 import { InfoText } from "../../shared/ui/InfoText/InfoText";
-import { ChevronLeftIcon, CoinIcon } from "../../shared/ui/Icons/Icons";
+import { CoinIcon } from "../../shared/ui/Icons/Icons";
 import { visuallyHiddenClassName } from "../../shared/ui/VisuallyHidden/VisuallyHidden";
 import {
   QuestGalleryFilters,
   type GalleryGameOption,
 } from "./QuestGalleryFilters";
 import styles from "./QuestGallery.module.css";
+import { galleryQuestOfferId, hydrateGalleryQuest } from "./galleryCatalog";
 import unknownIllustration from "./assets/unknown-quest.svg";
 import unfinishedIllustration from "./assets/unfinished-quest.svg";
 import unknownStatusIcon from "./assets/unknown-status.svg";
@@ -79,6 +85,8 @@ const GALLERY_FILTERS = [
 export type GalleryFilter = (typeof GALLERY_FILTERS)[number];
 export type QuestGalleryView = {
   filter: GalleryFilter;
+  questSource: QuestPoolPreferences["questSource"];
+  rarity: QuestRarity | "all";
   query: string;
   focusedId: string | null;
   moodIds: MoodId[];
@@ -153,6 +161,7 @@ export function QuestGallery({
   const [filterReset, setFilterReset] = useState<FilterReset>({ sequence: 0 });
   const [width, setWidth] = useState(() => window.innerWidth);
   const viewport = useRef<HTMLDivElement>(null);
+  const searchInput = useRef<HTMLInputElement>(null);
 
   const drag = useRef<{
     id: number;
@@ -229,13 +238,9 @@ export function QuestGallery({
   const catalog = useMemo(
     () =>
       QUESTS.flatMap((definition) => {
-        const known = progress[definition.id];
-        const identity = known?.lastCompletion ?? known?.seenOffer;
-
-        const quest = hydrateQuest(
-          definition.id,
-          identity?.moodId ?? definition.moodIds[0],
-          identity?.game ?? null,
+        const quest = hydrateGalleryQuest(
+          definition,
+          progress[definition.id],
           language,
         );
 
@@ -250,6 +255,8 @@ export function QuestGallery({
         const completed = (counts[quest.id] ?? 0) > 0;
         const genres = quest.gameGenreIds;
         if (
+          !matchesQuestSource(quest, view.questSource) ||
+          (view.rarity !== "all" && quest.rarity !== view.rarity) ||
           (filter === "found" && !known) ||
           (filter === "favorites" && !known?.favorite) ||
           (filter === "completed" && !completed) ||
@@ -284,6 +291,18 @@ export function QuestGallery({
       }),
     [catalog, counts, filter, language, normalizedQuery, progress, view],
   );
+
+  const hasActiveFilters =
+    view.filter !== "all" ||
+    view.questSource !== "all" ||
+    view.rarity !== "all" ||
+    view.moodIds.length > 0 ||
+    view.genreIds.length > 0 ||
+    view.connectionModeIds.length > 0 ||
+    view.playStyleIds.length > 0 ||
+    view.typeIds.length > 0 ||
+    view.gameId !== null ||
+    view.tagIds.length > 0;
 
   const gameOptions = useMemo<GalleryGameOption[]>(() => {
     const games = new Map<string, GalleryGameOption>();
@@ -563,44 +582,75 @@ export function QuestGallery({
     >
       <header className={styles.header}>
         <h1 className={visuallyHiddenClassName}>{t("ui.gallery.title")}</h1>
-        <SolidButton
-          className={styles.back}
-          variant="highlighted"
-          size="medium"
-          onClick={() => {
-            setFocusedId(null);
-            onClose();
-          }}
-          iconLeft={<ChevronLeftIcon />}
-        >
-          {t("ui.gallery.back")}
-        </SolidButton>
-
         <div className={styles.filters}>
-          <label
+          <div
             className={`${buttonStyles.button} ${styles.search}`}
             data-size="medium"
             data-variant="secondary"
           >
             <MagnifyingGlassIcon aria-hidden weight="bold" />
             <input
+              ref={searchInput}
               type="search"
               value={query}
               placeholder={t("ui.gallery.search")}
               aria-label={t("ui.gallery.search")}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setFocusedId(null);
-              }}
+              onChange={(event) => setQuery(event.target.value)}
             />
-          </label>
+            {query ? (
+              <SolidButton
+                size="small"
+                variant="soft"
+                className={styles.clearSearch}
+                aria-label={t("ui.gallery.clearSearch")}
+                iconLeft={<XIcon weight="bold" />}
+                onClick={() => {
+                  setQuery("");
+                  searchInput.current?.focus();
+                }}
+              />
+            ) : null}
+          </div>
           <QuestGalleryFilters
             games={gameOptions}
             view={view}
             onApply={applyFilters}
           />
         </div>
+        <div className={styles.results}>
+          <span role="status">
+            {t("ui.gallery.results", { count: items.length })}
+          </span>
+          <SolidButton
+            size="small"
+            variant="soft"
+            disabled={!hasActiveFilters}
+            onClick={() =>
+              changeFilters({
+                filter: "all",
+                questSource: "all",
+                rarity: "all",
+                moodIds: [],
+                genreIds: [],
+                connectionModeIds: [],
+                playStyleIds: [],
+                typeIds: [],
+                gameId: null,
+                tagIds: [],
+              })
+            }
+          >
+            {t("ui.gallery.clearFilters")}
+          </SolidButton>
+        </div>
       </header>
+      <BottomCloseButton
+        label={t("ui.gallery.close")}
+        onClick={() => {
+          setFocusedId(null);
+          onClose();
+        }}
+      />
       <div
         className={styles.viewport}
         ref={viewport}
@@ -770,15 +820,12 @@ export function QuestGallery({
             <GalleryCard
               key={quest.id}
               quest={quest}
+              offerId={galleryQuestOfferId(quest, progress[quest.id])}
               layoutSessionId={layoutSessionId}
               selected={selectedId === quest.id}
               selecting={selectedId !== null}
               returnPose={
-                questOfferId(
-                  quest.mood.id,
-                  quest.id,
-                  quest.game?.id ?? null,
-                ) === returningQuestId
+                galleryQuestOfferId(quest, progress[quest.id]) === returningQuestId
                   ? returnPose
                   : undefined
               }
@@ -869,6 +916,7 @@ export function QuestGallery({
 
 function GalleryCard({
   quest,
+  offerId,
   layoutSessionId,
   selected,
   selecting,
@@ -890,6 +938,7 @@ function GalleryCard({
   onActivate,
 }: {
   quest: Quest;
+  offerId: string;
   layoutSessionId: string;
   selected: boolean;
   selecting: boolean;
@@ -1079,7 +1128,7 @@ function GalleryCard({
           className={styles.cardProjection}
           layoutId={questCardLayoutId(
             layoutSessionId,
-            questOfferId(quest.mood.id, quest.id, quest.game?.id ?? null),
+            offerId,
           )}
           layoutCrossfade={false}
           initial={false}
@@ -1130,6 +1179,7 @@ function GalleryCard({
                 showBack={false}
               >
                 <QuestCard
+                  rarity={quest.rarity}
                   unknown={!progress}
                   completed={completed}
                   bestTimeMs={progress?.bestTimeMs}

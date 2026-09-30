@@ -562,6 +562,7 @@ function QuestOfferCard({
                 }}
               >
                 <QuestCard
+                  rarity={item.rarity}
                   bestTimeMs={personalBest}
                   className={`${styles.questSelectionCard} ${styles.newCardsCardFront}`}
                   type={item.type}

@@ -1,6 +1,7 @@
 import { MOODS, type MoodId } from "../../data/moods";
 import { QUEST_CORES_BY_ID, questCoresForMood } from "../../data/quests";
 import { CURATED_GAMES_BY_ID } from "../../data/games";
+import { QUEST_COIN_MULTIPLIERS } from "../../data/questRarity";
 import type { GameReference } from "../../data/gameTypes";
 import type { CuratedGamePreferences, LibraryGame } from "../library/model";
 import { defaultPoolPreferences, matchesPoolPreferences } from "./pool";
@@ -337,15 +338,17 @@ export function canCompleteQuest(
   );
 }
 
-export function calculateCompletionPoints(durationMs: number) {
+export function calculateCompletionPoints(durationMs: number, questId?: string) {
   const scoringDurationMs = Math.min(
     safeNonNegativeInteger(durationMs),
     POINTS_DURATION_CAP_MS,
   );
-  return Math.min(
+  const basePoints = Math.min(
     MAX_COMPLETION_POINTS,
     Math.floor((scoringDurationMs * POINTS_PER_MINUTE) / 60_000),
   );
+  const rarity = questId ? QUEST_CORES_BY_ID[questId]?.rarity : undefined;
+  return basePoints * QUEST_COIN_MULTIPLIERS[rarity ?? "standard"];
 }
 
 export function statsAfterCompletion(

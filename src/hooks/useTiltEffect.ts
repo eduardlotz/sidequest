@@ -1,4 +1,5 @@
 import { useMotionValue } from "motion/react";
+import { readFoilPointer } from "../lib/surfacePointer";
 import {
   useCallback,
   useEffect,
@@ -173,13 +174,24 @@ export function useTiltEffect({
     const percentageY = clamp01((event.clientY - rect.top) / rect.height);
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
+    // Foil follows the visible plane, including fan rotation, scale and perspective.
+    // Keep the card tilt itself anchored to its stable hit area.
+    const foilPointer = readFoilPointer(card, {
+      x: event.clientX,
+      y: event.clientY,
+    });
+    const shineX = clamp01(foilPointer?.x ?? percentageX);
+    const shineY = clamp01(foilPointer?.y ?? percentageY);
 
     cardRef.current = card;
+    card.style.setProperty("--shine-x", `${shineX * 100}%`);
+    card.style.setProperty("--shine-y", `${shineY * 100}%`);
     targetRef.current = {
       angle:
         Math.atan2(event.clientX - centerX, -(event.clientY - centerY)) *
         (180 / Math.PI),
-      glareOpacity: percentageY * maxGlare,
+      // The foil's moving gradients supply its light response on both axes.
+      glareOpacity: foilPointer ? maxGlare / 2 : percentageY * maxGlare,
       rotateX: tilt / 2 - percentageY * tilt,
       rotateY: percentageX * tilt - tilt / 2,
       scale: nextScale,

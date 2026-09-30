@@ -83,6 +83,7 @@ export const QUEST_TRANSLATIONS_BY_ID = Object.fromEntries(
 export const QUESTS: readonly MoodQuestDefinition[] = QUEST_CATALOG.map(
   ({ translations, ...quest }) => ({
     ...quest,
+    rarity: quest.rarity ?? "standard",
     gameGenreIds: QUEST_POOL_TRAITS[quest.id].genreIds,
     connectionModeIds: QUEST_POOL_TRAITS[quest.id].styleIds.filter(isQuestConnectionModeId),
     playStyleIds: QUEST_POOL_TRAITS[quest.id].styleIds.filter(isQuestPlayStyleId),
@@ -107,6 +108,7 @@ export const QUESTS_BY_ID = Object.fromEntries(
 export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
   ({
     id,
+    rarity,
     moodIds,
     type,
     tags,
@@ -122,6 +124,7 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     curated,
   }) => ({
     id,
+    rarity,
     moodIds,
     type,
     tags,

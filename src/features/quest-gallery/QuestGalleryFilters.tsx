@@ -56,6 +56,8 @@ export function QuestGalleryFilters({
 
   const activeCount =
     Number(view.filter !== "all") +
+    Number(view.questSource !== "all") +
+    Number(view.rarity !== "all") +
     view.moodIds.length +
     view.genreIds.length +
     view.connectionModeIds.length +
@@ -67,6 +69,8 @@ export function QuestGalleryFilters({
   function clear() {
     setDraft({
       filter: "all",
+      questSource: "all",
+      rarity: "all",
       moodIds: [],
       genreIds: [],
       connectionModeIds: [],
@@ -122,6 +126,16 @@ export function QuestGalleryFilters({
               }
             >
               <div className={styles.groups}>
+              <FilterGroup title={t("ui.pool.questSource")}>
+                {(["all", "curated", "flexible"] as const).map((questSource) => (
+                  <FilterChoice
+                    key={questSource}
+                    active={draft.questSource === questSource}
+                    label={t(`ui.pool.${questSource}`)}
+                    onClick={() => setDraft((current) => ({ ...current, questSource }))}
+                  />
+                ))}
+              </FilterGroup>
               <FilterGroup title={t("ui.gallery.statusFilter")}>
                 {STATUS_FILTERS.map((filter) => (
                   <FilterChoice
@@ -129,6 +143,17 @@ export function QuestGalleryFilters({
                     active={draft.filter === filter}
                     label={t(`ui.gallery.${filter}`)}
                     onClick={() => setDraft((current) => ({ ...current, filter }))}
+                  />
+                ))}
+              </FilterGroup>
+
+              <FilterGroup title={t("ui.gallery.rarityFilter")}>
+                {(["all", "standard", "special"] as const).map((rarity) => (
+                  <FilterChoice
+                    key={rarity}
+                    active={draft.rarity === rarity}
+                    label={t(`ui.gallery.${rarity}`)}
+                    onClick={() => setDraft((current) => ({ ...current, rarity }))}
                   />
                 ))}
               </FilterGroup>
@@ -272,6 +297,8 @@ export function QuestGalleryFilters({
 function filterDraft(view: QuestGalleryView) {
   return {
     filter: view.filter,
+    questSource: view.questSource,
+    rarity: view.rarity,
     moodIds: [...view.moodIds],
     genreIds: [...view.genreIds],
     connectionModeIds: [...view.connectionModeIds],

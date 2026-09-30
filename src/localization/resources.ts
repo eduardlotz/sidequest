@@ -65,10 +65,12 @@ export const englishUi = {
     changeGame: "Change game",
     chooseGameQuest: "Choose a quest for {{game}}",
     noLibraryGamesTitle: "No playable games selected",
-    noLibraryGamesBody: "Add a game or select a series installment in your library to draw quests.",
+    noLibraryGamesBody:
+      "Add a game or select a series installment in your library to draw quests.",
     openLibrary: "Open profile",
     noMatchingQuestsTitle: "No quests for these choices",
-    noMatchingQuestsBody: "No quests match this choice and your pool settings. Change the game or adjust the pool in your profile.",
+    noMatchingQuestsBody:
+      "No quests match this choice and your pool settings. Change the game or adjust the pool in your profile.",
     chooseMoodQuest: "Choose a {{mood}} quest",
     selectMood: "Select your mood",
     choosePrefix: "Choose a",
@@ -101,6 +103,7 @@ export const englishUi = {
     noCards: "No cards available",
   },
   quest: {
+    specialReward: "Special · {{multiplier}}× coins",
     minimumMinutes: "{{count}} min minimum",
     suggestedMinutes: "{{count}} min suggested",
     durationRange: "{{minimum}}–{{suggested}} min",
@@ -220,7 +223,8 @@ export const germanUi = {
     description:
       "Eine kleine Starthilfe für Menschen mit zu vielen Videospielen.",
     stepsHeading: "Wie es funktioniert",
-    step1: "Wähle eine Stimmung oder ein bestimmtes Spiel für deine nächste Quest.",
+    step1:
+      "Wähle eine Stimmung oder ein bestimmtes Spiel für deine nächste Quest.",
     step2: "Such dir eine Quest aus und starte das passende Videospiel dazu",
     step3: "Starte den Timer und schließe die Quest in deinem Spiel ab.",
     mismatchHeading: "Die Aufgabe passt doch nicht?",
@@ -264,10 +268,12 @@ export const germanUi = {
     changeGame: "Spiel ändern",
     chooseGameQuest: "Wähle eine Quest für {{game}}",
     noLibraryGamesTitle: "Noch keine spielbaren Titel ausgewählt",
-    noLibraryGamesBody: "Füge ein Spiel hinzu oder wähle in deiner Bibliothek einen Teil einer Reihe aus, um Quests zu ziehen.",
+    noLibraryGamesBody:
+      "Füge ein Spiel hinzu oder wähle in deiner Bibliothek einen Teil einer Reihe aus, um Quests zu ziehen.",
     openLibrary: "Profil öffnen",
     noMatchingQuestsTitle: "Keine Quests für diese Auswahl",
-    noMatchingQuestsBody: "Für diese Auswahl und deine Pool-Einstellungen gibt es keine passenden Quests. Ändere das Spiel oder den Quest-Pool im Profil.",
+    noMatchingQuestsBody:
+      "Für diese Auswahl und deine Pool-Einstellungen gibt es keine passenden Quests. Ändere das Spiel oder den Quest-Pool im Profil.",
     chooseMoodQuest: "Wähle eine Quest für {{mood}}",
     selectMood: "Wähle deine Stimmung",
     choosePrefix: "Wähle eine",
@@ -300,6 +306,7 @@ export const germanUi = {
     noCards: "Keine Karten verfügbar",
   },
   quest: {
+    specialReward: "Besonders · {{multiplier}}× Münzen",
     minimumMinutes: "mindestens {{count}} Min.",
     suggestedMinutes: "{{count}} Min. empfohlen",
     durationRange: "{{minimum}}–{{suggested}} Min.",
@@ -398,11 +405,11 @@ export const germanUi = {
 
 export const germanMoods = {
   relax: {
-    title: "Entspannung",
+    title: "Entspannt",
     subtitle: "Ich möchte bei etwas Vertrautem abschalten und zur Ruhe kommen",
   },
   explore: {
-    title: "Entdeckung",
+    title: "Entdecken",
     subtitle: "Ich möchte ein Spiel entdecken, das mich noch überraschen kann",
   },
   progress: {
@@ -410,11 +417,11 @@ export const germanMoods = {
     subtitle: "Ich möchte endlich ein liegen gelassenes Spiel voranbringen",
   },
   create: {
-    title: "Kreativität",
+    title: "Kreativ",
     subtitle: "Ich möchte etwas Eigenes erschaffen, das sich nach mir anfühlt",
   },
   challenge: {
-    title: "Herausforderung",
+    title: "Challenge",
     subtitle: "Ich möchte Widerstand spüren und sehen, was ich schaffen kann",
   },
   connect: {
@@ -427,7 +434,7 @@ export const germanMoods = {
       "Ich möchte zu einem Spiel mit einer guten Erinnerung zurückkehren",
   },
   overwhelmed: {
-    title: "Überforderung",
+    title: "Überfordert",
     subtitle: "Ich möchte spielen, kann aber gerade keine Auswahl vertragen",
   },
   restless: {

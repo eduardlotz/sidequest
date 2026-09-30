@@ -87,6 +87,7 @@ export function WelcomeQuestPreviews({
                 })}
               >
                 <QuestCard
+                  rarity={quest.rarity}
                   game={quest.game}
                   type={quest.type}
                   tags={quest.tags}

@@ -2,6 +2,7 @@ import type { QuestTypeId, QuestTagId } from "./questTraits";
 import type { CustomGameCompatibility } from "./gameCompatibility";
 import type { QuestConnectionModeId, QuestPlayStyleId } from "./questPoolTraits";
 import type { GameGenreId } from "./gameGenres";
+import type { QuestRarity } from "./questRarity";
 
 export const MOOD_IDS = [
   "low-energy",
@@ -39,6 +40,7 @@ export type CuratedQuestDetails = {
 
 export type AuthoredQuestDefinition = {
   id: string;
+  rarity?: QuestRarity;
   moodIds: readonly MoodId[];
   type: QuestTypeId;
   tags: readonly QuestTagId[];
@@ -53,6 +55,7 @@ export type AuthoredQuestDefinition = {
 
 export type MoodQuestDefinition = {
   id: string;
+  rarity: QuestRarity;
   moodIds: readonly MoodId[];
   type: QuestTypeId;
   tags: readonly QuestTagId[];
@@ -74,6 +77,7 @@ export type MoodQuestDefinition = {
 export type QuestCoreDefinition = Pick<
   MoodQuestDefinition,
   | "id"
+  | "rarity"
   | "moodIds"
   | "type"
   | "tags"

@@ -535,7 +535,7 @@ function createQuestState(
         return null;
       }
 
-      const pointsAwarded = calculateCompletionPoints(durationMs);
+      const pointsAwarded = calculateCompletionPoints(durationMs, session.questId);
       const completedSession: CompletedSession = {
         id: session.sessionId,
         moodId: session.moodId,

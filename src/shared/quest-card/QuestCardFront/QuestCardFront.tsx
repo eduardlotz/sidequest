@@ -7,9 +7,12 @@ import { QuestCardMeta } from "../QuestCardMeta/QuestCardMeta";
 import { QuestObjectiveText } from "../QuestObjectiveText/QuestObjectiveText";
 import type { GameReference } from "../../../data/gameTypes";
 import { formatRunningDuration } from "../../../lib/format";
+import { QUEST_COIN_MULTIPLIERS, type QuestRarity } from "../../../data/questRarity";
+import { CoinIcon } from "../../ui/Icons/Icons";
 
 type Props = {
   unknown?: boolean;
+  rarity?: QuestRarity;
   bestTimeMs?: number | null;
   game: GameReference | null;
   type: QuestTypeId;
@@ -24,6 +27,7 @@ type Props = {
 
 export function QuestCardFront({
   unknown = false,
+  rarity = "standard",
   bestTimeMs,
   game,
   type,
@@ -82,6 +86,15 @@ export function QuestCardFront({
           </span>
           {!unknown && (
             <span className={styles.questCardGenres}>
+              {rarity === "special" && (
+                <span
+                  className={styles.specialBadge}
+                  aria-label={t("ui.quest.specialReward", { multiplier: QUEST_COIN_MULTIPLIERS[rarity] })}
+                >
+                  <span aria-hidden="true">{QUEST_COIN_MULTIPLIERS[rarity]}x</span>
+                  <CoinIcon />
+                </span>
+              )}
               {labels.map((label) => (
                 <span className={styles.questCardGenre} key={label}>
                   {label}

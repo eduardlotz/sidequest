@@ -22,10 +22,8 @@ export function matchesPoolPreferences(
 ) {
   // Pool genre is authored independently of custom-game compatibility.
   const genres = quest.gameGenreIds;
-  const matchesSource = preferences.questSource === "all" ||
-    (preferences.questSource === "curated" ? Boolean(quest.curated) : !quest.curated);
   return (
-    matchesSource &&
+    matchesQuestSource(quest, preferences.questSource) &&
     preferences.typeIds.includes(quest.type) &&
     preferences.genreIds.length > 0 &&
     (!genres.length ||
@@ -35,6 +33,13 @@ export function matchesPoolPreferences(
     ) &&
     quest.playStyleIds.some((id) => preferences.styleIds.includes(id))
   );
+}
+export function matchesQuestSource(
+  quest: Pick<QuestCoreDefinition, "curated">,
+  source: QuestPoolPreferences["questSource"],
+) {
+  return source === "all" ||
+    (source === "curated" ? Boolean(quest.curated) : !quest.curated);
 }
 export function sanitizePoolPreferences(value: unknown): QuestPoolPreferences {
   if (!value || typeof value !== "object") return defaultPoolPreferences();

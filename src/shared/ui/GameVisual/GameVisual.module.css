@@ -92,6 +92,11 @@
   aspect-ratio: 3 / 4;
 }
 
+.visual[data-visual="artwork"][data-size="card"] {
+  width: var(--game-card-visual-size, clamp(20px, 6.5cqw, 28px));
+  aspect-ratio: 1;
+}
+
 @media (--reduced-motion) {
   .visualChanging,
   .iconGlyphChanging {

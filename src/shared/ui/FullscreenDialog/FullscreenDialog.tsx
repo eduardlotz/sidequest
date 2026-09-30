@@ -7,9 +7,8 @@ import {
   type RefObject,
 } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { XIcon } from "@phosphor-icons/react/dist/csr/X";
 
-import { SolidButton } from "../SolidButton/SolidButton";
+import { BottomCloseButton } from "../BottomCloseButton/BottomCloseButton";
 import styles from "./FullscreenDialog.module.css";
 
 type Props = {
@@ -114,13 +113,9 @@ function FullscreenDialogSurface({
         ease: "easeOut",
       }}
     >
-      <SolidButton
+      <BottomCloseButton
         autoFocus
-        className={styles.close}
-        aria-label={closeLabel}
-        iconLeft={<XIcon weight="bold" />}
-        size="medium"
-        variant="secondary"
+        label={closeLabel}
         onClick={onClose}
       />
       <motion.div

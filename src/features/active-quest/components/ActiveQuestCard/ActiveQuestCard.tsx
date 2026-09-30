@@ -550,7 +550,7 @@ export function ActiveQuestCard({
         y: window.innerHeight / 2 + 40 - (cardRect.top + cardRect.height / 2),
       });
     }
-    const award = calculateCompletionPoints(duration);
+    const award = calculateCompletionPoints(duration, quest.id);
     const triggerRect = document
       .querySelector<HTMLElement>("[data-profile-trigger]")
       ?.getBoundingClientRect();
@@ -902,7 +902,7 @@ export function ActiveQuestCard({
             count: completionRemaining.count,
           })
         : "";
-  const completionAward = calculateCompletionPoints(elapsedMs);
+  const completionAward = calculateCompletionPoints(elapsedMs, quest.id);
   const cardFocusAvailable = isMobileViewport && revealFinished && !exiting;
   const cardFocus = useCardFocus(cardFocusAvailable);
   const hasNoRopes = !countdown && redRopes <= 0;
@@ -1123,6 +1123,7 @@ export function ActiveQuestCard({
               }
             >
               <QuestCard
+                rarity={quest.rarity}
                 bestTimeMs={personalBest}
                 className={styles.activeQuestCard}
                 completed={showFinishedFace}
