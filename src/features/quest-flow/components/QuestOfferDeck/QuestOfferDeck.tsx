@@ -347,6 +347,9 @@ function QuestOfferCard({
   const personalBest = useQuestStore(
     (state) => state.questProgressById[item.id]?.bestTimeMs,
   );
+  const favorite = useQuestStore(
+    (state) => state.questProgressById[item.id]?.favorite ?? false,
+  );
   const { isCompact } = usePlayLayout();
   const dealingNewCards = newCardsPhase !== "idle";
   const drag = useQuestCardDrag({
@@ -564,6 +567,7 @@ function QuestOfferCard({
                 <QuestCard
                   rarity={item.rarity}
                   bestTimeMs={personalBest}
+                  favorite={favorite}
                   className={`${styles.questSelectionCard} ${styles.newCardsCardFront}`}
                   type={item.type}
                   tags={item.tags}

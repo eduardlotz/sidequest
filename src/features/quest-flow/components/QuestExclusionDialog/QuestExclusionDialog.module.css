@@ -1,7 +1,8 @@
 .content {
   width: min(100%, 720px);
-  padding: 20px 0 40px;
+  padding: max(20px, calc(30svh - 76px)) 0 40px;
   margin: 0 auto;
+  text-align: center;
 }
 
 .content h2,
@@ -25,6 +26,17 @@
 .actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 8px;
   margin-top: 28px;
+}
+
+.preference {
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .content {
+    padding-top: max(20px, calc(30svh - 72px));
+  }
 }

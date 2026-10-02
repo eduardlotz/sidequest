@@ -106,6 +106,7 @@ export type QuestStats = {
 };
 
 export type QuestState = {
+  skipQuestBanPrompt: boolean;
   blacklistedQuestIds: string[];
   gameSelection: GameSelection | null;
   poolPreferences: QuestPoolPreferences;
@@ -130,6 +131,7 @@ export type QuestPoolPreferences = {
 };
 
 export type QuestActions = {
+  setSkipQuestBanPrompt: (skip: boolean) => void;
   setQuestBlacklisted: (questId: string, blacklisted: boolean) => boolean;
   excludeCurrentQuest: () => boolean;
   chooseGame: (gameId: string, installmentId?: string) => boolean;
@@ -159,6 +161,7 @@ export type QuestStore = QuestState & QuestActions;
 
 export type PersistedQuestState = Pick<
   QuestState,
+  | "skipQuestBanPrompt"
   | "gameSelection"
   | "blacklistedQuestIds"
   | "profile"

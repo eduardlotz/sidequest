@@ -16,9 +16,11 @@ type Props = {
   children: ReactNode;
   closeLabel: string;
   label: string;
+  initialFocusRef?: RefObject<HTMLElement | null>;
   onOpenChange: (open: boolean) => void;
   open: boolean;
   reduceMotion: boolean;
+  showCloseButton?: boolean;
   triggerRef?: RefObject<HTMLElement | null>;
 };
 
@@ -27,9 +29,11 @@ export function FullscreenDialog({
   children,
   closeLabel,
   label,
+  initialFocusRef,
   onOpenChange,
   open,
   reduceMotion,
+  showCloseButton = true,
   triggerRef,
 }: Props) {
   return (
@@ -39,8 +43,10 @@ export function FullscreenDialog({
           closeOnOutsideClick={closeOnOutsideClick}
           closeLabel={closeLabel}
           label={label}
+          initialFocusRef={initialFocusRef}
           onClose={() => onOpenChange(false)}
           reduceMotion={reduceMotion}
+          showCloseButton={showCloseButton}
           triggerRef={triggerRef}
         >
           {children}
@@ -55,8 +61,10 @@ function FullscreenDialogSurface({
   children,
   closeLabel,
   label,
+  initialFocusRef,
   onClose,
   reduceMotion,
+  showCloseButton,
   triggerRef,
 }: Omit<Props, "onOpenChange" | "open"> & { onClose: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -67,11 +75,12 @@ function FullscreenDialogSurface({
     const dialog = dialogRef.current;
     if (!dialog) return;
     dialog.showModal();
+    initialFocusRef?.current?.focus();
     return () => {
       dialog.close();
       window.requestAnimationFrame(() => triggerRef?.current?.focus());
     };
-  }, [triggerRef]);
+  }, [initialFocusRef, triggerRef]);
 
   useEffect(() => {
     const node = scrollRef.current;
@@ -117,11 +126,13 @@ function FullscreenDialogSurface({
         ease: "easeOut",
       }}
     >
-      <BottomCloseButton
-        autoFocus
-        label={closeLabel}
-        onClick={onClose}
-      />
+      {showCloseButton ? (
+        <BottomCloseButton
+          autoFocus
+          label={closeLabel}
+          onClick={onClose}
+        />
+      ) : null}
       <motion.div
         className={styles.scroll}
         onClick={(event) => {

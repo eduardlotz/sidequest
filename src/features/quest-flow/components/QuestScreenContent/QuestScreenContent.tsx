@@ -51,7 +51,7 @@ const NEW_CARDS_SWAP_DELAY_MS = 560;
 const NEW_CARDS_COMPLETE_DELAY_MS = 1_500;
 
 type ReturnTransition = {
-  action: "back" | "cancel" | "exclude";
+  action: "back" | "cancel";
   destination: "selection" | "gallery";
   sessionId: string;
   offerId: string;
@@ -84,7 +84,7 @@ type Props = {
   onNewCards: () => boolean;
   onDiscard: () => boolean;
   onCancelViaRope: () => boolean;
-  onExcludeQuest: () => boolean;
+  onRequestBan: () => void;
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
@@ -119,7 +119,7 @@ export function QuestScreenContent({
   onNewCards,
   onDiscard,
   onCancelViaRope,
-  onExcludeQuest,
+  onRequestBan,
   onStart,
   onPause,
   onResume,
@@ -347,8 +347,7 @@ export function QuestScreenContent({
   }
 
   function performReturn(action: ReturnTransition["action"]) {
-    return action === "exclude" ? onExcludeQuest()
-      : action === "back" ? onReturnToSelection() : onDiscard();
+    return action === "back" ? onReturnToSelection() : onDiscard();
   }
 
   function beginReturn(pose: CardReturnPose, action: ReturnTransition["action"]) {
@@ -518,6 +517,7 @@ export function QuestScreenContent({
                 debugMode={debugMode}
                 reduceMotion={reduceMotion}
                 onDiscard={onCancelViaRope}
+                onRequestBan={onRequestBan}
                 onReturnToSelection={beginReturn}
                 onStart={onStart}
                 onPause={onPause}

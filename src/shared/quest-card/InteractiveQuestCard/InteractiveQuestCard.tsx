@@ -48,6 +48,8 @@ type Props = {
   showBack?: boolean;
   onPointerLeave?: (event: PointerEvent<HTMLElement>) => void;
   onActivate?: () => void;
+  onDoubleActivate?: () => void;
+  pressed?: boolean;
 };
 
 export function InteractiveQuestCard({
@@ -68,9 +70,14 @@ export function InteractiveQuestCard({
   showBack = true,
   onPointerLeave,
   onActivate,
+  onDoubleActivate,
+  pressed,
 }: Props) {
   const [cardFlipActive, setCardFlipActive] = useState(false);
   const cardClickTimesRef = useRef<number[]>([]);
+  const favoriteTapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onDoubleActivateRef = useRef(onDoubleActivate);
+  const doubleActivationEnabled = Boolean(onDoubleActivate);
   const cardFlipAnimationRef = useRef<{ stop: () => void } | null>(null);
   const cardFlipDirectionRef = useRef<CardFlipDirection>(1);
   const wobbleRotation = useMotionValue(0);
@@ -180,14 +187,17 @@ export function InteractiveQuestCard({
   const handleCardClick = useCallback(() => {
     if (!disabled) onActivate?.();
     if (
-      reduceMotion ||
       disabled ||
-      !flipOnClick ||
+      (!flipOnClick && !onDoubleActivate) ||
       cardFlipActive
     )
       return;
 
     const now = performance.now();
+    if (favoriteTapTimerRef.current !== null) {
+      clearTimeout(favoriteTapTimerRef.current);
+      favoriteTapTimerRef.current = null;
+    }
     const recentClicks = cardClickTimesRef.current.filter(
       (clickedAt) => now - clickedAt <= CARD_TRIPLE_CLICK_WINDOW_MS,
     );
@@ -195,11 +205,19 @@ export function InteractiveQuestCard({
 
     if (recentClicks.length >= (flipOnClick === "single" ? 1 : 3)) {
       cardClickTimesRef.current = [];
-      startFlip(cardFlipDirectionRef.current);
+      if (flipOnClick && !reduceMotion) startFlip(cardFlipDirectionRef.current);
       return;
     }
 
     cardClickTimesRef.current = recentClicks;
+    if (recentClicks.length === 2 && onDoubleActivate) {
+      // Wait out the existing triple-tap window so its third tap only flips.
+      favoriteTapTimerRef.current = setTimeout(() => {
+        favoriteTapTimerRef.current = null;
+        cardClickTimesRef.current = [];
+        onDoubleActivateRef.current?.();
+      }, Math.max(0, CARD_TRIPLE_CLICK_WINDOW_MS - (now - recentClicks[0])));
+    }
   }, [
     cardFlipActive,
     disabled,
@@ -207,7 +225,18 @@ export function InteractiveQuestCard({
     reduceMotion,
     startFlip,
     onActivate,
+    onDoubleActivate,
   ]);
+
+  useEffect(() => {
+    onDoubleActivateRef.current = onDoubleActivate;
+  }, [onDoubleActivate]);
+
+  useEffect(() => () => {
+    if (favoriteTapTimerRef.current !== null) clearTimeout(favoriteTapTimerRef.current);
+    favoriteTapTimerRef.current = null;
+    cardClickTimesRef.current = [];
+  }, [disabled, doubleActivationEnabled]);
 
   useImperativeHandle(
     ref,
@@ -271,6 +300,8 @@ export function InteractiveQuestCard({
       ref={hitAreaRef}
       className={[styles.hitArea, className].filter(Boolean).join(" ")}
       aria-label={label}
+      aria-pressed={pressed}
+      aria-disabled={onActivate || onDoubleActivate ? disabled : undefined}
       data-sound-card
       data-flow-focus
       data-sound-skip={!hoverEnabled || disabled || undefined}
@@ -278,11 +309,19 @@ export function InteractiveQuestCard({
       data-floating={(floating && !reduceMotion) || undefined}
       data-float-paused={floatPaused || cardFlipActive || undefined}
       data-show-back={showBack || undefined}
-      tabIndex={onActivate ? 0 : -1}
-      role={onActivate ? "button" : undefined}
+      tabIndex={onActivate || onDoubleActivate ? 0 : -1}
+      role={onActivate || onDoubleActivate ? "button" : undefined}
       onKeyDown={(event) => {
-        if (!onActivate || disabled || (event.key !== "Enter" && event.key !== " ")) return;
+        if (event.target !== event.currentTarget || event.repeat || disabled || cardFlipActive || (event.key !== "Enter" && event.key !== " ")) return;
+        if (!onActivate && !onDoubleActivate) return;
         event.preventDefault();
+        if (onDoubleActivate) {
+          if (favoriteTapTimerRef.current !== null) clearTimeout(favoriteTapTimerRef.current);
+          favoriteTapTimerRef.current = null;
+          cardClickTimesRef.current = [];
+          onDoubleActivate();
+          return;
+        }
         handleCardClick();
       }}
       onPointerEnter={(event) => {
@@ -302,7 +341,11 @@ export function InteractiveQuestCard({
         handlePointerLeave(event);
         onPointerLeave?.(event);
       }}
-      onClick={handleCardClick}
+      onClick={(event) => {
+        // The mobile focus button opens the card without counting as a card tap.
+        if ((event.target as Element).closest("button")) return;
+        handleCardClick();
+      }}
     >
       <motion.div
         ref={floatRef}

@@ -83,6 +83,7 @@ const GALLERY_FILTERS = [
   "favorites",
   "completed",
   "uncompleted",
+  "banned",
 ] as const;
 export type GalleryFilter = (typeof GALLERY_FILTERS)[number];
 export type QuestGalleryView = {
@@ -257,6 +258,7 @@ export function QuestGallery({
       catalog.filter((quest) => {
         const known = progress[quest.id];
         const completed = (counts[quest.id] ?? 0) > 0;
+        const banned = blacklistedQuestIds.includes(quest.id);
         const genres = quest.gameGenreIds;
         if (
           !matchesQuestSource(quest, view.questSource) ||
@@ -265,6 +267,8 @@ export function QuestGallery({
           (filter === "favorites" && !known?.favorite) ||
           (filter === "completed" && !completed) ||
           (filter === "uncompleted" && completed) ||
+          (filter === "all" && banned) ||
+          (filter === "banned" && !banned) ||
           (view.moodIds.length > 0 &&
             !quest.moodIds.some((id) => view.moodIds.includes(id))) ||
           (view.genreIds.length > 0 &&
@@ -293,7 +297,7 @@ export function QuestGallery({
           )
         );
       }),
-    [catalog, counts, filter, language, normalizedQuery, progress, view],
+    [blacklistedQuestIds, catalog, counts, filter, language, normalizedQuery, progress, view],
   );
 
   const hasActiveFilters =
@@ -1193,6 +1197,7 @@ function GalleryCard({
                   rarity={quest.rarity}
                   unknown={!progress}
                   completed={completed}
+                  favorite={progress?.favorite ?? false}
                   bestTimeMs={progress?.bestTimeMs}
                   game={quest.game}
                   type={quest.type}

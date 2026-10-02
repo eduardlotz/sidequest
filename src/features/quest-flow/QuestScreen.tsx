@@ -42,6 +42,8 @@ export function QuestScreen({
     discardCurrentSession,
     excludeCurrentQuest,
     setQuestBlacklisted,
+    skipQuestBanPrompt,
+    setSkipQuestBanPrompt,
     editMood,
     editGame,
     gameSelection,
@@ -68,6 +70,8 @@ export function QuestScreen({
       discardCurrentSession: state.discardCurrentSession,
       excludeCurrentQuest: state.excludeCurrentQuest,
       setQuestBlacklisted: state.setQuestBlacklisted,
+      skipQuestBanPrompt: state.skipQuestBanPrompt,
+      setSkipQuestBanPrompt: state.setSkipQuestBanPrompt,
       editMood: state.editMood,
       editGame: state.editGame,
       gameSelection: state.gameSelection,
@@ -89,7 +93,11 @@ export function QuestScreen({
     })),
   );
   const introReady = useIntroReady(reduceMotion);
-  const [cancelledQuest, setCancelledQuest] = useState<{ id: string; name: string } | null>(null);
+  const [banPrompt, setBanPrompt] = useState<{
+    id: string;
+    name: string;
+    origin: "rope" | "start";
+  } | null>(null);
   const libraryRevision = useLibraryStore((state) => state.revision);
   const libraryGames = useMemo(() => libraryGamesFromState(libraryStore.getState()), [libraryRevision]);
   const hasCurrentSession = Boolean(currentSession);
@@ -167,10 +175,15 @@ export function QuestScreen({
         onReturnToSelection={returnCurrentSessionToSelection}
         onNewCards={dealNewCards}
         onDiscard={discardCurrentSession}
-        onExcludeQuest={excludeCurrentQuest}
+        onRequestBan={() => {
+          if (!currentQuest || !currentSession || currentSession.startedAt !== null) return;
+          setBanPrompt({ id: currentQuest.id, name: currentQuest.name, origin: "start" });
+        }}
         onCancelViaRope={() => {
-          if (!currentQuest || !discardCurrentSession()) return false;
-          setCancelledQuest({ id: currentQuest.id, name: currentQuest.name });
+          if (!currentQuest || !currentSession || currentSession.startedAt === null) return false;
+          if (skipQuestBanPrompt) return discardCurrentSession();
+          pauseQuest(Date.now());
+          setBanPrompt({ id: currentQuest.id, name: currentQuest.name, origin: "rope" });
           return true;
         }}
         onStart={startQuest}
@@ -182,12 +195,29 @@ export function QuestScreen({
         onPurchaseRedRopes={purchaseRedRopes}
       />
       <QuestExclusionDialog
-        questName={cancelledQuest?.name ?? null}
+        questName={banPrompt?.name ?? null}
         reduceMotion={reduceMotion}
-        onClose={() => setCancelledQuest(null)}
+        showKeepAndDontAskAgain={banPrompt?.origin === "rope"}
+        onKeepAndDontAskAgain={() => {
+          if (!banPrompt) return;
+          setSkipQuestBanPrompt(true);
+          if (banPrompt.origin === "rope") discardCurrentSession();
+          setBanPrompt(null);
+        }}
+        onClose={() => {
+          if (!banPrompt) return;
+          if (banPrompt.origin === "rope") discardCurrentSession();
+          setBanPrompt(null);
+        }}
         onExclude={() => {
-          if (cancelledQuest) setQuestBlacklisted(cancelledQuest.id, true);
-          setCancelledQuest(null);
+          if (!banPrompt) return;
+          if (banPrompt.origin === "start") {
+            excludeCurrentQuest();
+          } else {
+            setQuestBlacklisted(banPrompt.id, true);
+            discardCurrentSession();
+          }
+          setBanPrompt(null);
         }}
       />
     </motion.div>

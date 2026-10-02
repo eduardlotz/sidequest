@@ -74,6 +74,7 @@ export function questGamesForSelection(
 
 export function createDefaultQuestState(): QuestState {
   return {
+    skipQuestBanPrompt: false,
     blacklistedQuestIds: [],
     poolPreferences: defaultPoolPreferences(),
     profile: { ...DEFAULT_PROFILE },

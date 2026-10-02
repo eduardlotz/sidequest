@@ -124,6 +124,7 @@ function createQuestState(
   }
   return (set, get) => ({
     ...createDefaultState(),
+    setSkipQuestBanPrompt: (skipQuestBanPrompt) => set({ skipQuestBanPrompt }),
     setQuestBlacklisted: (questId, blacklisted) => {
       const state = get();
       if (!Object.hasOwn(QUEST_CORES_BY_ID, questId)) return false;
@@ -698,6 +699,7 @@ export function createQuestStore(
         return state;
       },
       partialize: ({
+        skipQuestBanPrompt,
         blacklistedQuestIds,
         gameSelection,
         poolPreferences,
@@ -712,6 +714,7 @@ export function createQuestStore(
         questProgressById,
         stats,
       }) => ({
+        skipQuestBanPrompt,
         blacklistedQuestIds,
         gameSelection,
         poolPreferences,

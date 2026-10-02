@@ -169,6 +169,7 @@ export function migrateQuestState(value: unknown): PersistedQuestState {
   }
   return {
     blacklistedQuestIds,
+    skipQuestBanPrompt: value.skipQuestBanPrompt === true,
     gameSelection: selection,
     poolPreferences: sanitizePoolPreferences(value.poolPreferences),
     profile: {

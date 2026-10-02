@@ -52,8 +52,6 @@ import {
   type InteractiveQuestCardHandle,
 } from "../../../../shared/quest-card/InteractiveQuestCard/InteractiveQuestCard";
 import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
-import { QuestFavoriteButton } from "../../../../shared/quest-card/QuestFavoriteButton";
-import { Tooltip } from "../../../../shared/ui/Tooltip/Tooltip";
 import cardStyles from "../../../../shared/quest-card/QuestCard/QuestCard.module.css";
 import { RopePurchaseRow } from "../RopePurchaseRow/RopePurchaseRow";
 import { FlyingCoin, type CoinImpact } from "../FlyingCoin/FlyingCoin";
@@ -98,9 +96,10 @@ type Props = {
   debugMode: boolean;
   reduceMotion: boolean;
   onDiscard: () => boolean;
+  onRequestBan: () => void;
   onReturnToSelection: (
     pose: CardReturnPose,
-    action: "back" | "cancel" | "exclude",
+    action: "back" | "cancel",
   ) => boolean;
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
@@ -167,6 +166,7 @@ export function ActiveQuestCard({
   debugMode,
   reduceMotion,
   onDiscard,
+  onRequestBan,
   onReturnToSelection,
   onStart,
   onPause,
@@ -617,7 +617,7 @@ export function ActiveQuestCard({
     }, COMPLETION_HOLD_DURATION_MS);
   }
 
-  function returnToSelection(action: "back" | "cancel" | "exclude" = "back") {
+  function returnToSelection(action: "back" | "cancel" = "back") {
     if (
       exitStartedRef.current ||
       (action !== "cancel" ? phase !== "ready" : !countdown || phase !== "paused")
@@ -1077,6 +1077,8 @@ export function ActiveQuestCard({
               ref={cardInteractionRef}
               hitAreaRef={cardHitAreaRef}
               flipOnClick="triple"
+              onDoubleActivate={!isMobileViewport || cardFocus.focused ? () => toggleFavorite(quest.id) : undefined}
+              pressed={!isMobileViewport || cardFocus.focused ? favorite : undefined}
               reduceMotion={reduceMotion}
               disabled={exiting || !revealFinished}
               hoverEnabled={cardHoverArmed}
@@ -1086,7 +1088,7 @@ export function ActiveQuestCard({
               onPointerLeave={(event) => {
                 if (event.pointerType === "mouse") setCardHoverArmed(true);
               }}
-              label={t("ui.quest.activeLabel", {
+              label={t("ui.quest.favoriteCardLabel", {
                 mood: quest.mood.title,
                 title: quest.name,
                 game: quest.game?.name ?? "",
@@ -1131,6 +1133,8 @@ export function ActiveQuestCard({
                 bestTimeMs={personalBest}
                 className={styles.activeQuestCard}
                 completed={showFinishedFace}
+                favorite={favorite}
+                favoriteInteraction
                 type={quest.type}
                 tags={quest.tags}
                 game={quest.game}
@@ -1427,21 +1431,6 @@ export function ActiveQuestCard({
                 >
                   <span>{returnLabel}</span>
                 </SolidButton>
-                <QuestFavoriteButton
-                  size="small"
-                  favorite={favorite}
-                  onToggle={() => toggleFavorite(quest.id)}
-                />
-                <Tooltip content={t("ui.gallery.excludeTooltip")}>
-                  <SolidButton
-                    size="small"
-                    type="button"
-                    variant="soft"
-                    onClick={() => returnToSelection("exclude")}
-                  >
-                    {t("ui.gallery.excludeQuest")}
-                  </SolidButton>
-                </Tooltip>
               </motion.span>
             )}
           </AnimatePresence>
@@ -1528,6 +1517,16 @@ export function ActiveQuestCard({
                       onPurchase={onPurchaseRedRopes}
                       tone="inverse"
                     />
+                  )}
+                  {phase === "ready" && (
+                    <SolidButton
+                      className={styles.banControl}
+                      size="small"
+                      variant="soft"
+                      onClick={onRequestBan}
+                    >
+                      {t("ui.gallery.excludeQuest")}
+                    </SolidButton>
                   )}
                 </motion.div>
               )}

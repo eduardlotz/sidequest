@@ -17,6 +17,8 @@ type Props = {
   children?: ReactNode;
   className?: string;
   completed?: boolean;
+  favorite?: boolean;
+  favoriteInteraction?: boolean;
   unknown?: boolean;
   rarity?: QuestRarity;
   bestTimeMs?: number | null;
@@ -36,6 +38,8 @@ export function QuestCard({
   children,
   className,
   completed = false,
+  favorite = false,
+  favoriteInteraction = false,
   unknown = false,
   rarity = "standard",
   bestTimeMs,
@@ -85,6 +89,8 @@ export function QuestCard({
         </span>
       )}
       <QuestCardFront
+        favorite={favorite}
+        favoriteInteraction={favoriteInteraction}
         unknown={unknown}
         rarity={rarity}
         bestTimeMs={bestTimeMs}

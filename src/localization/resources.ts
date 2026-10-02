@@ -115,6 +115,7 @@ export const englishUi = {
     activeLabel: "Active {{mood}} quest: {{title}}",
     focusCard: "Focus quest card: {{title}}",
     closeFocusedCard: "Close focused quest card",
+    favoriteCardLabel: "Toggle favorite: {{title}}. Double tap to favorite, triple tap to flip, or press Enter or Space to toggle favorite.",
   },
   timer: {
     ...englishTimed,
@@ -318,6 +319,7 @@ export const germanUi = {
     activeLabel: "Aktive Quest für {{mood}}: {{title}}",
     focusCard: "Quest-Karte fokussieren: {{title}}",
     closeFocusedCard: "Fokussierte Quest-Karte schließen",
+    favoriteCardLabel: "Favorit umschalten: {{title}}. Zweimal tippen zum Favorisieren, dreimal zum Drehen. Eingabe- oder Leertaste schaltet den Favoriten um.",
   },
   timer: {
     ...germanTimed,
