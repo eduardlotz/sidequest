@@ -51,7 +51,7 @@ const NEW_CARDS_SWAP_DELAY_MS = 560;
 const NEW_CARDS_COMPLETE_DELAY_MS = 1_500;
 
 type ReturnTransition = {
-  action: "back" | "cancel";
+  action: "back" | "cancel" | "exclude";
   destination: "selection" | "gallery";
   sessionId: string;
   offerId: string;
@@ -83,6 +83,8 @@ type Props = {
   onReturnToSelection: () => boolean;
   onNewCards: () => boolean;
   onDiscard: () => boolean;
+  onCancelViaRope: () => boolean;
+  onExcludeQuest: () => boolean;
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
   onResume: (resumedAt: number) => void;
@@ -116,6 +118,8 @@ export function QuestScreenContent({
   onReturnToSelection,
   onNewCards,
   onDiscard,
+  onCancelViaRope,
+  onExcludeQuest,
   onStart,
   onPause,
   onResume,
@@ -342,18 +346,23 @@ export function QuestScreenContent({
     });
   }
 
-  function beginReturn(pose: CardReturnPose, action: "back" | "cancel") {
+  function performReturn(action: ReturnTransition["action"]) {
+    return action === "exclude" ? onExcludeQuest()
+      : action === "back" ? onReturnToSelection() : onDiscard();
+  }
+
+  function beginReturn(pose: CardReturnPose, action: ReturnTransition["action"]) {
     if (isReturning || !currentSession || !currentOfferId) return false;
     if (
       activeSource !== "gallery" &&
       (!questReady ||
         !offeredQuests.some((item) => item.offerId === currentOfferId))
     ) {
-      return action === "back" ? onReturnToSelection() : onDiscard();
+      return performReturn(action);
     }
     if (
       reduceMotion &&
-      !(action === "back" ? onReturnToSelection() : onDiscard())
+      !performReturn(action)
     ) {
       return false;
     }
@@ -423,7 +432,7 @@ export function QuestScreenContent({
 
     // Keep the original offer in its slot until the shared card and timer exit finish.
     const returned =
-      returnTransition.action === "back" ? onReturnToSelection() : onDiscard();
+      performReturn(returnTransition.action);
     setReturnTransition(
       returned ? { ...returnTransition, finished: true } : null,
     );
@@ -508,7 +517,7 @@ export function QuestScreenContent({
                 redRopes={redRopes}
                 debugMode={debugMode}
                 reduceMotion={reduceMotion}
-                onDiscard={onDiscard}
+                onDiscard={onCancelViaRope}
                 onReturnToSelection={beginReturn}
                 onStart={onStart}
                 onPause={onPause}

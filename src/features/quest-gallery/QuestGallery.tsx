@@ -23,7 +23,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { Drawer } from "vaul";
-import { HeartIcon, MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
+import { EyeSlashIcon, MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
 import { QUESTS } from "../../data/quests";
 import type { MoodId } from "../../data/moods";
 import type { GameGenreId } from "../../data/gameGenres";
@@ -57,6 +57,8 @@ import {
 } from "../../shared/hooks/useMediaQuery";
 import { InteractiveQuestCard } from "../../shared/quest-card/InteractiveQuestCard/InteractiveQuestCard";
 import { QuestCard } from "../../shared/quest-card/QuestCard/QuestCard";
+import { QuestFavoriteButton } from "../../shared/quest-card/QuestFavoriteButton";
+import { Tooltip } from "../../shared/ui/Tooltip/Tooltip";
 import cardStyles from "../../shared/quest-card/QuestCard/QuestCard.module.css";
 import { SolidButton } from "../../shared/ui/SolidButton/SolidButton";
 import { BottomCloseButton } from "../../shared/ui/BottomCloseButton/BottomCloseButton";
@@ -138,12 +140,14 @@ export function QuestGallery({
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const desktop = useMediaQuery(DESKTOP_VIEWPORT_QUERY);
   const isPresent = useIsPresent();
-  const { progress, counts, toggleFavorite, currentSession } = useQuestStore(
+  const { progress, counts, toggleFavorite, currentSession, blacklistedQuestIds, setQuestBlacklisted } = useQuestStore(
     useShallow((state) => ({
       progress: state.questProgressById,
       counts: state.stats.completionCountsByQuestId,
       toggleFavorite: state.toggleQuestFavorite,
       currentSession: state.currentSession,
+      blacklistedQuestIds: state.blacklistedQuestIds,
+      setQuestBlacklisted: state.setQuestBlacklisted,
     })),
   );
   const { filter, query, focusedId } = view;
@@ -542,6 +546,7 @@ export function QuestGallery({
       !isPresent ||
       returning ||
       selectedId ||
+      blacklistedQuestIds.includes(focusedQuest.id) ||
       currentSession
     ) {
       return;
@@ -569,6 +574,8 @@ export function QuestGallery({
       progress={progress[focusedQuest.id]}
       count={counts[focusedQuest.id] ?? 0}
       active={Boolean(currentSession)}
+      blacklisted={blacklistedQuestIds.includes(focusedQuest.id)}
+      onBlacklist={() => setQuestBlacklisted(focusedQuest.id, !blacklistedQuestIds.includes(focusedQuest.id))}
       onFavorite={() => toggleFavorite(focusedQuest.id)}
       onRepeat={repeatFocusedQuest}
     />
@@ -842,6 +849,7 @@ export function QuestGallery({
               desktop={desktop}
               progress={progress[quest.id]}
               completed={(counts[quest.id] ?? 0) > 0}
+              blacklisted={blacklistedQuestIds.includes(quest.id)}
               reduceMotion={reduceMotion}
               onActivate={() => focus(quest.id)}
             />
@@ -934,6 +942,7 @@ function GalleryCard({
   desktop,
   progress,
   completed,
+  blacklisted,
   reduceMotion,
   onActivate,
 }: {
@@ -956,6 +965,7 @@ function GalleryCard({
   desktop: boolean;
   progress?: QuestProgress;
   completed: boolean;
+  blacklisted: boolean;
   reduceMotion: boolean;
   onActivate: () => void;
 }) {
@@ -1090,6 +1100,7 @@ function GalleryCard({
       data-selected={selected || undefined}
       data-focused={focused || undefined}
       data-uncompleted={!completed || undefined}
+      data-blacklisted={blacklisted || undefined}
       inert={!isPresent}
       style={{
         ...getMoodAccentStyle(quest.mood.id),
@@ -1171,7 +1182,7 @@ function GalleryCard({
               }
             >
               <InteractiveQuestCard
-                label={progress ? quest.name : t("ui.gallery.unknown")}
+                label={`${progress ? quest.name : t("ui.gallery.unknown")}${blacklisted ? ` · ${t("ui.gallery.excludedQuest")}` : ""}`}
                 onActivate={onActivate}
                 reduceMotion={reduceMotion}
                 hoverEnabled={!returning && !selected}
@@ -1192,7 +1203,13 @@ function GalleryCard({
                   name={quest.name}
                   objective={quest.objective}
                   showWordmarkLogo={focused}
-                />
+                >
+                  {blacklisted && (
+                    <span className={styles.hiddenMarker} role="img" aria-label={t("ui.gallery.excludedQuest")}>
+                      <EyeSlashIcon weight="bold" aria-hidden="true" />
+                    </span>
+                  )}
+                </QuestCard>
               </InteractiveQuestCard>
             </motion.div>
           </motion.div>
@@ -1206,6 +1223,8 @@ function QuestInfo({
   progress,
   count,
   active,
+  blacklisted,
+  onBlacklist,
   onFavorite,
   onRepeat,
 }: {
@@ -1213,6 +1232,8 @@ function QuestInfo({
   progress?: QuestProgress;
   count: number;
   active: boolean;
+  blacklisted: boolean;
+  onBlacklist: () => void;
   onFavorite: () => void;
   onRepeat: () => void;
 }) {
@@ -1249,30 +1270,31 @@ function QuestInfo({
         )}
       </InfoText>
       <div className={styles.actions}>
-        <SolidButton
-          size="medium"
-          variant="secondary"
+        <QuestFavoriteButton
           disabled={!progress}
-          aria-pressed={progress?.favorite ?? false}
-          onClick={onFavorite}
-          iconLeft={
-            <HeartIcon
-              weight={progress?.favorite ? "fill" : "bold"}
-              style={progress?.favorite ? { color: "#fc3131" } : undefined}
-            />
-          }
-        >
-          {t("ui.gallery.favorite")}
-        </SolidButton>
+          favorite={progress?.favorite ?? false}
+          onToggle={onFavorite}
+        />
         <SolidButton
           size="medium"
           variant="highlighted"
-          disabled={!progress || active}
+          disabled={!progress || active || blacklisted}
           onClick={onRepeat}
         >
           {t(count > 0 ? "ui.gallery.repeat" : "ui.gallery.start")}
         </SolidButton>
       </div>
+      {blacklisted ? (
+        <SolidButton size="medium" variant="soft" onClick={onBlacklist}>
+          {t("ui.gallery.allowQuest")}
+        </SolidButton>
+      ) : (
+        <Tooltip content={t("ui.gallery.excludeTooltip")}>
+          <SolidButton size="medium" variant="soft" disabled={!progress} onClick={onBlacklist}>
+            {t("ui.gallery.excludeQuest")}
+          </SolidButton>
+        </Tooltip>
+      )}
       {active && <InfoText>{t("ui.gallery.activeQuest")}</InfoText>}
       {count === 0 && (
         <div className={styles.statusData}>

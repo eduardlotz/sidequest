@@ -148,11 +148,16 @@ export function migrateQuestState(value: unknown): PersistedQuestState {
   const selection = savedSelection?.gameId === "animal-crossing"
     && savedSelection.installmentId === "new-horizons"
     ? { ...savedSelection, installmentId: null } : savedSelection;
-  const offeredQuests = uniqueOffers(value.offeredQuests);
+  const blacklistedQuestIds = Array.isArray(value.blacklistedQuestIds)
+    ? [...new Set(value.blacklistedQuestIds.filter(quest))] : [];
+  const blacklist = new Set(blacklistedQuestIds);
+  const liveOffers = (value: unknown) => uniqueOffers(value)
+    .filter((offer) => !blacklist.has(offer.questId));
+  const offeredQuests = liveOffers(value.offeredQuests);
   const offerSetsByMoodId: PersistedQuestState["offerSetsByMoodId"] = {};
   if (record(value.offerSetsByMoodId)) {
     for (const [id, offers] of Object.entries(value.offerSetsByMoodId)) {
-      if (mood(id)) offerSetsByMoodId[id] = uniqueOffers(offers);
+      if (mood(id)) offerSetsByMoodId[id] = liveOffers(offers);
     }
   }
   const questProgressById: PersistedQuestState["questProgressById"] = {};
@@ -163,6 +168,7 @@ export function migrateQuestState(value: unknown): PersistedQuestState {
     }
   }
   return {
+    blacklistedQuestIds,
     gameSelection: selection,
     poolPreferences: sanitizePoolPreferences(value.poolPreferences),
     profile: {

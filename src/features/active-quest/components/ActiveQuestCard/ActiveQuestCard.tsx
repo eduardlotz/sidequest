@@ -52,6 +52,8 @@ import {
   type InteractiveQuestCardHandle,
 } from "../../../../shared/quest-card/InteractiveQuestCard/InteractiveQuestCard";
 import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
+import { QuestFavoriteButton } from "../../../../shared/quest-card/QuestFavoriteButton";
+import { Tooltip } from "../../../../shared/ui/Tooltip/Tooltip";
 import cardStyles from "../../../../shared/quest-card/QuestCard/QuestCard.module.css";
 import { RopePurchaseRow } from "../RopePurchaseRow/RopePurchaseRow";
 import { FlyingCoin, type CoinImpact } from "../FlyingCoin/FlyingCoin";
@@ -98,7 +100,7 @@ type Props = {
   onDiscard: () => boolean;
   onReturnToSelection: (
     pose: CardReturnPose,
-    action: "back" | "cancel",
+    action: "back" | "cancel" | "exclude",
   ) => boolean;
   onStart: (startedAt: number) => void;
   onPause: (pausedAt: number) => void;
@@ -185,6 +187,8 @@ export function ActiveQuestCard({
   const personalBest = useQuestStore(
     (state) => state.questProgressById[quest.id]?.bestTimeMs,
   );
+  const favorite = useQuestStore((state) => state.questProgressById[quest.id]?.favorite ?? false);
+  const toggleFavorite = useQuestStore((state) => state.toggleQuestFavorite);
   const initiallyReady = session.startedAt === null;
   const initiallyPaused =
     session.startedAt !== null && session.pausedAt !== null;
@@ -613,10 +617,10 @@ export function ActiveQuestCard({
     }, COMPLETION_HOLD_DURATION_MS);
   }
 
-  function returnToSelection(action: "back" | "cancel" = "back") {
+  function returnToSelection(action: "back" | "cancel" | "exclude" = "back") {
     if (
       exitStartedRef.current ||
-      (action === "back" ? phase !== "ready" : !countdown || phase !== "paused")
+      (action !== "cancel" ? phase !== "ready" : !countdown || phase !== "paused")
     )
       return;
     const surface = cardInteractionRef.current?.capturePose();
@@ -1423,6 +1427,21 @@ export function ActiveQuestCard({
                 >
                   <span>{returnLabel}</span>
                 </SolidButton>
+                <QuestFavoriteButton
+                  size="small"
+                  favorite={favorite}
+                  onToggle={() => toggleFavorite(quest.id)}
+                />
+                <Tooltip content={t("ui.gallery.excludeTooltip")}>
+                  <SolidButton
+                    size="small"
+                    type="button"
+                    variant="soft"
+                    onClick={() => returnToSelection("exclude")}
+                  >
+                    {t("ui.gallery.excludeQuest")}
+                  </SolidButton>
+                </Tooltip>
               </motion.span>
             )}
           </AnimatePresence>

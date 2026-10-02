@@ -12,6 +12,7 @@ import { BottomCloseButton } from "../BottomCloseButton/BottomCloseButton";
 import styles from "./FullscreenDialog.module.css";
 
 type Props = {
+  closeOnOutsideClick?: boolean;
   children: ReactNode;
   closeLabel: string;
   label: string;
@@ -22,6 +23,7 @@ type Props = {
 };
 
 export function FullscreenDialog({
+  closeOnOutsideClick = false,
   children,
   closeLabel,
   label,
@@ -34,6 +36,7 @@ export function FullscreenDialog({
     <AnimatePresence initial={false}>
       {open ? (
         <FullscreenDialogSurface
+          closeOnOutsideClick={closeOnOutsideClick}
           closeLabel={closeLabel}
           label={label}
           onClose={() => onOpenChange(false)}
@@ -48,6 +51,7 @@ export function FullscreenDialog({
 }
 
 function FullscreenDialogSurface({
+  closeOnOutsideClick,
   children,
   closeLabel,
   label,
@@ -120,6 +124,9 @@ function FullscreenDialogSurface({
       />
       <motion.div
         className={styles.scroll}
+        onClick={(event) => {
+          if (closeOnOutsideClick && event.target === event.currentTarget) onClose();
+        }}
         ref={scrollRef}
         initial={false}
         animate={{

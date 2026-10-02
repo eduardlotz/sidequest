@@ -1,8 +1,9 @@
 import { motion } from "motion/react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { QuestScreenContent } from "./components/QuestScreenContent/QuestScreenContent";
+import { QuestExclusionDialog } from "./components/QuestExclusionDialog/QuestExclusionDialog";
 import { hydrateQuest, localizeMood } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
 import { useQuestStore } from "../../stores/useQuestStore";
@@ -39,6 +40,8 @@ export function QuestScreen({
     chooseGame,
     currentSession,
     discardCurrentSession,
+    excludeCurrentQuest,
+    setQuestBlacklisted,
     editMood,
     editGame,
     gameSelection,
@@ -63,6 +66,8 @@ export function QuestScreen({
       chooseGame: state.chooseGame,
       currentSession: state.currentSession,
       discardCurrentSession: state.discardCurrentSession,
+      excludeCurrentQuest: state.excludeCurrentQuest,
+      setQuestBlacklisted: state.setQuestBlacklisted,
       editMood: state.editMood,
       editGame: state.editGame,
       gameSelection: state.gameSelection,
@@ -84,6 +89,7 @@ export function QuestScreen({
     })),
   );
   const introReady = useIntroReady(reduceMotion);
+  const [cancelledQuest, setCancelledQuest] = useState<{ id: string; name: string } | null>(null);
   const libraryRevision = useLibraryStore((state) => state.revision);
   const libraryGames = useMemo(() => libraryGamesFromState(libraryStore.getState()), [libraryRevision]);
   const hasCurrentSession = Boolean(currentSession);
@@ -161,6 +167,12 @@ export function QuestScreen({
         onReturnToSelection={returnCurrentSessionToSelection}
         onNewCards={dealNewCards}
         onDiscard={discardCurrentSession}
+        onExcludeQuest={excludeCurrentQuest}
+        onCancelViaRope={() => {
+          if (!currentQuest || !discardCurrentSession()) return false;
+          setCancelledQuest({ id: currentQuest.id, name: currentQuest.name });
+          return true;
+        }}
         onStart={startQuest}
         onPause={pauseQuest}
         onResume={resumeQuest}
@@ -168,6 +180,15 @@ export function QuestScreen({
         onCoinFlightStart={onCoinFlightStart}
         onCoinHit={onCoinHit}
         onPurchaseRedRopes={purchaseRedRopes}
+      />
+      <QuestExclusionDialog
+        questName={cancelledQuest?.name ?? null}
+        reduceMotion={reduceMotion}
+        onClose={() => setCancelledQuest(null)}
+        onExclude={() => {
+          if (cancelledQuest) setQuestBlacklisted(cancelledQuest.id, true);
+          setCancelledQuest(null);
+        }}
       />
     </motion.div>
   );

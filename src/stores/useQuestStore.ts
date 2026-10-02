@@ -17,6 +17,7 @@ import {
 } from "../domain/quest/progress";
 import {
   QUEST_OFFER_COUNT,
+  QUEST_OFFER_ROLES,
   RED_ROPE_BUNDLE_COST,
   RED_ROPE_BUNDLE_SIZE,
   STORED_COMPLETION_LIMIT,
@@ -25,6 +26,7 @@ import {
   type CompletedSession,
   type PersistedQuestState,
   type QuestState,
+  type QuestOffer,
   type QuestStore,
 } from "../domain/quest/model";
 import { migrateQuestState } from "../domain/quest/persistence";
@@ -34,6 +36,8 @@ import {
   createDefaultQuestState,
   generateGameQuestOffers,
   isGameSelectionAvailable,
+  isGameOfferSetValid,
+  isQuestOfferSetValid,
   generateQuestOffers,
   moodSelectionExpired,
   moodWindowState,
@@ -76,17 +80,68 @@ function createQuestState(
     excludedOfferIds?: ReadonlySet<string>,
     previousQuestIds?: ReadonlySet<string>,
   ) {
+    const exclusions = new Set(state.blacklistedQuestIds);
     return state.gameSelection
       ? generateGameQuestOffers(null,
           questGamesForSelection(state.gameSelection, options.getLibraryGames()),
-          options.random, excludedOfferIds, undefined, state.poolPreferences,
+          options.random, excludedOfferIds, exclusions, state.poolPreferences,
           previousQuestIds)
       : generateQuestOffers(moodId, options.getLibraryGames(), options.random,
-          excludedOfferIds, undefined, undefined, state.poolPreferences,
+          excludedOfferIds, undefined, exclusions, state.poolPreferences,
           previousQuestIds);
+  }
+  function refreshBlacklistedOffers(state: QuestState) {
+    const blacklist = new Set(state.blacklistedQuestIds);
+    function refill(moodId: MoodId | null, offers: QuestOffer[], gameBound: boolean) {
+      const kept = offers.filter((offer) => !blacklist.has(offer.questId));
+      if (kept.length === QUEST_OFFER_COUNT) return kept;
+      const exclusions = new Set([...blacklist, ...kept.map((offer) => offer.questId)]);
+      const replacements = gameBound
+        ? generateGameQuestOffers(null,
+            questGamesForSelection(state.gameSelection, options.getLibraryGames()),
+            options.random, undefined, exclusions, state.poolPreferences)
+        : generateQuestOffers(moodId, options.getLibraryGames(), options.random,
+            undefined, QUEST_OFFER_ROLES.filter((role) => !kept.some((offer) => offer.role === role)),
+            exclusions, state.poolPreferences);
+      const next = offers.flatMap((offer) => {
+        if (!blacklist.has(offer.questId)) return [offer];
+        const replacement = replacements.shift();
+        return replacement ? [replacement] : [];
+      });
+      return [...next, ...replacements].slice(0, QUEST_OFFER_COUNT);
+    }
+    const offerSetsByMoodId = { ...state.offerSetsByMoodId };
+    for (const moodId of Object.keys(offerSetsByMoodId) as MoodId[]) {
+      offerSetsByMoodId[moodId] = refill(moodId, offerSetsByMoodId[moodId] ?? [], false);
+    }
+    const offeredQuests = state.gameSelection
+      ? refill(null, state.offeredQuests, true)
+      : state.selectedMoodId
+        ? (offerSetsByMoodId[state.selectedMoodId] ?? refill(state.selectedMoodId, state.offeredQuests, false))
+        : [];
+    if (state.selectedMoodId) offerSetsByMoodId[state.selectedMoodId] = offeredQuests;
+    return { offeredQuests, offerSetsByMoodId };
   }
   return (set, get) => ({
     ...createDefaultState(),
+    setQuestBlacklisted: (questId, blacklisted) => {
+      const state = get();
+      if (!Object.hasOwn(QUEST_CORES_BY_ID, questId)) return false;
+      if (state.blacklistedQuestIds.includes(questId) === blacklisted) return true;
+      const blacklistedQuestIds = blacklisted
+        ? [...state.blacklistedQuestIds, questId]
+        : state.blacklistedQuestIds.filter((id) => id !== questId);
+      const next = { ...state, blacklistedQuestIds };
+      set({ blacklistedQuestIds, ...refreshBlacklistedOffers(next) });
+      return true;
+    },
+    excludeCurrentQuest: () => {
+      const state = get();
+      const session = state.currentSession;
+      if (!session || session.startedAt !== null) return false;
+      state.setQuestBlacklisted(session.questId, true);
+      return get().returnCurrentSessionToSelection();
+    },
     chooseGame: (gameId, installmentId) => {
       const state = get();
       const gameSelection = { gameId, installmentId: installmentId ?? null };
@@ -162,7 +217,7 @@ function createQuestState(
       const identity =
         state.questProgressById[questId]?.lastCompletion ??
         state.questProgressById[questId]?.seenOffer;
-      if (state.currentSession || !quest || !identity) return false;
+      if (state.currentSession || !quest || !identity || state.blacklistedQuestIds.includes(questId)) return false;
       const now = options.now();
       const moodId = identity.moodId;
       set({
@@ -219,7 +274,8 @@ function createQuestState(
         expired || libraryChanged ? {} : { ...state.offerSetsByMoodId };
       const cachedOffers = offerSetsByMoodId[moodId];
       const offeredQuests =
-        cachedOffers !== undefined
+        cachedOffers !== undefined && isQuestOfferSetValid(moodId, cachedOffers,
+          options.getLibraryGames(), state.poolPreferences, new Set(state.blacklistedQuestIds))
           ? [...cachedOffers]
           : offersForSelection(moodId, state);
 
@@ -348,6 +404,7 @@ function createQuestState(
       if (
         !offer ||
         !quest ||
+        state.blacklistedQuestIds.includes(offer.questId) ||
         !quest.moodIds.includes(offer.moodId) ||
         (state.selectedMoodId && offer.moodId !== state.selectedMoodId) ||
         (offer.game ? !eligibleGame : Boolean(state.gameSelection) || !quest.universal)
@@ -625,9 +682,23 @@ export function createQuestStore(
           return { ...state, gameSelection: null, moodSelectedAt: null,
             offeredQuests: [], offerSetsByMoodId: {} };
         }
+        const blacklist = new Set(state.blacklistedQuestIds);
+        if (blacklist.size && state.gameSelection) {
+          const games = questGamesForSelection(state.gameSelection, options.getLibraryGames());
+          if (!isGameOfferSetValid(null, state.offeredQuests, games, state.poolPreferences, blacklist)) {
+            state.offeredQuests = generateGameQuestOffers(null, games, options.random,
+              undefined, blacklist, state.poolPreferences);
+          }
+        } else if (blacklist.size && state.selectedMoodId && !isQuestOfferSetValid(state.selectedMoodId,
+          state.offeredQuests, options.getLibraryGames(), state.poolPreferences, blacklist)) {
+          state.offeredQuests = generateQuestOffers(state.selectedMoodId, options.getLibraryGames(),
+            options.random, undefined, undefined, blacklist, state.poolPreferences);
+          state.offerSetsByMoodId[state.selectedMoodId] = state.offeredQuests;
+        }
         return state;
       },
       partialize: ({
+        blacklistedQuestIds,
         gameSelection,
         poolPreferences,
         profile,
@@ -641,6 +712,7 @@ export function createQuestStore(
         questProgressById,
         stats,
       }) => ({
+        blacklistedQuestIds,
         gameSelection,
         poolPreferences,
         profile,

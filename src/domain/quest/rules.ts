@@ -74,6 +74,7 @@ export function questGamesForSelection(
 
 export function createDefaultQuestState(): QuestState {
   return {
+    blacklistedQuestIds: [],
     poolPreferences: defaultPoolPreferences(),
     profile: { ...DEFAULT_PROFILE },
     gameSelection: null,
@@ -228,8 +229,10 @@ function questOfferPools(moodId: MoodId | null, libraryGames: readonly LibraryGa
 export function countGameQuestsBySource(
   game: LibraryGame,
   preferences: QuestPoolPreferences = defaultPoolPreferences(),
+  blacklistedQuestIds: ReadonlySet<string> = new Set(),
 ) {
-  const bound = new Set(questOfferPools(null, [game], preferences).bound.map((offer) => offer.questId));
+  const bound = new Set(questOfferPools(null, [game], preferences).bound
+    .filter((offer) => !blacklistedQuestIds.has(offer.questId)).map((offer) => offer.questId));
   let curated = 0;
   let flexible = 0;
   for (const questId of bound) {
@@ -244,10 +247,12 @@ export function isQuestOfferSetValid(
   offers: readonly QuestOffer[],
   libraryGames: readonly LibraryGame[],
   preferences: QuestPoolPreferences = defaultPoolPreferences(),
+  blacklistedQuestIds: ReadonlySet<string> = new Set(),
 ) {
   if (offers.length > QUEST_OFFER_COUNT || new Set(offers.map(offer => offer.questId)).size !== offers.length) return false;
   const pools = questOfferPools(moodId, libraryGames, preferences);
-  const eligible = [...pools.curated, ...pools.bound, ...pools.directed, ...pools.inspiration];
+  const eligible = [...pools.curated, ...pools.bound, ...pools.directed, ...pools.inspiration]
+    .filter((offer) => !blacklistedQuestIds.has(offer.questId));
   return offers.length === Math.min(QUEST_OFFER_COUNT, new Set(eligible.map(offer => offer.questId)).size) &&
     offers.every(offer => eligible.some(candidate => candidate.id === offer.id));
 }
@@ -257,8 +262,10 @@ export function isGameOfferSetValid(
   offers: readonly QuestOffer[],
   libraryGames: readonly LibraryGame[],
   preferences: QuestPoolPreferences = defaultPoolPreferences(),
+  blacklistedQuestIds: ReadonlySet<string> = new Set(),
 ) {
-  const bound = questOfferPools(moodId, libraryGames, preferences).bound;
+  const bound = questOfferPools(moodId, libraryGames, preferences).bound
+    .filter((offer) => !blacklistedQuestIds.has(offer.questId));
   return offers.length === Math.min(QUEST_OFFER_COUNT, new Set(bound.map((offer) => offer.questId)).size) &&
     new Set(offers.map((offer) => offer.questId)).size === offers.length &&
     offers.every((offer) => bound.some((candidate) => candidate.id === offer.id));
@@ -427,21 +434,24 @@ export function rotateSessionOffer(
   }
 
   const excludedIds = new Set(moodOffers.map((offer) => offer.id));
-  const excludedQuestIds = new Set(moodOffers
-    .filter((_, index) => index !== slotIndex).map((offer) => offer.questId));
+  const excludedQuestIds = new Set([...state.blacklistedQuestIds, ...moodOffers
+    .filter((_, index) => index !== slotIndex).map((offer) => offer.questId)]);
   const replacement = (state.gameSelection
     ? generateGameQuestOffers(null, questGamesForSelection(state.gameSelection, libraryGames),
         random, excludedIds, excludedQuestIds, state.poolPreferences, new Set([session.questId]))
     : generateQuestOffers(session.moodId, libraryGames, random, excludedIds,
         undefined, excludedQuestIds, state.poolPreferences, new Set([session.questId])))[0];
   if (!replacement) {
-    return {
-      offeredQuests: state.offeredQuests,
-      offerSetsByMoodId: state.offerSetsByMoodId,
-    };
+    if (!state.blacklistedQuestIds.includes(session.questId)) {
+      return {
+        offeredQuests: state.offeredQuests,
+        offerSetsByMoodId: state.offerSetsByMoodId,
+      };
+    }
+    moodOffers.splice(slotIndex, 1);
+  } else {
+    moodOffers[slotIndex] = replacement;
   }
-
-  moodOffers[slotIndex] = replacement;
   return {
     offeredQuests:
       (state.selectedMoodId === session.moodId || state.gameSelection)

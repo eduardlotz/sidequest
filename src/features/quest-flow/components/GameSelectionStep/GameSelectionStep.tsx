@@ -29,6 +29,7 @@ export function GameSelectionStep({
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
   const preferences = useLibraryStore((state) => state.curatedGamePreferences);
   const poolPreferences = useQuestStore((state) => state.poolPreferences);
+  const blacklistedQuestIds = useQuestStore((state) => state.blacklistedQuestIds);
   const items = useMemo(() => sortGamesByName(games.flatMap<GameCardItem>((game) => {
     const curated = CURATED_GAMES_BY_ID[game.id];
     const entries = curated?.installments.length
@@ -39,14 +40,14 @@ export function GameSelectionStep({
         })
       : [{ game, installmentId: undefined }];
     return entries.map(({ game: entryGame, installmentId }) => {
-      const counts = countGameQuestsBySource(entryGame, poolPreferences);
+      const counts = countGameQuestsBySource(entryGame, poolPreferences, new Set(blacklistedQuestIds));
       return {
         id: gamePickerItemId(game.id, installmentId),
         game: entryGame, installmentId, title: entryGame.name, ...counts,
         subtitle: `${t("ui.arc.curatedQuests", { count: counts.curated })}. ${t("ui.arc.flexibleQuests", { count: counts.flexible })}`,
       };
     });
-  }), language, (item) => item.title), [games, language, preferences, poolPreferences, t]);
+  }), language, (item) => item.title), [games, language, preferences, poolPreferences, blacklistedQuestIds, t]);
 
   if (!items.length) return (
     <div className={styles.empty}>
