@@ -191,6 +191,10 @@
 }
 
 .timerReturnControl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   position: absolute;
   top: clamp(
     calc(var(--app-height) * 0.525),
@@ -240,6 +244,14 @@
 .readyTimerInstructions strong {
   color: var(--color-text);
   font-weight: 750;
+}
+
+.banControl {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  translate: -50% 0;
+  pointer-events: auto;
 }
 
 .ropeAvailability strong {
@@ -596,6 +608,12 @@
   margin: var(--timer-hint-margin-top) 0 0;
   font-size: 0.86rem;
   line-height: 1.35;
+}
+
+:global([data-play-layout="compact"]) .banControl {
+  position: static;
+  margin-top: 8px;
+  translate: none;
 }
 
 :global([data-play-layout="compact"]) .pausePanel {

@@ -35,6 +35,7 @@ const STATUS_FILTERS: readonly GalleryFilter[] = [
   "favorites",
   "completed",
   "uncompleted",
+  "banned",
 ];
 
 export function QuestGalleryFilters({

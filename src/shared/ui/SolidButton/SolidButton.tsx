@@ -10,6 +10,7 @@ type SolidButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     | "secondary"
     | "highlighted"
     | "primary"
+    | "danger"
     | "ghost"
     | "highContrast";
 };

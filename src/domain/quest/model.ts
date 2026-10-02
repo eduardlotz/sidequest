@@ -6,7 +6,7 @@ import type { QuestTypeId } from "../../data/questTraits";
 import type { QuestConnectionModeId, QuestPlayStyleId } from "../../data/questPoolTraits";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 25;
+export const STORE_VERSION = 26;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const QUEST_OFFER_COUNT = 3;
 export const STORED_COMPLETION_LIMIT = 500;
@@ -106,6 +106,8 @@ export type QuestStats = {
 };
 
 export type QuestState = {
+  skipQuestBanPrompt: boolean;
+  blacklistedQuestIds: string[];
   gameSelection: GameSelection | null;
   poolPreferences: QuestPoolPreferences;
   profile: UserProfile;
@@ -129,6 +131,9 @@ export type QuestPoolPreferences = {
 };
 
 export type QuestActions = {
+  setSkipQuestBanPrompt: (skip: boolean) => void;
+  setQuestBlacklisted: (questId: string, blacklisted: boolean) => boolean;
+  excludeCurrentQuest: () => boolean;
   chooseGame: (gameId: string, installmentId?: string) => boolean;
   editGame: () => boolean;
   markQuestsSeen: (questIds: readonly string[]) => void;
@@ -156,7 +161,9 @@ export type QuestStore = QuestState & QuestActions;
 
 export type PersistedQuestState = Pick<
   QuestState,
+  | "skipQuestBanPrompt"
   | "gameSelection"
+  | "blacklistedQuestIds"
   | "profile"
   | "selectedMoodId"
   | "moodSelectedAt"

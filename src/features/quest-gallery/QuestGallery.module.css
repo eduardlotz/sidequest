@@ -122,6 +122,22 @@
 .card[data-uncompleted] {
   --quest-card-content-opacity: 0.6;
 }
+.card[data-blacklisted] {
+  --quest-card-content-opacity: 0.35;
+}
+.hiddenMarker {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  color: var(--color-card-copy);
+  pointer-events: none;
+}
+.hiddenMarker svg {
+  width: 18cqw;
+  height: 18cqw;
+}
 .gallery[data-selecting] .header {
   opacity: 0;
   transition: opacity 0.24s ease;

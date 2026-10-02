@@ -2,8 +2,11 @@ import { useTranslation } from "react-i18next";
 import styles from "../QuestCard/QuestCard.module.css";
 import type { GameReference } from "../../../data/gameTypes";
 import { GameVisual } from "../../ui/GameVisual/GameVisual";
+import { QuestFavoriteSticker } from "../QuestFavoriteSticker";
 
 type Props = {
+  favorite?: boolean;
+  favoriteInteraction?: boolean;
   durationFormat?: "long" | "short";
   durationLabel?: string;
   game?: GameReference | null;
@@ -14,6 +17,8 @@ type Props = {
 };
 
 export function QuestCardMeta({
+  favorite = false,
+  favoriteInteraction = false,
   durationFormat = "short",
   durationLabel,
   game = null,
@@ -58,7 +63,12 @@ export function QuestCardMeta({
             <span className={styles.questCardName}>{name}</span>
           ) : null}
         </span>
-        <span className={styles.questCardDuration}>{durationLabel ?? duration}</span>
+        <span className={styles.questCardDurationColumn}>
+          <span className={styles.questCardDuration}>{durationLabel ?? duration}</span>
+          <span className={styles.favoriteSpot}>
+            <QuestFavoriteSticker favorite={favorite} particles={favoriteInteraction} />
+          </span>
+        </span>
       </span>
       <span className={styles.questCardDivider} aria-hidden="true" />
     </>

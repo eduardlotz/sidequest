@@ -11,6 +11,8 @@ import { QUEST_COIN_MULTIPLIERS, type QuestRarity } from "../../../data/questRar
 import { CoinIcon } from "../../ui/Icons/Icons";
 
 type Props = {
+  favorite?: boolean;
+  favoriteInteraction?: boolean;
   unknown?: boolean;
   rarity?: QuestRarity;
   bestTimeMs?: number | null;
@@ -26,6 +28,8 @@ type Props = {
 };
 
 export function QuestCardFront({
+  favorite = false,
+  favoriteInteraction = false,
   unknown = false,
   rarity = "standard",
   bestTimeMs,
@@ -57,6 +61,8 @@ export function QuestCardFront({
           </>
         ) : (
           <QuestCardMeta
+            favorite={favorite}
+            favoriteInteraction={favoriteInteraction}
             durationFormat="long"
             durationLabel={
               type === "countdown"

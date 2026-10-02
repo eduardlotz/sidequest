@@ -1,0 +1,42 @@
+.content {
+  width: min(100%, 720px);
+  padding: max(20px, calc(30svh - 76px)) 0 40px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.content h2,
+.content p {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.45;
+}
+
+.content h2 {
+  margin: 0 0 0.25rem;
+}
+
+.content p {
+  margin: 0;
+  color: var(--color-muted);
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.preference {
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .content {
+    padding-top: max(20px, calc(30svh - 72px));
+  }
+}

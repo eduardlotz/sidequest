@@ -96,6 +96,7 @@ type Props = {
   debugMode: boolean;
   reduceMotion: boolean;
   onDiscard: () => boolean;
+  onRequestBan: () => void;
   onReturnToSelection: (
     pose: CardReturnPose,
     action: "back" | "cancel",
@@ -165,6 +166,7 @@ export function ActiveQuestCard({
   debugMode,
   reduceMotion,
   onDiscard,
+  onRequestBan,
   onReturnToSelection,
   onStart,
   onPause,
@@ -185,6 +187,8 @@ export function ActiveQuestCard({
   const personalBest = useQuestStore(
     (state) => state.questProgressById[quest.id]?.bestTimeMs,
   );
+  const favorite = useQuestStore((state) => state.questProgressById[quest.id]?.favorite ?? false);
+  const toggleFavorite = useQuestStore((state) => state.toggleQuestFavorite);
   const initiallyReady = session.startedAt === null;
   const initiallyPaused =
     session.startedAt !== null && session.pausedAt !== null;
@@ -616,7 +620,7 @@ export function ActiveQuestCard({
   function returnToSelection(action: "back" | "cancel" = "back") {
     if (
       exitStartedRef.current ||
-      (action === "back" ? phase !== "ready" : !countdown || phase !== "paused")
+      (action !== "cancel" ? phase !== "ready" : !countdown || phase !== "paused")
     )
       return;
     const surface = cardInteractionRef.current?.capturePose();
@@ -1073,6 +1077,8 @@ export function ActiveQuestCard({
               ref={cardInteractionRef}
               hitAreaRef={cardHitAreaRef}
               flipOnClick="triple"
+              onDoubleActivate={!isMobileViewport || cardFocus.focused ? () => toggleFavorite(quest.id) : undefined}
+              pressed={!isMobileViewport || cardFocus.focused ? favorite : undefined}
               reduceMotion={reduceMotion}
               disabled={exiting || !revealFinished}
               hoverEnabled={cardHoverArmed}
@@ -1082,7 +1088,7 @@ export function ActiveQuestCard({
               onPointerLeave={(event) => {
                 if (event.pointerType === "mouse") setCardHoverArmed(true);
               }}
-              label={t("ui.quest.activeLabel", {
+              label={t("ui.quest.favoriteCardLabel", {
                 mood: quest.mood.title,
                 title: quest.name,
                 game: quest.game?.name ?? "",
@@ -1127,6 +1133,8 @@ export function ActiveQuestCard({
                 bestTimeMs={personalBest}
                 className={styles.activeQuestCard}
                 completed={showFinishedFace}
+                favorite={favorite}
+                favoriteInteraction
                 type={quest.type}
                 tags={quest.tags}
                 game={quest.game}
@@ -1509,6 +1517,16 @@ export function ActiveQuestCard({
                       onPurchase={onPurchaseRedRopes}
                       tone="inverse"
                     />
+                  )}
+                  {phase === "ready" && (
+                    <SolidButton
+                      className={styles.banControl}
+                      size="small"
+                      variant="soft"
+                      onClick={onRequestBan}
+                    >
+                      {t("ui.gallery.excludeQuest")}
+                    </SolidButton>
                   )}
                 </motion.div>
               )}

@@ -15,7 +15,7 @@ export function BottomCloseButton({
       aria-label={label}
       iconLeft={<XIcon weight="bold" />}
       size="medium"
-      variant="secondary"
+      variant="primary"
     />
   );
 }

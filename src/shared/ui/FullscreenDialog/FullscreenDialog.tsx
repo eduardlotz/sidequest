@@ -12,32 +12,41 @@ import { BottomCloseButton } from "../BottomCloseButton/BottomCloseButton";
 import styles from "./FullscreenDialog.module.css";
 
 type Props = {
+  closeOnOutsideClick?: boolean;
   children: ReactNode;
   closeLabel: string;
   label: string;
+  initialFocusRef?: RefObject<HTMLElement | null>;
   onOpenChange: (open: boolean) => void;
   open: boolean;
   reduceMotion: boolean;
+  showCloseButton?: boolean;
   triggerRef?: RefObject<HTMLElement | null>;
 };
 
 export function FullscreenDialog({
+  closeOnOutsideClick = false,
   children,
   closeLabel,
   label,
+  initialFocusRef,
   onOpenChange,
   open,
   reduceMotion,
+  showCloseButton = true,
   triggerRef,
 }: Props) {
   return (
     <AnimatePresence initial={false}>
       {open ? (
         <FullscreenDialogSurface
+          closeOnOutsideClick={closeOnOutsideClick}
           closeLabel={closeLabel}
           label={label}
+          initialFocusRef={initialFocusRef}
           onClose={() => onOpenChange(false)}
           reduceMotion={reduceMotion}
+          showCloseButton={showCloseButton}
           triggerRef={triggerRef}
         >
           {children}
@@ -48,11 +57,14 @@ export function FullscreenDialog({
 }
 
 function FullscreenDialogSurface({
+  closeOnOutsideClick,
   children,
   closeLabel,
   label,
+  initialFocusRef,
   onClose,
   reduceMotion,
+  showCloseButton,
   triggerRef,
 }: Omit<Props, "onOpenChange" | "open"> & { onClose: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -63,11 +75,12 @@ function FullscreenDialogSurface({
     const dialog = dialogRef.current;
     if (!dialog) return;
     dialog.showModal();
+    initialFocusRef?.current?.focus();
     return () => {
       dialog.close();
       window.requestAnimationFrame(() => triggerRef?.current?.focus());
     };
-  }, [triggerRef]);
+  }, [initialFocusRef, triggerRef]);
 
   useEffect(() => {
     const node = scrollRef.current;
@@ -113,13 +126,18 @@ function FullscreenDialogSurface({
         ease: "easeOut",
       }}
     >
-      <BottomCloseButton
-        autoFocus
-        label={closeLabel}
-        onClick={onClose}
-      />
+      {showCloseButton ? (
+        <BottomCloseButton
+          autoFocus
+          label={closeLabel}
+          onClick={onClose}
+        />
+      ) : null}
       <motion.div
         className={styles.scroll}
+        onClick={(event) => {
+          if (closeOnOutsideClick && event.target === event.currentTarget) onClose();
+        }}
         ref={scrollRef}
         initial={false}
         animate={{

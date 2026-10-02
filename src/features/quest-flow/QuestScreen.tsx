@@ -1,8 +1,9 @@
 import { motion } from "motion/react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { QuestScreenContent } from "./components/QuestScreenContent/QuestScreenContent";
+import { QuestExclusionDialog } from "./components/QuestExclusionDialog/QuestExclusionDialog";
 import { hydrateQuest, localizeMood } from "../../localization/catalog";
 import { normalizeLanguage } from "../../localization/i18n";
 import { useQuestStore } from "../../stores/useQuestStore";
@@ -39,6 +40,10 @@ export function QuestScreen({
     chooseGame,
     currentSession,
     discardCurrentSession,
+    excludeCurrentQuest,
+    setQuestBlacklisted,
+    skipQuestBanPrompt,
+    setSkipQuestBanPrompt,
     editMood,
     editGame,
     gameSelection,
@@ -63,6 +68,10 @@ export function QuestScreen({
       chooseGame: state.chooseGame,
       currentSession: state.currentSession,
       discardCurrentSession: state.discardCurrentSession,
+      excludeCurrentQuest: state.excludeCurrentQuest,
+      setQuestBlacklisted: state.setQuestBlacklisted,
+      skipQuestBanPrompt: state.skipQuestBanPrompt,
+      setSkipQuestBanPrompt: state.setSkipQuestBanPrompt,
       editMood: state.editMood,
       editGame: state.editGame,
       gameSelection: state.gameSelection,
@@ -84,6 +93,11 @@ export function QuestScreen({
     })),
   );
   const introReady = useIntroReady(reduceMotion);
+  const [banPrompt, setBanPrompt] = useState<{
+    id: string;
+    name: string;
+    origin: "rope" | "start";
+  } | null>(null);
   const libraryRevision = useLibraryStore((state) => state.revision);
   const libraryGames = useMemo(() => libraryGamesFromState(libraryStore.getState()), [libraryRevision]);
   const hasCurrentSession = Boolean(currentSession);
@@ -161,6 +175,17 @@ export function QuestScreen({
         onReturnToSelection={returnCurrentSessionToSelection}
         onNewCards={dealNewCards}
         onDiscard={discardCurrentSession}
+        onRequestBan={() => {
+          if (!currentQuest || !currentSession || currentSession.startedAt !== null) return;
+          setBanPrompt({ id: currentQuest.id, name: currentQuest.name, origin: "start" });
+        }}
+        onCancelViaRope={() => {
+          if (!currentQuest || !currentSession || currentSession.startedAt === null) return false;
+          if (skipQuestBanPrompt) return discardCurrentSession();
+          pauseQuest(Date.now());
+          setBanPrompt({ id: currentQuest.id, name: currentQuest.name, origin: "rope" });
+          return true;
+        }}
         onStart={startQuest}
         onPause={pauseQuest}
         onResume={resumeQuest}
@@ -168,6 +193,32 @@ export function QuestScreen({
         onCoinFlightStart={onCoinFlightStart}
         onCoinHit={onCoinHit}
         onPurchaseRedRopes={purchaseRedRopes}
+      />
+      <QuestExclusionDialog
+        questName={banPrompt?.name ?? null}
+        reduceMotion={reduceMotion}
+        showKeepAndDontAskAgain={banPrompt?.origin === "rope"}
+        onKeepAndDontAskAgain={() => {
+          if (!banPrompt) return;
+          setSkipQuestBanPrompt(true);
+          if (banPrompt.origin === "rope") discardCurrentSession();
+          setBanPrompt(null);
+        }}
+        onClose={() => {
+          if (!banPrompt) return;
+          if (banPrompt.origin === "rope") discardCurrentSession();
+          setBanPrompt(null);
+        }}
+        onExclude={() => {
+          if (!banPrompt) return;
+          if (banPrompt.origin === "start") {
+            excludeCurrentQuest();
+          } else {
+            setQuestBlacklisted(banPrompt.id, true);
+            discardCurrentSession();
+          }
+          setBanPrompt(null);
+        }}
       />
     </motion.div>
   );

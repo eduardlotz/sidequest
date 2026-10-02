@@ -49,6 +49,53 @@
   content: "";
 }
 
+.favoriteSticker {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 8;
+  display: block;
+  width: 11.8cqw;
+  height: 11.8cqw;
+  color: #e52b2b;
+  filter: drop-shadow(0 1cqw 0.8cqw rgb(0 0 0 / 0.28));
+  pointer-events: none;
+  backface-visibility: hidden;
+  rotate: 12deg;
+}
+
+.favoriteSticker > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  stroke: white;
+  stroke-width: 28;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+}
+
+.favoriteParticles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.favoriteParticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.5cqw;
+  height: 2.5cqw;
+  margin: -1.25cqw 0 0 -1.25cqw;
+}
+
+.favoriteParticle svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .questCardSurface[data-unknown] {
   --accent: #89898e;
   --accent-rgb: 137 137 142;
@@ -325,6 +372,23 @@
   line-height: 1.05;
   text-align: right;
   white-space: nowrap;
+}
+
+.questCardDurationColumn {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.2cqw;
+}
+
+.favoriteSpot {
+  position: relative;
+  display: grid;
+  min-width: 11.8cqw;
+  height: 11.8cqw;
+  align-items: center;
+  justify-items: end;
 }
 
 .questCardDivider {
