@@ -20,6 +20,7 @@ import type { CoinImpact } from "../../../active-quest/components/FlyingCoin/Fly
 import { ArcDeck, type ArcDeckItem } from "../ArcDeck/ArcDeck";
 import { SegmentedControl } from "../../../../shared/ui/SegmentedControl/SegmentedControl";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
+import { FullscreenDialogSurface } from "../../../../shared/ui/FullscreenDialog/FullscreenDialog";
 import {
   QuestOfferDeck,
   QUEST_CARD_PRESENCE_DURATION,
@@ -439,6 +440,13 @@ export function QuestScreenContent({
 
   const selectionControlsExiting = editingSelection || questSelectionClosing;
 
+  function closeGallery() {
+    if (isReturning) return;
+    setGalleryView((view) => ({ ...view, focusedId: null }));
+    setReturnTransition(null);
+    onGalleryOpenChange(false);
+  }
+
   return (
     <PlayLayout
       className={styles.screen}
@@ -531,34 +539,16 @@ export function QuestScreenContent({
             </motion.div>
           )}
           {galleryOpen ? (
-            <motion.div
-              className={styles.galleryWrap}
+            <FullscreenDialogSurface
               key={`gallery-${lastActiveSessionIdRef.current}`}
+              label={t("ui.gallery.title")}
+              closeLabel={t("ui.gallery.close")}
+              contentLayout="full"
+              handoffOnSelection
+              showCloseButton={false}
               inert={isReturning}
-              aria-busy={isReturning || undefined}
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit="exit"
-              variants={{
-                exit: (reason: string | undefined) =>
-                  reason === "gallery-selection"
-                    ? { opacity: 0.999, scale: 1, pointerEvents: "none" }
-                    : {
-                        opacity: 0,
-                        scale: reduceMotion ? 1 : 0.985,
-                        pointerEvents: "none",
-                      },
-              }}
-              transition={{
-                opacity: {
-                  duration: reduceMotion ? 0 : 0.24,
-                  ease: [0.4, 0, 0.2, 1],
-                },
-                scale: {
-                  duration: reduceMotion ? 0 : 0.32,
-                  ease: [0.16, 1, 0.3, 1],
-                },
-              }}
+              reduceMotion={reduceMotion}
+              onClose={closeGallery}
             >
               <QuestGallery
                 view={galleryView}
@@ -573,17 +563,13 @@ export function QuestScreenContent({
                 returningQuestId={galleryReturn?.offerId}
                 returning={isReturning}
                 reduceMotion={reduceMotion}
-                onClose={() => {
-                  if (isReturning) return;
-                  setReturnTransition(null);
-                  onGalleryOpenChange(false);
-                }}
+                onClose={closeGallery}
                 onSelectionStart={(rotation) =>
                   prepareSelection(rotation, "gallery")
                 }
                 onRepeat={(questId) => revealSelection(questId, "gallery")}
               />
-            </motion.div>
+            </FullscreenDialogSurface>
           ) : !showActive ? (
             <motion.div
               className={styles.deckWrap}

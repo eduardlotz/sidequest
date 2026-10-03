@@ -1,13 +1,12 @@
-.trigger {
-  display: inline-flex;
+.positioner {
+  z-index: 200;
+  pointer-events: none;
 }
 
 .bubble {
-  position: fixed;
-  inset: auto;
-  z-index: 140;
   margin: 0;
-  width: min(300px, calc(100vw - 32px));
+  width: max-content;
+  max-width: min(300px, calc(100vw - 32px));
   padding: 12px 14px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
@@ -17,24 +16,12 @@
   font-size: 12px;
   font-weight: 500;
   line-height: 1.5;
-  letter-spacing: -2%;
-  opacity: 0;
-  transform: translateY(4px);
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease,
-    display 0.15s allow-discrete,
-    overlay 0.15s allow-discrete;
-}
-.bubble:popover-open {
+  letter-spacing: -0.02em;
   opacity: 1;
   transform: translateY(0);
-}
-@starting-style {
-  .bubble:popover-open {
-    opacity: 0;
-    transform: translateY(4px);
-  }
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
 }
 @media (--reduced-motion) {
   .bubble {

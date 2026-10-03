@@ -1,5 +1,6 @@
 .dialog {
   position: fixed;
+  z-index: 125;
   width: 100%;
   max-width: none;
   height: 100%;
@@ -9,13 +10,26 @@
   box-sizing: border-box;
   overflow: hidden;
   border: 0;
-  background: var(--color-canvas);
+  background: var(--color-overlay);
   color: var(--color-text);
   inset: 0;
   overscroll-behavior: contain;
 }
 
-.dialog::backdrop {
+.panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--color-canvas);
+}
+
+.dialog[data-handoff] {
+  z-index: 2;
+}
+
+.dialog[data-handoff],
+.dialog[data-handoff] .panel {
   background: transparent;
 }
 

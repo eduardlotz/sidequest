@@ -1,47 +1,18 @@
-import { useId, useRef, useState } from "react";
 import { InfoIcon } from "@phosphor-icons/react/dist/csr/Info";
+import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./InfoLabel.module.css";
-import tooltipStyles from "../Tooltip/Tooltip.module.css";
-import { useTooltipPosition } from "../Tooltip/useTooltipPosition";
 
 export function InfoLabel({ label, hint }: { label: string; hint?: string }) {
-  const id = useId();
-  const trigger = useRef<HTMLButtonElement>(null);
-  const bubble = useRef<HTMLSpanElement>(null);
-  const [open, setOpen] = useState(false);
-
-  useTooltipPosition(trigger, bubble, open);
-
   return (
     <span className={styles.label}>
       <span>{label}</span>
-
-      {hint && (
-        <>
-          <button
-            ref={trigger}
-            className={styles.trigger}
-            type="button"
-            popoverTarget={id}
-            aria-label={label}
-            aria-describedby={open ? id : undefined}
-            aria-expanded={open}
-          >
+      {hint ? (
+        <Tooltip content={hint} openOnClick>
+          <button className={styles.trigger} type="button" aria-label={label}>
             <InfoIcon weight="bold" />
           </button>
-
-          <span
-            ref={bubble}
-            className={tooltipStyles.bubble}
-            popover="auto"
-            role="tooltip"
-            id={id}
-            onToggle={(event) => setOpen(event.newState === "open")}
-          >
-            {hint}
-          </span>
-        </>
-      )}
+        </Tooltip>
+      ) : null}
     </span>
   );
 }

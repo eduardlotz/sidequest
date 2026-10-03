@@ -824,7 +824,7 @@ export function QuestGallery({
       >
         <AnimatePresence
           initial={Boolean(returnPose)}
-          propagate
+          propagate={renderedItems.length > 0}
           custom={isPresent ? "filter" : "screen"}
         >
           {renderedItems.map(({ quest, index }) => (

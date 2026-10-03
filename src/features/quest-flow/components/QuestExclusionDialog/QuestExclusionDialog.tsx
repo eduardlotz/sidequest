@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useRef } from "react";
 import { FullscreenDialog } from "../../../../shared/ui/FullscreenDialog/FullscreenDialog";
 import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
-import { Tooltip } from "../../../../shared/ui/Tooltip/Tooltip";
+import { DESKTOP_VIEWPORT_QUERY, useMediaQuery } from "../../../../shared/hooks/useMediaQuery";
 import styles from "./QuestExclusionDialog.module.css";
 
 export function QuestExclusionDialog({ questName, reduceMotion, showKeepAndDontAskAgain = true, onKeepAndDontAskAgain, onClose, onExclude }: {
@@ -15,6 +15,8 @@ export function QuestExclusionDialog({ questName, reduceMotion, showKeepAndDontA
 }) {
   const { t } = useTranslation();
   const keepQuestRef = useRef<HTMLButtonElement>(null);
+  const desktop = useMediaQuery(DESKTOP_VIEWPORT_QUERY);
+  const buttonSize = desktop ? "medium" : "large";
   return (
     <FullscreenDialog
       open={questName !== null}
@@ -30,18 +32,16 @@ export function QuestExclusionDialog({ questName, reduceMotion, showKeepAndDontA
         <h2>{t("ui.gallery.excludeTitle")}</h2>
         <p>{t("ui.gallery.excludeDescription", { quest: questName })}</p>
         <div className={styles.actions}>
-          <Tooltip content={t("ui.gallery.excludeTooltip")}>
-            <SolidButton size="medium" variant="danger" onClick={onExclude}>
-              {t("ui.gallery.excludeQuest")}
-            </SolidButton>
-          </Tooltip>
-          <SolidButton ref={keepQuestRef} size="medium" variant="soft" onClick={onClose}>
+          <SolidButton size={buttonSize} variant="danger" onClick={onExclude}>
+            {t("ui.gallery.excludeQuest")}
+          </SolidButton>
+          <SolidButton ref={keepQuestRef} size={buttonSize} variant="soft" onClick={onClose}>
             {t("ui.gallery.keepQuest")}
           </SolidButton>
         </div>
         {showKeepAndDontAskAgain ? (
           <div className={styles.preference}>
-            <SolidButton variant="ghost" onClick={onKeepAndDontAskAgain}>
+            <SolidButton size={buttonSize} variant="ghost" onClick={onKeepAndDontAskAgain}>
               {t("ui.gallery.keepQuestAndDontAskAgain")}
             </SolidButton>
           </div>

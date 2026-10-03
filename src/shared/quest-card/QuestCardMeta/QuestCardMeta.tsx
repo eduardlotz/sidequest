@@ -63,11 +63,9 @@ export function QuestCardMeta({
             <span className={styles.questCardName}>{name}</span>
           ) : null}
         </span>
-        <span className={styles.questCardDurationColumn}>
-          <span className={styles.questCardDuration}>{durationLabel ?? duration}</span>
-          <span className={styles.favoriteSpot}>
-            <QuestFavoriteSticker favorite={favorite} particles={favoriteInteraction} />
-          </span>
+        <span className={styles.questCardDuration}>{durationLabel ?? duration}</span>
+        <span className={styles.favoriteSpot}>
+          <QuestFavoriteSticker favorite={favorite} particles={favoriteInteraction} />
         </span>
       </span>
       <span className={styles.questCardDivider} aria-hidden="true" />

@@ -1,8 +1,7 @@
 .questScreen,
 .screen,
 .deckWrap,
-.activeWrap,
-.galleryWrap {
+.activeWrap {
   min-height: var(--app-height);
 }
 
@@ -37,15 +36,10 @@
 }
 
 .deckWrap,
-.activeWrap,
-.galleryWrap {
+.activeWrap {
   position: absolute;
   inset: 0;
   width: 100%;
-}
-
-.galleryWrap {
-  z-index: 2;
 }
 
 .deckWrap {

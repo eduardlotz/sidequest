@@ -374,21 +374,13 @@
   white-space: nowrap;
 }
 
-.questCardDurationColumn {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 1.2cqw;
-}
-
 .favoriteSpot {
-  position: relative;
-  display: grid;
-  min-width: 11.8cqw;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 11.8cqw;
   height: 11.8cqw;
-  align-items: center;
-  justify-items: end;
+  translate: 0 -50%;
 }
 
 .questCardDivider {

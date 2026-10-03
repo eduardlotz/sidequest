@@ -35,6 +35,17 @@
   margin-top: 16px;
 }
 
+@media (--mobile) {
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions > button,
+  .preference > button {
+    width: 100%;
+  }
+}
+
 @media (max-width: 600px) {
   .content {
     padding-top: max(20px, calc(30svh - 72px));
