@@ -18,8 +18,8 @@ import {
 import {
   QUEST_OFFER_COUNT,
   QUEST_OFFER_ROLES,
-  RED_ROPE_BUNDLE_COST,
-  RED_ROPE_BUNDLE_SIZE,
+  QUEST_CANCEL_COST,
+  QUEST_SHUFFLE_COST,
   STORED_COMPLETION_LIMIT,
   STORE_KEY,
   STORE_VERSION,
@@ -33,6 +33,8 @@ import { migrateQuestState } from "../domain/quest/persistence";
 import {
   activeSessionDurationMs,
   calculateCompletionPoints,
+  canCompleteQuest,
+  canGiveUpQuest,
   createDefaultQuestState,
   generateGameQuestOffers,
   isGameSelectionAvailable,
@@ -139,9 +141,14 @@ function createQuestState(
     excludeCurrentQuest: () => {
       const state = get();
       const session = state.currentSession;
-      if (!session || session.startedAt !== null) return false;
+      if (!session) return false;
       state.setQuestBlacklisted(session.questId, true);
-      return get().returnCurrentSessionToSelection();
+      if (session.startedAt === null) return get().returnCurrentSessionToSelection();
+      set({ currentSession: null, stats: {
+        ...get().stats,
+        cancelledQuestCount: safeAdd(get().stats.cancelledQuestCount, 1),
+      } });
+      return true;
     },
     chooseGame: (gameId, installmentId) => {
       const state = get();
@@ -357,6 +364,9 @@ function createQuestState(
         return false;
       }
 
+      const cost = state.freeShufflesRemaining > 0 ? 0 : QUEST_SHUFFLE_COST;
+      if (state.profile.points < cost) return false;
+
       const offeredQuests = offersForSelection(
         state.selectedMoodId,
         state,
@@ -369,6 +379,8 @@ function createQuestState(
 
       set({
         offeredQuests,
+        freeShufflesRemaining: Math.max(0, state.freeShufflesRemaining - 1),
+        profile: { ...state.profile, points: state.profile.points - cost },
         offerSetsByMoodId: {
           ...state.offerSetsByMoodId,
           ...(state.selectedMoodId ? { [state.selectedMoodId]: offeredQuests } : {}),
@@ -512,14 +524,11 @@ function createQuestState(
     discardCurrentSession: () => {
       const state = get();
       const session = state.currentSession;
-      if (
-        !session ||
-        session.startedAt === null ||
-        (QUEST_CORES_BY_ID[session.questId]?.type !== "countdown" &&
-          state.profile.redRopes < 1)
-      ) {
-        return false;
-      }
+      if (!session || session.startedAt === null) return false;
+      const expiredCountdown = QUEST_CORES_BY_ID[session.questId]?.type === "countdown" &&
+        activeSessionDurationMs(session, options.now()) >= questTimeLimitMs(session.questId);
+      const cost = expiredCountdown ? 0 : QUEST_CANCEL_COST;
+      if (state.profile.points < cost) return false;
 
       const rotatedOffers = rotateSessionOffer(
         state,
@@ -534,10 +543,7 @@ function createQuestState(
             ...rotatedOffers,
             profile: {
               ...state.profile,
-              redRopes:
-                QUEST_CORES_BY_ID[session.questId]?.type === "countdown"
-                  ? state.profile.redRopes
-                  : state.profile.redRopes - 1,
+              points: state.profile.points - cost,
             },
             currentSession: null,
             stats: {
@@ -550,22 +556,19 @@ function createQuestState(
       );
       return true;
     },
-    purchaseRedRopes: () => {
+    giveUpCurrentSession: () => {
       const state = get();
-      if (
-        state.profile.points < RED_ROPE_BUNDLE_COST ||
-        state.profile.redRopes > Number.MAX_SAFE_INTEGER - RED_ROPE_BUNDLE_SIZE
-      ) {
-        return false;
-      }
-
-      set({
-        profile: {
-          ...state.profile,
-          points: state.profile.points - RED_ROPE_BUNDLE_COST,
-          redRopes: state.profile.redRopes + RED_ROPE_BUNDLE_SIZE,
+      const session = state.currentSession;
+      if (!canGiveUpQuest(session, options.now()) || !session) return false;
+      set(moodWindowState({
+        ...state,
+        ...rotateSessionOffer(state, session, options.getLibraryGames(), options.random),
+        currentSession: null,
+        stats: {
+          ...state.stats,
+          cancelledQuestCount: safeAdd(state.stats.cancelledQuestCount, 1),
         },
-      });
+      }, options.now()));
       return true;
     },
     setDebugMode: (enabled) => {
@@ -588,10 +591,7 @@ function createQuestState(
 
       const completedAt = options.now();
       const durationMs = activeSessionDurationMs(session, completedAt);
-      if (durationMs >= questTimeLimitMs(session.questId)) return null;
-      if (durationMs < quest.minimumDurationMinutes * 60_000) {
-        return null;
-      }
+      if (!canCompleteQuest(session, completedAt)) return null;
 
       const pointsAwarded = calculateCompletionPoints(durationMs, session.questId);
       const completedSession: CompletedSession = {
@@ -618,6 +618,7 @@ function createQuestState(
             points: safeAdd(state.profile.points, pointsAwarded),
           },
           currentSession: null,
+          freeShufflesRemaining: Math.max(state.freeShufflesRemaining, 1),
           completedSessions: [
             completedSession,
             ...state.completedSessions.filter(
@@ -699,6 +700,7 @@ export function createQuestStore(
         return state;
       },
       partialize: ({
+        freeShufflesRemaining,
         skipQuestBanPrompt,
         blacklistedQuestIds,
         gameSelection,
@@ -714,6 +716,7 @@ export function createQuestStore(
         questProgressById,
         stats,
       }) => ({
+        freeShufflesRemaining,
         skipQuestBanPrompt,
         blacklistedQuestIds,
         gameSelection,

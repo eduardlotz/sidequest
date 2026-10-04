@@ -248,15 +248,9 @@
 
 .banControl {
   position: absolute;
-  top: calc(100% + 8px);
   left: 50%;
   translate: -50% 0;
   pointer-events: auto;
-}
-
-.ropeAvailability strong {
-  color: var(--color-text);
-  font-weight: 750;
 }
 
 .pausePanel {
@@ -289,6 +283,18 @@
 
 .saveAction {
   min-width: 188px;
+}
+
+.giveUpAction {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.giveUpAction p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.8rem;
 }
 
 .saveAction > button {
@@ -608,12 +614,6 @@
   margin: var(--timer-hint-margin-top) 0 0;
   font-size: 0.86rem;
   line-height: 1.35;
-}
-
-:global([data-play-layout="compact"]) .banControl {
-  position: static;
-  margin-top: 8px;
-  translate: none;
 }
 
 :global([data-play-layout="compact"]) .pausePanel {

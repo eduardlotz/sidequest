@@ -6,13 +6,13 @@ import type { QuestTypeId } from "../../data/questTraits";
 import type { QuestConnectionModeId, QuestPlayStyleId } from "../../data/questPoolTraits";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 26;
+export const STORE_VERSION = 27;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const QUEST_OFFER_COUNT = 3;
 export const STORED_COMPLETION_LIMIT = 500;
-export const INITIAL_RED_ROPES = 5;
-export const RED_ROPE_BUNDLE_SIZE = 1;
-export const RED_ROPE_BUNDLE_COST = 50;
+export const QUEST_CANCEL_COST = 25;
+export const QUEST_SHUFFLE_COST = 10;
+export const INITIAL_FREE_SHUFFLES = 3;
 export const POINTS_PER_MINUTE = 10;
 export const POINTS_DURATION_CAP_MS = 60 * 60 * 1_000;
 export const MAX_COMPLETION_POINTS = 1000;
@@ -35,7 +35,6 @@ export type AvatarTheme = (typeof AVATAR_THEMES)[number];
 
 export type UserProfile = {
   points: number;
-  redRopes: number;
   avatarTheme: AvatarTheme;
   debugMode: boolean;
 };
@@ -106,6 +105,7 @@ export type QuestStats = {
 };
 
 export type QuestState = {
+  freeShufflesRemaining: number;
   skipQuestBanPrompt: boolean;
   blacklistedQuestIds: string[];
   gameSelection: GameSelection | null;
@@ -152,7 +152,7 @@ export type QuestActions = {
   resumeQuest: (resumedAt: number) => void;
   returnCurrentSessionToSelection: () => boolean;
   discardCurrentSession: () => boolean;
-  purchaseRedRopes: () => boolean;
+  giveUpCurrentSession: () => boolean;
   setDebugMode: (enabled: boolean) => void;
   completeQuest: () => CompletedSession | null;
 };
@@ -161,6 +161,7 @@ export type QuestStore = QuestState & QuestActions;
 
 export type PersistedQuestState = Pick<
   QuestState,
+  | "freeShufflesRemaining"
   | "skipQuestBanPrompt"
   | "gameSelection"
   | "blacklistedQuestIds"
@@ -184,7 +185,6 @@ export type Quest = QuestDefinition & {
 
 export const DEFAULT_PROFILE: UserProfile = {
   points: 0,
-  redRopes: INITIAL_RED_ROPES,
   avatarTheme: "default",
   debugMode: false,
 };

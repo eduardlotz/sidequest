@@ -40,6 +40,8 @@ export function QuestScreen({
     chooseGame,
     currentSession,
     discardCurrentSession,
+    giveUpCurrentSession,
+    freeShufflesRemaining,
     excludeCurrentQuest,
     setQuestBlacklisted,
     skipQuestBanPrompt,
@@ -51,7 +53,6 @@ export function QuestScreen({
     offeredQuests,
     pauseQuest,
     profile,
-    purchaseRedRopes,
     refreshMoodWindow,
     refreshLibraryOffers,
     revealQuest,
@@ -68,6 +69,8 @@ export function QuestScreen({
       chooseGame: state.chooseGame,
       currentSession: state.currentSession,
       discardCurrentSession: state.discardCurrentSession,
+      giveUpCurrentSession: state.giveUpCurrentSession,
+      freeShufflesRemaining: state.freeShufflesRemaining,
       excludeCurrentQuest: state.excludeCurrentQuest,
       setQuestBlacklisted: state.setQuestBlacklisted,
       skipQuestBanPrompt: state.skipQuestBanPrompt,
@@ -79,7 +82,6 @@ export function QuestScreen({
       offeredQuests: state.offeredQuests,
       pauseQuest: state.pauseQuest,
       profile: state.profile,
-      purchaseRedRopes: state.purchaseRedRopes,
       refreshMoodWindow: state.refreshMoodWindow,
       refreshLibraryOffers: state.refreshLibraryOffers,
       revealQuest: state.revealQuest,
@@ -162,7 +164,7 @@ export function QuestScreen({
         selectedMood={selectedMood}
         offeredQuests={offeredQuestItems}
         points={profile.points}
-        redRopes={profile.redRopes}
+        freeShufflesRemaining={freeShufflesRemaining}
         debugMode={false}
         animateEntrance={!introReady}
         reduceMotion={reduceMotion}
@@ -175,8 +177,9 @@ export function QuestScreen({
         onReturnToSelection={returnCurrentSessionToSelection}
         onNewCards={dealNewCards}
         onDiscard={discardCurrentSession}
+        onGiveUp={giveUpCurrentSession}
         onRequestBan={() => {
-          if (!currentQuest || !currentSession || currentSession.startedAt !== null) return;
+          if (!currentQuest || !currentSession) return;
           setBanPrompt({ id: currentQuest.id, name: currentQuest.name, origin: "start" });
         }}
         onCancelViaRope={() => {
@@ -192,12 +195,12 @@ export function QuestScreen({
         onComplete={completeQuest}
         onCoinFlightStart={onCoinFlightStart}
         onCoinHit={onCoinHit}
-        onPurchaseRedRopes={purchaseRedRopes}
       />
       <QuestExclusionDialog
         questName={banPrompt?.name ?? null}
         reduceMotion={reduceMotion}
         showKeepAndDontAskAgain={banPrompt?.origin === "rope"}
+        endsAttemptForFree={banPrompt?.origin === "start" && currentSession?.startedAt != null}
         onKeepAndDontAskAgain={() => {
           if (!banPrompt) return;
           setSkipQuestBanPrompt(true);

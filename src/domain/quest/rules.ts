@@ -8,6 +8,7 @@ import { defaultPoolPreferences, matchesPoolPreferences } from "./pool";
 import {
   DEFAULT_PROFILE,
   DEFAULT_QUEST_STATS,
+  INITIAL_FREE_SHUFFLES,
   MAX_COMPLETION_POINTS,
   MOOD_RESET_MS,
   POINTS_DURATION_CAP_MS,
@@ -74,6 +75,7 @@ export function questGamesForSelection(
 
 export function createDefaultQuestState(): QuestState {
   return {
+    freeShufflesRemaining: INITIAL_FREE_SHUFFLES,
     skipQuestBanPrompt: false,
     blacklistedQuestIds: [],
     poolPreferences: defaultPoolPreferences(),
@@ -329,6 +331,24 @@ export function minimumQuestDurationMs(questId: string) {
     : null;
 }
 
+export function completionQuestDurationMs(questId: string) {
+  const quest = QUEST_CORES_BY_ID[questId];
+  return quest
+    ? quest.type === "inspiration"
+      ? safeNonNegativeInteger(quest.suggestedDurationMinutes * 60_000)
+      : 0
+    : null;
+}
+
+export function canGiveUpQuest(session: QuestSession | null, now: number = Date.now()) {
+  if (!session || session.startedAt === null || session.pausedAt === null) return false;
+  const quest = QUEST_CORES_BY_ID[session.questId];
+  if (!quest || quest.type === "countdown" || quest.type === "speedrun") return false;
+  const duration = activeSessionDurationMs(session, now);
+  return duration >= quest.minimumDurationMinutes * 60_000 &&
+    duration < quest.suggestedDurationMinutes * 60_000;
+}
+
 export function canCompleteQuest(
   session: QuestSession | null,
   now: number = Date.now(),
@@ -339,7 +359,7 @@ export function canCompleteQuest(
   }
   if (activeSessionDurationMs(session, now) >= questTimeLimitMs(session.questId)) return false;
   if (debugMode) return true;
-  const minimumDurationMs = minimumQuestDurationMs(session.questId);
+  const minimumDurationMs = completionQuestDurationMs(session.questId);
   return (
     minimumDurationMs !== null &&
     activeSessionDurationMs(session, now) >= minimumDurationMs
@@ -347,15 +367,25 @@ export function canCompleteQuest(
 }
 
 export function calculateCompletionPoints(durationMs: number, questId?: string) {
-  const scoringDurationMs = Math.min(
-    safeNonNegativeInteger(durationMs),
-    POINTS_DURATION_CAP_MS,
-  );
-  const basePoints = Math.min(
-    MAX_COMPLETION_POINTS,
-    Math.floor((scoringDurationMs * POINTS_PER_MINUTE) / 60_000),
-  );
-  const rarity = questId ? QUEST_CORES_BY_ID[questId]?.rarity : undefined;
+  const quest = questId ? QUEST_CORES_BY_ID[questId] : undefined;
+  const elapsedMs = safeNonNegativeInteger(durationMs);
+  const timed = quest?.type === "countdown" || quest?.type === "speedrun";
+  let basePoints: number;
+  if (timed) {
+    const rewardDurationMs = (quest.maximumDurationMinutes ?? quest.suggestedDurationMinutes) * 60_000;
+    const maximumPoints = Math.floor((rewardDurationMs * POINTS_PER_MINUTE) / 60_000);
+    basePoints = Math.min(MAX_COMPLETION_POINTS, Math.max(
+      0,
+      maximumPoints - Math.floor((elapsedMs * POINTS_PER_MINUTE) / 60_000),
+    ));
+  } else {
+    basePoints = quest && elapsedMs < quest.suggestedDurationMinutes * 60_000
+      ? 0
+      : Math.min(MAX_COMPLETION_POINTS, Math.floor(
+        (Math.min(elapsedMs, POINTS_DURATION_CAP_MS) * POINTS_PER_MINUTE) / 60_000,
+      ));
+  }
+  const rarity = quest?.rarity;
   return basePoints * QUEST_COIN_MULTIPLIERS[rarity ?? "standard"];
 }
 

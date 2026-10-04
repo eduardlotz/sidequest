@@ -5,9 +5,10 @@ import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import { DESKTOP_VIEWPORT_QUERY, useMediaQuery } from "../../../../shared/hooks/useMediaQuery";
 import styles from "./QuestExclusionDialog.module.css";
 
-export function QuestExclusionDialog({ questName, reduceMotion, showKeepAndDontAskAgain = true, onKeepAndDontAskAgain, onClose, onExclude }: {
+export function QuestExclusionDialog({ questName, reduceMotion, endsAttemptForFree = false, showKeepAndDontAskAgain = true, onKeepAndDontAskAgain, onClose, onExclude }: {
   questName: string | null;
   reduceMotion: boolean;
+  endsAttemptForFree?: boolean;
   showKeepAndDontAskAgain?: boolean;
   onKeepAndDontAskAgain: () => void;
   onClose: () => void;
@@ -31,6 +32,7 @@ export function QuestExclusionDialog({ questName, reduceMotion, showKeepAndDontA
       <section className={styles.content}>
         <h2>{t("ui.gallery.excludeTitle")}</h2>
         <p>{t("ui.gallery.excludeDescription", { quest: questName })}</p>
+        {endsAttemptForFree && <p>{t("ui.gallery.excludeEndsAttempt")}</p>}
         <div className={styles.actions}>
           <SolidButton size={buttonSize} variant="danger" onClick={onExclude}>
             {t("ui.gallery.excludeQuest")}

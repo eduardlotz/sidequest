@@ -125,12 +125,6 @@
   flex-shrink: 0;
 }
 
-.ropeMetric dd {
-  padding: 4px 12px;
-  border-radius: 999px;
-  background: var(--color-surface-soft);
-}
-
 .profileMetrics {
   padding: 0;
   margin: 0;

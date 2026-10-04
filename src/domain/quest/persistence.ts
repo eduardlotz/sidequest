@@ -168,13 +168,13 @@ export function migrateQuestState(value: unknown): PersistedQuestState {
     }
   }
   return {
+    freeShufflesRemaining: Math.min(count(value.freeShufflesRemaining, defaults.freeShufflesRemaining), defaults.freeShufflesRemaining),
     blacklistedQuestIds,
     skipQuestBanPrompt: value.skipQuestBanPrompt === true,
     gameSelection: selection,
     poolPreferences: sanitizePoolPreferences(value.poolPreferences),
     profile: {
       points: count(savedProfile.points, count(savedProfile.coins)),
-      redRopes: count(savedProfile.redRopes, defaults.profile.redRopes),
       avatarTheme: AVATAR_THEMES.includes(savedProfile.avatarTheme as typeof AVATAR_THEMES[number])
         ? savedProfile.avatarTheme as typeof AVATAR_THEMES[number]
         : defaults.profile.avatarTheme,

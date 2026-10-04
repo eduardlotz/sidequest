@@ -27,7 +27,7 @@ export const englishUi = {
     step3: "Start the timer and complete the quest in your game.",
     mismatchHeading: "The quest isn't right for you?",
     mismatchBody:
-      "Before starting, return to the cards for free. Once the timer is running, cut a red rope to cancel the quest.",
+      "Before starting, return to the cards for free. After starting, cutting the rope costs 25 coins. Between the minimum and suggested duration, you can give up for free without rewards. Banning a quest also ends it for free.",
     difficultyBody:
       "Read the full objective before you start. Some quests require a mode, item, mechanic, or a save with enough progress.",
     libraryHeading: "Quests for your library",
@@ -36,9 +36,9 @@ export const englishUi = {
     libraryChoice:
       "For a series, select the entries you actually play so installment-specific quests stay accurate. You can edit the library later from your profile. Cards without a named game still work with any library.",
     coinsHeading: "What do I do with the coins?",
-    coinEarning: "The longer you spend on a quest, the more coins you earn.",
+    coinEarning: "Ordinary quests earn 10 coins per played minute once you reach the suggested duration, including the time already played. Countdown and Speedrun rewards decrease by 10 coins per minute, reaching zero at their time limit.",
     coinSpending:
-      "Extra red ropes cost coins. All quests are available from the start, and shuffling is always free.",
+      "Cutting the rope costs 25 coins; shuffling costs 10. Your first three shuffles are free, and completing a quest makes your next shuffle free.",
     madeBy: "Made by",
   },
   library: englishLibrary,
@@ -77,6 +77,7 @@ export const englishUi = {
     chooseSuffix: "sidequest",
     changeMood: "Change Mood",
     newCardsLabel: "Shuffle quest cards for free.",
+    newCardsPaidLabel: "Shuffle quest cards for {{cost}} coins.",
     newCards: "New cards",
     costsPoints: "costs {{points}}",
     moodCards: "Mood cards",
@@ -128,29 +129,29 @@ export const englishUi = {
     paused: "Paused",
     completeQuest: "Complete quest",
     completeAvailableIn:
-      "You can complete this quest in <strong>{{time}}</strong>.",
+      "Complete in <strong>{{time}}</strong>.",
+    minimumTryRemaining:
+      "Minimum remaining: <strong>{{time}}</strong>.",
+    giveUp: "Give up",
+    giveUpHint: "End this attempt for free, without rewards.",
+    rewardUnlocksAt: "Coins unlock at {{time}} played. You can complete the objective now without coins.",
+    noTimedReward: "The reward has reached zero. You can still complete the objective.",
+    insufficientCancelCoins: "You don't have enough coins to cancel.",
+    cutStopPaid: "Cut the rope to cancel (costs {{cost}} coins).",
     lessThanMinute: "less than a minute",
-    completeOrCancel:
-      "You need to finish this quest or cancel it by cutting the rope.",
-    noRedRopes: "No cancellation ropes left. Complete this quest first.",
     coinsEarned: "You receive",
     coinsEarnedLabel: "You receive {{points}} coins",
     yourTime: "Your time",
     pullContinue: "Pull the timer to continue.",
-    redRopesRemaining_one:
-      "You have <strong>{{count}} rope left</strong> to cancel.",
-    redRopesRemaining_other:
-      "You have <strong>{{count}} ropes left</strong> to cancel.",
-    noRopesRemaining: "You have <strong>no ropes left</strong> to cancel.",
     pullStart: "Pull the timer to start.",
     readyInstructions:
-      // "Pull the timer to start.<br/>Minimum duration: <strong>{{time}}</strong>",
-      "Pull the timer to start.",
+      "Pull the timer to start.<br/>Minimum: <strong>{{time}}</strong>.",
+    readyBoundedInstructions:
+      "Pull the timer to start.<br/>Minimum: <strong>{{time}}</strong>.",
     pullResume: "Pull the timer to resume.",
     pullPause: "Pull the timer to pause.",
     backToSelection: "Back to selection screen",
     backToSelectionTooltip: "This quest stays open.",
-    cutStop: "Cut the rope to stop.",
   },
   profile: {
     title: "Your profile",
@@ -159,20 +160,7 @@ export const englishUi = {
     description: "Your coins, settings, and completed sidequests.",
     back: "Back to profile",
     yourSidequests: "Your sidequests",
-    redRopes: "Cancellation ropes",
-    owned: "Owned",
-    buyRopeInline: "Buy rope",
-    buyOneRope: "Buy rope",
     viewHistory: "View quest history",
-    buy: "Buy",
-    redRopesAvailable_one: "{{count}} rope available",
-    redRopesAvailable_other: "{{count}} ropes available",
-    buyRopes_one: "Buy {{count}} rope",
-    buyRopes_other: "Buy {{count}} ropes",
-    buyRopesLabel_one:
-      "Buy {{count}} cancellation rope for {{points}} coins. {{available}} coins available.",
-    buyRopesLabel_other:
-      "Buy {{count}} cancellation ropes for {{points}} coins. {{available}} coins available.",
     statistics: "Statistics",
     completedQuests: "Completed quests",
     timePlayed: "Time played",
@@ -230,7 +218,7 @@ export const germanUi = {
     step3: "Starte den Timer und schließe die Quest in deinem Spiel ab.",
     mismatchHeading: "Die Aufgabe passt doch nicht?",
     mismatchBody:
-      "Vor dem Start kannst du kostenlos zu den Karten zurück. Läuft der Timer schon, brichst du die Quest mit einem roten Seil ab.",
+      "Vor dem Start kannst du kostenlos zu den Karten zurück. Danach kostet das Durchtrennen des Seils 25 Münzen. Zwischen Mindestzeit und empfohlener Dauer kannst du kostenlos aufgeben, ohne Belohnung. Eine Quest zu verbannen beendet sie ebenfalls kostenlos.",
     difficultyBody:
       "Lies die ganze Aufgabe vor dem Start. Manche Quests brauchen einen Modus, Gegenstand, eine Mechanik oder einen ausreichend fortgeschrittenen Spielstand.",
     libraryHeading: "Quests für deine Bibliothek",
@@ -240,9 +228,9 @@ export const germanUi = {
       "Bei einer Reihe wählst du die Teile, die du wirklich spielst, damit Quests für einzelne Teile stimmen. Die Bibliothek kannst du später im Profil",
     coinsHeading: "Was mache ich mit den Münzen?",
     coinEarning:
-      "Je länger du an einer Quest sitzt, desto mehr Münzen gibt es dafür.",
+      "Normale Quests geben ab der empfohlenen Dauer 10 Münzen pro gespielter Minute, einschließlich der bisherigen Spielzeit. Bei Countdown und Speedrun sinkt die Belohnung um 10 Münzen pro Minute und erreicht am Zeitlimit null.",
     coinSpending:
-      "Zusätzliche rote Seile kosten Münzen. Alle Quests sind von Anfang an verfügbar, und neu mischen ist immer kostenlos.",
+      "Das Seil zu durchtrennen kostet 25 Münzen, neu mischen kostet 10. Die ersten drei Mal sind kostenlos. Nach jeder abgeschlossenen Quest ist das nächste Mischen wieder kostenlos.",
     madeBy: "Von",
   },
   library: germanLibrary,
@@ -281,6 +269,7 @@ export const germanUi = {
     chooseSuffix: "-Sidequest",
     changeMood: "Stimmung ändern",
     newCardsLabel: "Quest-Karten kostenlos neu mischen.",
+    newCardsPaidLabel: "Quest-Karten für {{cost}} Münzen neu mischen.",
     newCards: "Neue Karten",
     costsPoints: "kostet {{points}}",
     moodCards: "Stimmungskarten",
@@ -332,30 +321,29 @@ export const germanUi = {
     paused: "Pausiert",
     completeQuest: "Quest abschließen",
     completeAvailableIn:
-      "Du kannst die Quest erst in <strong>{{time}}</strong> abschließen.",
-    lessThanMinute: "weniger als einer Minute",
-    completeOrCancel:
-      "Du musst diese Quest abschließen oder sie durch Durchtrennen des Seils abbrechen.",
-    noRedRopes: "Keine Abbruch-Seile mehr. Schließe zuerst diese Quest ab.",
+      "Abschließen in <strong>{{time}}</strong>.",
+    minimumTryRemaining:
+      "Mindestzeit: noch <strong>{{time}}</strong>.",
+    giveUp: "Aufgeben",
+    giveUpHint: "Beende diesen Versuch kostenlos, ohne Belohnung.",
+    rewardUnlocksAt: "Münzen gibt es ab {{time}} Spielzeit. Du kannst die Aufgabe jetzt ohne Münzen abschließen.",
+    noTimedReward: "Die Belohnung hat null erreicht. Du kannst die Aufgabe weiterhin abschließen.",
+    insufficientCancelCoins: "Du hast nicht genug Münzen zum Abbrechen.",
+    cutStopPaid: "Seil durchtrennen zum Abbrechen (kostet {{cost}} Münzen).",
+    lessThanMinute: "weniger als eine Minute",
     coinsEarned: "Du erhältst",
     coinsEarnedLabel: "Du erhältst {{points}} Münzen",
     yourTime: "Deine Zeit",
     pullContinue: "Zieh am Timer, um fortzufahren.",
-    redRopesRemaining_one:
-      "Du hast noch <strong>{{count}} Seil</strong> zum Abbrechen.",
-    redRopesRemaining_other:
-      "Du hast noch <strong>{{count}} Seile</strong> zum Abbrechen.",
-    noRopesRemaining:
-      "Du hast <strong>keine Seile</strong> mehr, um abzubrechen.",
     pullStart: "Ziehe am Timer, um zu starten.",
     readyInstructions:
-      // "Zieh am Timer, um zu starten.<br/>Mindestlaufzeit: <strong>{{time}}</strong>",
-      "Zieh am Timer, um zu starten.",
+      "Zieh am Timer, um zu starten.<br/>Mindestzeit: <strong>{{time}}</strong>.",
+    readyBoundedInstructions:
+      "Zieh am Timer, um zu starten.<br/>Mindestzeit: <strong>{{time}}</strong>.",
     pullResume: "Ziehe am Timer, um fortzufahren.",
     pullPause: "Ziehe am Timer, um zu pausieren.",
     backToSelection: "Zurück zur Auswahl",
     backToSelectionTooltip: "Die Quest bleibt offen.",
-    cutStop: "Schneide das Seil durch zum Stoppen.",
   },
   profile: {
     title: "Dein Profil",
@@ -364,20 +352,7 @@ export const germanUi = {
     description: "Deine Münzen, Einstellungen und abgeschlossenen Sidequests.",
     back: "Zurück zum Profil",
     yourSidequests: "Deine Sidequests",
-    redRopes: "Abbruch-Seile",
-    owned: "Im Besitz",
-    buyRopeInline: "Seil kaufen",
-    buyOneRope: "Seil kaufen",
     viewHistory: "Quest-Verlauf ansehen",
-    buy: "Kaufen",
-    redRopesAvailable_one: "{{count}} Seil verfügbar",
-    redRopesAvailable_other: "{{count}} Seile verfügbar",
-    buyRopes_one: "{{count}} Seil kaufen",
-    buyRopes_other: "{{count}} Seile kaufen",
-    buyRopesLabel_one:
-      "{{count}} Abbruch-Seil für {{points}} Münzen kaufen. {{available}} Münzen verfügbar.",
-    buyRopesLabel_other:
-      "{{count}} rote Seile für {{points}} Münzen kaufen. {{available}} Münzen verfügbar.",
     statistics: "Statistiken",
     completedQuests: "Abgeschlossene Quests",
     timePlayed: "Spielzeit",
