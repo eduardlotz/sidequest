@@ -40,6 +40,12 @@ import { TShirtIcon } from "@phosphor-icons/react/dist/csr/TShirt";
 import { TreasureChestIcon } from "@phosphor-icons/react/dist/csr/TreasureChest";
 import { TrophyIcon } from "@phosphor-icons/react/dist/csr/Trophy";
 import { UsersIcon } from "@phosphor-icons/react/dist/csr/Users";
+import { RobotIcon } from "@phosphor-icons/react/dist/csr/Robot";
+import { MagicWandIcon } from "@phosphor-icons/react/dist/csr/MagicWand";
+import { MountainsIcon } from "@phosphor-icons/react/dist/csr/Mountains";
+import { AnchorIcon } from "@phosphor-icons/react/dist/csr/Anchor";
+import { PawPrintIcon } from "@phosphor-icons/react/dist/csr/PawPrint";
+import { DragonIcon } from "./DragonIcon";
 
 const icons = {
   zombie: BiohazardIcon,
@@ -82,6 +88,12 @@ const icons = {
   "local-co-op": GameControllerIcon,
   collectibles: TreasureChestIcon,
   lore: BookOpenIcon,
+  robot: RobotIcon,
+  dragon: DragonIcon,
+  "magic-wand": MagicWandIcon,
+  mountain: MountainsIcon,
+  anchor: AnchorIcon,
+  paw: PawPrintIcon,
 } satisfies Record<GameIconId, React.ComponentType<IconProps>>;
 
 export function GameIcon({ icon, ...props }: IconProps & { icon: GameIconId }) {

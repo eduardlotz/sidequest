@@ -39,6 +39,15 @@ export function AboutPanel({ reduceMotion }: Props) {
           <p>{t("ui.about.coinSpending")}</p>
         </section>
 
+        <section className={styles.aboutSection}>
+          <p>
+            {t("ui.about.feedbackBody")}{" "}
+            <a href="https://github.com/eduardlotz/sidequest" rel="noreferrer" target="_blank">
+              {t("ui.about.feedbackLink")}
+            </a>.
+          </p>
+        </section>
+
         {/* <section className={styles.aboutSection}>
           <h3>{t("ui.about.libraryHeading")}</h3>
           <p>{t("ui.about.libraryBody")}</p>

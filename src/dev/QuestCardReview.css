@@ -1,0 +1,72 @@
+body {
+  margin: 0;
+  background: #101013;
+}
+
+.quest-review {
+  width: min(1180px, 100%);
+  box-sizing: border-box;
+  margin: auto;
+  padding: 40px 32px 30px;
+  color: #f6f6fa;
+}
+
+.quest-review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.quest-review-header p {
+  margin: 0 0 8px;
+  color: #85858c;
+  font-size: 12px;
+}
+
+.quest-review-header h1 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: -0.035em;
+}
+
+.quest-review-header nav {
+  display: flex;
+  gap: 6px;
+}
+
+.quest-review-header button {
+  padding: 8px 12px;
+  border: 1px solid #333336;
+  border-radius: 999px;
+  background: transparent;
+  color: #85858c;
+  cursor: pointer;
+}
+
+.quest-review-header button[aria-pressed="true"] {
+  background: #242426;
+  color: #f6f6fa;
+}
+
+.quest-review-cards {
+  --shine-opacity: 0;
+  --shine-angle: 0deg;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.quest-review-note {
+  margin: 28px 0 0;
+  color: #85858c;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .quest-review { padding: 24px; }
+  .quest-review-cards { grid-template-columns: 1fr; gap: 28px; max-width: 380px; margin: auto; }
+  .quest-review-header h1 { font-size: 18px; }
+}

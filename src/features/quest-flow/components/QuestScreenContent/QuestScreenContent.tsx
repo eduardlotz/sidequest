@@ -53,7 +53,7 @@ const NEW_CARDS_SWAP_DELAY_MS = 560;
 const NEW_CARDS_COMPLETE_DELAY_MS = 1_500;
 
 type ReturnTransition = {
-  action: "back" | "cancel" | "give-up";
+  action: "back" | "cancel";
   destination: "selection" | "gallery";
   sessionId: string;
   offerId: string;
@@ -73,7 +73,6 @@ type Props = {
   offeredQuests: readonly QuestOfferItem[];
   points: number;
   freeShufflesRemaining: number;
-  debugMode: boolean;
   animateEntrance: boolean;
   reduceMotion: boolean;
   onSelectMood: (moodId: MoodId) => boolean;
@@ -85,7 +84,6 @@ type Props = {
   onReturnToSelection: () => boolean;
   onNewCards: () => boolean;
   onDiscard: () => boolean;
-  onGiveUp: () => boolean;
   onCancelViaRope: () => boolean;
   onRequestBan: () => void;
   onStart: (startedAt: number) => void;
@@ -108,7 +106,6 @@ export function QuestScreenContent({
   offeredQuests,
   points,
   freeShufflesRemaining,
-  debugMode,
   animateEntrance,
   reduceMotion,
   onSelectMood,
@@ -120,7 +117,6 @@ export function QuestScreenContent({
   onReturnToSelection,
   onNewCards,
   onDiscard,
-  onGiveUp,
   onCancelViaRope,
   onRequestBan,
   onStart,
@@ -349,8 +345,7 @@ export function QuestScreenContent({
   }
 
   function performReturn(action: ReturnTransition["action"]) {
-    return action === "back" ? onReturnToSelection()
-      : action === "give-up" ? onGiveUp() : onDiscard();
+    return action === "back" ? onReturnToSelection() : onDiscard();
   }
 
   function beginReturn(pose: CardReturnPose, action: ReturnTransition["action"]) {
@@ -522,8 +517,6 @@ export function QuestScreenContent({
                     ? "ui.gallery.overview"
                     : "ui.timer.backToSelection",
                 )}
-                coins={points}
-                debugMode={debugMode}
                 reduceMotion={reduceMotion}
                 onDiscard={onCancelViaRope}
                 onRequestBan={onRequestBan}

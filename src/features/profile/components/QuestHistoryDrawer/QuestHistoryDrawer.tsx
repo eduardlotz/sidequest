@@ -40,6 +40,7 @@ export function QuestHistoryDrawer({
               completion.moodId,
               completion.game,
               language,
+              completion.snapshot,
             );
             const mood = quest?.mood ?? localizeMood(completion.moodId, language);
             return (

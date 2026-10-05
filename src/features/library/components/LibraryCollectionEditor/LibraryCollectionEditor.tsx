@@ -187,7 +187,6 @@ export function LibraryCollectionEditor({
           <h3>
             <InfoLabel
               label={t("ui.library.customHeading")}
-              hint={t("ui.library.customDescription")}
             />
           </h3>
           {customGames.length ? (

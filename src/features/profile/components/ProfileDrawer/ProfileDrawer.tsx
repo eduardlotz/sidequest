@@ -14,7 +14,7 @@ import {
 import { QuestPoolSettings } from "../QuestPoolSettings/QuestPoolSettings";
 import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
 import { useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { SettingToggle } from "../../../../shared/ui/SettingToggle/SettingToggle";
 import { useTranslation } from "react-i18next";
 import styles from "./ProfileDrawer.module.css";
 import { formatScore } from "../../../../lib/format";
@@ -212,39 +212,6 @@ function ProfileMetric({ label, value }: { label: string; value: string }) {
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>
-  );
-}
-
-function SettingToggle({
-  checked,
-  label,
-  onChange,
-}: {
-  checked: boolean;
-  label: string;
-  onChange: (checked: boolean) => void;
-}) {
-  const reduceMotion = useReducedMotion();
-
-  return (
-    <button
-      className={styles.settingToggle}
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-label={label}
-      onClick={() => onChange(!checked)}
-    >
-      <motion.span
-        aria-hidden="true"
-        layout="position"
-        transition={
-          reduceMotion
-            ? { duration: 0 }
-            : { type: "spring", stiffness: 420, damping: 30 }
-        }
-      />
-    </button>
   );
 }
 

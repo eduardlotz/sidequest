@@ -6,6 +6,12 @@ import type { MoodDefinition } from "../data/questTypes";
 export const englishUi = {
   gallery: englishGallery,
   pool: englishPool,
+  recovery: {
+    title: "Quest unavailable",
+    description:
+      "This quest is no longer available after the catalog update. Return to selection for free to choose another.",
+    returnToSelection: "Return to selection",
+  },
   nav: {
     skipToContent: "Skip to content",
     mainNavigation: "Main navigation",
@@ -24,10 +30,11 @@ export const englishUi = {
     stepsHeading: "How it works",
     step1: "Choose a mood or pick one game for your next quest.",
     step2: "Pick a quest and launch the matching video game",
-    step3: "Start the timer and complete the quest in your game.",
+    step3:
+      "Start the timer and give your quest a try. Pause and complete it whenever you finish. The suggested time is just a guide.",
     mismatchHeading: "The quest isn't right for you?",
     mismatchBody:
-      "Before starting, return to the cards for free. After starting, cutting the rope costs 25 coins. Between the minimum and suggested duration, you can give up for free without rewards. Banning a quest also ends it for free.",
+      "Cut the red rope whenever you want to move on. It is always free and replaces just that quest. Canceling awards no coins or completion.",
     difficultyBody:
       "Read the full objective before you start. Some quests require a mode, item, mechanic, or a save with enough progress.",
     libraryHeading: "Quests for your library",
@@ -36,9 +43,13 @@ export const englishUi = {
     libraryChoice:
       "For a series, select the entries you actually play so installment-specific quests stay accurate. You can edit the library later from your profile. Cards without a named game still work with any library.",
     coinsHeading: "What do I do with the coins?",
-    coinEarning: "Ordinary quests earn 10 coins per played minute once you reach the suggested duration, including the time already played. Countdown and Speedrun rewards decrease by 10 coins per minute, reaching zero at their time limit.",
+    coinEarning:
+      "Ordinary quests earn 10 coins per active minute from the start, with rewards rounded down to whole coins. A standard quest earns 5 coins in 30 seconds or 50 coins in five minutes. Paused time does not count, and rewards stop growing after an hour. Special quests multiply the coins. Countdown and Speedrun rewards decrease with time; Countdown must be completed before time runs out.",
     coinSpending:
-      "Cutting the rope costs 25 coins; shuffling costs 10. Your first three shuffles are free, and completing a quest makes your next shuffle free.",
+      "Your first three reshuffles are free; later ones cost 10 coins to refresh the whole deck. Completing or canceling replaces only that quest and does not grant a free reshuffle.",
+    feedbackBody:
+      "Got feedback or an idea for a new quest? You're welcome to share it on",
+    feedbackLink: "GitHub",
     madeBy: "Made by",
   },
   library: englishLibrary,
@@ -107,6 +118,8 @@ export const englishUi = {
     specialReward: "Special · {{multiplier}}× coins",
     minimumMinutes: "{{count}} min minimum",
     suggestedMinutes: "{{count}} min suggested",
+    estimate: "~{{count}} min",
+    estimateLong: "About {{count}} minutes",
     durationRange: "{{minimum}}–{{suggested}} min",
     durationRangeLong: "{{minimum}}–{{suggested}} minutes",
     durationSingle: "{{count}} min",
@@ -116,7 +129,8 @@ export const englishUi = {
     activeLabel: "Active {{mood}} quest: {{title}}",
     focusCard: "Focus quest card: {{title}}",
     closeFocusedCard: "Close focused quest card",
-    favoriteCardLabel: "Toggle favorite: {{title}}. Double tap to favorite, triple tap to flip, or press Enter or Space to toggle favorite.",
+    favoriteCardLabel:
+      "Toggle favorite: {{title}}. Double tap to favorite, triple tap to flip, or press Enter or Space to toggle favorite.",
   },
   timer: {
     ...englishTimed,
@@ -128,26 +142,15 @@ export const englishUi = {
     ready: "Ready",
     paused: "Paused",
     completeQuest: "Complete quest",
-    completeAvailableIn:
-      "Complete in <strong>{{time}}</strong>.",
-    minimumTryRemaining:
-      "Minimum remaining: <strong>{{time}}</strong>.",
-    giveUp: "Give up",
-    giveUpHint: "End this attempt for free, without rewards.",
-    rewardUnlocksAt: "Coins unlock at {{time}} played. You can complete the objective now without coins.",
-    noTimedReward: "The reward has reached zero. You can still complete the objective.",
-    insufficientCancelCoins: "You don't have enough coins to cancel.",
-    cutStopPaid: "Cut the rope to cancel (costs {{cost}} coins).",
+    noCoinsYet: "No reward",
+    noTimedReward: "Too slow",
+    cutStopFree: "Cut the rope to cancel for free.",
     lessThanMinute: "less than a minute",
     coinsEarned: "You receive",
     coinsEarnedLabel: "You receive {{points}} coins",
     yourTime: "Your time",
     pullContinue: "Pull the timer to continue.",
     pullStart: "Pull the timer to start.",
-    readyInstructions:
-      "Pull the timer to start.<br/>Minimum: <strong>{{time}}</strong>.",
-    readyBoundedInstructions:
-      "Pull the timer to start.<br/>Minimum: <strong>{{time}}</strong>.",
     pullResume: "Pull the timer to resume.",
     pullPause: "Pull the timer to pause.",
     backToSelection: "Back to selection screen",
@@ -195,6 +198,12 @@ type TranslationShape<T> = {
 export const germanUi = {
   gallery: germanGallery,
   pool: germanPool,
+  recovery: {
+    title: "Quest nicht verfügbar",
+    description:
+      "Diese Quest ist nach der Katalogänderung nicht mehr verfügbar. Kehre kostenlos zur Auswahl zurück und wähle eine andere.",
+    returnToSelection: "Zurück zur Auswahl",
+  },
   nav: {
     skipToContent: "Zum Inhalt springen",
     mainNavigation: "Hauptnavigation",
@@ -215,10 +224,11 @@ export const germanUi = {
     step1:
       "Wähle eine Stimmung oder ein bestimmtes Spiel für deine nächste Quest.",
     step2: "Such dir eine Quest aus und starte das passende Videospiel dazu",
-    step3: "Starte den Timer und schließe die Quest in deinem Spiel ab.",
+    step3:
+      "Starte den Timer und probiere die Quest aus. Pausiere und schließe sie ab, sobald du fertig bist. Die empfohlene Zeit dient nur zur Orientierung.",
     mismatchHeading: "Die Aufgabe passt doch nicht?",
     mismatchBody:
-      "Vor dem Start kannst du kostenlos zu den Karten zurück. Danach kostet das Durchtrennen des Seils 25 Münzen. Zwischen Mindestzeit und empfohlener Dauer kannst du kostenlos aufgeben, ohne Belohnung. Eine Quest zu verbannen beendet sie ebenfalls kostenlos.",
+      "Schneide das rote Seil durch, wenn du wechseln möchtest. Das ist immer kostenlos und ersetzt nur diese Quest. Ein Abbruch gibt keine Münzen und zählt nicht als Abschluss.",
     difficultyBody:
       "Lies die ganze Aufgabe vor dem Start. Manche Quests brauchen einen Modus, Gegenstand, eine Mechanik oder einen ausreichend fortgeschrittenen Spielstand.",
     libraryHeading: "Quests für deine Bibliothek",
@@ -228,9 +238,12 @@ export const germanUi = {
       "Bei einer Reihe wählst du die Teile, die du wirklich spielst, damit Quests für einzelne Teile stimmen. Die Bibliothek kannst du später im Profil",
     coinsHeading: "Was mache ich mit den Münzen?",
     coinEarning:
-      "Normale Quests geben ab der empfohlenen Dauer 10 Münzen pro gespielter Minute, einschließlich der bisherigen Spielzeit. Bei Countdown und Speedrun sinkt die Belohnung um 10 Münzen pro Minute und erreicht am Zeitlimit null.",
+      "Normale Quests geben ab dem Start 10 Münzen pro aktiver Minute, abgerundet auf ganze Münzen. Eine normale Quest gibt nach 30 Sekunden 5 Münzen oder nach fünf Minuten 50 Münzen. Pausen zählen nicht; nach einer Stunde steigt die Belohnung nicht weiter. Besondere Quests vervielfachen die Münzen. Bei Countdown und Speedrun sinkt die Belohnung mit der Zeit; einen Countdown musst du vor Ablauf der Zeit abschließen.",
     coinSpending:
-      "Das Seil zu durchtrennen kostet 25 Münzen, neu mischen kostet 10. Die ersten drei Mal sind kostenlos. Nach jeder abgeschlossenen Quest ist das nächste Mischen wieder kostenlos.",
+      "Die ersten drei Mal neu mischen sind kostenlos, danach kostet ein komplett neues Deck 10 Münzen. Ein Abschluss oder Abbruch ersetzt nur diese Quest und gibt kein kostenloses Mischen.",
+    feedbackBody:
+      "Feedback oder eine Idee für eine neue Quest? Teile sie gern auf",
+    feedbackLink: "GitHub",
     madeBy: "Von",
   },
   library: germanLibrary,
@@ -299,6 +312,8 @@ export const germanUi = {
     specialReward: "Besonders · {{multiplier}}× Münzen",
     minimumMinutes: "mindestens {{count}} Min.",
     suggestedMinutes: "{{count}} Min. empfohlen",
+    estimate: "~{{count}} Min.",
+    estimateLong: "Etwa {{count}} Minuten",
     durationRange: "{{minimum}}–{{suggested}} Min.",
     durationRangeLong: "{{minimum}}–{{suggested}} Minuten",
     durationSingle: "{{count}} Min.",
@@ -308,7 +323,8 @@ export const germanUi = {
     activeLabel: "Aktive Quest für {{mood}}: {{title}}",
     focusCard: "Quest-Karte fokussieren: {{title}}",
     closeFocusedCard: "Fokussierte Quest-Karte schließen",
-    favoriteCardLabel: "Favorit umschalten: {{title}}. Zweimal tippen zum Favorisieren, dreimal zum Drehen. Eingabe- oder Leertaste schaltet den Favoriten um.",
+    favoriteCardLabel:
+      "Favorit umschalten: {{title}}. Zweimal tippen zum Favorisieren, dreimal zum Drehen. Eingabe- oder Leertaste schaltet den Favoriten um.",
   },
   timer: {
     ...germanTimed,
@@ -320,26 +336,15 @@ export const germanUi = {
     ready: "Bereit",
     paused: "Pausiert",
     completeQuest: "Quest abschließen",
-    completeAvailableIn:
-      "Abschließen in <strong>{{time}}</strong>.",
-    minimumTryRemaining:
-      "Mindestzeit: noch <strong>{{time}}</strong>.",
-    giveUp: "Aufgeben",
-    giveUpHint: "Beende diesen Versuch kostenlos, ohne Belohnung.",
-    rewardUnlocksAt: "Münzen gibt es ab {{time}} Spielzeit. Du kannst die Aufgabe jetzt ohne Münzen abschließen.",
-    noTimedReward: "Die Belohnung hat null erreicht. Du kannst die Aufgabe weiterhin abschließen.",
-    insufficientCancelCoins: "Du hast nicht genug Münzen zum Abbrechen.",
-    cutStopPaid: "Seil durchtrennen zum Abbrechen (kostet {{cost}} Münzen).",
+    noCoinsYet: "Keine Belohnung",
+    noTimedReward: "Zu langsam.",
+    cutStopFree: "Seil durchtrennen zum kostenlosen Abbrechen.",
     lessThanMinute: "weniger als eine Minute",
     coinsEarned: "Du erhältst",
     coinsEarnedLabel: "Du erhältst {{points}} Münzen",
     yourTime: "Deine Zeit",
     pullContinue: "Zieh am Timer, um fortzufahren.",
     pullStart: "Ziehe am Timer, um zu starten.",
-    readyInstructions:
-      "Zieh am Timer, um zu starten.<br/>Mindestzeit: <strong>{{time}}</strong>.",
-    readyBoundedInstructions:
-      "Zieh am Timer, um zu starten.<br/>Mindestzeit: <strong>{{time}}</strong>.",
     pullResume: "Ziehe am Timer, um fortzufahren.",
     pullPause: "Ziehe am Timer, um zu pausieren.",
     backToSelection: "Zurück zur Auswahl",

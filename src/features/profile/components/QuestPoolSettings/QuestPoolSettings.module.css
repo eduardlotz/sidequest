@@ -1,42 +1,7 @@
-.settings {
-  display: flex;
-  min-height: 0;
-  /* height: 660px;
-  max-height: 100%; */
-  /* flex-direction: column;
-  flex: 1; */
-  overflow: auto;
-}
-.fields {
-  display: grid;
-  gap: 30px;
-  padding: 8px;
-}
-.group {
-  display: grid;
-  gap: 10px;
-}
-.choices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-.choices button {
-  padding-inline: 12px;
-}
-.footer {
-  position: sticky;
-  bottom: -20px;
-  z-index: 2;
-  display: grid;
-  gap: 4px;
-  padding: 16px 0 12px;
-  background: var(--color-surface);
-  width: 100%;
-}
-@media (--mobile) {
-  .footer {
-    bottom: -22px;
-    padding-bottom: 16px;
-  }
-}
+.fields { display: grid; gap: 16px; min-width: 0; }
+.group { composes: section from "../../../library/components/LibrarySection.module.css"; display: grid; gap: 8px; }
+.groupHeader { composes: heading from "../../../library/components/LibrarySection.module.css"; flex-wrap: wrap; }
+.choices { display: grid; gap: 8px; min-width: 0; }
+.selectAll { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px var(--library-row-inset); margin-bottom: 8px; color: var(--color-muted); font-size: 12px; }
+.hint { margin: 0; color: var(--color-muted); font-size: 12px; line-height: 1.5; }
+.validation { margin: 0; padding: 8px var(--library-row-inset); font-size: 12px; font-weight: 650; }

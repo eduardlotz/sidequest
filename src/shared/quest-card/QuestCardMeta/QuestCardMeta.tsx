@@ -8,9 +8,11 @@ type Props = {
   favorite?: boolean;
   favoriteInteraction?: boolean;
   durationFormat?: "long" | "short";
+  durationPresentation?: "estimate" | "range";
   durationLabel?: string;
   game?: GameReference | null;
   minimumDurationMinutes: number;
+  maximumDurationMinutes?: number;
   moodTitle: string;
   name?: string;
   suggestedDurationMinutes: number;
@@ -20,6 +22,7 @@ export function QuestCardMeta({
   favorite = false,
   favoriteInteraction = false,
   durationFormat = "short",
+  durationPresentation = "estimate",
   durationLabel,
   game = null,
   minimumDurationMinutes,
@@ -28,25 +31,11 @@ export function QuestCardMeta({
   suggestedDurationMinutes,
 }: Props) {
   const { t } = useTranslation();
-  const duration =
-    minimumDurationMinutes === suggestedDurationMinutes
-      ? t(
-          durationFormat === "long"
-            ? "ui.quest.durationSingleLong"
-            : "ui.quest.durationSingle",
-          {
-            count: minimumDurationMinutes,
-          },
-        )
-      : t(
-          durationFormat === "long"
-            ? "ui.quest.durationRangeLong"
-            : "ui.quest.durationRange",
-          {
-            minimum: minimumDurationMinutes,
-            suggested: suggestedDurationMinutes,
-          },
-        );
+  const duration = durationPresentation === "estimate"
+    ? t(durationFormat === "long" ? "ui.quest.estimateLong" : "ui.quest.estimate", { count: suggestedDurationMinutes })
+    : minimumDurationMinutes === suggestedDurationMinutes
+      ? t(durationFormat === "long" ? "ui.quest.durationSingleLong" : "ui.quest.durationSingle", { count: minimumDurationMinutes })
+      : t(durationFormat === "long" ? "ui.quest.durationRangeLong" : "ui.quest.durationRange", { minimum: minimumDurationMinutes, suggested: suggestedDurationMinutes });
 
   return (
     <>

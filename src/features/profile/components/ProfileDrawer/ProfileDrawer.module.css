@@ -175,55 +175,6 @@
   position: relative;
 }
 
-.settingToggle {
-  position: relative;
-  display: flex;
-  width: 52px;
-  height: 28px;
-  padding: 4px;
-  align-items: center;
-  border-radius: 100px;
-  background: var(--color-surface-pressed);
-  cursor: pointer;
-  transition: background 160ms ease;
-  box-shadow:
-    0 0.5px 1px rgb(33, 33, 33, 0.07),
-    0 1px 4px rgb(33, 33, 33, 0.07),
-    inset 0 1px 2px rgb(33, 33, 33, 0.2);
-}
-
-.settingToggle > span {
-  width: 28px;
-  height: 20px;
-  flex-shrink: 0;
-  border-radius: 100px;
-  background: var(--color-surface);
-  box-shadow:
-    0 0.5px 1px rgb(33, 33, 33, 0.07),
-    0 1px 4px rgb(33, 33, 33, 0.07),
-    inset 0 1px px rgb(255, 255, 255, 0.5);
-}
-
-:global(:root[data-theme="dark"]) .settingToggle[aria-checked="true"] > span {
-  background: var(--color-surface);
-}
-
-.settingToggle[aria-checked="true"] {
-  background: linear-gradient(180deg, #5ff081 100%, #14e544 100%);
-
-  span {
-    background: linear-gradient(180deg, #f7f7f9 100%, #fcfcfd 100%);
-  }
-}
-
-:global(:root[data-theme="dark"]) .settingToggle[aria-checked="true"] {
-  background: linear-gradient(180deg, #53bc6c 100%, #257d39 100%);
-}
-
-.settingToggle[aria-checked="true"] > span {
-  margin-left: auto;
-}
-
 .settingLabelWithInfo {
   display: inline-flex;
   align-items: center;
@@ -314,8 +265,6 @@
 }
 
 @media (--reduced-motion) {
-  .settingToggle,
-  .settingToggle > span,
   .settingInfoTooltip {
     transition: none;
   }

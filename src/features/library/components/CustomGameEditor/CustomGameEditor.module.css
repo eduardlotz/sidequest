@@ -318,21 +318,18 @@
   line-height: 1.2;
 }
 
-.summaryRow svg,
-.activityRow > svg:first-child {
+.summaryRow svg {
   width: 24px;
   height: 24px;
   flex: none;
 }
 
-.summaryRow span,
-.activityRow > span:not([aria-hidden="true"]) {
+.summaryRow span {
   flex: 1;
   min-width: 0;
 }
 
-.summaryRow small,
-.activityRow small {
+.summaryRow small {
   display: block;
   color: var(--color-muted);
   font-size: 14px;
@@ -425,82 +422,21 @@
 }
 
 .viewSwitch {
-  display: flex;
-  gap: 4px;
-  padding: 4px;
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  padding-block: 8px;
   margin-bottom: 12px;
-  border-radius: 24px;
-  background: var(--library-muted-surface);
-
-  button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    flex: 1;
-    min-height: 30px;
-    border-radius: var(--library-control-radius);
-    background: transparent;
-    color: var(--color-muted);
-    font: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-
-    &[aria-pressed="true"] {
-      background: var(--color-surface);
-      color: var(--color-text);
-      box-shadow: 0 1px 4px rgb(var(--color-shadow-rgb) / 0.08);
-    }
-  }
-
-  span {
-    color: var(--color-muted);
-  }
-}
-
-.activityList {
-  display: grid;
-  gap: 8px;
-}
-
-.activityRow {
-  display: flex;
-  width: 100%;
-  min-height: 64px;
-  padding: 16px calc(var(--library-row-inset) + 4px);
-  align-items: center;
-  gap: 40px;
-  border-radius: 21px;
   background: var(--color-surface);
-  color: var(--color-text);
-  font-size: 14px;
-  font-weight: 600;
-  text-align: left;
-  text-wrap: balance;
-  cursor: pointer;
-  transition:
-    background-color 180ms ease,
-    transform 150ms ease;
 
-  &:active {
-    transform: scale(0.985);
-  }
-
-  @media (--reduced-motion) {
-    transition: none;
-
-    &:active {
-      transform: none;
-    }
-  }
-
-  .rowLabel {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
+  > div { width: 100%; }
+  button { flex: 1; min-height: 36px; }
 }
+
+.activityList, .questGroup { display: grid; gap: 8px; }
+.questGroup + .questGroup { margin-top: 12px; }
+.mappingCount { flex: none; white-space: nowrap; color: var(--color-muted); font-size: 12px; font-weight: 600; }
+.linkedCount { white-space: nowrap; }
 
 .empty {
   display: block;

@@ -1,16 +1,17 @@
 import type { MoodDefinition, MoodId } from "../../data/moods";
+import type { QuestTranslation } from "../../data/questTypes";
 import type { QuestDefinition } from "../../data/quests";
 import type { GameReference } from "../../data/gameTypes";
 import type { GameGenreId } from "../../data/gameGenres";
 import type { QuestTypeId } from "../../data/questTraits";
 import type { QuestConnectionModeId, QuestPlayStyleId } from "../../data/questPoolTraits";
+import type { QuestOriginId, QuestPeopleId, QuestParticipationId, QuestFormationId } from "../../data/questContexts";
 
 export const STORE_KEY = "sidequest.quests";
-export const STORE_VERSION = 27;
+export const STORE_VERSION = 30;
 export const MOOD_RESET_MS = 4 * 60 * 60 * 1_000;
 export const QUEST_OFFER_COUNT = 3;
 export const STORED_COMPLETION_LIMIT = 500;
-export const QUEST_CANCEL_COST = 25;
 export const QUEST_SHUFFLE_COST = 10;
 export const INITIAL_FREE_SHUFFLES = 3;
 export const POINTS_PER_MINUTE = 10;
@@ -39,7 +40,15 @@ export type UserProfile = {
   debugMode: boolean;
 };
 
+export type QuestSnapshot = {
+  definition: QuestDefinition;
+  translations: Readonly<Record<"en" | "de", QuestTranslation>>;
+  catalogRevision: string;
+};
+
 export type QuestSession = {
+  snapshot?: QuestSnapshot;
+  recovery?: boolean;
   sessionId: string;
   moodId: MoodId;
   questId: string;
@@ -51,6 +60,7 @@ export type QuestSession = {
 };
 
 export type CompletedSession = {
+  snapshot?: QuestSnapshot;
   id: string;
   moodId: MoodId;
   questId: string;
@@ -106,7 +116,6 @@ export type QuestStats = {
 
 export type QuestState = {
   freeShufflesRemaining: number;
-  skipQuestBanPrompt: boolean;
   blacklistedQuestIds: string[];
   gameSelection: GameSelection | null;
   poolPreferences: QuestPoolPreferences;
@@ -123,15 +132,19 @@ export type QuestState = {
 };
 
 export type QuestPoolPreferences = {
-  questSource: "all" | "curated" | "flexible";
+  originIds: QuestOriginId[];
   genreIds: GameGenreId[];
   typeIds: QuestTypeId[];
   connectionModeIds: QuestConnectionModeId[];
-  styleIds: QuestPlayStyleId[];
+  peopleIds: QuestPeopleId[];
+  participationIds: QuestParticipationId[];
+  formationIds: QuestFormationId[];
+  /** Retain the old OR restriction until the player explicitly edits contexts. */
+  legacyStyleIds?: QuestPlayStyleId[];
+  allGroups: string[];
 };
 
 export type QuestActions = {
-  setSkipQuestBanPrompt: (skip: boolean) => void;
   setQuestBlacklisted: (questId: string, blacklisted: boolean) => boolean;
   excludeCurrentQuest: () => boolean;
   chooseGame: (gameId: string, installmentId?: string) => boolean;
@@ -140,6 +153,7 @@ export type QuestActions = {
   toggleQuestFavorite: (questId: string) => void;
   repeatQuest: (questId: string) => boolean;
   restartCurrentQuest: () => boolean;
+  recoverCurrentSession: () => boolean;
   savePoolPreferences: (preferences: QuestPoolPreferences) => void;
   selectMood: (moodId: MoodId) => boolean;
   editMood: () => boolean;
@@ -152,7 +166,6 @@ export type QuestActions = {
   resumeQuest: (resumedAt: number) => void;
   returnCurrentSessionToSelection: () => boolean;
   discardCurrentSession: () => boolean;
-  giveUpCurrentSession: () => boolean;
   setDebugMode: (enabled: boolean) => void;
   completeQuest: () => CompletedSession | null;
 };
@@ -162,7 +175,6 @@ export type QuestStore = QuestState & QuestActions;
 export type PersistedQuestState = Pick<
   QuestState,
   | "freeShufflesRemaining"
-  | "skipQuestBanPrompt"
   | "gameSelection"
   | "blacklistedQuestIds"
   | "profile"

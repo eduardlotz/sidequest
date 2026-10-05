@@ -1,10 +1,13 @@
 .control {
+  position: relative;
   display: flex;
   padding: 3px;
   align-items: center;
   border-radius: 999px;
   background: rgb(var(--color-text-rgb) / 0.05);
 }
+
+.control[data-equal-width] button { flex: 1; }
 
 .control button {
   position: relative;
@@ -34,6 +37,11 @@
   background: var(--color-surface);
   box-shadow: 0 1px 4px rgb(var(--color-shadow-rgb) / 0.2);
   pointer-events: none;
+}
+
+.slidingIndicator {
+  composes: indicator;
+  inset: 3px auto 3px 3px;
 }
 
 .buttonLabel {

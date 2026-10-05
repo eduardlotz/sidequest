@@ -1,3 +1,5 @@
+import { AUTHORED_QUESTS } from "./catalog";
+import { validateQuest } from "./validation";
 import {
   MOOD_IDS,
   type AuthoredQuestDefinition,
@@ -8,23 +10,6 @@ import {
 } from "../questTypes";
 import { isQuestTypeAllowed } from "../questTraits";
 import { QUEST_POOL_TRAITS, isQuestConnectionModeId, isQuestPlayStyleId } from "../questPoolTraits";
-import { challengeQuests } from "./challenge";
-import { connectQuests } from "./connect";
-import { createQuests } from "./create";
-import { curiousQuests } from "./curious";
-import { exploreQuests } from "./explore";
-import { focusedQuests } from "./focused";
-import { lowEnergyQuests } from "./low-energy";
-import { nostalgicQuests } from "./nostalgic";
-import { overwhelmedQuests } from "./overwhelmed";
-import { progressQuests } from "./progress";
-import { relaxQuests } from "./relax";
-import { flexibleQuests } from "./flexible";
-import { restlessQuests } from "./restless";
-import { reusableQuests } from "./reusable";
-import { exclusiveQuests } from "./exclusive";
-import { timedQuests } from "./timed";
-
 export type {
   AuthoredQuestDefinition,
   MoodId,
@@ -33,33 +18,13 @@ export type {
   QuestTranslation,
 } from "../questTypes";
 
-const MOOD_QUESTS: Record<MoodId, readonly AuthoredQuestDefinition[]> = {
-  relax: relaxQuests,
-  explore: exploreQuests,
-  progress: progressQuests,
-  create: createQuests,
-  challenge: challengeQuests,
-  connect: connectQuests,
-  nostalgic: nostalgicQuests,
-  overwhelmed: overwhelmedQuests,
-  restless: restlessQuests,
-  focused: focusedQuests,
-  curious: curiousQuests,
-  "low-energy": lowEnergyQuests,
-};
-
-export const QUEST_CATALOG: readonly AuthoredQuestDefinition[] = [
-  ...MOOD_IDS.flatMap((moodId) => MOOD_QUESTS[moodId]),
-  ...reusableQuests,
-  ...flexibleQuests,
-  ...exclusiveQuests,
-  ...timedQuests,
-];
+export const QUEST_CATALOG = AUTHORED_QUESTS;
 
 // Catch authoring mistakes at the catalogue boundary, before any screen or store
 // can use an incompatible pairing. Eligibility also consults the same table.
 const seenQuestIds = new Set<string>();
 for (const quest of QUEST_CATALOG) {
+  validateQuest(quest);
   if (seenQuestIds.has(quest.id)) {
     throw new Error(`Duplicate quest identity ${quest.id}`);
   }
@@ -83,8 +48,9 @@ export const QUEST_TRANSLATIONS_BY_ID = Object.fromEntries(
 export const QUESTS: readonly MoodQuestDefinition[] = QUEST_CATALOG.map(
   ({ translations, ...quest }) => ({
     ...quest,
+    experience: quest.experience,
     rarity: quest.rarity ?? "standard",
-    gameGenreIds: QUEST_POOL_TRAITS[quest.id].genreIds,
+    gameGenreIds: quest.gameGenreIds ?? QUEST_POOL_TRAITS[quest.id].genreIds,
     connectionModeIds: QUEST_POOL_TRAITS[quest.id].styleIds.filter(isQuestConnectionModeId),
     playStyleIds: QUEST_POOL_TRAITS[quest.id].styleIds.filter(isQuestPlayStyleId),
     universal: quest.universal !== false,
@@ -108,6 +74,7 @@ export const QUESTS_BY_ID = Object.fromEntries(
 export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
   ({
     id,
+    experience,
     rarity,
     moodIds,
     type,
@@ -121,9 +88,11 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     universal,
     gameBindable,
     customGameCompatibility,
+    customGameOverrideOnly,
     curated,
   }) => ({
     id,
+    experience,
     rarity,
     moodIds,
     type,
@@ -137,6 +106,7 @@ export const QUEST_CORES: readonly QuestCoreDefinition[] = QUESTS.map(
     universal,
     gameBindable,
     customGameCompatibility,
+    customGameOverrideOnly,
     curated,
   }),
 );

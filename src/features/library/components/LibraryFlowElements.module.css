@@ -27,7 +27,8 @@
     margin: 0 0 16px;
     padding: 16px 24px;
     border-radius: 18px;
-    background: var(--library-muted-surface);
+    background: color-mix(in srgb, var(--color-focus) 12%, var(--color-surface));
+    border: 1px solid color-mix(in srgb, var(--color-focus) 28%, transparent);
     color: var(--color-muted);
     font-size: 14px;
     font-weight: 600;
@@ -52,7 +53,7 @@
     border-radius: 50%;
     background: var(--color-focus);
     color: white;
-    box-shadow: 0 0 0 3px var(--library-muted-surface);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus) 18%, transparent);
     font-size: 12px;
     font-weight: 800;
   }

@@ -1,3 +1,4 @@
+import { flexibleGameContexts } from "../../data/games/questCompatibility";
 import { CURATED_GAMES, CURATED_GAMES_BY_ID } from "../../data/games";
 import { QUEST_CORES, QUEST_CORES_BY_ID } from "../../data/quests";
 import type { GameCapabilityId } from "../../data/gameTypes";
@@ -10,11 +11,16 @@ import {
 } from "./model";
 
 export const CUSTOM_GAME_QUESTS = QUEST_CORES.filter(
-  (quest) => quest.gameBindable && quest.customGameCompatibility,
+  (quest) => !quest.curated && quest.gameBindable
+    && (quest.customGameCompatibility || quest.customGameOverrideOnly),
+);
+
+export const AUTOMATIC_CUSTOM_GAME_QUESTS = CUSTOM_GAME_QUESTS.filter(
+  (quest) => Boolean(quest.customGameCompatibility),
 );
 
 export function curatedGameQuestIds(
-  state: LibraryState,
+  state: Pick<LibraryState, "curatedGamePreferences">,
   gameId: string,
 ): string[] {
   const game = CURATED_GAMES_BY_ID[gameId];
@@ -37,10 +43,11 @@ export function curatedGameQuestIds(
         );
       })
     : [];
-  return Array.from(new Set([...dedicated, ...game.compatibleQuestIds]));
+  const flexible = game.compatibleQuestIds.filter(id => QUEST_CORES_BY_ID[id] && flexibleGameContexts(gameId, id, preferences.installmentIds).length > 0);
+  return Array.from(new Set([...dedicated, ...flexible]));
 }
 
-export function libraryGamesFromState(state: LibraryState): LibraryGame[] {
+export function libraryGamesFromState(state: Pick<LibraryState, "selectedCuratedGameIds" | "curatedGamePreferences" | "customGames">): LibraryGame[] {
   const curatedGames = state.selectedCuratedGameIds.flatMap((gameId) => {
     const game = CURATED_GAMES_BY_ID[gameId];
     return game
@@ -51,6 +58,7 @@ export function libraryGamesFromState(state: LibraryState): LibraryGame[] {
             source: "curated" as const,
             iconId: game.iconId,
             colorId: game.colorId,
+            installmentIds: state.curatedGamePreferences[gameId]?.installmentIds ?? [],
             questIds: curatedGameQuestIds(state, gameId),
           },
         ]
@@ -83,6 +91,10 @@ export function hasLibraryGames(state: LibraryState) {
       Boolean(CURATED_GAMES_BY_ID[id]),
     ) || state.customGames.length > 0
   );
+}
+
+export function hasCustomGameActivities(game: Pick<CustomGame, "capabilityIds" | "questOverrides">): boolean {
+  return game.capabilityIds.length > 0 || CUSTOM_GAME_QUESTS.some(quest => game.questOverrides[quest.id] === true);
 }
 
 export function allCuratedGamesSelected(state: LibraryState) {

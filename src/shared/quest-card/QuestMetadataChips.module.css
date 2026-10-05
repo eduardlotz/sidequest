@@ -1,0 +1,59 @@
+.metadata {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5cqw;
+  margin-top: 1cqw;
+  font-size: calc(0.7 * var(--quest-card-type-unit));
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.3cqw;
+}
+
+.primary,
+.outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2cqw;
+  min-height: 7cqw;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0.8cqw 2.2cqw;
+  border: 1px solid transparent;
+  border-radius: 999px;
+}
+
+.primary {
+  background: #242426;
+  color: #f6f6fa;
+}
+
+.primary svg,
+.outline svg {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+}
+
+.outline {
+  border-color: #333336;
+  color: #85858c;
+  white-space: nowrap;
+}
+
+.segment,
+.alternative {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2cqw;
+}
+
+.separator {
+  color: #85858c;
+}

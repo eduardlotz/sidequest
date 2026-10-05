@@ -6,9 +6,26 @@ export const GAME_CAPABILITY_IDS = [
   "rounds-or-matches",
   "whole-matches",
   "combat-loadouts",
+  "weapon-pickups",
+  "equipment-upgrades",
+  "bot-modes",
+  "replayable-tutorials",
   "combat-spells",
   "space-exploration",
+  "free-space-flight",
+  "dynamic-weather",
   "swimming",
+  "diving",
+  "moving-patrols",
+  "stealth-takedowns",
+  "theft-or-loot",
+  "placeable-gadgets",
+  "replayable-encounters",
+  "decoration",
+  "level-editors",
+  "inventory-storage",
+  "material-gathering",
+  "practice-ranges",
   "boss-fights",
   "stealth",
   "puzzles",
@@ -27,6 +44,8 @@ export const GAME_CAPABILITY_IDS = [
   "local-multiplayer",
   "collectibles",
   "choices-or-lore",
+  "optional-dialogue",
+  "readable-journal",
   "trading",
   "hunting",
   "animal-companions",
@@ -37,10 +56,12 @@ export const GAME_CAPABILITY_IDS = [
   "character-abilities",
   "tactical-gadgets",
   "scouting-tools",
+  "remote-scouting",
   "lanes-and-towers",
   "time-trials",
   "rhythm-play",
   "card-decks",
+  "card-mulligan",
   "unit-command",
   "automation",
 ] as const;
@@ -88,13 +109,22 @@ export const GAME_ICON_IDS = [
   "local-co-op",
   "collectibles",
   "lore",
+  "robot",
+  "dragon",
+  "magic-wand",
+  "mountain",
+  "anchor",
+  "paw",
 ] as const;
 
 export type GameIconId = (typeof GAME_ICON_IDS)[number];
-export type GameColorId = MoodId;
+export const EXTRA_GAME_COLOR_IDS = ["violet", "teal", "rose", "orange"] as const;
+export type GameColorId = MoodId | (typeof EXTRA_GAME_COLOR_IDS)[number];
 export type GameSource = "curated" | "custom";
 
 export type GameReference = {
+  installmentId?: string;
+  installmentIds?: readonly string[];
   id: string;
   name: string;
   source: GameSource;

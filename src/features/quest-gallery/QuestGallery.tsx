@@ -37,7 +37,6 @@ import { normalizeLanguage } from "../../localization/i18n";
 import { formatRunningDuration } from "../../lib/format";
 import type {
   Quest,
-  QuestPoolPreferences,
   QuestProgress,
 } from "../../domain/quest/model";
 import { matchesQuestSource } from "../../domain/quest/pool";
@@ -88,7 +87,7 @@ const GALLERY_FILTERS = [
 export type GalleryFilter = (typeof GALLERY_FILTERS)[number];
 export type QuestGalleryView = {
   filter: GalleryFilter;
-  questSource: QuestPoolPreferences["questSource"];
+  questSource: "all" | "curated" | "flexible";
   rarity: QuestRarity | "all";
   query: string;
   focusedId: string | null;
@@ -274,12 +273,13 @@ export function QuestGallery({
           (view.genreIds.length > 0 &&
             genres.length > 0 &&
             !genres.some((id) => view.genreIds.includes(id))) ||
-          (view.connectionModeIds.length > 0 &&
-            !quest.connectionModeIds.some((id) => view.connectionModeIds.includes(id))) ||
-          (view.playStyleIds.length > 0 &&
-            !quest.playStyleIds.some((id) =>
-              view.playStyleIds.includes(id),
-            )) ||
+          !quest.experience.contexts.some((context) =>
+            (!view.connectionModeIds.length || view.connectionModeIds.includes(context.connection)) &&
+            (!view.playStyleIds.length || view.playStyleIds.some((style) =>
+              style === "solo" ? context.people === "alone" :
+              style === "co-op" ? context.people === "others" : context.formation === style,
+            )),
+          ) ||
           (view.gameId !== null &&
             (quest.game?.id ?? quest.curated?.gameId) !== view.gameId) ||
           (view.typeIds.length > 0 && !view.typeIds.includes(quest.type)) ||
@@ -1202,6 +1202,7 @@ function GalleryCard({
                   game={quest.game}
                   type={quest.type}
                   tags={quest.tags}
+                  durationPresentation="estimate"
                   minimumDurationMinutes={quest.minimumDurationMinutes}
                   suggestedDurationMinutes={quest.suggestedDurationMinutes}
                   moodTitle={quest.mood.title}

@@ -89,10 +89,12 @@ export function WelcomeQuestPreviews({
                 <QuestCard
                   rarity={quest.rarity}
                   game={quest.game}
+                  experience={quest.experience}
                   type={quest.type}
                   tags={quest.tags}
                   minimumDurationMinutes={quest.minimumDurationMinutes}
                   suggestedDurationMinutes={quest.suggestedDurationMinutes}
+                  maximumDurationMinutes={quest.maximumDurationMinutes}
                   moodTitle={quest.mood.title}
                   name={quest.name}
                   objective={quest.objective}
