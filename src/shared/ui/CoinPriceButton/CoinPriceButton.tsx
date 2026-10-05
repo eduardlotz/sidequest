@@ -1,4 +1,4 @@
-import { type ButtonHTMLAttributes, type ReactNode } from "react";
+import { type ButtonHTMLAttributes, type ComponentProps, type ReactNode } from "react";
 import { CoinIcon } from "../Icons/Icons";
 import { SolidButton } from "../SolidButton/SolidButton";
 import styles from "./CoinPriceButton.module.css";
@@ -7,6 +7,7 @@ type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   label: ReactNode;
   price: ReactNode;
   tone?: "neutral" | "inverse";
+  variant?: ComponentProps<typeof SolidButton>["variant"];
 };
 
 export function CoinPriceButton({
@@ -14,6 +15,7 @@ export function CoinPriceButton({
   label,
   price,
   tone = "inverse",
+  variant = "primary",
   ...props
 }: Props) {
   return (
@@ -21,8 +23,7 @@ export function CoinPriceButton({
       {...props}
       className={className}
       size="medium"
-      // variant={tone === "inverse" ? "highContrast" : "soft"}
-      variant="primary"
+      variant={variant}
       data-tone={tone}
     >
       <span className={styles.content}>

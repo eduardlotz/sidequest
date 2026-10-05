@@ -1,4 +1,6 @@
 import { MOODS, type MoodId } from "../../data/moods";
+import { flexibleGameContexts } from "../../data/games/questCompatibility";
+import type { QuestCoreDefinition } from "../../data/questTypes";
 import { QUEST_CORES_BY_ID, questCoresForMood } from "../../data/quests";
 import { CURATED_GAMES_BY_ID } from "../../data/games";
 import { QUEST_COIN_MULTIPLIERS } from "../../data/questRarity";
@@ -8,6 +10,7 @@ import { defaultPoolPreferences, matchesPoolPreferences } from "./pool";
 import {
   DEFAULT_PROFILE,
   DEFAULT_QUEST_STATS,
+  INITIAL_FREE_SHUFFLES,
   MAX_COMPLETION_POINTS,
   MOOD_RESET_MS,
   POINTS_DURATION_CAP_MS,
@@ -50,10 +53,11 @@ export function gameForInstallment(
   return {
     ...game,
     name: installment.name,
+    installmentId,
+    installmentIds: [installmentId],
     questIds: game.questIds.filter((id) => {
       const curated = QUEST_CORES_BY_ID[id]?.curated;
-      return !curated || curated.installmentIds.length === 0
-        || curated.installmentIds.includes(installmentId);
+      return curated ? curated.installmentIds.length === 0 || curated.installmentIds.includes(installmentId) : flexibleGameContexts(game.id, id, [installmentId]).length > 0;
     }),
   };
 }
@@ -74,7 +78,7 @@ export function questGamesForSelection(
 
 export function createDefaultQuestState(): QuestState {
   return {
-    skipQuestBanPrompt: false,
+    freeShufflesRemaining: INITIAL_FREE_SHUFFLES,
     blacklistedQuestIds: [],
     poolPreferences: defaultPoolPreferences(),
     profile: { ...DEFAULT_PROFILE },
@@ -101,76 +105,45 @@ export function generateQuestOffers(
   preferences: QuestPoolPreferences = defaultPoolPreferences(),
   previousQuestIds: ReadonlySet<string> = new Set(),
   boundOnly = false,
+  reservedExperiences: ReadonlySet<string> = new Set(),
 ): QuestOffer[] {
   const pools = questOfferPools(moodId, libraryGames, preferences);
   const selected: QuestOffer[] = [];
   const selectedQuestIds = new Set(excludedQuestIds);
 
+  const selectedFamilies = new Set<string>();
+  const selectedExperiences = new Set(reservedExperiences);
   function pick(pool: readonly QuestOffer[], role: QuestOfferRole) {
-    const available = pool.filter((offer) => !selectedQuestIds.has(offer.questId));
-    const novel = available.filter(
-      (offer) =>
-        !excludedOfferIds.has(offer.id) &&
-        !previousQuestIds.has(offer.questId),
-    );
-    const fresh = available.filter((offer) => !excludedOfferIds.has(offer.id));
-    const candidates = novel.length ? novel : fresh.length ? fresh : available;
-    // Choose a game first so large curated catalogues do not dominate the deal.
+    const available = pool.filter((offer) => !selectedQuestIds.has(offer.questId)
+      && !selectedExperiences.has(experienceKey(offer.questId)));
+    const differentFamilies = available.filter((offer) => !selectedFamilies.has(QUEST_CORES_BY_ID[offer.questId].experience.family));
+    const varied = differentFamilies.length ? differentFamilies : available;
+    const novel = varied.filter((offer) => !excludedOfferIds.has(offer.id) && !previousQuestIds.has(offer.questId));
+    const fresh = varied.filter((offer) => !excludedOfferIds.has(offer.id));
+    const candidates = novel.length ? novel : fresh.length ? fresh : varied;
+    // Choose games uniformly, then identities uniformly (not one ticket per mood).
     const gameIds = Array.from(new Set(candidates.map((offer) => offer.game?.id ?? null)));
     const gameId = sampleWithoutReplacement(gameIds, 1, random)[0];
-    const offer = sampleWithoutReplacement(
-      candidates.filter((candidate) => (candidate.game?.id ?? null) === gameId),
-      1,
-      random,
-    )[0];
+    const gameCandidates = candidates.filter((candidate) => (candidate.game?.id ?? null) === gameId);
+    const questId = sampleWithoutReplacement(Array.from(new Set(gameCandidates.map((offer) => offer.questId))), 1, random)[0];
+    const offer = sampleWithoutReplacement(gameCandidates.filter((candidate) => candidate.questId === questId), 1, random)[0];
     if (!offer) return false;
     selected.push({ ...offer, role });
     selectedQuestIds.add(offer.questId);
+    selectedFamilies.add(QUEST_CORES_BY_ID[offer.questId].experience.family);
+    selectedExperiences.add(experienceKey(offer.questId));
     return true;
   }
-
   function pickLibrary() {
-    const available = pools.bound.filter(
-      (offer) => !selectedQuestIds.has(offer.questId),
-    );
-    const novel = available.filter(
-      (offer) =>
-        !excludedOfferIds.has(offer.id) &&
-        !previousQuestIds.has(offer.questId),
-    );
-    const fresh = available.filter((offer) => !excludedOfferIds.has(offer.id));
-    const candidates = novel.length ? novel : fresh.length ? fresh : available;
-    const gameIds = Array.from(
-      new Set(candidates.flatMap((offer) => (offer.game ? [offer.game.id] : []))),
-    );
-    const gameId = sampleWithoutReplacement(gameIds, 1, random)[0];
-    if (!gameId) return false;
-    const gameCandidates = candidates.filter(
-      (candidate) => candidate.game?.id === gameId,
-    );
-    const questId = sampleWithoutReplacement(
-      Array.from(new Set(gameCandidates.map((candidate) => candidate.questId))),
-      1,
-      random,
-    )[0];
-    const offer = sampleWithoutReplacement(
-      gameCandidates.filter((candidate) => candidate.questId === questId),
-      1,
-      random,
-    )[0];
-    if (!offer) return false;
-    selected.push({ ...offer, role: "library" });
-    selectedQuestIds.add(offer.questId);
-    return true;
+    return pick(pools.curated, "library") || pick(pools.bound, "library");
   }
 
   for (const role of roles) {
     if (role === "library") {
-      // Choose a game first, then sample every compatible quest for that game.
       pickLibrary() ||
         (!boundOnly && (pick(pools.directed, role) || pick(pools.inspiration, role)));
     } else {
-      pick(pools[role], role) || pick([...pools.directed, ...pools.inspiration, ...pools.bound], role);
+      pick(pools[role], role);
     }
   }
   return selected;
@@ -184,6 +157,7 @@ export function generateGameQuestOffers(
   excludedQuestIds: ReadonlySet<string> = new Set(),
   preferences: QuestPoolPreferences = defaultPoolPreferences(),
   previousQuestIds: ReadonlySet<string> = new Set(),
+  reservedExperiences: ReadonlySet<string> = new Set(),
 ) {
   return generateQuestOffers(
     moodId,
@@ -195,27 +169,26 @@ export function generateGameQuestOffers(
     preferences,
     previousQuestIds,
     true,
+    reservedExperiences,
   );
 }
 
-function questOfferPools(moodId: MoodId | null, libraryGames: readonly LibraryGame[], preferences: QuestPoolPreferences) {
+export function questOfferPools(moodId: MoodId | null, libraryGames: readonly LibraryGame[], preferences: QuestPoolPreferences) {
   const moodIds = moodId ? [moodId] : MOODS.map((mood) => mood.id);
   const eligible = moodIds.flatMap((id) =>
     questCoresForMood(id)
       .filter((quest) => matchesPoolPreferences(quest, preferences))
       .map((quest) => ({ quest, moodId: id })),
   );
-  const eligibleById = new Map<string, typeof eligible>();
-  for (const entry of eligible) {
-    eligibleById.set(entry.quest.id, [...(eligibleById.get(entry.quest.id) ?? []), entry]);
-  }
-  const bound = libraryGames.flatMap((game) => game.questIds.flatMap((id) =>
-    (eligibleById.get(id) ?? []).flatMap(({ quest, moodId: offerMoodId }) =>
-      quest.gameBindable && (!quest.curated || quest.curated.gameId === game.id)
-        ? [createQuestOffer(offerMoodId, id, game, "library")]
-        : [],
-    ),
-  ));
+  const bound = libraryGames.flatMap(game => game.questIds.flatMap(id => {
+    const quest = QUEST_CORES_BY_ID[id];
+    if (!quest?.gameBindable || (quest.curated && quest.curated.gameId !== game.id)) return [];
+    const contexts = game.source === "curated" && !quest.curated
+      ? flexibleGameContexts(game.id, id, game.installmentId ? [game.installmentId] : game.installmentIds ?? [])
+      : quest.experience.contexts;
+    if (!contexts.length || !matchesPoolPreferences({ ...quest, experience: { ...quest.experience, contexts } }, preferences)) return [];
+    return moodIds.filter(id => quest.moodIds.includes(id)).map(mood => createQuestOffer(mood, id, game, "library"));
+  }));
   const universal = eligible.filter(({ quest }) => quest.universal);
   return {
     curated: bound.filter((offer) => QUEST_CORES_BY_ID[offer.questId].curated),
@@ -225,6 +198,54 @@ function questOfferPools(moodId: MoodId | null, libraryGames: readonly LibraryGa
     directed: universal.filter(({ quest }) => quest.type !== "inspiration")
       .map(({ quest, moodId: offerMoodId }) => createQuestOffer(offerMoodId, quest.id, null, "directed")),
   };
+}
+
+export function isSessionEligible(session: QuestSession, selection: GameSelection | null,
+  libraryGames: readonly LibraryGame[], preferences: QuestPoolPreferences, banned: ReadonlySet<string>) {
+  if (banned.has(session.questId)) return false;
+  const available = selection ? questGamesForSelection(selection, libraryGames) : libraryGames;
+  const exactId = session.game?.installmentId;
+  const games = exactId ? available.flatMap(game => {
+    if (game.id !== session.game?.id || !game.installmentIds?.includes(exactId)) return [];
+    const exact = gameForInstallment(game, exactId);
+    return exact ? [exact] : [];
+  }) : available;
+  const pools = questOfferPools(session.moodId, games, preferences);
+  const offers = [...pools.bound, ...(!selection ? [...pools.directed, ...pools.inspiration] : [])];
+  return offers.some(offer => offer.questId === session.questId
+    && (offer.game?.id ?? null) === (session.game?.id ?? null));
+}
+
+export function poolPreviewCounts(preferences: QuestPoolPreferences, libraryGames: readonly LibraryGame[], moodId: MoodId | null, banned: ReadonlySet<string>, boundOnly = false) {
+  return preparePoolPreview(libraryGames, moodId, banned, boundOnly)(preferences);
+}
+
+/** Build the route's candidate set once; each draft/option count only filters it. */
+export function preparePoolPreview(libraryGames: readonly LibraryGame[], moodId: MoodId | null, banned: ReadonlySet<string>, boundOnly = false) {
+  const pools = questOfferPools(moodId, libraryGames, defaultPoolPreferences());
+  const candidates = [...pools.bound, ...(!boundOnly ? [...pools.inspiration, ...pools.directed] : [])]
+    .filter(offer => !banned.has(offer.questId))
+    .map(offer => {
+      const original = QUEST_CORES_BY_ID[offer.questId];
+      const contexts = offer.game?.source === "curated" && !original.curated
+        ? flexibleGameContexts(offer.game.id, offer.questId, offer.game.installmentId ? [offer.game.installmentId] : offer.game.installmentIds ?? [])
+        : original.experience.contexts;
+      return { offer, quest: { ...original, experience: { ...original.experience, contexts } } };
+    });
+  return (preferences: QuestPoolPreferences) => {
+    const eligible = candidates.filter(({ quest }) => matchesPoolPreferences(quest, preferences));
+    const bound = eligible.filter(({ offer }) => offer.game);
+    return {
+      quests: new Set(eligible.map(({ offer }) => offer.questId)).size,
+      libraryQuests: new Set(bound.map(({ offer }) => offer.questId)).size,
+      games: new Set(bound.map(({ offer }) => offer.game!.id)).size,
+    };
+  };
+}
+
+export function experienceKey(questId: string) {
+  const experience = QUEST_CORES_BY_ID[questId]?.experience;
+  return experience ? `${experience.family}:${experience.finish}` : questId;
 }
 
 export function countGameQuestsBySource(
@@ -250,12 +271,26 @@ export function isQuestOfferSetValid(
   preferences: QuestPoolPreferences = defaultPoolPreferences(),
   blacklistedQuestIds: ReadonlySet<string> = new Set(),
 ) {
-  if (offers.length > QUEST_OFFER_COUNT || new Set(offers.map(offer => offer.questId)).size !== offers.length) return false;
+  if (offers.length > QUEST_OFFER_COUNT
+    || offers.some(offer => !QUEST_OFFER_ROLES.includes(offer.role))
+    || new Set(offers.map(offer => offer.questId)).size !== offers.length) return false;
   const pools = questOfferPools(moodId, libraryGames, preferences);
-  const eligible = [...pools.curated, ...pools.bound, ...pools.directed, ...pools.inspiration]
-    .filter((offer) => !blacklistedQuestIds.has(offer.questId));
-  return offers.length === Math.min(QUEST_OFFER_COUNT, new Set(eligible.map(offer => offer.questId)).size) &&
-    offers.every(offer => eligible.some(candidate => candidate.id === offer.id));
+  const byRole = {
+    library: [...pools.bound, ...pools.directed, ...pools.inspiration],
+    inspiration: pools.inspiration,
+    directed: pools.directed,
+  };
+  const occupiedIds = new Set(offers.map(offer => offer.questId));
+  const occupiedExperiences = new Set(offers.map(offer => experienceKey(offer.questId)));
+  if (new Set(offers.map(offer => offer.role)).size !== offers.length
+    || occupiedExperiences.size !== offers.length) return false;
+  const eligibleForRole = (role: QuestOfferRole) => byRole[role]
+    .filter(offer => !blacklistedQuestIds.has(offer.questId));
+  return offers.every(offer => eligibleForRole(offer.role)
+    .some(candidate => sameOfferContext(candidate, offer)))
+    && QUEST_OFFER_ROLES.every(role => offers.some(offer => offer.role === role)
+      || !eligibleForRole(role).some(offer => !occupiedIds.has(offer.questId)
+        && !occupiedExperiences.has(experienceKey(offer.questId))));
 }
 
 export function isGameOfferSetValid(
@@ -267,9 +302,20 @@ export function isGameOfferSetValid(
 ) {
   const bound = questOfferPools(moodId, libraryGames, preferences).bound
     .filter((offer) => !blacklistedQuestIds.has(offer.questId));
-  return offers.length === Math.min(QUEST_OFFER_COUNT, new Set(bound.map((offer) => offer.questId)).size) &&
+  return offers.length === Math.min(QUEST_OFFER_COUNT, new Set(bound.map((offer) => experienceKey(offer.questId))).size) &&
     new Set(offers.map((offer) => offer.questId)).size === offers.length &&
-    offers.every((offer) => bound.some((candidate) => candidate.id === offer.id));
+    new Set(offers.map((offer) => experienceKey(offer.questId))).size === offers.length &&
+    offers.every((offer) => bound.some((candidate) => sameOfferContext(candidate, offer)));
+}
+
+function sameOfferContext(candidate: QuestOffer, saved: QuestOffer) {
+  return candidate.id === saved.id
+    && candidate.game?.name === saved.game?.name
+    && candidate.game?.installmentId === saved.game?.installmentId
+    && candidate.game?.iconId === saved.game?.iconId
+    && candidate.game?.colorId === saved.game?.colorId
+    && JSON.stringify([...(candidate.game?.installmentIds ?? [])].sort())
+      === JSON.stringify([...(saved.game?.installmentIds ?? [])].sort());
 }
 
 export function createQuestOffer(
@@ -301,6 +347,8 @@ function gameReferenceFrom(game: LibraryGame | GameReference): GameReference {
     id: game.id,
     name: game.name,
     source: game.source,
+    ...(game.installmentId ? { installmentId: game.installmentId } : {}),
+    ...(game.installmentIds ? { installmentIds: game.installmentIds } : {}),
     ...(game.iconId ? { iconId: game.iconId } : {}),
     ...(game.colorId ? { colorId: game.colorId } : {}),
   };
@@ -312,50 +360,45 @@ export function activeSessionDurationMs(
 ) {
   if (session.startedAt === null) return 0;
   const endedAt = session.pausedAt ?? now;
-  return Math.min(questTimeLimitMs(session.questId), safeNonNegativeInteger(
+  return Math.min(questTimeLimitMs(session.questId, session.snapshot?.definition), safeNonNegativeInteger(
     endedAt - session.startedAt - session.pausedTotalMs,
   ));
 }
 
-export function questTimeLimitMs(questId: string) {
-  const quest = QUEST_CORES_BY_ID[questId];
+export function questTimeLimitMs(questId: string, definition?: QuestCoreDefinition) {
+  const quest = definition ?? QUEST_CORES_BY_ID[questId];
   return quest?.type === "countdown" ? (quest.maximumDurationMinutes ?? quest.suggestedDurationMinutes) * 60_000 : Infinity;
-}
-
-export function minimumQuestDurationMs(questId: string) {
-  const quest = QUEST_CORES_BY_ID[questId];
-  return quest
-    ? safeNonNegativeInteger(quest.minimumDurationMinutes * 60_000)
-    : null;
 }
 
 export function canCompleteQuest(
   session: QuestSession | null,
   now: number = Date.now(),
-  debugMode: boolean = false,
 ) {
-  if (!session || session.startedAt === null || session.pausedAt === null) {
+  if (!session || session.recovery || session.startedAt === null || session.pausedAt === null) {
     return false;
   }
-  if (activeSessionDurationMs(session, now) >= questTimeLimitMs(session.questId)) return false;
-  if (debugMode) return true;
-  const minimumDurationMs = minimumQuestDurationMs(session.questId);
-  return (
-    minimumDurationMs !== null &&
-    activeSessionDurationMs(session, now) >= minimumDurationMs
-  );
+  const quest = session.snapshot?.definition ?? QUEST_CORES_BY_ID[session.questId];
+  return Boolean(quest) && activeSessionDurationMs(session, now) < questTimeLimitMs(session.questId, quest);
 }
 
-export function calculateCompletionPoints(durationMs: number, questId?: string) {
-  const scoringDurationMs = Math.min(
-    safeNonNegativeInteger(durationMs),
-    POINTS_DURATION_CAP_MS,
-  );
-  const basePoints = Math.min(
-    MAX_COMPLETION_POINTS,
-    Math.floor((scoringDurationMs * POINTS_PER_MINUTE) / 60_000),
-  );
-  const rarity = questId ? QUEST_CORES_BY_ID[questId]?.rarity : undefined;
+export function calculateCompletionPoints(durationMs: number, questId?: string, definition?: QuestCoreDefinition) {
+  const quest = definition ?? (questId ? QUEST_CORES_BY_ID[questId] : undefined);
+  const elapsedMs = safeNonNegativeInteger(durationMs);
+  const timed = quest?.type === "countdown" || quest?.type === "speedrun";
+  let basePoints: number;
+  if (timed) {
+    const rewardDurationMs = (quest.type === "countdown" ? quest.maximumDurationMinutes ?? quest.suggestedDurationMinutes : quest.suggestedDurationMinutes) * 60_000;
+    const maximumPoints = Math.floor((rewardDurationMs * POINTS_PER_MINUTE) / 60_000);
+    basePoints = Math.min(MAX_COMPLETION_POINTS, Math.max(
+      0,
+      maximumPoints - Math.floor((elapsedMs * POINTS_PER_MINUTE) / 60_000),
+    ));
+  } else {
+    basePoints = Math.min(MAX_COMPLETION_POINTS, Math.floor(
+      (Math.min(elapsedMs, POINTS_DURATION_CAP_MS) * POINTS_PER_MINUTE) / 60_000,
+    ));
+  }
+  const rarity = quest?.rarity;
   return basePoints * QUEST_COIN_MULTIPLIERS[rarity ?? "standard"];
 }
 
@@ -437,17 +480,18 @@ export function rotateSessionOffer(
   const excludedIds = new Set(moodOffers.map((offer) => offer.id));
   const excludedQuestIds = new Set([...state.blacklistedQuestIds, ...moodOffers
     .filter((_, index) => index !== slotIndex).map((offer) => offer.questId)]);
+  const reservedExperiences = new Set(moodOffers.filter((_, index) => index !== slotIndex).map(offer => experienceKey(offer.questId)));
   const replacement = (state.gameSelection
     ? generateGameQuestOffers(null, questGamesForSelection(state.gameSelection, libraryGames),
-        random, excludedIds, excludedQuestIds, state.poolPreferences, new Set([session.questId]))
+        random, excludedIds, excludedQuestIds, state.poolPreferences, new Set([session.questId]), reservedExperiences)
     : generateQuestOffers(session.moodId, libraryGames, random, excludedIds,
-        undefined, excludedQuestIds, state.poolPreferences, new Set([session.questId])))[0];
+        [moodOffers[slotIndex].role], excludedQuestIds, state.poolPreferences, new Set([session.questId]), false, reservedExperiences))[0];
   if (!replacement) {
-    if (!state.blacklistedQuestIds.includes(session.questId)) {
-      return {
-        offeredQuests: state.offeredQuests,
-        offerSetsByMoodId: state.offerSetsByMoodId,
-      };
+    const pools = questOfferPools(state.gameSelection ? null : session.moodId,
+      state.gameSelection ? questGamesForSelection(state.gameSelection, libraryGames) : libraryGames, state.poolPreferences);
+    const eligible = state.gameSelection ? pools.bound : [...pools.bound, ...pools.directed, ...pools.inspiration];
+    if (!state.blacklistedQuestIds.includes(session.questId) && eligible.some(offer => offer.id === moodOffers[slotIndex].id)) {
+      return { offeredQuests: state.offeredQuests, offerSetsByMoodId: state.offerSetsByMoodId };
     }
     moodOffers.splice(slotIndex, 1);
   } else {

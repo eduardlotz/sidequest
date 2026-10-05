@@ -4,6 +4,9 @@ import {
   QUEST_TRANSLATIONS_BY_ID,
   type QuestDefinition,
 } from "../data/quests";
+import { flexibleGameContexts } from "../data/games/questCompatibility";
+import { historicalQuest } from "../domain/quest/snapshot";
+import type { QuestSnapshot } from "../domain/quest/model";
 import type { Quest } from "../domain/quest/model";
 import type { GameReference } from "../data/gameTypes";
 import i18n, { normalizeLanguage, type AppLanguage } from "./i18n";
@@ -30,8 +33,9 @@ export function localizeQuest(
   questId: string,
   language: AppLanguage,
 ): QuestDefinition | null {
-  const quest = QUESTS_BY_ID[questId];
-  const translations = QUEST_TRANSLATIONS_BY_ID[questId];
+  const archived = historicalQuest(questId);
+  const quest = QUESTS_BY_ID[questId] ?? archived?.definition;
+  const translations = QUEST_TRANSLATIONS_BY_ID[questId] ?? archived?.translations;
   if (!quest || !translations) return null;
   const translation = translations[normalizeLanguage(language)];
   return {
@@ -45,8 +49,11 @@ export function hydrateQuest(
   moodId: MoodId,
   game: GameReference | null,
   language: AppLanguage,
+  snapshot?: QuestSnapshot,
 ): Quest | null {
-  const quest = localizeQuest(questId, language);
+  const quest = snapshot
+    ? { ...snapshot.definition, ...snapshot.translations[normalizeLanguage(language)] }
+    : localizeQuest(questId, language);
   if (!quest) return null;
   if (!quest.moodIds.includes(moodId)) return null;
   const mood = localizeMood(moodId, language);
@@ -55,6 +62,8 @@ export function hydrateQuest(
 
   return {
     ...quest,
+    experience: game?.source === "curated" && !quest.curated && !snapshot
+      ? { ...quest.experience, contexts: flexibleGameContexts(game.id, questId, game.installmentId ? [game.installmentId] : game.installmentIds ?? []) } : quest.experience,
     objective: game
       ? quest.gameObjective!.replaceAll("{{game}}", () => game.name)
       : quest.objective,

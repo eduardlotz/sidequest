@@ -55,6 +55,12 @@
 .aboutSection p + p {
   margin-top: 24px;
 }
+
+.aboutSection a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
 .aboutSteps {
   padding: 0 0 0 1.45em;
   margin: 0;

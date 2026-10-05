@@ -1,0 +1,25 @@
+.accordion { min-width: 0; }
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, auto) auto minmax(8px, 1fr) auto 16px;
+  align-items: center;
+  column-gap: 8px;
+  padding-right: var(--library-row-inset, 12px);
+}
+.trigger {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex; justify-content: flex-end; align-items: center;
+  min-height: 44px; width: calc(100% + var(--library-row-inset, 12px)); min-width: 0;
+  padding: 10px var(--library-row-inset, 12px);
+  background: none; color: var(--color-text); text-align: left;
+  font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.title { grid-column: 1; grid-row: 1; margin-left: var(--library-row-inset, 12px); pointer-events: none; font-size: 14px; font-weight: 600; }
+.trigger svg { width: 16px; height: 16px; }
+.summary { grid-column: 4; grid-row: 1; pointer-events: none; color: var(--color-muted); font-size: 12px; white-space: nowrap; }
+.info { grid-column: 2; grid-row: 1; z-index: 1; display: grid; place-items: center; width: 28px; height: 28px; margin-left: -6px; padding: 0; background: none; color: var(--color-muted); cursor: pointer; }
+.info svg { width: 14px; height: 14px; }
+.trigger:focus-visible, .info:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; border-radius: 8px; }
+.clip { overflow: hidden; }
+.content { padding: 8px 0 4px; }

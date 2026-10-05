@@ -46,11 +46,10 @@ export function AppHeader({
 }: Props) {
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
-  const { profile, purchaseRedRopes, setDebugMode, stats } =
+  const { profile, setDebugMode, stats } =
     useQuestStore(
       useShallow((state) => ({
         profile: state.profile,
-        purchaseRedRopes: state.purchaseRedRopes,
         setDebugMode: state.setDebugMode,
         stats: state.stats,
       })),
@@ -190,7 +189,6 @@ export function AppHeader({
             >
               <ProfileDrawer
                 onDebugModeChange={setDebugMode}
-                onPurchaseRedRopes={purchaseRedRopes}
                 onThemeChange={onThemeChange}
                 profile={profile}
                 stats={stats}

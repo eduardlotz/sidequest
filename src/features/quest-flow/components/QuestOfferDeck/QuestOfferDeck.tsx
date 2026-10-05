@@ -569,6 +569,7 @@ function QuestOfferCard({
                   bestTimeMs={personalBest}
                   favorite={favorite}
                   className={`${styles.questSelectionCard} ${styles.newCardsCardFront}`}
+                  experience={item.experience}
                   type={item.type}
                   tags={item.tags}
                   game={item.game}
@@ -577,6 +578,7 @@ function QuestOfferCard({
                   name={item.name}
                   objective={item.objective}
                   suggestedDurationMinutes={item.suggestedDurationMinutes}
+                  maximumDurationMinutes={item.maximumDurationMinutes}
                 >
                   <span className={styles.newCardsShine} aria-hidden="true" />
                 </QuestCard>

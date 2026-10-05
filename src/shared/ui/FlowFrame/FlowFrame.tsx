@@ -16,10 +16,12 @@ type Props = {
   children: ReactNode;
   title?: ReactNode;
   titleInContent?: boolean;
+  keepScrollTopVisible?: boolean;
   footer?: ReactNode;
   floating?: ReactNode;
   identityRef?: RefObject<HTMLElement | null>;
   initialScrollTop?: number;
+  scrollKey?: string;
   selectionIndicator?: ReactNode;
   scrollElementRef?: RefObject<HTMLDivElement | null>;
 };
@@ -30,10 +32,12 @@ export function FlowFrame({
   children,
   title,
   titleInContent = false,
+  keepScrollTopVisible = false,
   footer,
   floating,
   identityRef,
   initialScrollTop = 0,
+  scrollKey,
   selectionIndicator,
   scrollElementRef,
 }: Props) {
@@ -58,7 +62,7 @@ export function FlowFrame({
       node.scrollTop = initialScrollTop;
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [initialScrollTop]);
+  }, [initialScrollTop, scrollKey]);
   useEffect(() => {
     const node = scrollRef.current!;
     const update = () => {
@@ -133,10 +137,11 @@ export function FlowFrame({
       >
         <motion.div
           className={styles.scroll}
+          layoutScroll
           ref={setScrollRef}
           initial={false}
           animate={{
-            "--fade-top": edges.top ? "48px" : "0px",
+            "--fade-top": edges.top && !keepScrollTopVisible ? "48px" : "0px",
             "--fade-bottom": edges.bottom ? "64px" : "0px",
           }}
           transition={transition}

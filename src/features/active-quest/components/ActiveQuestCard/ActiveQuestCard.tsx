@@ -14,9 +14,8 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
-  RED_ROPE_BUNDLE_COST,
   type Quest,
   type QuestSession,
 } from "../../../../domain/quest/model";
@@ -37,7 +36,6 @@ import {
 import { formatRunningDuration } from "../../../../lib/format";
 import { playSound } from "../../../../lib/sound";
 import {
-  completionRemainingTime,
   isDownwardActivationPull,
 } from "../../../../lib/timerRopeRules";
 import { AnimatedElapsedTime } from "../AnimatedElapsedTime/AnimatedElapsedTime";
@@ -53,7 +51,6 @@ import {
 } from "../../../../shared/quest-card/InteractiveQuestCard/InteractiveQuestCard";
 import { QuestCard } from "../../../../shared/quest-card/QuestCard/QuestCard";
 import cardStyles from "../../../../shared/quest-card/QuestCard/QuestCard.module.css";
-import { RopePurchaseRow } from "../RopePurchaseRow/RopePurchaseRow";
 import { FlyingCoin, type CoinImpact } from "../FlyingCoin/FlyingCoin";
 import {
   MOBILE_PAUSED_TIMER_TOP_RATIO,
@@ -91,9 +88,6 @@ type Props = {
   layoutSessionId: string;
   entryRotation: number;
   returnLabel: string;
-  coins: number;
-  redRopes: number;
-  debugMode: boolean;
   reduceMotion: boolean;
   onDiscard: () => boolean;
   onRequestBan: () => void;
@@ -108,7 +102,6 @@ type Props = {
   onCoinFlightStart: (pointsAwarded: number) => void;
   onCoinHit: (pointsReceived: number, impact?: CoinImpact) => void;
   onLayoutHandoffStart: () => void;
-  onPurchaseRedRopes: () => boolean;
 };
 
 type Phase = "ready" | "running" | "paused" | "cutting" | "completed";
@@ -117,7 +110,6 @@ const COMPLETION_HOLD_DURATION_MS = 850;
 const COIN_FLIGHT_COUNT = 6;
 const CUT_TRAIL_CLEAR_DELAY_MS = 210;
 const CUT_TRAIL_FADE_DURATION_MS = 60;
-const CANCELLATION_BLOCKED_DURATION_MS = 3_000;
 const CARD_FOCUS_SCALE_MULTIPLIER = 1.02;
 
 const pausePanelVariants: Variants = {
@@ -161,9 +153,6 @@ export function ActiveQuestCard({
   layoutSessionId,
   entryRotation,
   returnLabel,
-  coins,
-  redRopes,
-  debugMode,
   reduceMotion,
   onDiscard,
   onRequestBan,
@@ -175,12 +164,12 @@ export function ActiveQuestCard({
   onCoinFlightStart,
   onCoinHit,
   onLayoutHandoffStart,
-  onPurchaseRedRopes,
 }: Props) {
   const { t } = useTranslation();
   const isPresent = useIsPresent();
   const countdown = quest.type === "countdown";
-  const timeLimitMs = questTimeLimitMs(quest.id);
+  const timed = countdown || quest.type === "speedrun";
+  const timeLimitMs = questTimeLimitMs(quest.id, quest);
   const restartCurrentQuest = useQuestStore(
     (state) => state.restartCurrentQuest,
   );
@@ -236,7 +225,6 @@ export function ActiveQuestCard({
   const [elapsedMs, setElapsedMs] = useState(() =>
     elapsedForSession(session, Date.now()),
   );
-  const [cancellationBlocked, setCancellationBlocked] = useState(false);
   const [animateReveal] = useState(
     () => !reduceMotion && Date.now() - session.revealedAt < 1_500,
   );
@@ -293,7 +281,6 @@ export function ActiveQuestCard({
   const cutGestureStartRef = useRef<Point | null>(null);
   const lastCutPointRef = useRef<Point | null>(null);
   const trailClearTimeoutRef = useRef<number | null>(null);
-  const cancellationBlockedTimeoutRef = useRef<number | null>(null);
   const exitTimeoutRef = useRef<number | null>(null);
   const completionFinalizeTimeoutRef = useRef<number | null>(null);
   const coinFlightFinishedRef = useRef(false);
@@ -365,15 +352,6 @@ export function ActiveQuestCard({
   }, [phase, readElapsed, timeLimitMs, onPause]);
 
   useEffect(() => {
-    if (redRopes < 1 && !debugMode) return;
-    setCancellationBlocked(false);
-    if (cancellationBlockedTimeoutRef.current !== null) {
-      window.clearTimeout(cancellationBlockedTimeoutRef.current);
-      cancellationBlockedTimeoutRef.current = null;
-    }
-  }, [debugMode, redRopes]);
-
-  useEffect(() => {
     if (cardHoverArmed) return;
 
     function armHoverOutsideCard(event: PointerEvent) {
@@ -394,9 +372,6 @@ export function ActiveQuestCard({
     () => () => {
       if (trailClearTimeoutRef.current !== null) {
         window.clearTimeout(trailClearTimeoutRef.current);
-      }
-      if (cancellationBlockedTimeoutRef.current !== null) {
-        window.clearTimeout(cancellationBlockedTimeoutRef.current);
       }
       if (exitTimeoutRef.current !== null) {
         window.clearTimeout(exitTimeoutRef.current);
@@ -504,18 +479,16 @@ export function ActiveQuestCard({
     if (exitStartedRef.current || phase === "cutting" || phase === "completed")
       return;
     if (next === "cutting" && !ropeCut) return;
-    if (next === "cutting" && startedAtRef.current === null) return;
-    if (next === "cutting" && !countdown && redRopes < 1 && !debugMode) {
-      showCancellationBlocked();
-      return;
-    }
     if (next === "cutting") playSound("cut");
     timerReturningRef.current = false;
     timerDraggingRef.current = false;
     setTimerDragging(false);
     setTimerSettling(false);
     exitStartedRef.current = true;
-    if (pausedAtRef.current === null) pausedAtRef.current = Date.now();
+    if (startedAtRef.current !== null) {
+      if (pausedAtRef.current === null) pausedAtRef.current = Date.now();
+      onPause(pausedAtRef.current);
+    }
     const duration = readElapsed();
     if (next === "cutting") {
       setCut(ropeCut ?? null);
@@ -534,8 +507,7 @@ export function ActiveQuestCard({
     if (
       exitStartedRef.current ||
       phase !== "paused" ||
-      readElapsed() >= timeLimitMs ||
-      (!debugMode && elapsedMs < quest.minimumDurationMinutes * 60_000)
+      readElapsed() >= timeLimitMs
     ) {
       return;
     }
@@ -554,7 +526,7 @@ export function ActiveQuestCard({
         y: window.innerHeight / 2 + 40 - (cardRect.top + cardRect.height / 2),
       });
     }
-    const award = calculateCompletionPoints(duration, quest.id);
+    const award = calculateCompletionPoints(duration, quest.id, quest);
     const triggerRect = document
       .querySelector<HTMLElement>("[data-profile-trigger]")
       ?.getBoundingClientRect();
@@ -568,7 +540,7 @@ export function ActiveQuestCard({
     coinFlightFinishedRef.current = false;
     onCoinFlightStart(award);
     setPhase("completed");
-    if (reduceMotion) {
+    if (reduceMotion || award === 0) {
       cardInteractionRef.current?.complete({
         onHidden: () => setShowFinishedFace(true),
         onReveal: () => {
@@ -620,7 +592,8 @@ export function ActiveQuestCard({
   function returnToSelection(action: "back" | "cancel" = "back") {
     if (
       exitStartedRef.current ||
-      (action !== "cancel" ? phase !== "ready" : !countdown || phase !== "paused")
+      (action === "back" ? phase !== "ready"
+        : phase !== "paused")
     )
       return;
     const surface = cardInteractionRef.current?.capturePose();
@@ -646,17 +619,6 @@ export function ActiveQuestCard({
     resumePendingRef.current = false;
     startPendingRef.current = false;
     setTimerDragging(false);
-  }
-
-  function showCancellationBlocked() {
-    setCancellationBlocked(true);
-    if (cancellationBlockedTimeoutRef.current !== null) {
-      window.clearTimeout(cancellationBlockedTimeoutRef.current);
-    }
-    cancellationBlockedTimeoutRef.current = window.setTimeout(() => {
-      setCancellationBlocked(false);
-      cancellationBlockedTimeoutRef.current = null;
-    }, CANCELLATION_BLOCKED_DURATION_MS);
   }
 
   function onTimerDrag(
@@ -756,7 +718,6 @@ export function ActiveQuestCard({
     const target = event.target as HTMLElement;
     if (
       exitStartedRef.current ||
-      phase === "ready" ||
       target.closest("button") ||
       target.closest("[data-cut-ignore]") ||
       target.closest("[data-timer-drag]")
@@ -892,31 +853,15 @@ export function ActiveQuestCard({
 
   const exiting = !isPresent || phase === "cutting" || phase === "completed";
   const completed = phase === "completed";
-  const minimumDurationMs = quest.minimumDurationMinutes * 60_000;
   const countdownExpired = countdown && elapsedMs >= timeLimitMs;
-  const canComplete =
-    !countdownExpired && (debugMode || elapsedMs >= minimumDurationMs);
-  const completionRemainingMs = Math.max(0, minimumDurationMs - elapsedMs);
-  const completionRemaining = completionRemainingTime(completionRemainingMs);
-  const completionRemainingLabel =
-    completionRemaining.kind === "less-than-minute"
-      ? t("ui.timer.lessThanMinute")
-      : completionRemaining.kind === "minutes"
-        ? t("ui.quest.durationSingleLong", {
-            count: completionRemaining.count,
-          })
-        : "";
-  const completionAward = calculateCompletionPoints(elapsedMs, quest.id);
+  const canComplete = !countdownExpired;
+  const completionAward = calculateCompletionPoints(elapsedMs, quest.id, quest);
   const cardFocusAvailable = isMobileViewport && revealFinished && !exiting;
   const cardFocus = useCardFocus(cardFocusAvailable);
-  const hasNoRopes = !countdown && redRopes <= 0;
   const timerInteractionUiVisible =
     !exiting && !timerDragging && ropeMode !== "resumePullback";
   const readyUiVisible =
     phase === "ready" && revealFinished && timerInteractionUiVisible;
-  const canCutRope =
-    (phase === "running" || phase === "paused") &&
-    (countdown || debugMode || redRopes > 0);
   return (
     <div
       className={styles.activeQuest}
@@ -1055,7 +1000,7 @@ export function ActiveQuestCard({
             }
           >
             <AnimatePresence>
-              {finishedFaceVisible && (
+              {finishedFaceVisible && completionAward > 0 && (
                 <motion.p
                   className={styles.completionAwardBanner}
                   role="status"
@@ -1135,7 +1080,8 @@ export function ActiveQuestCard({
                 completed={showFinishedFace}
                 favorite={favorite}
                 favoriteInteraction
-                type={quest.type}
+                experience={quest.experience}
+                  type={quest.type}
                 tags={quest.tags}
                 game={quest.game}
                 minimumDurationMinutes={quest.minimumDurationMinutes}
@@ -1143,10 +1089,27 @@ export function ActiveQuestCard({
                 name={quest.name}
                 objective={quest.objective}
                 suggestedDurationMinutes={quest.suggestedDurationMinutes}
+                  maximumDurationMinutes={quest.maximumDurationMinutes}
               />
             </InteractiveQuestCard>
           </motion.div>
         </motion.div>
+        {!exiting && revealFinished && (!isMobileViewport || cardFocus.focused) && (
+          <SolidButton
+            className={styles.banControl}
+            size="small"
+            variant="soft"
+            aria-label={t("ui.gallery.excludeQuest")}
+            style={{ top: `calc(50% + 50% * ${activeCardScale * (cardFocus.focused ? CARD_FOCUS_SCALE_MULTIPLIER : 1)} + 32px)` }}
+            onClick={() => {
+              if (phase === "running") pause();
+              cardFocus.close();
+              onRequestBan();
+            }}
+          >
+            {t("ui.gallery.excludeQuest")}
+          </SolidButton>
+        )}
       </div>
 
       <motion.div
@@ -1200,7 +1163,6 @@ export function ActiveQuestCard({
             isMobileViewport={isMobileViewport}
             mode={ropeMode}
             onTimerMove={syncTimerToPhysics}
-            red={phase === "cutting" || canCutRope}
             reduceMotion={reduceMotion}
             releaseRef={ropeReleaseRef}
             screenPointsRef={ropePointsRef}
@@ -1280,8 +1242,7 @@ export function ActiveQuestCard({
           </motion.div>
           <AnimatePresence>
             {(readyUiVisible ||
-              (phase === "paused" && timerInteractionUiVisible)) &&
-              !cancellationBlocked && (
+              (phase === "paused" && timerInteractionUiVisible)) && (
                 <motion.span
                   className={styles.timerStatus}
                   initial={{ opacity: 0 }}
@@ -1294,20 +1255,6 @@ export function ActiveQuestCard({
                     : t("ui.timer.paused")}
                 </motion.span>
               )}
-          </AnimatePresence>
-          <AnimatePresence>
-            {cancellationBlocked && !exiting && (
-              <motion.span
-                className={styles.cancellationBlockedInfo}
-                role="status"
-                initial={reduceMotion ? false : { opacity: 0, y: 3 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: reduceMotion ? 0 : -2 }}
-                transition={{ duration: reduceMotion ? 0 : 0.22 }}
-              >
-                {t("ui.timer.noRedRopes")}
-              </motion.span>
-            )}
           </AnimatePresence>
         </motion.div>
 
@@ -1329,17 +1276,23 @@ export function ActiveQuestCard({
               >
                 {canComplete ? (
                   <>
-                    <motion.p
-                      className={styles.completionReward}
-                      aria-label={t("ui.timer.coinsEarnedLabel", {
-                        points: completionAward,
-                      })}
-                      variants={pausePanelItemVariants}
-                    >
-                      <span>{t("ui.timer.coinsEarned")}</span>
-                      <strong>{completionAward}</strong>
-                      <CoinIcon />
-                    </motion.p>
+                    {completionAward > 0 ? (
+                      <motion.p
+                        className={styles.completionReward}
+                        aria-label={t("ui.timer.coinsEarnedLabel", {
+                          points: completionAward,
+                        })}
+                        variants={pausePanelItemVariants}
+                      >
+                        <span>{t("ui.timer.coinsEarned")}</span>
+                        <strong>{completionAward}</strong>
+                        <CoinIcon />
+                      </motion.p>
+                    ) : (
+                      <InfoText>
+                        {t(timed ? "ui.timer.noTimedReward" : "ui.timer.noCoinsYet")}
+                      </InfoText>
+                    )}
                     <motion.div
                       className={styles.saveAction}
                       variants={pausePanelItemVariants}
@@ -1349,45 +1302,8 @@ export function ActiveQuestCard({
                       </SolidButton>
                     </motion.div>
                   </>
-                ) : countdownExpired ? (
-                  <InfoText>{t("ui.timer.countdownExpired")}</InfoText>
                 ) : (
-                  <motion.div
-                    className={styles.pauseMinimumCard}
-                    role="status"
-                    variants={pausePanelItemVariants}
-                  >
-                    <p>
-                      <Trans
-                        i18nKey="ui.timer.completeAvailableIn"
-                        values={{
-                          time: completionRemainingLabel,
-                        }}
-                        components={{ strong: <strong /> }}
-                      />
-                    </p>
-                    <p>{t("ui.timer.pullContinue")}</p>
-                    <p className={styles.ropeAvailability}>
-                      <Trans
-                        i18nKey={
-                          hasNoRopes
-                            ? "ui.timer.noRopesRemaining"
-                            : "ui.timer.redRopesRemaining"
-                        }
-                        count={redRopes}
-                        values={{ count: redRopes }}
-                        components={{ strong: <strong /> }}
-                      />
-                    </p>
-                    {hasNoRopes && coins >= RED_ROPE_BUNDLE_COST && (
-                      <RopePurchaseRow
-                        coins={coins}
-                        context="pause"
-                        onPurchase={onPurchaseRedRopes}
-                        tone="inverse"
-                      />
-                    )}
-                  </motion.div>
+                  <InfoText>{t("ui.timer.countdownExpired")}</InfoText>
                 )}
                 {countdown && (
                   <motion.div
@@ -1400,13 +1316,6 @@ export function ActiveQuestCard({
                       onClick={() => restartCurrentQuest()}
                     >
                       {t("ui.timer.repeatCountdown")}
-                    </SolidButton>
-                    <SolidButton
-                      size="medium"
-                      variant="soft"
-                      onClick={() => returnToSelection("cancel")}
-                    >
-                      {t("ui.timer.cancelCountdown")}
                     </SolidButton>
                   </motion.div>
                 )}
@@ -1438,8 +1347,7 @@ export function ActiveQuestCard({
           <AnimatePresence>
             {!exiting &&
               timerInteractionUiVisible &&
-              (phase !== "ready" || readyUiVisible) &&
-              (phase !== "paused" || canComplete) && (
+              (phase !== "ready" || readyUiVisible) && (
                 <motion.div
                   className={styles.timerHint}
                   data-cut-ignore
@@ -1461,73 +1369,17 @@ export function ActiveQuestCard({
                       ) : quest.type === "speedrun" ? (
                         t("ui.timer.speedrunReady")
                       ) : (
-                        <Trans
-                          i18nKey="ui.timer.readyInstructions"
-                          values={{
-                            time: t("ui.quest.durationSingleLong", {
-                              count: quest.minimumDurationMinutes,
-                            }),
-                          }}
-                          components={{ br: <br />, strong: <strong /> }}
-                        />
+                        t("ui.timer.pullStart")
                       )}
                     </span>
-                  ) : (
+                  ) : !countdownExpired ? (
                     <span>
                       {phase === "paused"
                         ? t("ui.timer.pullResume")
                         : t("ui.timer.pullPause")}
                     </span>
-                  )}
-                  {phase === "ready" && !countdown && (
-                    <span className={styles.ropeAvailability}>
-                      <Trans
-                        i18nKey={
-                          hasNoRopes
-                            ? "ui.timer.noRopesRemaining"
-                            : "ui.timer.redRopesRemaining"
-                        }
-                        count={redRopes}
-                        values={{ count: redRopes }}
-                        components={{ strong: <strong /> }}
-                      />
-                    </span>
-                  )}
-                  {!countdown &&
-                    (phase === "running" || phase === "paused") && (
-                      <span
-                        className={
-                          hasNoRopes ? styles.ropeAvailability : undefined
-                        }
-                      >
-                        {hasNoRopes ? (
-                          <Trans
-                            i18nKey="ui.timer.noRopesRemaining"
-                            components={{ strong: <strong /> }}
-                          />
-                        ) : (
-                          t("ui.timer.cutStop")
-                        )}
-                      </span>
-                    )}
-                  {hasNoRopes && coins >= RED_ROPE_BUNDLE_COST && (
-                    <RopePurchaseRow
-                      coins={coins}
-                      context="timer"
-                      onPurchase={onPurchaseRedRopes}
-                      tone="inverse"
-                    />
-                  )}
-                  {phase === "ready" && (
-                    <SolidButton
-                      className={styles.banControl}
-                      size="small"
-                      variant="soft"
-                      onClick={onRequestBan}
-                    >
-                      {t("ui.gallery.excludeQuest")}
-                    </SolidButton>
-                  )}
+                  ) : null}
+                  <span>{t("ui.timer.cutStopFree")}</span>
                 </motion.div>
               )}
           </AnimatePresence>

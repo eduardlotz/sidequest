@@ -1,8 +1,9 @@
 import { MOOD_IDS } from "./questTypes";
 import { CURATED_GAMES_BY_ID } from "./games";
 import type { GameColorId, GameIconId, GameReference } from "./gameTypes";
+import { EXTRA_GAME_COLOR_IDS } from "./gameTypes";
 
-export const GAME_COLOR_IDS: readonly GameColorId[] = MOOD_IDS;
+export const GAME_COLOR_IDS: readonly GameColorId[] = [...MOOD_IDS, ...EXTRA_GAME_COLOR_IDS];
 export const GAME_PICKER_COLOR_IDS: readonly GameColorId[] = GAME_COLOR_IDS;
 
 // Game identity has its own palette; mood and quest accents remain independent.
@@ -19,6 +20,10 @@ const GAME_PALETTE: Record<GameColorId, { color: string; foreground: string }> =
   focused: { color: "#6156AA", foreground: "#FFFFFF" },
   curious: { color: "#25857E", foreground: "#FFFFFF" },
   "low-energy": { color: "#8394AF", foreground: "#1D252D" },
+  violet: { color: "#7C3AED", foreground: "#FFFFFF" },
+  teal: { color: "#0F766E", foreground: "#FFFFFF" },
+  rose: { color: "#BA3567", foreground: "#FFFFFF" },
+  orange: { color: "#C65B24", foreground: "#FFFFFF" },
 };
 
 export type ResolvedGameVisual =

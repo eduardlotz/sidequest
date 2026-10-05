@@ -7,6 +7,7 @@ import {
 } from "zustand/middleware";
 import { createStore, type StateCreator } from "zustand/vanilla";
 import { CURATED_GAMES, CURATED_GAMES_BY_ID } from "../data/games";
+import { hasCustomGameActivities } from "../domain/library/rules";
 import {
   LIBRARY_STORE_KEY,
   LIBRARY_STORE_VERSION,
@@ -77,7 +78,7 @@ function createLibraryState(
     },
     addCustomGame: (input) => {
       const normalized = sanitizeCustomGameInput(input);
-      if (!normalized || normalized.capabilityIds.length === 0) return null;
+      if (!normalized || !hasCustomGameActivities(normalized)) return null;
       const id = createGameId();
       set((state) => ({
         customGames: [...state.customGames, { id, ...normalized }],
@@ -88,7 +89,7 @@ function createLibraryState(
     updateCustomGame: (gameId, input) => {
       const normalized = sanitizeCustomGameInput(input);
       if (
-        !normalized || normalized.capabilityIds.length === 0 ||
+        !normalized || !hasCustomGameActivities(normalized) ||
         !get().customGames.some((game) => game.id === gameId)
       ) {
         return false;

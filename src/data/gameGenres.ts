@@ -2,12 +2,15 @@ import type { GameCapabilityId } from "./gameTypes";
 
 // Suggestions describe common systems, never automatically selected activities.
 export const GAME_GENRES = {
-  card: { title: { en: "Card game", de: "Kartenspiel" }, activities: ["card-decks", "rounds-or-matches"] },
+  horror: { title: { en: "Horror", de: "Horror" }, activities: ["missions-or-levels", "choices-or-lore", "puzzles"] },
+  mmo: { title: { en: "MMO", de: "MMO" }, activities: ["missions-or-levels", "trading", "crafting"] },
+  management: { title: { en: "Management / City builder", de: "Management / Städtebau" }, activities: ["building", "decoration", "automation", "trading"] },
+  card: { title: { en: "Card game", de: "Kartenspiel" }, activities: ["card-decks", "card-mulligan", "rounds-or-matches"] },
   adventure: { title: { en: "Adventure", de: "Abenteuer" }, activities: ["open-world", "missions-or-levels", "advanced-traversal", "choices-or-lore", "collectibles"] },
   platformer: { title: { en: "Platformer", de: "Plattformer" }, activities: ["platforming", "missions-or-levels", "collectibles", "boss-fights", "time-trials"] },
-  shooter: { title: { en: "Shooter", de: "Shooter" }, activities: ["combat-loadouts", "whole-matches", "rounds-or-matches", "online-teamplay", "character-abilities", "tactical-gadgets", "scouting-tools"] },
+  shooter: { title: { en: "Shooter", de: "Shooter" }, activities: ["combat-loadouts", "weapon-pickups", "bot-modes", "whole-matches", "rounds-or-matches", "online-teamplay", "character-abilities", "tactical-gadgets", "scouting-tools", "remote-scouting"] },
   moba: { title: { en: "MOBA", de: "MOBA" }, activities: ["whole-matches", "online-teamplay", "character-abilities", "lanes-and-towers", "scouting-tools"] },
-  rpg: { title: { en: "RPG", de: "Rollenspiel" }, activities: ["missions-or-levels", "choices-or-lore", "combat-loadouts", "combat-spells", "crafting", "trading"] },
+  rpg: { title: { en: "RPG", de: "Rollenspiel" }, activities: ["missions-or-levels", "choices-or-lore", "optional-dialogue", "readable-journal", "combat-loadouts", "equipment-upgrades", "combat-spells", "crafting", "trading"] },
   roguelike: { title: { en: "Roguelike", de: "Roguelike" }, activities: ["missions-or-levels", "combat-loadouts", "boss-fights", "character-abilities", "card-decks"] },
   strategy: { title: { en: "Strategy", de: "Strategie" }, activities: ["unit-command", "missions-or-levels", "rounds-or-matches", "building", "card-decks"] },
   simulation: { title: { en: "Simulation", de: "Simulation" }, activities: ["building", "grow-crops", "animal-care", "trading", "automation"] },
@@ -19,7 +22,7 @@ export const GAME_GENRES = {
   sandbox: { title: { en: "Sandbox", de: "Sandbox" }, activities: ["open-world", "building", "crafting", "customization", "automation"] },
   narrative: { title: { en: "Narrative", de: "Storyspiel" }, activities: ["choices-or-lore", "missions-or-levels", "puzzles"] },
   fighting: { title: { en: "Fighting", de: "Kampfspiel" }, activities: ["rounds-or-matches", "character-abilities", "local-multiplayer"] },
-  stealth: { title: { en: "Stealth", de: "Schleichspiel" }, activities: ["stealth", "missions-or-levels", "tactical-gadgets", "scouting-tools"] },
+  stealth: { title: { en: "Stealth", de: "Schleichspiel" }, activities: ["stealth", "theft-or-loot", "missions-or-levels", "tactical-gadgets", "scouting-tools", "remote-scouting"] },
   cozy: { title: { en: "Cozy", de: "Cozy" }, activities: ["open-world", "fishing", "cooking", "grow-crops", "animal-care", "choices-or-lore"] },
 } as const satisfies Record<string, {
   title: Record<"en" | "de", string>;

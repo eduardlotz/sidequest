@@ -1,0 +1,37 @@
+.row {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 64px;
+  padding: 16px calc(var(--library-row-inset, 12px) + 4px);
+  align-items: center;
+  gap: 16px;
+  border-radius: var(--library-control-radius, 20px);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 150ms ease;
+
+  &:active { transform: scale(0.985); }
+  &:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+  @media (--reduced-motion) {
+    transition: none;
+    &:active { transform: none; }
+  }
+}
+.icon { display: inline-flex; flex: none; }
+.icon svg { width: 24px; height: 24px; }
+.copy { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.copy small {
+  display: block;
+  color: var(--color-muted);
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 500;
+  margin-top: 4px;
+}
+.count { flex: none; white-space: nowrap; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--color-muted); }

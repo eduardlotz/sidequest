@@ -18,15 +18,11 @@
 
 .ropePath {
   fill: none;
-  stroke: #a3a3ad;
+  stroke: #ff2f36;
   stroke-linecap: round;
   stroke-linejoin: round;
   transition: stroke 180ms ease;
   vector-effect: non-scaling-stroke;
-}
-
-.ropeCanvas[data-rope-red="true"] .ropePath {
-  stroke: #ff2f36;
 }
 
 @media (--reduced-motion) {

@@ -12,7 +12,7 @@ export function hydrateGalleryQuest(
   const identity = progress?.lastCompletion ?? progress?.seenOffer;
   return hydrateQuest(
     definition.id,
-    identity?.moodId ?? definition.moodIds[0],
+    identity && definition.moodIds.includes(identity.moodId) ? identity.moodId : definition.moodIds[0],
     definition.curated ? identity?.game ?? null : null,
     language,
   );

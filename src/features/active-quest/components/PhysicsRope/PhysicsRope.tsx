@@ -33,7 +33,6 @@ type Props = {
   isMobileViewport: boolean;
   mode: RopeMode;
   onTimerMove: (pose: TimerPose) => void;
-  red: boolean;
   reduceMotion: boolean;
   releaseRef: MutableRefObject<RopeRelease | null>;
   screenPointsRef: MutableRefObject<RopePoint[]>;
@@ -115,7 +114,6 @@ export function PhysicsRope({
   isMobileViewport,
   mode,
   onTimerMove,
-  red,
   reduceMotion,
   releaseRef,
   screenPointsRef,
@@ -236,7 +234,6 @@ export function PhysicsRope({
     <div
       ref={containerRef}
       className={styles.ropeCanvas}
-      data-rope-red={red ? "true" : "false"}
       aria-hidden="true"
     >
       <svg className={styles.ropeVisual} aria-hidden="true">

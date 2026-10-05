@@ -136,8 +136,19 @@
 .specialCard {
   border-color: transparent;
   background:
-    linear-gradient(135deg, #171a22, #09090b 32%, #12151b 65%, #0b0c10) padding-box,
-    conic-gradient(from 180deg, #77f2ea, #7b9fff, #d993ff, #ff88b8, #f9e895, #87efc2, #77f2ea) border-box;
+    linear-gradient(135deg, #171a22, #09090b 32%, #12151b 65%, #0b0c10)
+      padding-box,
+    conic-gradient(
+        from 180deg,
+        #77f2ea,
+        #7b9fff,
+        #d993ff,
+        #ff88b8,
+        #f9e895,
+        #87efc2,
+        #77f2ea
+      )
+      border-box;
   box-shadow:
     0 0 0 3px var(--color-card-border),
     inset 0 0 0 1px rgb(245 250 255 / 0.18),
@@ -152,11 +163,42 @@
   height: 100%;
   aspect-ratio: auto;
   background:
-    repeating-linear-gradient(125deg, #bdefff 0%, #939fe2 8%, #d4a8ef 16%, #f5b6ce 24%, #f8e9ae 32%, #a8e6cc 40%, #bdefff 48%),
-    linear-gradient(125deg, #141c2a 5%, #6f829b 20%, #e6f1ff 27%, #354358 35%, #0a0c14 50%, #a7bed8 67%, #e6f1ff 73%, #263145 82%, #0a0c14 95%),
-    radial-gradient(ellipse at var(--shine-x, 50%) var(--shine-y, 50%), #ffffff, #626c80 30%, #09090b 65%);
-  background-size: 180% 180%, 130% 130%, 100% 100%;
-  background-position: var(--shine-x, 50%) var(--shine-y, 50%), var(--shine-x, 50%) var(--shine-y, 50%), center;
+    repeating-linear-gradient(
+      125deg,
+      #bdefff 0%,
+      #939fe2 8%,
+      #d4a8ef 16%,
+      #f5b6ce 24%,
+      #f8e9ae 32%,
+      #a8e6cc 40%,
+      #bdefff 48%
+    ),
+    linear-gradient(
+      125deg,
+      #141c2a 5%,
+      #6f829b 20%,
+      #e6f1ff 27%,
+      #354358 35%,
+      #0a0c14 50%,
+      #a7bed8 67%,
+      #e6f1ff 73%,
+      #263145 82%,
+      #0a0c14 95%
+    ),
+    radial-gradient(
+      ellipse at var(--shine-x, 50%) var(--shine-y, 50%),
+      #ffffff,
+      #626c80 30%,
+      #09090b 65%
+    );
+  background-size:
+    180% 180%,
+    130% 130%,
+    100% 100%;
+  background-position:
+    var(--shine-x, 50%) var(--shine-y, 50%),
+    var(--shine-x, 50%) var(--shine-y, 50%),
+    center;
   background-blend-mode: color, screen;
   opacity: calc(0.09 + var(--shine-opacity, 0) * 1.05);
   mix-blend-mode: screen;
@@ -166,8 +208,17 @@
 .specialCard .cardShimmer::after {
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(135deg, transparent 0 1.8cqw, rgb(255 255 255 / 0.24) 1.8cqw 1.9cqw, transparent 1.9cqw 3.7cqw);
-  mask-image: radial-gradient(ellipse at var(--shine-x, 50%) var(--shine-y, 50%), black, transparent 65%);
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 1.8cqw,
+    rgb(255 255 255 / 0.24) 1.8cqw 1.9cqw,
+    transparent 1.9cqw 3.7cqw
+  );
+  mask-image: radial-gradient(
+    ellipse at var(--shine-x, 50%) var(--shine-y, 50%),
+    black,
+    transparent 65%
+  );
   content: "";
 }
 
@@ -194,7 +245,11 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  mask-image: radial-gradient(ellipse at var(--shine-x, 50%) var(--shine-y, 50%), black 5%, rgb(0 0 0 / 0.4) 70%);
+  mask-image: radial-gradient(
+    ellipse at var(--shine-x, 50%) var(--shine-y, 50%),
+    black 5%,
+    rgb(0 0 0 / 0.4) 70%
+  );
   opacity: calc(0.3 + var(--shine-opacity, 0) * 2);
   pointer-events: none;
 }
@@ -204,61 +259,72 @@
   width: var(--sparkle-size);
   height: var(--sparkle-size);
   background: linear-gradient(135deg, #affff1, #fff 45%, #e5bcff);
-  clip-path: polygon(50% 0, 59% 41%, 100% 50%, 59% 59%, 50% 100%, 41% 59%, 0 50%, 41% 41%);
+  clip-path: polygon(
+    50% 0,
+    59% 41%,
+    100% 50%,
+    59% 59%,
+    50% 100%,
+    41% 59%,
+    0 50%,
+    41% 41%
+  );
   animation: foilTwinkle 3.2s ease-in-out var(--sparkle-delay) infinite;
 }
 
 .specialBadge {
-  position: relative;
   display: inline-flex;
-  min-height: 6cqw;
+  min-height: 7cqw;
   align-items: center;
-  gap: 1cqw;
-  padding-inline: 0.8cqw;
-  font-size: calc(0.75 * var(--quest-card-type-unit));
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0.8cqw 2.2cqw;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background:
+    radial-gradient(ellipse at 25% 5%, #f3f9b1, transparent 62%),
+    linear-gradient(165deg, #e4f586 8%, #d2e85b 44%, #bad23f 65%, #dbe88a 100%);
+  box-shadow: inset 0 0.35cqw 0.5cqw rgb(255 255 220 / 0.35);
+  color: #788832;
+  font-size: calc(0.7 * var(--quest-card-type-unit));
   font-weight: 800;
-  line-height: 1;
+  line-height: 1.2;
+  text-shadow: 0 0.15cqw 0 rgb(255 255 220 / 0.45);
   white-space: nowrap;
 }
 
-.specialBadge > span {
-  background: linear-gradient(110deg, #b9dfff 10%, #f0c9ff 30%, #fff 45%, #fff 50%, #b5f5da 65%, #b9dfff 85%);
-  background-size: 250% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  animation: coinMultiplierShimmer 3s linear infinite;
-}
-
-.specialBadge img {
-  width: 4.5cqw;
-  height: 4.5cqw;
-  filter: drop-shadow(0 0 1cqw rgb(255 236 168 / 0.24));
-}
-
 @keyframes foilTwinkle {
-  0%, 100% { opacity: 0.18; scale: 0.55; }
-  45% { opacity: 0.3; scale: 0.8; }
-  60% { opacity: 1; scale: 1.2; }
-  75% { opacity: 0.3; scale: 0.8; }
-}
-
-@keyframes coinMultiplierShimmer {
-  from { background-position: 125% 0; }
-  to { background-position: -125% 0; }
+  0%,
+  100% {
+    opacity: 0.18;
+    scale: 0.55;
+  }
+  45% {
+    opacity: 0.3;
+    scale: 0.8;
+  }
+  60% {
+    opacity: 1;
+    scale: 1.2;
+  }
+  75% {
+    opacity: 0.3;
+    scale: 0.8;
+  }
 }
 
 .cardBrand {
   position: absolute;
-  right: -10%;
-  bottom: -6%;
+  right: -22%;
+  bottom: -12%;
   z-index: 1;
   display: block;
-  width: 70cqw;
-  opacity: var(--quest-card-brand-opacity, 0.42);
+  width: 105cqw;
+  opacity: 0.25;
   pointer-events: none;
   mix-blend-mode: overlay;
-  transform: rotate(-17deg);
+  rotate: -15deg;
+
   transform-origin: center;
 }
 
@@ -438,6 +504,11 @@
   font-weight: 760;
 }
 
+.questCardFrontCopy[data-meta-presentation="chips"] .questCardFrontObjective {
+  color: var(--color-card-muted);
+  text-wrap: pretty;
+}
+
 .questCardGenres {
   display: flex;
   margin-top: 1cqw;
@@ -461,8 +532,7 @@
 }
 
 @media (--reduced-motion) {
-  .foilSparkle,
-  .specialBadge > span {
+  .foilSparkle {
     animation: none;
   }
 

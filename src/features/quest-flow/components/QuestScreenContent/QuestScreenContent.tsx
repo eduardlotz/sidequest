@@ -13,7 +13,8 @@ import {
 } from "../../../../data/moods";
 import { localizeMood } from "../../../../localization/catalog";
 import { normalizeLanguage } from "../../../../localization/i18n";
-import type { GameSelection, Quest, QuestSession } from "../../../../domain/quest/model";
+import { QUEST_SHUFFLE_COST, type GameSelection, type Quest, type QuestSession } from "../../../../domain/quest/model";
+import { CoinPriceButton } from "../../../../shared/ui/CoinPriceButton/CoinPriceButton";
 import type { LibraryGame } from "../../../../domain/library/model";
 import { ActiveQuestCard } from "../../../active-quest/components/ActiveQuestCard/ActiveQuestCard";
 import type { CoinImpact } from "../../../active-quest/components/FlyingCoin/FlyingCoin";
@@ -71,8 +72,7 @@ type Props = {
   selectedMood: MoodDefinition | null;
   offeredQuests: readonly QuestOfferItem[];
   points: number;
-  redRopes: number;
-  debugMode: boolean;
+  freeShufflesRemaining: number;
   animateEntrance: boolean;
   reduceMotion: boolean;
   onSelectMood: (moodId: MoodId) => boolean;
@@ -92,7 +92,6 @@ type Props = {
   onComplete: () => void;
   onCoinFlightStart: (pointsAwarded: number) => void;
   onCoinHit: (pointsReceived: number, impact?: CoinImpact) => void;
-  onPurchaseRedRopes: () => boolean;
 };
 
 export function QuestScreenContent({
@@ -106,8 +105,7 @@ export function QuestScreenContent({
   selectedMood,
   offeredQuests,
   points,
-  redRopes,
-  debugMode,
+  freeShufflesRemaining,
   animateEntrance,
   reduceMotion,
   onSelectMood,
@@ -127,7 +125,6 @@ export function QuestScreenContent({
   onComplete,
   onCoinFlightStart,
   onCoinHit,
-  onPurchaseRedRopes,
 }: Props) {
   const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
@@ -280,7 +277,7 @@ export function QuestScreenContent({
   );
 
   function dealNewCards() {
-    if (isDealingNewCards || isReturning) return;
+    if (isDealingNewCards || isReturning || (freeShufflesRemaining === 0 && points < QUEST_SHUFFLE_COST)) return;
     setReturnTransition(null);
     if (reduceMotion) {
       onNewCards();
@@ -520,9 +517,6 @@ export function QuestScreenContent({
                     ? "ui.gallery.overview"
                     : "ui.timer.backToSelection",
                 )}
-                coins={points}
-                redRopes={redRopes}
-                debugMode={debugMode}
                 reduceMotion={reduceMotion}
                 onDiscard={onCancelViaRope}
                 onRequestBan={onRequestBan}
@@ -534,7 +528,6 @@ export function QuestScreenContent({
                 onCoinFlightStart={onCoinFlightStart}
                 onCoinHit={onCoinHit}
                 onLayoutHandoffStart={() => setActiveHandoffStarted(true)}
-                onPurchaseRedRopes={onPurchaseRedRopes}
               />
             </motion.div>
           )}
@@ -660,16 +653,25 @@ export function QuestScreenContent({
                             duration: reduceMotion ? 0 : 0.18,
                           }}
                         >
-                          <SolidButton
+                          {freeShufflesRemaining > 0 ? <SolidButton
                             data-sound-click-skip
                             type="button"
                             size="medium"
                             variant="primary"
                             aria-label={t("ui.task.newCardsLabel")}
                             onClick={dealNewCards}
+                            disabled={isDealingNewCards || isReturning}
                           >
                             {t("ui.task.newCards")}
-                          </SolidButton>
+                          </SolidButton> : <CoinPriceButton
+                            data-sound-click-skip
+                            type="button"
+                            label={t("ui.task.newCards")}
+                            price={QUEST_SHUFFLE_COST}
+                            aria-label={t("ui.task.newCardsPaidLabel", { cost: QUEST_SHUFFLE_COST })}
+                            disabled={isDealingNewCards || isReturning || points < QUEST_SHUFFLE_COST}
+                            onClick={dealNewCards}
+                          />}
                         </motion.div>}
 
                         <motion.span

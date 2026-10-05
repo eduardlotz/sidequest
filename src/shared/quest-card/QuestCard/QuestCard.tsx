@@ -5,6 +5,7 @@ import styles from "./QuestCard.module.css";
 import { QuestCardFront } from "../QuestCardFront/QuestCardFront";
 import type { GameReference } from "../../../data/gameTypes";
 import type { QuestRarity } from "../../../data/questRarity";
+import type { QuestExperience } from "../../../data/questTypes";
 
 const FOIL_SPARKLES = [
   [9, 8, 2.4], [85, 12, 3.6], [31, 20, 1.6], [92, 33, 2.5],
@@ -14,6 +15,7 @@ const FOIL_SPARKLES = [
 ] as const;
 
 type Props = {
+  experience?: QuestExperience;
   children?: ReactNode;
   className?: string;
   completed?: boolean;
@@ -26,15 +28,18 @@ type Props = {
   type: QuestTypeId;
   tags: readonly QuestTagId[];
   minimumDurationMinutes: number;
+  durationPresentation?: "estimate" | "range";
   moodTitle: string;
   name: string;
   objective: string;
   style?: HTMLMotionProps<"span">["style"];
   suggestedDurationMinutes: number;
+  maximumDurationMinutes?: number;
   showWordmarkLogo?: boolean;
 };
 
 export function QuestCard({
+  experience,
   children,
   className,
   completed = false,
@@ -47,11 +52,13 @@ export function QuestCard({
   type,
   tags,
   minimumDurationMinutes,
+  durationPresentation,
   moodTitle,
   name,
   objective,
   style,
   suggestedDurationMinutes,
+  maximumDurationMinutes,
   showWordmarkLogo = true,
 }: Props) {
   return (
@@ -89,6 +96,7 @@ export function QuestCard({
         </span>
       )}
       <QuestCardFront
+        experience={experience}
         favorite={favorite}
         favoriteInteraction={favoriteInteraction}
         unknown={unknown}
@@ -98,10 +106,12 @@ export function QuestCard({
         type={type}
         tags={tags}
         minimumDurationMinutes={minimumDurationMinutes}
+        durationPresentation={durationPresentation}
         moodTitle={moodTitle}
         name={name}
         objective={objective}
         suggestedDurationMinutes={suggestedDurationMinutes}
+        maximumDurationMinutes={maximumDurationMinutes}
         showWordmarkLogo={showWordmarkLogo}
       />
       {children}

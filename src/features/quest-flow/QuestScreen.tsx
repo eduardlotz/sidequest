@@ -1,3 +1,5 @@
+import { SolidButton } from "../../shared/ui/SolidButton/SolidButton";
+import { DESKTOP_VIEWPORT_QUERY, useMediaQuery } from "../../shared/hooks/useMediaQuery";
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -33,17 +35,17 @@ export function QuestScreen({
   onCoinFlightStart,
   onCoinHit,
 }: Props) {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const language = normalizeLanguage(i18n.resolvedLanguage ?? i18n.language);
+  const desktop = useMediaQuery(DESKTOP_VIEWPORT_QUERY);
   const {
     completeQuest,
+    recoverCurrentSession,
     chooseGame,
     currentSession,
     discardCurrentSession,
+    freeShufflesRemaining,
     excludeCurrentQuest,
-    setQuestBlacklisted,
-    skipQuestBanPrompt,
-    setSkipQuestBanPrompt,
     editMood,
     editGame,
     gameSelection,
@@ -51,7 +53,6 @@ export function QuestScreen({
     offeredQuests,
     pauseQuest,
     profile,
-    purchaseRedRopes,
     refreshMoodWindow,
     refreshLibraryOffers,
     revealQuest,
@@ -65,13 +66,12 @@ export function QuestScreen({
   } = useQuestStore(
     useShallow((state) => ({
       completeQuest: state.completeQuest,
+      recoverCurrentSession: state.recoverCurrentSession,
       chooseGame: state.chooseGame,
       currentSession: state.currentSession,
       discardCurrentSession: state.discardCurrentSession,
+      freeShufflesRemaining: state.freeShufflesRemaining,
       excludeCurrentQuest: state.excludeCurrentQuest,
-      setQuestBlacklisted: state.setQuestBlacklisted,
-      skipQuestBanPrompt: state.skipQuestBanPrompt,
-      setSkipQuestBanPrompt: state.setSkipQuestBanPrompt,
       editMood: state.editMood,
       editGame: state.editGame,
       gameSelection: state.gameSelection,
@@ -79,7 +79,6 @@ export function QuestScreen({
       offeredQuests: state.offeredQuests,
       pauseQuest: state.pauseQuest,
       profile: state.profile,
-      purchaseRedRopes: state.purchaseRedRopes,
       refreshMoodWindow: state.refreshMoodWindow,
       refreshLibraryOffers: state.refreshLibraryOffers,
       revealQuest: state.revealQuest,
@@ -96,7 +95,6 @@ export function QuestScreen({
   const [banPrompt, setBanPrompt] = useState<{
     id: string;
     name: string;
-    origin: "rope" | "start";
   } | null>(null);
   const libraryRevision = useLibraryStore((state) => state.revision);
   const libraryGames = useMemo(() => libraryGamesFromState(libraryStore.getState()), [libraryRevision]);
@@ -113,6 +111,7 @@ export function QuestScreen({
         currentSession.moodId,
         currentSession.game,
         language,
+        currentSession.snapshot,
       )
     : null;
   const selectedMood = selectedMoodId
@@ -151,7 +150,15 @@ export function QuestScreen({
       exit={{ opacity: 0 }}
       transition={{ duration: reduceMotion ? 0 : 0.18 }}
     >
-      <QuestScreenContent
+      {currentSession?.recovery && !galleryOpen ? (
+        <div className={styles.sessionRecovery}>
+          <div className={styles.sessionRecoveryCopy}>
+            <h2>{t("ui.recovery.title")}</h2>
+            <p>{t("ui.recovery.description")}</p>
+          </div>
+          <SolidButton size={desktop ? "medium" : "large"} variant="highlighted" onClick={recoverCurrentSession}>{t("ui.recovery.returnToSelection")}</SolidButton>
+        </div>
+      ) : <QuestScreenContent
         galleryOpen={galleryOpen}
         onGalleryOpenChange={onGalleryOpenChange}
         onOpenLibrary={onOpenLibrary}
@@ -162,8 +169,7 @@ export function QuestScreen({
         selectedMood={selectedMood}
         offeredQuests={offeredQuestItems}
         points={profile.points}
-        redRopes={profile.redRopes}
-        debugMode={false}
+        freeShufflesRemaining={freeShufflesRemaining}
         animateEntrance={!introReady}
         reduceMotion={reduceMotion}
         onSelectMood={selectMood}
@@ -176,47 +182,26 @@ export function QuestScreen({
         onNewCards={dealNewCards}
         onDiscard={discardCurrentSession}
         onRequestBan={() => {
-          if (!currentQuest || !currentSession || currentSession.startedAt !== null) return;
-          setBanPrompt({ id: currentQuest.id, name: currentQuest.name, origin: "start" });
+          if (!currentQuest || !currentSession) return;
+          setBanPrompt({ id: currentQuest.id, name: currentQuest.name });
         }}
-        onCancelViaRope={() => {
-          if (!currentQuest || !currentSession || currentSession.startedAt === null) return false;
-          if (skipQuestBanPrompt) return discardCurrentSession();
-          pauseQuest(Date.now());
-          setBanPrompt({ id: currentQuest.id, name: currentQuest.name, origin: "rope" });
-          return true;
-        }}
+        onCancelViaRope={discardCurrentSession}
         onStart={startQuest}
         onPause={pauseQuest}
         onResume={resumeQuest}
         onComplete={completeQuest}
         onCoinFlightStart={onCoinFlightStart}
         onCoinHit={onCoinHit}
-        onPurchaseRedRopes={purchaseRedRopes}
       />
+      }
       <QuestExclusionDialog
         questName={banPrompt?.name ?? null}
         reduceMotion={reduceMotion}
-        showKeepAndDontAskAgain={banPrompt?.origin === "rope"}
-        onKeepAndDontAskAgain={() => {
-          if (!banPrompt) return;
-          setSkipQuestBanPrompt(true);
-          if (banPrompt.origin === "rope") discardCurrentSession();
-          setBanPrompt(null);
-        }}
-        onClose={() => {
-          if (!banPrompt) return;
-          if (banPrompt.origin === "rope") discardCurrentSession();
-          setBanPrompt(null);
-        }}
+        endsAttemptForFree={currentSession?.startedAt != null}
+        onClose={() => setBanPrompt(null)}
         onExclude={() => {
           if (!banPrompt) return;
-          if (banPrompt.origin === "start") {
-            excludeCurrentQuest();
-          } else {
-            setQuestBlacklisted(banPrompt.id, true);
-            discardCurrentSession();
-          }
+          excludeCurrentQuest();
           setBanPrompt(null);
         }}
       />

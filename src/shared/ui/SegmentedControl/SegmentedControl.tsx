@@ -8,11 +8,13 @@ export function SegmentedControl<Value extends string>({
   value,
   options,
   onChange,
+  equalWidth = false,
 }: {
   label: string;
   value: Value;
   options: readonly { value: Value; label: string; icon?: ReactNode }[];
   onChange: (value: Value) => void;
+  equalWidth?: boolean;
 }) {
   const layoutGroupId = useId();
   const reduceMotion = useReducedMotion();
@@ -24,13 +26,24 @@ export function SegmentedControl<Value extends string>({
         className={styles.control}
         role="group"
         aria-label={label}
-        layout
+        data-equal-width={equalWidth || undefined}
+        layout={!equalWidth}
         transition={transition}
       >
+        {equalWidth && (
+          <motion.span
+            className={styles.slidingIndicator}
+            style={{ width: `calc((100% - 6px) / ${options.length})` }}
+            initial={false}
+            animate={{ x: `${Math.max(0, options.findIndex(option => option.value === value)) * 100}%` }}
+            transition={transition}
+            aria-hidden="true"
+          />
+        )}
         {options.map((option) => (
           <motion.button
             type="button"
-            layout="position"
+            layout={equalWidth ? false : "position"}
             transition={transition}
             aria-pressed={value === option.value}
             aria-label={option.label}
@@ -38,7 +51,7 @@ export function SegmentedControl<Value extends string>({
             key={option.value}
             onClick={() => onChange(option.value)}
           >
-            {value === option.value && (
+            {!equalWidth && value === option.value && (
               <motion.span
                 className={styles.indicator}
                 layoutId="selected-segment"

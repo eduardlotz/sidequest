@@ -5,11 +5,10 @@ import { SolidButton } from "../../../../shared/ui/SolidButton/SolidButton";
 import { DESKTOP_VIEWPORT_QUERY, useMediaQuery } from "../../../../shared/hooks/useMediaQuery";
 import styles from "./QuestExclusionDialog.module.css";
 
-export function QuestExclusionDialog({ questName, reduceMotion, showKeepAndDontAskAgain = true, onKeepAndDontAskAgain, onClose, onExclude }: {
+export function QuestExclusionDialog({ questName, reduceMotion, endsAttemptForFree = false, onClose, onExclude }: {
   questName: string | null;
   reduceMotion: boolean;
-  showKeepAndDontAskAgain?: boolean;
-  onKeepAndDontAskAgain: () => void;
+  endsAttemptForFree?: boolean;
   onClose: () => void;
   onExclude: () => void;
 }) {
@@ -31,6 +30,7 @@ export function QuestExclusionDialog({ questName, reduceMotion, showKeepAndDontA
       <section className={styles.content}>
         <h2>{t("ui.gallery.excludeTitle")}</h2>
         <p>{t("ui.gallery.excludeDescription", { quest: questName })}</p>
+        {endsAttemptForFree && <p>{t("ui.gallery.excludeEndsAttempt")}</p>}
         <div className={styles.actions}>
           <SolidButton size={buttonSize} variant="danger" onClick={onExclude}>
             {t("ui.gallery.excludeQuest")}
@@ -39,13 +39,6 @@ export function QuestExclusionDialog({ questName, reduceMotion, showKeepAndDontA
             {t("ui.gallery.keepQuest")}
           </SolidButton>
         </div>
-        {showKeepAndDontAskAgain ? (
-          <div className={styles.preference}>
-            <SolidButton size={buttonSize} variant="ghost" onClick={onKeepAndDontAskAgain}>
-              {t("ui.gallery.keepQuestAndDontAskAgain")}
-            </SolidButton>
-          </div>
-        ) : null}
       </section>
     </FullscreenDialog>
   );

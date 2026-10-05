@@ -1,16 +1,21 @@
 import { useTranslation } from "react-i18next";
-import { QUEST_TYPES, QUEST_TAGS } from "../../../data/questTraits";
+import { useState, type CSSProperties } from "react";
 import type { QuestTypeId, QuestTagId } from "../../../data/questTraits";
 import styles from "../QuestCard/QuestCard.module.css";
-import { WordmarkLogo } from "../../../assets/wordmark";
+import { WordmarkSkewedLogo } from "../../../assets/wordmark-skewed";
 import { QuestCardMeta } from "../QuestCardMeta/QuestCardMeta";
 import { QuestObjectiveText } from "../QuestObjectiveText/QuestObjectiveText";
 import type { GameReference } from "../../../data/gameTypes";
 import { formatRunningDuration } from "../../../lib/format";
-import { QUEST_COIN_MULTIPLIERS, type QuestRarity } from "../../../data/questRarity";
-import { CoinIcon } from "../../ui/Icons/Icons";
+import {
+  QUEST_COIN_MULTIPLIERS,
+  type QuestRarity,
+} from "../../../data/questRarity";
+import type { QuestExperience } from "../../../data/questTypes";
+import { QuestMetadataChips } from "../QuestMetadataChips";
 
 type Props = {
+  experience?: QuestExperience;
   favorite?: boolean;
   favoriteInteraction?: boolean;
   unknown?: boolean;
@@ -20,14 +25,17 @@ type Props = {
   type: QuestTypeId;
   tags: readonly QuestTagId[];
   minimumDurationMinutes: number;
+  durationPresentation?: "estimate" | "range";
   moodTitle: string;
   name: string;
   objective: string;
   suggestedDurationMinutes: number;
+  maximumDurationMinutes?: number;
   showWordmarkLogo?: boolean;
 };
 
 export function QuestCardFront({
+  experience,
   favorite = false,
   favoriteInteraction = false,
   unknown = false,
@@ -37,18 +45,16 @@ export function QuestCardFront({
   type,
   tags,
   minimumDurationMinutes,
+  durationPresentation,
   moodTitle,
   name,
   objective,
   suggestedDurationMinutes,
+  maximumDurationMinutes,
   showWordmarkLogo = true,
 }: Props) {
-  const { i18n, t } = useTranslation();
-  const language = i18n.resolvedLanguage?.startsWith("de") ? "de" : "en";
-  const labels = [
-    QUEST_TYPES[type].title[language],
-    ...Array.from(new Set(tags.map((tag) => QUEST_TAGS[tag][language]))).slice(0, 2),
-  ];
+  const { t } = useTranslation();
+
   return (
     <>
       <span className={styles.questCardFrontContent}>
@@ -67,7 +73,7 @@ export function QuestCardFront({
             durationLabel={
               type === "countdown"
                 ? t("ui.timer.countdownLimit", {
-                    minutes: suggestedDurationMinutes,
+                    minutes: maximumDurationMinutes ?? suggestedDurationMinutes,
                   })
                 : type === "speedrun"
                   ? t("ui.timer.stopwatch")
@@ -75,11 +81,16 @@ export function QuestCardFront({
             }
             game={game}
             minimumDurationMinutes={minimumDurationMinutes}
+            durationPresentation={durationPresentation}
             moodTitle={moodTitle}
             suggestedDurationMinutes={suggestedDurationMinutes}
+            maximumDurationMinutes={maximumDurationMinutes}
           />
         )}
-        <span className={styles.questCardFrontCopy}>
+        <span
+          className={styles.questCardFrontCopy}
+          data-meta-presentation={unknown ? undefined : "chips"}
+        >
           <strong className={styles.questCardFrontName}>
             {unknown ? t("ui.gallery.unknown") : name}
           </strong>
@@ -91,22 +102,24 @@ export function QuestCardFront({
             )}
           </span>
           {!unknown && (
-            <span className={styles.questCardGenres}>
-              {rarity === "special" && (
-                <span
-                  className={styles.specialBadge}
-                  aria-label={t("ui.quest.specialReward", { multiplier: QUEST_COIN_MULTIPLIERS[rarity] })}
-                >
-                  <span aria-hidden="true">{QUEST_COIN_MULTIPLIERS[rarity]}x</span>
-                  <CoinIcon />
-                </span>
-              )}
-              {labels.map((label) => (
-                <span className={styles.questCardGenre} key={label}>
-                  {label}
-                </span>
-              ))}
-            </span>
+            <QuestMetadataChips
+              experience={experience}
+              tags={tags}
+              reward={
+                rarity === "special" ? (
+                  <span
+                    className={styles.specialBadge}
+                    aria-label={t("ui.quest.specialReward", {
+                      multiplier: QUEST_COIN_MULTIPLIERS[rarity],
+                    })}
+                  >
+                    <span aria-hidden="true">
+                      {QUEST_COIN_MULTIPLIERS[rarity]}×
+                    </span>
+                  </span>
+                ) : undefined
+              }
+            />
           )}
           {!unknown && bestTimeMs != null && (
             <span className={styles.questCardRecord}>
@@ -118,7 +131,7 @@ export function QuestCardFront({
       </span>
       {showWordmarkLogo && (
         <span className={styles.cardBrand} aria-hidden="true">
-          <WordmarkLogo />
+          <WordmarkSkewedLogo />
         </span>
       )}
     </>

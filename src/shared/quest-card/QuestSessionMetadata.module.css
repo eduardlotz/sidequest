@@ -1,0 +1,27 @@
+.sessionMetadata {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3cqw;
+  font-size: calc(0.62 * var(--quest-card-type-unit));
+  line-height: 1.3;
+  color: rgb(246 246 250 / 0.72);
+}
+
+.contextLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.8cqw 3cqw;
+}
+
+.contextLine > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 1cqw;
+}
+
+.contextLine svg {
+  width: 1.1em;
+  height: 1.1em;
+  color: var(--accent);
+  flex: none;
+}

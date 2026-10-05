@@ -291,3 +291,40 @@
     transition: none;
   }
 }
+
+.sessionRecovery {
+  min-height: var(--app-height);
+  width: min(100%, 36rem);
+  margin: 0 auto;
+  padding: 92px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  text-align: center;
+}
+
+.sessionRecoveryCopy h2,
+.sessionRecoveryCopy p {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.45;
+}
+
+.sessionRecoveryCopy h2 {
+  margin: 0 0 0.25rem;
+}
+
+.sessionRecoveryCopy p {
+  margin: 0;
+  color: var(--color-muted);
+  text-wrap: pretty;
+}
+
+@media (--mobile) {
+  .sessionRecovery > button {
+    width: 100%;
+  }
+}

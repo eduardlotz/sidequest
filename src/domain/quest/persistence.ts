@@ -4,6 +4,7 @@ import { GAME_ICON_IDS } from "../../data/gameTypes";
 import type { GameReference } from "../../data/gameTypes";
 import { GAME_COLOR_IDS } from "../../data/gameVisuals";
 import { QUEST_CORES_BY_ID } from "../../data/quests";
+import { historicalQuest, refreshActiveQuestTiming, sanitizeSnapshot, snapshotQuest } from "./snapshot";
 import { sanitizePoolPreferences } from "./pool";
 import { createDefaultQuestState } from "./rules";
 import {
@@ -53,22 +54,27 @@ function offer(value: unknown): value is QuestOffer {
 
 function session(value: unknown): value is QuestSession {
   return record(value) && typeof value.sessionId === "string" && !!value.sessionId
-    && mood(value.moodId) && quest(value.questId) && liveGameReference(value.game)
+    && mood(value.moodId) && typeof value.questId === "string" && Boolean(QUEST_CORES_BY_ID[value.questId] || historicalQuest(value.questId) || sanitizeSnapshot(value.snapshot, value.questId)) && gameReference(value.game)
     && count(value.revealedAt, -1) >= 0
     && (value.startedAt === null || count(value.startedAt, -1) >= 0)
     && (value.pausedAt === null || count(value.pausedAt, -1) >= 0)
     && count(value.pausedTotalMs, -1) >= 0
-    && QUEST_CORES_BY_ID[value.questId].moodIds.includes(value.moodId);
+    ;
 }
 
 function archivedGame(value: unknown): GameReference | null {
   if (!record(value) || typeof value.id !== "string" || !value.id
       || typeof value.name !== "string" || !value.name
       || (value.source !== "curated" && value.source !== "custom")) return null;
+  const exactId = typeof value.installmentId === "string" && value.installmentId
+    ? value.installmentId : CURATED_GAMES_BY_ID[value.id]?.installments.find(entry => entry.name === value.name)?.id;
   return {
     id: value.id,
     name: value.name,
     source: value.source,
+    ...(exactId ? { installmentId: exactId } : {}),
+    ...(Array.isArray(value.installmentIds)
+      ? { installmentIds: [...new Set(value.installmentIds.filter((id): id is string => typeof id === "string" && !!id))] } : {}),
     ...(GAME_ICON_IDS.includes(value.iconId as typeof GAME_ICON_IDS[number])
       ? { iconId: value.iconId as typeof GAME_ICON_IDS[number] } : {}),
     ...(GAME_COLOR_IDS.includes(value.colorId as typeof GAME_COLOR_IDS[number])
@@ -90,6 +96,7 @@ function completion(value: unknown): CompletedSession | null {
     durationMs: value.durationMs as number,
     pointsAwarded: value.pointsAwarded as number,
     completedAt: value.completedAt as number,
+    snapshot: sanitizeSnapshot(value.snapshot, value.questId) ?? historicalQuest(value.questId),
   };
 }
 
@@ -149,7 +156,7 @@ export function migrateQuestState(value: unknown): PersistedQuestState {
     && savedSelection.installmentId === "new-horizons"
     ? { ...savedSelection, installmentId: null } : savedSelection;
   const blacklistedQuestIds = Array.isArray(value.blacklistedQuestIds)
-    ? [...new Set(value.blacklistedQuestIds.filter(quest))] : [];
+    ? [...new Set(value.blacklistedQuestIds.filter((id): id is string => typeof id === "string" && !!id))] : [];
   const blacklist = new Set(blacklistedQuestIds);
   const liveOffers = (value: unknown) => uniqueOffers(value)
     .filter((offer) => !blacklist.has(offer.questId));
@@ -168,13 +175,12 @@ export function migrateQuestState(value: unknown): PersistedQuestState {
     }
   }
   return {
+    freeShufflesRemaining: Math.min(count(value.freeShufflesRemaining, defaults.freeShufflesRemaining), defaults.freeShufflesRemaining),
     blacklistedQuestIds,
-    skipQuestBanPrompt: value.skipQuestBanPrompt === true,
     gameSelection: selection,
     poolPreferences: sanitizePoolPreferences(value.poolPreferences),
     profile: {
       points: count(savedProfile.points, count(savedProfile.coins)),
-      redRopes: count(savedProfile.redRopes, defaults.profile.redRopes),
       avatarTheme: AVATAR_THEMES.includes(savedProfile.avatarTheme as typeof AVATAR_THEMES[number])
         ? savedProfile.avatarTheme as typeof AVATAR_THEMES[number]
         : defaults.profile.avatarTheme,
@@ -186,7 +192,12 @@ export function migrateQuestState(value: unknown): PersistedQuestState {
     offeredQuests,
     offerSetsByMoodId,
     offerLibraryRevision: count(value.offerLibraryRevision),
-    currentSession: session(value.currentSession) ? value.currentSession : null,
+    currentSession: session(value.currentSession) ? { ...value.currentSession,
+      game: archivedGame(value.currentSession.game),
+      snapshot: refreshActiveQuestTiming(sanitizeSnapshot(value.currentSession.snapshot, value.currentSession.questId)
+        ?? historicalQuest(value.currentSession.questId)
+        ?? snapshotQuest(value.currentSession.questId, archivedGame(value.currentSession.game))),
+    } : null,
     completedSessions: Array.isArray(value.completedSessions)
       ? value.completedSessions.map(completion)
           .filter((entry): entry is CompletedSession => entry !== null)
