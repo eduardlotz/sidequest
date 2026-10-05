@@ -28,13 +28,14 @@ export const englishUi = {
     title: "Welcome to sidesidequest.",
     description: "A small starting point for people with too many video games.",
     stepsHeading: "How it works",
-    step1: "Choose a mood or pick one game for your next quest.",
-    step2: "Pick a quest and launch the matching video game",
+    step1: "Choose a mood or pick a specific game for your next quest.",
+    step2:
+      "Pick a quest, start the timer, and launch the corresponding video game",
     step3:
-      "Start the timer and give your quest a try. Pause and complete it whenever you finish. The suggested time is just a guide.",
+      "Complete the task in the video game, stop the timer again, and earn coins",
     mismatchHeading: "The quest isn't right for you?",
     mismatchBody:
-      "Cut the red rope whenever you want to move on. It is always free and replaces just that quest. Canceling awards no coins or completion.",
+      "Cut the red rope, draw a new card, and try a different quest. You can also draw three new quests at once for just 10 coins. How difficult a quest ultimately is also depends on the game you've chosen.",
     difficultyBody:
       "Read the full objective before you start. Some quests require a mode, item, mechanic, or a save with enough progress.",
     libraryHeading: "Quests for your library",
@@ -44,9 +45,9 @@ export const englishUi = {
       "For a series, select the entries you actually play so installment-specific quests stay accurate. You can edit the library later from your profile. Cards without a named game still work with any library.",
     coinsHeading: "What do I do with the coins?",
     coinEarning:
-      "Ordinary quests earn 10 coins per active minute from the start, with rewards rounded down to whole coins. A standard quest earns 5 coins in 30 seconds or 50 coins in five minutes. Paused time does not count, and rewards stop growing after an hour. Special quests multiply the coins. Countdown and Speedrun rewards decrease with time; Countdown must be completed before time runs out.",
+      "The longer you work on a quest, the more coins you'll earn. A set of new quest cards costs coins. To make the decision a little easier, sooner or later you'll have to choose a quest that might not have immediately appealed to you and earn a few coins.",
     coinSpending:
-      "Your first three reshuffles are free; later ones cost 10 coins to refresh the whole deck. Completing or canceling replaces only that quest and does not grant a free reshuffle.",
+      "The first three times you reshuffle are free; after that, it costs 10 coins each time.",
     feedbackBody:
       "Got feedback or an idea for a new quest? You're welcome to share it on",
     feedbackLink: "GitHub",
@@ -201,7 +202,7 @@ export const germanUi = {
   recovery: {
     title: "Quest nicht verfügbar",
     description:
-      "Diese Quest ist nach der Katalogänderung nicht mehr verfügbar. Kehre kostenlos zur Auswahl zurück und wähle eine andere.",
+      "Diese Quest wurde entfernt und kann nicht mehr ausgewählt werden.",
     returnToSelection: "Zurück zur Auswahl",
   },
   nav: {
@@ -221,14 +222,14 @@ export const germanUi = {
     description:
       "Eine kleine Starthilfe für Menschen mit zu vielen Videospielen.",
     stepsHeading: "Wie es funktioniert",
-    step1:
-      "Wähle eine Stimmung oder ein bestimmtes Spiel für deine nächste Quest.",
-    step2: "Such dir eine Quest aus und starte das passende Videospiel dazu",
+    step1: "Wähle eine Stimmung oder ein bestimmtes Spiel aus",
+    step2:
+      "Such dir eine Quest aus und starte den Timer und das passende Videospiel dazu",
     step3:
-      "Starte den Timer und probiere die Quest aus. Pausiere und schließe sie ab, sobald du fertig bist. Die empfohlene Zeit dient nur zur Orientierung.",
+      "Erfüll die Aufgabe im Videospiel, stopp den Timer wieder und erhalte Münzen",
     mismatchHeading: "Die Aufgabe passt doch nicht?",
     mismatchBody:
-      "Schneide das rote Seil durch, wenn du wechseln möchtest. Das ist immer kostenlos und ersetzt nur diese Quest. Ein Abbruch gibt keine Münzen und zählt nicht als Abschluss.",
+      "Schneide das rote Seil durch, ziehe eine neu Karte und probier eine andere Aufgabe aus. Du kannst auch direkt drei neue Quests ziehen, für nur 10 Münzen. Wie schwer eine Aufgabe am Ende ist, hängt auch von deinem gewählten Spiel ab.",
     difficultyBody:
       "Lies die ganze Aufgabe vor dem Start. Manche Quests brauchen einen Modus, Gegenstand, eine Mechanik oder einen ausreichend fortgeschrittenen Spielstand.",
     libraryHeading: "Quests für deine Bibliothek",
@@ -238,9 +239,9 @@ export const germanUi = {
       "Bei einer Reihe wählst du die Teile, die du wirklich spielst, damit Quests für einzelne Teile stimmen. Die Bibliothek kannst du später im Profil",
     coinsHeading: "Was mache ich mit den Münzen?",
     coinEarning:
-      "Normale Quests geben ab dem Start 10 Münzen pro aktiver Minute, abgerundet auf ganze Münzen. Eine normale Quest gibt nach 30 Sekunden 5 Münzen oder nach fünf Minuten 50 Münzen. Pausen zählen nicht; nach einer Stunde steigt die Belohnung nicht weiter. Besondere Quests vervielfachen die Münzen. Bei Countdown und Speedrun sinkt die Belohnung mit der Zeit; einen Countdown musst du vor Ablauf der Zeit abschließen.",
+      "Je länger du an einer Quest sitzt, desto mehr Münzen gibt es dafür. Ein Set von neuen Quest-Karten kostet Münzen. Um die Qual der Wahl etwas zu dämpfen musst du dich früher oder später auch mal für eine Quest entscheiden, die dich vielleicht nicht sofort angesprochen hat und ein paar Münzen sammeln.",
     coinSpending:
-      "Die ersten drei Mal neu mischen sind kostenlos, danach kostet ein komplett neues Deck 10 Münzen. Ein Abschluss oder Abbruch ersetzt nur diese Quest und gibt kein kostenloses Mischen.",
+      "Die ersten drei Mal neu mischen sind kostenlos, danach kostet es immer 10 Münzen.",
     feedbackBody:
       "Feedback oder eine Idee für eine neue Quest? Teile sie gern auf",
     feedbackLink: "GitHub",
@@ -338,7 +339,7 @@ export const germanUi = {
     completeQuest: "Quest abschließen",
     noCoinsYet: "Keine Belohnung",
     noTimedReward: "Zu langsam.",
-    cutStopFree: "Seil durchtrennen zum kostenlosen Abbrechen.",
+    cutStopFree: "Schneid das Seil durch, um die Quest abzubrechen.",
     lessThanMinute: "weniger als eine Minute",
     coinsEarned: "Du erhältst",
     coinsEarnedLabel: "Du erhältst {{points}} Münzen",
