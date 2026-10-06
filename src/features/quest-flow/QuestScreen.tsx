@@ -22,6 +22,7 @@ type Props = {
   galleryOpen: boolean;
   onGalleryOpenChange: (open: boolean) => void;
   onOpenLibrary: () => void;
+  onOpenQuestPool: (trigger: HTMLButtonElement) => void;
   reduceMotion: boolean;
   onCoinFlightStart: (pointsAwarded: number) => void;
   onCoinHit: (pointsReceived: number, impact?: CoinImpact) => void;
@@ -31,6 +32,7 @@ export function QuestScreen({
   galleryOpen,
   onGalleryOpenChange,
   onOpenLibrary,
+  onOpenQuestPool,
   reduceMotion,
   onCoinFlightStart,
   onCoinHit,
@@ -162,6 +164,7 @@ export function QuestScreen({
         galleryOpen={galleryOpen}
         onGalleryOpenChange={onGalleryOpenChange}
         onOpenLibrary={onOpenLibrary}
+        onOpenQuestPool={onOpenQuestPool}
         libraryGames={libraryGames}
         gameSelection={gameSelection}
         currentQuest={currentQuest}

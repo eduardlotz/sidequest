@@ -9,9 +9,7 @@ import {
   GlobeIcon,
   MoonIcon,
   SunIcon,
-  WrenchIcon,
 } from "@phosphor-icons/react";
-import { QuestPoolSettings } from "../QuestPoolSettings/QuestPoolSettings";
 import { InfoLabel } from "../../../../shared/ui/InfoLabel/InfoLabel";
 import { useState } from "react";
 import { SettingToggle } from "../../../../shared/ui/SettingToggle/SettingToggle";
@@ -155,20 +153,6 @@ export function ProfileDrawer({
             }
           >
             <GameLibraryDrawer />
-          </ResponsiveNestedDrawer>
-          <ResponsiveNestedDrawer
-            trigger={
-              <SolidButton
-                size="medium"
-                variant="soft"
-                iconLeft={<WrenchIcon weight="bold" />}
-                iconRight={<ChevronLeftIcon className={styles.forwardIcon} />}
-              >
-                {t("ui.pool.title")}
-              </SolidButton>
-            }
-          >
-            <QuestPoolSettings />
           </ResponsiveNestedDrawer>
         </div>
       </section>

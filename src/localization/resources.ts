@@ -82,7 +82,7 @@ export const englishUi = {
     openLibrary: "Open profile",
     noMatchingQuestsTitle: "No quests for these choices",
     noMatchingQuestsBody:
-      "No quests match this choice and your pool settings. Change the game or adjust the pool in your profile.",
+      "Adjust your quest pool to find matching quests.",
     chooseMoodQuest: "Choose a {{mood}} quest",
     selectMood: "Select your mood",
     choosePrefix: "Choose a",
@@ -276,7 +276,7 @@ export const germanUi = {
     openLibrary: "Profil öffnen",
     noMatchingQuestsTitle: "Keine Quests für diese Auswahl",
     noMatchingQuestsBody:
-      "Für diese Auswahl und deine Pool-Einstellungen gibt es keine passenden Quests. Ändere das Spiel oder den Quest-Pool im Profil.",
+      "Passe deinen Quest-Pool an, um passende Quests zu finden.",
     chooseMoodQuest: "Wähle eine Quest für {{mood}}",
     selectMood: "Wähle deine Stimmung",
     choosePrefix: "Wähle eine",

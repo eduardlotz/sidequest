@@ -6,6 +6,7 @@ import {
   type ReactElement,
   type ReactNode,
   type CSSProperties,
+  type RefObject,
 } from "react";
 import { Drawer } from "vaul";
 import { playSound } from "../../../lib/sound";
@@ -16,7 +17,6 @@ import {
 import styles from "./ResponsiveDrawer.module.css";
 
 const MOBILE_SNAP_POINTS = [0.78, 1];
-const MOBILE_DEFAULT_SNAP_POINT = MOBILE_SNAP_POINTS[0];
 
 function dismissPopoverFirst(event: KeyboardEvent) {
   const popover = document.querySelector<HTMLElement>("[popover]:popover-open");
@@ -29,7 +29,11 @@ type Props = {
   children: ReactNode;
   desktopDirection: "left" | "right";
   mobileContainer: HTMLDivElement | null;
-  trigger: ReactElement;
+  mobileSnapPoints?: (number | string)[] | null;
+  trigger?: ReactElement;
+  triggerRef?: RefObject<HTMLButtonElement | null>;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   variant: "about" | "profile";
 };
 
@@ -47,22 +51,28 @@ export function ResponsiveDrawer({
   children,
   desktopDirection,
   mobileContainer,
+  mobileSnapPoints = MOBILE_SNAP_POINTS,
   trigger,
+  triggerRef,
+  open: controlledOpen,
+  onOpenChange,
   variant,
 }: Props) {
   const desktop = useMediaQuery(DESKTOP_VIEWPORT_QUERY);
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
   const [nestedOpen, setNestedOpen] = useState(false);
   const [snapPoint, setSnapPoint] = useState<number | string | null>(
-    MOBILE_DEFAULT_SNAP_POINT,
+    mobileSnapPoints?.[0] ?? 1,
   );
 
   function changeOpen(nextOpen: boolean) {
     if (nextOpen === open) return;
-    if (nextOpen && !desktop) setSnapPoint(MOBILE_DEFAULT_SNAP_POINT);
+    if (nextOpen && !desktop) setSnapPoint(mobileSnapPoints?.[0] ?? 1);
     if (!nextOpen) setNestedOpen(false);
     playSound(nextOpen ? "drawerOpen" : "drawerClose");
     setOpen(nextOpen);
+    onOpenChange?.(nextOpen);
   }
 
   return (
@@ -76,18 +86,18 @@ export function ResponsiveDrawer({
       }}
     >
       <Drawer.Root
-        activeSnapPoint={desktop || nestedOpen ? undefined : snapPoint}
-        setActiveSnapPoint={desktop || nestedOpen ? undefined : setSnapPoint}
+        activeSnapPoint={desktop || nestedOpen || !mobileSnapPoints ? undefined : snapPoint}
+        setActiveSnapPoint={desktop || nestedOpen || !mobileSnapPoints ? undefined : setSnapPoint}
         container={desktop ? undefined : mobileContainer}
         direction={desktop ? desktopDirection : "bottom"}
         open={open}
         onOpenChange={changeOpen}
         // Vaul's snap effect and nesting callbacks both write the same transform.
         // Suspend snapping while its child is open, then restore the saved snap.
-        snapPoints={desktop || nestedOpen ? undefined : MOBILE_SNAP_POINTS}
+        snapPoints={desktop || nestedOpen ? undefined : mobileSnapPoints ?? undefined}
         shouldScaleBackground={false}
       >
-        <Drawer.Trigger asChild>{trigger}</Drawer.Trigger>
+        {trigger && <Drawer.Trigger asChild>{trigger}</Drawer.Trigger>}
         <Drawer.Portal>
           <Drawer.Overlay className={styles.drawerOverlay} />
           <Drawer.Content
@@ -95,11 +105,16 @@ export function ResponsiveDrawer({
               ? { "data-vaul-animate": "false" }
               : {})}
             onEscapeKeyDown={dismissPopoverFirst}
+            onCloseAutoFocus={(event) => {
+              if (!triggerRef?.current?.isConnected) return;
+              event.preventDefault();
+              triggerRef.current.focus();
+            }}
             className={styles.drawerContent}
             data-direction={desktop ? desktopDirection : "bottom"}
             data-drawer-variant={variant}
             data-mobile-snap={
-              desktop ? undefined : snapPoint === 1 ? "full" : "default"
+              desktop ? undefined : !mobileSnapPoints || snapPoint === 1 ? "full" : "default"
             }
           >
             {!desktop && <Drawer.Handle className={styles.drawerHandle} />}

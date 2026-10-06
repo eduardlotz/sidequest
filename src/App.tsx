@@ -11,6 +11,12 @@ import { LibrarySetup } from "./features/library/LibrarySetup";
 import { InteractiveDotBackground } from "./shared/ui/InteractiveDotBackground/InteractiveDotBackground";
 import { useQuestStore } from "./stores/useQuestStore";
 import { useLibraryStore } from "./stores/useLibraryStore";
+import { QuestPoolSettings } from "./features/profile/components/QuestPoolSettings/QuestPoolSettings";
+import {
+  ResponsiveDrawer,
+  ResponsiveDrawerContainer,
+} from "./shared/ui/ResponsiveDrawer/ResponsiveDrawer";
+import { playSound } from "./lib/sound";
 import styles from "./App.module.css";
 
 export function App() {
@@ -19,6 +25,10 @@ export function App() {
   const reduceMotion = Boolean(useReducedMotion());
   const profileTriggerRef = useRef<HTMLButtonElement>(null);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [questPoolOpen, setQuestPoolOpen] = useState(false);
+  const [questPoolContainer, setQuestPoolContainer] =
+    useState<HTMLDivElement | null>(null);
+  const questPoolTriggerRef = useRef<HTMLButtonElement | null>(null);
   const { currentSession, gameSelection, points, selectedMoodId } = useQuestStore(
     useShallow((state) => ({
       currentSession: state.currentSession,
@@ -79,6 +89,11 @@ export function App() {
                 galleryOpen={galleryOpen}
                 onGalleryOpenChange={setGalleryOpen}
                 onOpenLibrary={() => profileTriggerRef.current?.click()}
+                onOpenQuestPool={(trigger) => {
+                  questPoolTriggerRef.current = trigger;
+                  setQuestPoolOpen(true);
+                  playSound("drawerOpen");
+                }}
                 reduceMotion={reduceMotion}
                 onCoinFlightStart={coinBalanceAnimation.startFlight}
                 onCoinHit={coinBalanceAnimation.receivePoints}
@@ -93,6 +108,18 @@ export function App() {
           </motion.div>
         </AnimatePresence>
       </main>
+      <ResponsiveDrawer
+        desktopDirection="right"
+        mobileContainer={questPoolContainer}
+        mobileSnapPoints={null}
+        variant="profile"
+        open={questPoolOpen}
+        onOpenChange={setQuestPoolOpen}
+        triggerRef={questPoolTriggerRef}
+      >
+        <QuestPoolSettings />
+      </ResponsiveDrawer>
+      <ResponsiveDrawerContainer setContainer={setQuestPoolContainer} />
     </div>
   );
 }

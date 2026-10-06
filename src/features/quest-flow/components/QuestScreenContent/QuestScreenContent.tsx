@@ -43,6 +43,8 @@ import {
   SELECTION_LAYER_EXIT_DURATION,
 } from "../SelectionLayer/SelectionLayer";
 import { GameSelectionStep, gamePickerItemId } from "../GameSelectionStep/GameSelectionStep";
+import unknownIllustration from "../../../quest-gallery/assets/unknown-quest.svg";
+import { SlidersHorizontalIcon, WrenchIcon } from "@phosphor-icons/react";
 
 const NAV_ITEM_TRANSITION = NAV_ENTRY_SPRING;
 
@@ -65,6 +67,7 @@ type Props = {
   galleryOpen: boolean;
   onGalleryOpenChange: (open: boolean) => void;
   onOpenLibrary: () => void;
+  onOpenQuestPool: (trigger: HTMLButtonElement) => void;
   libraryGames: readonly LibraryGame[];
   gameSelection: GameSelection | null;
   currentQuest: Quest | null;
@@ -98,6 +101,7 @@ export function QuestScreenContent({
   galleryOpen,
   onGalleryOpenChange,
   onOpenLibrary,
+  onOpenQuestPool,
   libraryGames,
   gameSelection,
   currentQuest,
@@ -637,7 +641,20 @@ export function QuestScreenContent({
                           }
                         /> : (
                           <div className={styles.emptyQuestDeck}>
+                            <img
+                              className={styles.emptyQuestIllustration}
+                              src={unknownIllustration}
+                              alt=""
+                            />
                             <p>{t("ui.task.noMatchingQuestsBody")}</p>
+                            <SolidButton
+                              size="medium"
+                              variant="soft"
+                              iconLeft={<WrenchIcon weight="bold" />}
+                              onClick={(event) => onOpenQuestPool(event.currentTarget)}
+                            >
+                              {t("ui.pool.title")}
+                            </SolidButton>
                           </div>
                         )}
 
@@ -691,8 +708,20 @@ export function QuestScreenContent({
                             variant="soft"
                             onClick={editSelection}
                           >
-                            {t(gameReady ? "ui.task.changeGame" : "ui.task.changeMood")}
+                            {gameReady
+                              ? t("ui.task.changeGame")
+                              : t("ui.task.changeMood")}
                           </SolidButton>
+                          {offeredQuests.length > 0 && (
+                            <SolidButton
+                              size="medium"
+                              variant="secondary"
+                              aria-label={t("ui.pool.title")}
+                              onClick={(event) => onOpenQuestPool(event.currentTarget)}
+                            >
+                              <SlidersHorizontalIcon aria-hidden weight="bold" />
+                            </SolidButton>
+                          )}
                         </motion.span>
                       </div>
                     </>

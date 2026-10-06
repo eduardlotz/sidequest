@@ -1,22 +1,16 @@
 import { useTranslation } from "react-i18next";
-import { WifiHighIcon } from "@phosphor-icons/react/dist/csr/WifiHigh";
-import { PlugsIcon } from "@phosphor-icons/react/dist/csr/Plugs";
-import { UserIcon } from "@phosphor-icons/react/dist/csr/User";
-import { UsersIcon } from "@phosphor-icons/react/dist/csr/Users";
-import { GameControllerIcon } from "@phosphor-icons/react/dist/csr/GameController";
+import { Fragment } from "react";
 import type { ReactNode } from "react";
 import { QUEST_PEOPLE } from "../../data/questContexts";
 import { GAME_GENRES } from "../../data/gameGenres";
 import { QUEST_TAGS } from "../../data/questTraits";
 import type { QuestTagId } from "../../data/questTraits";
-import { GameGenreIcon } from "../ui/Icons/GameGenreIcon";
-import { GamePlatformIcon } from "../ui/Icons/GamePlatformIcon";
 import { GAME_PLATFORMS } from "../../data/gamePlatforms";
 import type { QuestExperience } from "../../data/questTypes";
 import styles from "./QuestMetadataChips.module.css";
 
-function PrimaryChip({ children }: { children: ReactNode }) {
-  return <span className={styles.primary}>{children}</span>;
+function SoftChip({ children }: { children: ReactNode }) {
+  return <span className={styles.soft}>{children}</span>;
 }
 
 /** Display labels never change the contexts used to match a quest. */
@@ -95,39 +89,29 @@ export function QuestMetadataChips({
         .map((chip) => [chip.label.toLocaleLowerCase(language), chip]),
     ).values(),
   ];
-  const connection = (value: "online" | "offline") => {
-    const Icon = value === "online" ? WifiHighIcon : PlugsIcon;
-    return (
-      <>
-        <Icon size={12} weight="fill" aria-hidden />
-        {value === "online" ? "Online" : "Offline"}
-      </>
-    );
-  };
-  const people = (value: "alone" | "others") => {
-    const Icon = value === "alone" ? UserIcon : UsersIcon;
-    return (
-      <>
-        <Icon size={12} weight="fill" aria-hidden />
-        {QUEST_PEOPLE[value][language]}
-      </>
-    );
-  };
+  const connection = (value: "online" | "offline") =>
+    value === "online" ? "Online" : "Offline";
+  const people = (value: "alone" | "others") =>
+    QUEST_PEOPLE[value][language];
+  const features = [
+    ...secondary.map((id) => ({ label: QUEST_TAGS[id][language], title: undefined })),
+    ...prerequisites,
+  ];
   return (
     <span className={styles.metadata} data-quest-metadata="chips">
       <span className={styles.row}>
         {reward}
         {samePeople && contexts.length > 0 ? (
           <>
-            <PrimaryChip>
+            <SoftChip>
               {contexts.map((context, index) => (
                 <span className={styles.segment} key={context.connection}>
                   {index > 0 && <span className={styles.separator}>/</span>}
                   {connection(context.connection)}
                 </span>
               ))}
-            </PrimaryChip>
-            <PrimaryChip>{people(contexts[0].people)}</PrimaryChip>
+            </SoftChip>
+            <SoftChip>{people(contexts[0].people)}</SoftChip>
           </>
         ) : (
           contexts.map((context, index) => (
@@ -136,55 +120,43 @@ export function QuestMetadataChips({
               key={`${context.connection}:${context.people}`}
             >
               {index > 0 && <span className={styles.separator}>/</span>}
-              <PrimaryChip>
+              <SoftChip>
                 {connection(context.connection)}
                 <span aria-hidden>·</span>
                 {people(context.people)}
-              </PrimaryChip>
+              </SoftChip>
             </span>
           ))
         )}
-        {metadata.playStyleIds.map((id) => {
-          const Icon = id === "co-op" ? UsersIcon : GameControllerIcon;
-          return (
-            <PrimaryChip key={id}>
-              <Icon size={12} weight="fill" aria-hidden />
-              {QUEST_TAGS[id][language]}
-            </PrimaryChip>
-          );
-        })}
-        {metadata.genreIds.map((id) => {
-          return (
-            <PrimaryChip key={id}>
-              <GameGenreIcon genre={id} />
-              {GAME_GENRES[id].title[language]}
-            </PrimaryChip>
-          );
-        })}
       </span>
-      {(secondary.length > 0 ||
-        prerequisites.length > 0 ||
+      {(metadata.playStyleIds.length > 0 ||
+        metadata.genreIds.length > 0 ||
         platformIds.length > 0) && (
         <span className={styles.row}>
+          {metadata.playStyleIds.map((id) => (
+            <span className={styles.outline} key={id}>
+              {QUEST_TAGS[id][language]}
+            </span>
+          ))}
+          {metadata.genreIds.map((id) => (
+            <span className={styles.outline} key={id}>
+              {GAME_GENRES[id].title[language]}
+            </span>
+          ))}
           {platformIds.map((id) => (
             <span className={styles.outline} key={id}>
-              <GamePlatformIcon platform={id} />
               {GAME_PLATFORMS[id][language]}
             </span>
           ))}
-          {secondary.map((id) => (
-            <span className={styles.outline} key={id}>
-              {QUEST_TAGS[id][language]}
-            </span>
-          ))}
-          {prerequisites.map((chip) => (
-            <span
-              className={styles.outline}
-              key={chip.label}
-              title={chip.title}
-            >
-              {chip.label}
-            </span>
+        </span>
+      )}
+      {features.length > 0 && (
+        <span className={styles.features}>
+          {features.map((feature, index) => (
+            <Fragment key={feature.label}>
+              {index > 0 && <span aria-hidden="true"> · </span>}
+              <span title={feature.title}>{feature.label}</span>
+            </Fragment>
           ))}
         </span>
       )}

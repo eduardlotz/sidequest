@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useState, type CSSProperties } from "react";
 import type { QuestTypeId, QuestTagId } from "../../../data/questTraits";
 import styles from "../QuestCard/QuestCard.module.css";
-import { WordmarkSkewedLogo } from "../../../assets/wordmark-skewed";
+import { WordmarkLogo } from "../../../assets/wordmark";
 import { QuestCardMeta } from "../QuestCardMeta/QuestCardMeta";
 import { QuestObjectiveText } from "../QuestObjectiveText/QuestObjectiveText";
 import type { GameReference } from "../../../data/gameTypes";
@@ -131,7 +131,7 @@ export function QuestCardFront({
       </span>
       {showWordmarkLogo && (
         <span className={styles.cardBrand} aria-hidden="true">
-          <WordmarkSkewedLogo />
+          <WordmarkLogo />
         </span>
       )}
     </>

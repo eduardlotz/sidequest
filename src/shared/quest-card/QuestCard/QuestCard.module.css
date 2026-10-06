@@ -315,16 +315,15 @@
 
 .cardBrand {
   position: absolute;
-  right: -22%;
-  bottom: -12%;
+  right: -10%;
+  bottom: -7%;
   z-index: 1;
   display: block;
-  width: 105cqw;
-  opacity: 0.25;
+  width: 80cqw;
+  opacity: var(--quest-card-brand-opacity, 0.42);
   pointer-events: none;
   mix-blend-mode: overlay;
-  rotate: -15deg;
-
+  transform: rotate(-17deg);
   transform-origin: center;
 }
 

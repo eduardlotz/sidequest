@@ -63,8 +63,24 @@
 
 .emptyQuestDeck {
   display: grid;
+  width: min(100% - 32px, 360px);
   min-height: var(--quest-deck-height);
-  place-items: center;
+  margin-inline: auto;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.emptyQuestDeck p {
+  margin: 0;
+}
+
+.emptyQuestIllustration {
+  width: 80px;
+  height: 80px;
+  opacity: 0.35;
 }
 
 .selectionScreen {
@@ -193,6 +209,8 @@
   margin-inline: auto;
   justify-self: center;
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
   z-index: 10;
   gap: 10px;
 }
